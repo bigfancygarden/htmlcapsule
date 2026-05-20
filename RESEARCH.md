@@ -515,10 +515,36 @@ This is itself a relevant data point for multi-producer interop: a spec-aware mo
 **What we did with the outputs:**
 
 - **Output A** (dc-card raw HTML from the canvas): converted three design-variation files to valid capsules at 25/25 each, ~1.5 MB after stripping the canvas-reset bloat. Deployable.
-- **Output B1** (the model's pre-bundler 40 KB file): validates 24/25 / 0 fail. Documented here as the empirical LLM-producer exemplar. Not shipped as the project's canonical landing (we already have one), but recorded as evidence of the LLM-producer path working end-to-end.
+- **Output B1** (the model's pre-bundler 40 KB file): originally validated 24/25, 0 fail, with one heuristic warn. After a validator improvement motivated by this finding (see postscript below), it validates **25/25, 0 fail.** Documented here as the empirical LLM-producer exemplar. Not shipped as the project's canonical landing (we already have one), but recorded as evidence of the LLM-producer path working end-to-end.
 - **Output B2** (post-bundler 52 KB shell): not shipped; failed validation; serves as the empirical evidence for E.10 and for the "skip the bundler on capsule-shaped input" guidance.
 
 The clean record: **the LLM-producer path works.** A spec-aware model with the Core spec attached can produce a conforming capsule on the first try. The integration risk is downstream pipeline steps that mutate the artifact after verification has cleared — the mitigation is process, not a rule change.
+
+**Postscript — validator improvement motivated by this finding.**
+
+The original 1/25 warn was a heuristic false-negative on `copy_as_prompt`. The model used a cleaner Rule 7 verification pattern than our reference examples:
+
+- **Manifest:** `"capabilities": ["copy_as_prompt", …]`
+- **DOM binding:** `<button data-capsule-action="copy_as_prompt">copy prompt fragment</button>`
+- **JS handler:** `var actions = { copy_as_prompt: function () { … } };`
+
+Same literal string in three places — the most direct manifest-to-implementation link possible, auditable by eyeball without needing a regex translation table from `copy_as_prompt` → `copyPrompt` → `btn-copy-prompt` (our reference examples' three-name convention). The validator's marker regex (`copy[-_]?prompt`) didn't anticipate this convention and false-negatived the cleaner one.
+
+When asked, the model offered to rename the handler to match our regex. We declined: the right fix was the validator, not the file. We added two uniform patterns to the marker-check that apply to every known capability automatically:
+
+```python
+escaped_cap = re.escape(cap)
+clean_convention_patterns = [
+    rf'data-capsule-action\s*=\s*["\']{escaped_cap}["\']',
+    rf'\b{escaped_cap}\s*:\s*function\b',
+]
+```
+
+Both patterns are specific to implementation context — the data-attribute only appears in HTML markup, and the `: function` form requires the `function` keyword, which cannot appear in JSON. No false-positive risk on declared-but-unimplemented capabilities (Rule 7's actual guarantee is preserved bit-for-bit).
+
+Result: the Claude Design file now validates 25/25 clean. All existing examples (the canonical landing, `briefing_example.html`, `implementation_notes_example.html`, the three converted theme files) still validate at their previous scores. The patch is strictly additive.
+
+The lesson generalizes: **when an independent producer finds a cleaner convention than the reference examples, the right response is to recognize the cleaner convention in the tooling, not to demand the producer rename.** This is the difference between a spec that ossifies around its reference implementation and one that improves through external pressure. The patch isn't adding spec surface area — it's improving the validator's ability to recognize compliance. The spec discipline principle ("the corpus drives the spec; spec inflation runs the other direction") cuts toward the patch, not against it.
 
 ## Open questions
 

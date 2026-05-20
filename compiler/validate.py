@@ -484,7 +484,21 @@ def check_capability_truthfulness(manifest: dict, html: str, result: ValidationR
             unsupported.append(cap)
             continue
         markers = CAPABILITY_MARKERS[cap]
-        found = any(re.search(p, haystack, re.IGNORECASE | re.DOTALL) for p in markers)
+        # Uniform cleaner-convention patterns. Recognize the capability name
+        # used literally as a DOM action binding (data-capsule-action="cap_name")
+        # or as a JS handler dispatch key (cap_name: function ...). This rewards
+        # the cleanest Rule 7 verification pattern — same literal string in the
+        # manifest, the DOM, and the implementation — without weakening any check.
+        # Both patterns are specific to implementation context: the data-attribute
+        # only appears in HTML element markup, and the `: function` form requires
+        # the `function` keyword after the colon, which cannot appear in JSON.
+        escaped_cap = re.escape(cap)
+        clean_convention_patterns = [
+            rf'data-capsule-action\s*=\s*["\']{escaped_cap}["\']',
+            rf'\b{escaped_cap}\s*:\s*function\b',
+        ]
+        all_markers = list(markers) + clean_convention_patterns
+        found = any(re.search(p, haystack, re.IGNORECASE | re.DOTALL) for p in all_markers)
         if not found:
             unimplemented.append(cap)
 
