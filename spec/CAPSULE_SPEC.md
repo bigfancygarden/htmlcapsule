@@ -1458,3 +1458,49 @@ Two-tier structure preserving identity in the clear while gating content:
 3. A practical answer to the parameter-versioning maintenance burden exists (probably: defer to an external standard like JWE or COSE rather than maintain our own crypto recipe).
 
 Until then: **advise users that the right answer to "I want to share this with only one person" is to encrypt the wrapper, not the capsule.**
+
+### E.8 Validator: distinguish resource-loading `<link>` tags from metadata-only ones
+
+**Issue.** The current `check_no_external_references` validator pattern flags **any** `<link href="...">` tag with a non-`data:` URI as an external resource violation:
+
+```python
+(r'<link[^>]+\bhref=["\']\s*(?!data:)[^"\']', 'External <link href> reference (capsule CSS must be inlined)'),
+```
+
+The comment ("capsule CSS must be inlined") reveals the intent: catch external stylesheet imports. But the regex is too broad — it also flags **metadata-only** `<link>` tags that don't load any resource:
+
+- `<link rel="canonical" href="https://...">` — SEO canonical hint, no resource loaded
+- `<link rel="alternate" href="...">` — alternate-form discovery, no resource loaded
+- `<link rel="prev" href="...">` / `<link rel="next">` — pagination hints, no resource loaded
+
+These are pure metadata declarations the browser doesn't fetch. Rule 2 ("no network") doesn't apply to them.
+
+**The right shape.** Refine the check to distinguish resource-loading rel values from metadata-only ones:
+
+- **Resource-loading (should flag external):** `stylesheet`, `preload`, `prefetch`, `preconnect`, `dns-prefetch`, `modulepreload`, `icon` (when not a `data:` URI)
+- **Metadata-only (should NOT flag):** `canonical`, `alternate`, `prev`, `next`, `author`, `license`, `help`, `bookmark`, `pingback`
+
+**Implementation sketch:**
+
+```python
+def check_external_link_tags(html_scannable):
+    """Flag <link> tags that load external resources. Metadata-only rel values
+    (canonical, alternate, prev/next, etc.) are allowed because they don't fetch."""
+    LOADING_RELS = {"stylesheet", "preload", "prefetch", "preconnect",
+                    "dns-prefetch", "modulepreload", "icon"}
+    findings = []
+    for m in re.finditer(r'<link\b([^>]+)>', html_scannable, re.IGNORECASE):
+        attrs = m.group(1)
+        href_match = re.search(r'\bhref\s*=\s*["\']([^"\']+)["\']', attrs, re.IGNORECASE)
+        if not href_match or href_match.group(1).startswith("data:"):
+            continue
+        rel_match = re.search(r'\brel\s*=\s*["\']([^"\']+)["\']', attrs, re.IGNORECASE)
+        rel_values = (rel_match.group(1).lower().split() if rel_match else ["stylesheet"])
+        if any(r in LOADING_RELS for r in rel_values):
+            findings.append(f'External <link rel="..." href=...>')
+    return findings
+```
+
+**Why it's not built yet.** Empirically discovered while wiring `htmlcapsule.org` as the canonical home for the spec: adding `<link rel="canonical" href="https://htmlcapsule.org/">` to a valid capsule made the validator fail it. The canonical link tag was removed for now to keep the validator green. The data-block `links.canonical` field carries the same information machine-readably.
+
+**When this earns a v0.4 schema slot.** Whenever the validator gets its next focused pass — this is a small, contained change that doesn't affect any other rule. Could ship as a v0.3.x validator patch if not bundled with anything else. Low risk: no existing valid capsule uses `<link rel="canonical">` (it would already have failed), so the refinement is purely additive — same capsules still pass, plus canonical-link-bearing ones start passing too.

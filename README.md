@@ -2,6 +2,8 @@
 
 > **A capsule is a sealed, self-contained HTML memory object for work worth preserving.**
 
+**Spec home: [htmlcapsule.org](https://htmlcapsule.org)** — landing page is itself a valid Capsule.
+
 `htmlcapsule` is the open specification, reference implementation, and example set for **Capsule** — a profile of HTML for portable, structured, provenance-bearing snapshots of work that's worth preserving across tools, time, and people.
 
 The hypothesis: the substrate (HTML) has already won as the universal display layer. What's missing is discipline — a contract, manifest, versioning, capabilities, and integrity guarantees — so that an LLM conversation, a database query, a hand-written report, a geospatial map, or a research summary can all preserve themselves into the same envelope and live in the same archive. The strongest claim the format makes is **multi-producer interop**: LLMs (Claude, ChatGPT, Gemini), deterministic compilers (Python/Node build scripts), and human authors all produce the same envelope shape.
