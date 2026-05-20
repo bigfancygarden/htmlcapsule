@@ -10,7 +10,7 @@
 
 <script id="capsule-manifest" type="application/json">{
   "spec_version": "0.3.0",
-  "capsule_version": "6.0.0",
+  "capsule_version": "6.1.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
   "title": "Capsule — a profile of HTML for AI work",
   "description": "Landing page for the Capsule project. An editorial/anatomy hybrid layout, light-only, single accent.",
@@ -280,6 +280,33 @@
     background: var(--vermillion);
     border-color: var(--vermillion);
   }
+  .btn.github {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn.github svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .strip-gh {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--vermillion) !important;
+    border-bottom: 1px solid var(--vermillion) !important;
+    padding-bottom: 1px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .strip-gh svg {
+    width: 12px;
+    height: 12px;
+    display: block;
+  }
+  .strip-gh:hover { color: var(--ink) !important; border-bottom-color: var(--ink) !important; }
   .hero-meta {
     font-family: var(--mono);
     font-size: 12px;
@@ -868,6 +895,10 @@
       <a href="#rules">Rules</a>
       <a href="#produce">Produce</a>
       <a href="#status">Status</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule" class="strip-gh" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
     </nav>
   </div>
 
@@ -879,6 +910,10 @@
       <p class="lede">One HTML file. No network. Manifest, sources, and provenance — all inside. Open it in any browser today, or in a decade.</p>
       <div class="cta">
         <a href="CAPSULE_CORE.md" class="btn primary">Read the Core spec</a>
+        <a href="https://github.com/bigfancygarden/htmlcapsule" class="btn github" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          View on GitHub
+        </a>
         <a href="spec/examples/" class="btn">See examples</a>
       </div>
       <p class="hero-meta">12 rules<span class="pip">·</span>5 required blocks<span class="pip">·</span>0 network deps</p>
