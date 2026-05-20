@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="Canonical example of a domain.implementation_notes Capsule. Documents the design decisions, deviations, tradeoffs, and open questions from implementing a CSV-to-dashboard generator.">
+<title>Implementation Notes — CSV-to-Dashboard Generator (example domain.implementation_notes capsule)</title>
+
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.2.0",
+  "capsule_id": "capsule:example_domain_implementation_notes_csv_dashboard",
+  "capsule_version": "1.0.0",
+  "uuid": "1957fee5-19b6-4de0-9ed5-0a1c8ad7f8f6",
+  "title": "Implementation Notes — CSV-to-Dashboard Generator",
+  "description": "Canonical example of a domain.implementation_notes Capsule. Documents the design decisions, deviations from spec, tradeoffs, and open questions from implementing a hypothetical CSV-to-interactive-dashboard generator.",
+  "type": "domain.implementation_notes",
+  "created_at": "2026-05-18T12:00:00Z",
+  "generator": {
+    "name": "hand-written canonical example",
+    "version": "1.0.0",
+    "kind": "human"
+  },
+  "source": {
+    "origin": "spec_example",
+    "snapshot_type": "implementation_notes",
+    "snapshot_id": "snapshot:example_implementation_notes_csv_dashboard_2026_05_18",
+    "included_records": 1,
+    "spec_received": "v0.2.0 · 2026-05-19"
+  },
+  "privacy": {
+    "visibility": "shared",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json",
+    "copy_as_markdown",
+    "download_json",
+    "print_to_pdf"
+  ]
+}</script>
+
+<script id="capsule-data" type="application/json">{
+  "spec_reference": {
+    "title": "CSV-to-interactive-dashboard generator",
+    "url_or_path": "specs/csv-dashboard-spec.md",
+    "version": "0.1.0",
+    "scope": "Initial implementation. CSV ingest, type inference, three chart types (bar, line, table), self-contained HTML export."
+  },
+  "implementation_summary": "A CLI tool that accepts a CSV file, infers column types, and produces a single self-contained HTML dashboard with bar charts, line charts, and a sortable data table. Output conforms to the Capsule Core spec.",
+  "design_decisions": [
+    {
+      "decision": "Use SVG for charts instead of canvas",
+      "context": "The spec said 'render charts' but didn't specify the rendering technology.",
+      "rationale": "Accessibility and printability both matter for capsule-format output. Canvas pixels do not survive PDF export cleanly. SVG is also copy-pasteable into other tools.",
+      "alternatives_considered": ["HTML5 canvas with toDataURL fallback", "Inline PNG via server-side render"]
+    },
+    {
+      "decision": "Type inference uses a fixed pipeline: number, boolean, date, string",
+      "context": "Spec did not define type inference rules.",
+      "rationale": "Predictable, debuggable, no statistical sampling needed for small CSVs. Larger CSVs may need a different approach later, but the fixed pipeline ships faster.",
+      "alternatives_considered": ["Statistical sampling", "User-declared schemas only", "Pandas-style inference"]
+    },
+    {
+      "decision": "All data lives inline in the data block as parsed JSON, not as raw CSV",
+      "context": "Spec said 'package the source data with the dashboard' without specifying format.",
+      "rationale": "Already parsed once during type inference. Re-parsing CSV at runtime adds error surface. JSON is queryable from the runtime without a CSV parser.",
+      "alternatives_considered": ["Embed raw CSV as a string", "Embed both"]
+    }
+  ],
+  "deviations": [
+    {
+      "spec_section": "Section 3.2: Date handling",
+      "deviation": "Dates that fail ISO 8601 parsing are stored as strings rather than nulled out as the spec implied.",
+      "why": "Nulling silently loses information that a human reviewer needs to see. The string preserves what was in the source so the reviewer can decide whether to fix the data or relax the parser.",
+      "reversible": true
+    },
+    {
+      "spec_section": "Section 4.1: Chart auto-selection",
+      "deviation": "The spec said 'auto-select the best chart type for each column.' The implementation always shows all three chart types (bar, line, table) regardless of column type.",
+      "why": "Auto-selection is opinionated and frequently wrong. Showing all three lets the user pick. Auto-selection is the obvious follow-up but should not block v0.1.",
+      "reversible": true
+    }
+  ],
+  "tradeoffs": [
+    {
+      "question": "Should the dashboard be reactive (a filter syncs across all charts) or static (each chart independent)?",
+      "options_considered": ["Reactive: single shared filter state", "Static: each chart independent", "Hybrid: table filter affects charts only"],
+      "chosen": "Static for v0.1",
+      "why": "Reactive needs more runtime complexity and increases the chance of bugs that mutate the data block (Core rule 6 forbids modifying capsule-data at runtime). Static ships sooner. Reactive is the obvious v0.2 move."
+    },
+    {
+      "question": "Should aggregations (sum, mean, count) be precomputed at build time or computed in the runtime?",
+      "options_considered": ["Precompute and embed in the data block", "Compute on demand in the runtime", "Both"],
+      "chosen": "Precompute the common ones (count, sum, mean, min, max), compute others on demand",
+      "why": "Precomputed values survive in plain-HTML view (no JS needed), satisfying Core rule 12. On-demand computation handles arbitrary queries without bloating the file."
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "What is the size cap for embedded CSV data?",
+      "context": "The capsule hard cap is 15 MB. Section 6 did not specify whether the implementation should warn earlier. Currently warns at 5 MB, hard-stops at 15 MB.",
+      "urgency": "medium"
+    },
+    {
+      "question": "Should the capsule include the original CSV as a downloadable asset, or only the parsed JSON?",
+      "context": "Section 7.3 said 'preserve source.' Unclear whether that means bit-exact preservation or semantic preservation.",
+      "urgency": "low"
+    },
+    {
+      "question": "How should the dashboard handle CSVs with no header row?",
+      "context": "Not addressed in the spec.",
+      "urgency": "high"
+    }
+  ],
+  "ai_usage_guidance": {
+    "allowed_tasks": [
+      "summarize the design decisions",
+      "surface open questions for review",
+      "identify high-risk deviations",
+      "draft a revised spec section based on resolved decisions",
+      "flag tradeoffs that may need revisiting in v0.2"
+    ],
+    "restricted_tasks": [
+      "do not treat deviations as bugs without consulting the why field",
+      "do not auto-resolve open questions without human confirmation",
+      "do not collapse tradeoff alternatives into a single recommendation"
+    ],
+    "preferred_language": "technical, plainspoken, calibrated about uncertainty"
+  }
+}</script>
+
+<style id="capsule-style">
+  :root {
+    color-scheme: light dark;
+    --bg: #faf8f3;
+    --surface: #ffffff;
+    --surface-2: #f3efe5;
+    --text: #1a1a1a;
+    --ink-soft: #3d3a35;
+    --muted: #6b6660;
+    --border: #d8d2c4;
+    --accent: #8a3a2a;
+    --accent-soft: #f4e8e3;
+    --code-bg: #ece7da;
+    --code-ink: #2a2520;
+    --serif: 'Iowan Old Style', 'Charter', 'Palatino Linotype', 'Palatino', Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+    --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14110e;
+      --surface: #1c1814;
+      --surface-2: #221d18;
+      --text: #e8e3d8;
+      --ink-soft: #c4bdaf;
+      --muted: #908778;
+      --border: #2f2a24;
+      --accent: #d97757;
+      --accent-soft: #2a1f1a;
+      --code-bg: #221d18;
+      --code-ink: #e0d8c8;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--serif);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .skip-link {
+    position: absolute; left: -9999px; top: 0;
+    background: var(--accent); color: #fff;
+    padding: 0.6rem 1rem; z-index: 100;
+    border-radius: 0 0 6px 0; text-decoration: none;
+  }
+  .skip-link:focus { left: 0; }
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+  h1 {
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+  .lede {
+    font-size: 1.12rem;
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+    max-width: 65ch;
+  }
+  .meta-row {
+    font-family: var(--sans);
+    font-size: 0.86rem;
+    color: var(--muted);
+    margin: 1rem 0 2.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .meta-row strong { color: var(--ink-soft); }
+  h2 {
+    font-size: 1.55rem;
+    margin: 2.5rem 0 0.85rem;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.1rem;
+    margin: 1.25rem 0 0.4rem;
+    color: var(--text);
+  }
+  p { margin-bottom: 1rem; color: var(--ink-soft); }
+  .spec-card, .decision-card, .deviation-card, .tradeoff-card, .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    margin: 0.85rem 0;
+  }
+  .spec-card { background: var(--surface-2); }
+  .spec-card dl { display: grid; grid-template-columns: minmax(6rem, 11rem) 1fr; gap: 0.45rem 1rem; font-family: var(--sans); font-size: 0.94rem; }
+  .spec-card dt { color: var(--muted); font-weight: 700; }
+  .spec-card dd { color: var(--text); }
+  .card-label {
+    font-family: var(--sans);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .card-title {
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    font-size: 1.05rem;
+  }
+  .card-row {
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    margin: 0.4rem 0;
+  }
+  .card-row strong { font-family: var(--sans); color: var(--ink-soft); }
+  ul.alts { margin: 0.4rem 0 0.4rem 1.25rem; padding: 0; }
+  ul.alts li { font-family: var(--sans); font-size: 0.9rem; color: var(--muted); margin-bottom: 0.2rem; }
+  .urgency {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    margin-left: 0.5rem;
+  }
+  .urgency.high { color: var(--accent); border-color: var(--accent); }
+  .urgency.medium { color: var(--ink-soft); }
+  .urgency.low { color: var(--muted); }
+  .reversible {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+  .ai-usage {
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    margin: 1rem 0;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+  }
+  .ai-usage h3 { font-family: var(--sans); margin-top: 0.5rem; font-size: 0.94rem; color: var(--ink-soft); }
+  .ai-usage h3:first-of-type { margin-top: 0; }
+  .ai-usage ul { padding-left: 1.25rem; margin-bottom: 0.65rem; }
+  .ai-usage li { color: var(--ink-soft); margin-bottom: 0.25rem; }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  button {
+    font-family: var(--sans);
+    font-size: 0.84rem;
+    font-weight: 600;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--accent-soft); border-color: var(--accent); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .status {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--accent);
+    min-height: 1.5rem;
+    margin-top: 0.6rem;
+  }
+  details.about {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 2.5rem 0 0;
+    overflow: hidden;
+  }
+  details.about > summary {
+    cursor: pointer;
+    padding: 1rem 1.25rem;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+  details.about > summary:hover { background: var(--code-bg); }
+  details.about .about-body {
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  pre {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.5;
+    border: 1px solid var(--border);
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 0.1em 0.3em;
+    border-radius: 4px;
+  }
+  @media print {
+    .toolbar, .skip-link, .status { display: none; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#capsule-root">Skip to content</a>
+
+<main id="capsule-root">
+  <span class="eyebrow">domain.implementation_notes · canonical example</span>
+  <h1>Implementation Notes: CSV-to-Dashboard Generator</h1>
+  <p class="lede">Canonical example of a <code>domain.implementation_notes</code> Capsule. Documents the decisions, deviations, tradeoffs, and open questions from implementing a hypothetical CSV-to-interactive-dashboard generator against a written spec.</p>
+  <p class="meta-row"><strong>Spec implemented:</strong> CSV-to-interactive-dashboard generator v0.1.0 · <strong>Capsule type:</strong> <code>domain.implementation_notes</code> · <strong>Created:</strong> 2026-05-18</p>
+
+  <section aria-labelledby="spec-heading">
+    <h2 id="spec-heading">Spec reference</h2>
+    <div class="spec-card">
+      <dl>
+        <dt>Title</dt><dd>CSV-to-interactive-dashboard generator</dd>
+        <dt>Version</dt><dd>0.1.0</dd>
+        <dt>Path</dt><dd><code>specs/csv-dashboard-spec.md</code></dd>
+        <dt>Scope</dt><dd>Initial implementation. CSV ingest, type inference, three chart types (bar, line, table), self-contained HTML export.</dd>
+      </dl>
+    </div>
+    <p><strong>What got built:</strong> A CLI tool that accepts a CSV file, infers column types, and produces a single self-contained HTML dashboard with bar charts, line charts, and a sortable data table. Output conforms to the Capsule Core spec.</p>
+  </section>
+
+  <section aria-labelledby="decisions-heading">
+    <h2 id="decisions-heading">Design decisions</h2>
+    <p>Choices made where the spec was ambiguous or silent.</p>
+
+    <article class="decision-card">
+      <p class="card-label">Decision</p>
+      <p class="card-title">Use SVG for charts instead of canvas</p>
+      <p class="card-row"><strong>Context:</strong> The spec said "render charts" but didn't specify the rendering technology.</p>
+      <p class="card-row"><strong>Rationale:</strong> Accessibility and printability both matter for capsule-format output. Canvas pixels don't survive PDF export cleanly. SVG is also copy-pasteable into other tools.</p>
+      <p class="card-row"><strong>Alternatives considered:</strong></p>
+      <ul class="alts">
+        <li>HTML5 canvas with toDataURL fallback</li>
+        <li>Inline PNG via server-side render</li>
+      </ul>
+    </article>
+
+    <article class="decision-card">
+      <p class="card-label">Decision</p>
+      <p class="card-title">Type inference uses a fixed pipeline: number, boolean, date, string</p>
+      <p class="card-row"><strong>Context:</strong> Spec did not define type inference rules.</p>
+      <p class="card-row"><strong>Rationale:</strong> Predictable, debuggable, no statistical sampling needed for small CSVs. Larger CSVs may need a different approach later, but the fixed pipeline ships faster.</p>
+      <p class="card-row"><strong>Alternatives considered:</strong></p>
+      <ul class="alts">
+        <li>Statistical sampling</li>
+        <li>User-declared schemas only</li>
+        <li>Pandas-style inference</li>
+      </ul>
+    </article>
+
+    <article class="decision-card">
+      <p class="card-label">Decision</p>
+      <p class="card-title">All data lives inline in the data block as parsed JSON, not as raw CSV</p>
+      <p class="card-row"><strong>Context:</strong> Spec said "package the source data with the dashboard" without specifying format.</p>
+      <p class="card-row"><strong>Rationale:</strong> Already parsed once during type inference. Re-parsing CSV at runtime adds error surface. JSON is queryable from the runtime without a CSV parser.</p>
+      <p class="card-row"><strong>Alternatives considered:</strong></p>
+      <ul class="alts">
+        <li>Embed raw CSV as a string</li>
+        <li>Embed both</li>
+      </ul>
+    </article>
+  </section>
+
+  <section aria-labelledby="deviations-heading">
+    <h2 id="deviations-heading">Deviations</h2>
+    <p>Places the implementation intentionally departs from the spec.</p>
+
+    <article class="deviation-card">
+      <p class="card-label">Section 3.2: Date handling</p>
+      <p class="card-title">Failed-parse dates are stored as strings, not nulled</p>
+      <p class="card-row"><strong>Why:</strong> Nulling silently loses information that a human reviewer needs to see. The string preserves what was in the source so the reviewer can decide whether to fix the data or relax the parser.</p>
+      <p class="reversible">Reversible: yes. Could be brought back into spec compliance later.</p>
+    </article>
+
+    <article class="deviation-card">
+      <p class="card-label">Section 4.1: Chart auto-selection</p>
+      <p class="card-title">All three chart types shown regardless of column type</p>
+      <p class="card-row"><strong>Why:</strong> The spec said "auto-select the best chart type for each column." Auto-selection is opinionated and frequently wrong. Showing all three lets the user pick. Auto-selection is the obvious follow-up but should not block v0.1.</p>
+      <p class="reversible">Reversible: yes.</p>
+    </article>
+  </section>
+
+  <section aria-labelledby="tradeoffs-heading">
+    <h2 id="tradeoffs-heading">Tradeoffs</h2>
+    <p>Alternatives considered, and why this one.</p>
+
+    <article class="tradeoff-card">
+      <p class="card-label">Tradeoff</p>
+      <p class="card-title">Reactive vs. static dashboard behavior</p>
+      <p class="card-row"><strong>Question:</strong> Should the dashboard be reactive (a filter syncs across all charts) or static (each chart independent)?</p>
+      <p class="card-row"><strong>Options considered:</strong></p>
+      <ul class="alts">
+        <li>Reactive: single shared filter state</li>
+        <li>Static: each chart independent</li>
+        <li>Hybrid: table filter affects charts only</li>
+      </ul>
+      <p class="card-row"><strong>Chosen:</strong> Static for v0.1</p>
+      <p class="card-row"><strong>Why:</strong> Reactive needs more runtime complexity and increases the chance of bugs that mutate the data block (Core rule 6 forbids modifying capsule-data at runtime). Static ships sooner. Reactive is the obvious v0.2 move.</p>
+    </article>
+
+    <article class="tradeoff-card">
+      <p class="card-label">Tradeoff</p>
+      <p class="card-title">Aggregations: precompute or on-demand?</p>
+      <p class="card-row"><strong>Question:</strong> Should aggregations (sum, mean, count) be precomputed at build time or computed in the runtime?</p>
+      <p class="card-row"><strong>Options considered:</strong></p>
+      <ul class="alts">
+        <li>Precompute and embed in the data block</li>
+        <li>Compute on demand in the runtime</li>
+        <li>Both</li>
+      </ul>
+      <p class="card-row"><strong>Chosen:</strong> Precompute the common ones (count, sum, mean, min, max), compute others on demand</p>
+      <p class="card-row"><strong>Why:</strong> Precomputed values survive in plain-HTML view (no JS needed), satisfying Core rule 12. On-demand computation handles arbitrary queries without bloating the file.</p>
+    </article>
+  </section>
+
+  <section aria-labelledby="questions-heading">
+    <h2 id="questions-heading">Open questions</h2>
+    <p>Things the implementer wants the spec author to confirm or revise.</p>
+
+    <article class="question-card">
+      <p class="card-label">Open question <span class="urgency medium">medium</span></p>
+      <p class="card-title">What is the size cap for embedded CSV data?</p>
+      <p class="card-row">The capsule hard cap is 15 MB. Section 6 did not specify whether the implementation should warn earlier. Currently warns at 5 MB, hard-stops at 15 MB.</p>
+    </article>
+
+    <article class="question-card">
+      <p class="card-label">Open question <span class="urgency low">low</span></p>
+      <p class="card-title">Source CSV preservation: bit-exact or semantic?</p>
+      <p class="card-row">Section 7.3 said "preserve source." Unclear whether that means bit-exact preservation of the original CSV bytes or semantic preservation via the parsed JSON.</p>
+    </article>
+
+    <article class="question-card">
+      <p class="card-label">Open question <span class="urgency high">high</span></p>
+      <p class="card-title">How should the dashboard handle CSVs with no header row?</p>
+      <p class="card-row">Not addressed in the spec. Currently the implementation assumes a header row exists. CSVs without one fail loudly. High urgency because this is a common real-world input.</p>
+    </article>
+  </section>
+
+  <section aria-labelledby="ai-guidance-heading">
+    <h2 id="ai-guidance-heading">AI usage guidance</h2>
+    <p>How AI consumers should and shouldn't reason from this capsule.</p>
+    <div class="ai-usage" role="note">
+      <h3>Allowed</h3>
+      <ul>
+        <li>Summarize the design decisions</li>
+        <li>Surface open questions for review</li>
+        <li>Identify high-risk deviations</li>
+        <li>Draft a revised spec section based on resolved decisions</li>
+        <li>Flag tradeoffs that may need revisiting in v0.2</li>
+      </ul>
+      <h3>Restricted</h3>
+      <ul>
+        <li>Don't treat deviations as bugs without consulting the <em>why</em> field</li>
+        <li>Don't auto-resolve open questions without human confirmation</li>
+        <li>Don't collapse tradeoff alternatives into a single recommendation</li>
+      </ul>
+      <h3>Preferred language</h3>
+      <p>Technical, plainspoken, calibrated about uncertainty.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="exports-heading">
+    <h2 id="exports-heading">Exports</h2>
+    <p>Take this capsule's content somewhere else.</p>
+    <div class="toolbar" role="group" aria-label="Export controls">
+      <button type="button" id="copy-json">Copy JSON</button>
+      <button type="button" id="copy-md">Copy Markdown</button>
+      <button type="button" id="download-json">Download JSON</button>
+      <button type="button" id="print-pdf">Print / Save PDF</button>
+    </div>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <details class="about" id="about" open>
+    <summary>About this capsule</summary>
+    <div class="about-body">
+      <p>This is a canonical example of a <code>domain.implementation_notes</code> Capsule per <a href="../DOMAIN_CAPSULES.md">spec/DOMAIN_CAPSULES.md</a>. It is hand-written rather than LLM- or compiler-produced, which is reflected in <code>generator.kind = "human"</code>.</p>
+      <h3 style="font-family: var(--sans); font-size: 0.94rem; margin-top: 1rem;">Manifest</h3>
+      <pre aria-label="Capsule manifest JSON" id="manifest-view">Loading manifest...</pre>
+    </div>
+  </details>
+</main>
+
+<script id="capsule-runtime">
+  (function () {
+    'use strict';
+
+    var manifestEl = document.getElementById('capsule-manifest');
+    var dataEl = document.getElementById('capsule-data');
+    var statusEl = document.getElementById('status');
+    var manifest = JSON.parse(manifestEl.textContent);
+    var data = JSON.parse(dataEl.textContent);
+
+    var manifestView = document.getElementById('manifest-view');
+    if (manifestView) {
+      manifestView.textContent = JSON.stringify(manifest, null, 2);
+    }
+
+    function setStatus(msg) {
+      statusEl.textContent = msg;
+      setTimeout(function () {
+        if (statusEl.textContent === msg) statusEl.textContent = '';
+      }, 2400);
+    }
+
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    function copyText(text, successMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(
+          function () { setStatus(successMsg); },
+          function () {
+            if (fallbackCopy(text)) setStatus(successMsg);
+            else setStatus(`Copy failed. Select the text manually.`);
+          }
+        );
+      } else {
+        if (fallbackCopy(text)) setStatus(successMsg);
+        else setStatus(`Copy failed. Select the text manually.`);
+      }
+    }
+
+    function asMarkdown() {
+      var lines = [];
+      lines.push(`# Implementation Notes: ${data.spec_reference.title}`);
+      lines.push(``);
+      lines.push(`Spec version: ${data.spec_reference.version}. Scope: ${data.spec_reference.scope}`);
+      lines.push(``);
+      lines.push(`## Summary`);
+      lines.push(data.implementation_summary);
+      lines.push(``);
+      lines.push(`## Design decisions`);
+      data.design_decisions.forEach(function (d) {
+        lines.push(``);
+        lines.push(`### ${d.decision}`);
+        lines.push(`**Context:** ${d.context}`);
+        lines.push(`**Rationale:** ${d.rationale}`);
+        if (d.alternatives_considered && d.alternatives_considered.length) {
+          lines.push(`**Alternatives considered:**`);
+          d.alternatives_considered.forEach(function (a) { lines.push(`- ${a}`); });
+        }
+      });
+      lines.push(``);
+      lines.push(`## Deviations`);
+      data.deviations.forEach(function (d) {
+        lines.push(``);
+        lines.push(`### ${d.spec_section}`);
+        lines.push(`**Deviation:** ${d.deviation}`);
+        lines.push(`**Why:** ${d.why}`);
+        lines.push(`**Reversible:** ${d.reversible ? 'yes' : 'no'}`);
+      });
+      lines.push(``);
+      lines.push(`## Tradeoffs`);
+      data.tradeoffs.forEach(function (t) {
+        lines.push(``);
+        lines.push(`### ${t.question}`);
+        lines.push(`**Options considered:**`);
+        t.options_considered.forEach(function (o) { lines.push(`- ${o}`); });
+        lines.push(`**Chosen:** ${t.chosen}`);
+        lines.push(`**Why:** ${t.why}`);
+      });
+      lines.push(``);
+      lines.push(`## Open questions`);
+      data.open_questions.forEach(function (q) {
+        lines.push(``);
+        lines.push(`### ${q.question} [${q.urgency}]`);
+        lines.push(q.context);
+      });
+      lines.push(``);
+      lines.push(`## AI usage guidance`);
+      lines.push(``);
+      lines.push(`**Allowed:** ${data.ai_usage_guidance.allowed_tasks.join('; ')}`);
+      lines.push(``);
+      lines.push(`**Restricted:** ${data.ai_usage_guidance.restricted_tasks.join('; ')}`);
+      lines.push(``);
+      lines.push(`**Preferred language:** ${data.ai_usage_guidance.preferred_language}`);
+      lines.push(``);
+      lines.push(`---`);
+      lines.push(`Capsule: ${manifest.capsule_id} v${manifest.capsule_version} (${manifest.uuid})`);
+      return lines.join(`\n`);
+    }
+
+    function downloadJson() {
+      var payload = JSON.stringify({ manifest: manifest, data: data }, null, 2);
+      var blob = new Blob([payload], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'implementation-notes-example.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setStatus(`JSON downloaded.`);
+    }
+
+    document.getElementById('copy-json').addEventListener('click', function () {
+      copyText(JSON.stringify(data, null, 2), `Data JSON copied.`);
+    });
+    document.getElementById('copy-md').addEventListener('click', function () {
+      copyText(asMarkdown(), `Markdown copied.`);
+    });
+    document.getElementById('download-json').addEventListener('click', downloadJson);
+    document.getElementById('print-pdf').addEventListener('click', function () {
+      window.print();
+    });
+  })();
+</script>
+</body>
+</html>

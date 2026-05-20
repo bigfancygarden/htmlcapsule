@@ -1,0 +1,64 @@
+{
+  "template_id": "news_capsule",
+  "template_version": "0.1.0",
+  "capsule_type": "narrative",
+  "description": "Annotated news article capsule. Reader-friendly typography, extracted claims with verdict tracking, tagged entities and cited sources, and structured annotation response.",
+  "default_capabilities": [
+    "annotate",
+    "filter",
+    "export_response",
+    "copy_as_json",
+    "copy_as_markdown",
+    "print_to_pdf",
+    "about"
+  ],
+  "response_type": "decision",
+  "expected_data_fields": {
+    "article": {
+      "required": ["title", "byline", "publisher", "url", "blocks"],
+      "optional": ["subtitle", "section", "published_at", "captured_at", "content_mode"],
+      "types": {
+        "title": "string",
+        "subtitle": "string",
+        "byline": "string",
+        "publisher": "string",
+        "section": "string",
+        "url": "string",
+        "published_at": "string",
+        "captured_at": "string",
+        "content_mode": "string",
+        "blocks": "array"
+      }
+    },
+    "claim": {
+      "required": ["text"],
+      "optional": ["block_id", "category", "confidence"],
+      "types": {
+        "text": "string",
+        "block_id": "string",
+        "category": "string",
+        "confidence": "string"
+      }
+    },
+    "entity": {
+      "required": ["name"],
+      "optional": ["entity_type", "mention_block_ids", "context"],
+      "types": {
+        "name": "string",
+        "entity_type": "string",
+        "mention_block_ids": "array",
+        "context": "string"
+      }
+    },
+    "cited_source": {
+      "required": ["name"],
+      "optional": ["description", "external_link"],
+      "types": {
+        "name": "string",
+        "description": "string",
+        "external_link": "string"
+      }
+    }
+  },
+  "record_kinds": ["article", "claim", "entity", "cited_source"]
+}

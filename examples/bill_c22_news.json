@@ -1,0 +1,75 @@
+{
+  "uuid": "8a1c4e72-3b9d-4e8a-b7c5-2f9d6a4b8c1e",
+  "snapshot_id": "snapshot:bill_c22_2026_05_15",
+  "created_at": "2026-05-15T12:00:00Z",
+  "title": "Tech companies warn against Bill C-22",
+  "description": "Annotated capsule of Walid Tamtam's Western Standard article on tech industry opposition to Canadian lawful access legislation Bill C-22. Includes extracted claims, tagged entities, and cited sources for personal reading and discussion.",
+  "capsule_version": "1.0.0",
+  "snapshot_type": "computed",
+  "visibility": "shared",
+  "audience": "personal",
+  "redaction_applied": false,
+  "source_references": [
+    {
+      "id": "src_original_article",
+      "title": "Tech companies warn against Bill C-22 — Western Standard"
+    }
+  ],
+  "query_description": "AI-extracted structure of a single news article: article body as blocks, factual claims with block references, named entities, and cited sources.",
+  "records": [
+    {
+      "_record_id": "article",
+      "kind": "article",
+      "title": "Tech companies warn against Bill C-22",
+      "byline": "Walid Tamtam",
+      "publisher": "Western Standard",
+      "section": "Canadian",
+      "url": "https://www.westernstandard.news/canadian/tech-companies-warn-against-bill-c-22/73559",
+      "published_at": "2026-05-15T11:24:00-06:00",
+      "captured_at": "2026-05-15T12:00:00Z",
+      "content_mode": "quotes_and_commentary",
+      "blocks": [
+        { "id": "b_001", "type": "paragraph", "text": "Major technology companies are warning Ottawa that Bill C-22, the federal government's proposed lawful access legislation, could undermine encryption, weaken cybersecurity protections and force platforms to redesign their systems for government surveillance access." },
+        { "id": "b_002", "type": "paragraph", "text": "The warnings come as Parliament studies the proposed legislation, which would require telecommunications companies, internet providers and electronic service providers to develop technical capabilities allowing police and intelligence agencies to obtain access to information linked to criminal and national security investigations." },
+        { "id": "b_003", "type": "paragraph", "text": "Under the bill, the federal government would gain authority to require certain 'core providers' to maintain 'operational and technical capabilities' related to 'extracting and organizing information' and enabling authorized access to it." },
+        { "id": "b_004", "type": "paragraph", "text": "The legislation would also permit regulations governing the 'installation, use, operation, management, assessment, testing and maintenance' of devices or equipment connected to lawful access capabilities." },
+        { "id": "b_005", "type": "paragraph", "text": "The bill further proposes requiring providers to retain certain metadata, including 'transmission data,' for up to one year." },
+        { "id": "b_006", "type": "paragraph", "text": "Meta said it supports portions of the legislation dealing with lawful access requests, but warned that Part 2 of the bill poses major privacy risks." },
+        { "id": "b_007", "type": "quote", "text": "Part 2 of Bill C-22 could have a significant negative impact on Canadians' privacy and cybersecurity, including potentially requiring companies to build or maintain capabilities that break or weaken encryption, and forcing providers to install government spyware directly on their systems.", "speaker": "Meta corporate statement" },
+        { "id": "b_008", "type": "paragraph", "text": "Meta urged Ottawa to amend the legislation 'to remove obligations for companies to add third party surveillance tools to their systems,' strengthen protections against introducing 'systemic vulnerability,' and establish clearer legal challenge mechanisms for companies contesting requests." },
+        { "id": "b_009", "type": "paragraph", "text": "Apple issued a similar warning in comments to Reuters." },
+        { "id": "b_010", "type": "quote", "text": "At a time of rising and pervasive threats from malicious actors seeking access to user information, Bill C-22, as drafted, would undermine our ability to offer the powerful privacy and security features users expect from Apple.", "speaker": "Apple statement to Reuters" },
+        { "id": "b_011", "type": "quote", "text": "This legislation could allow the Canadian government to force companies to break encryption by inserting backdoors into their products — something Apple will never do.", "speaker": "Apple statement to Reuters" },
+        { "id": "b_012", "type": "paragraph", "text": "Signal, which operates one of the world's most prominent encrypted messaging platforms, went even further." },
+        { "id": "b_013", "type": "quote", "text": "Signal would rather pull out of the country than be compelled to compromise on the privacy promises we have made to our users.", "speaker": "Udbhav Tiwari, Signal vice-president, to the Globe and Mail" },
+        { "id": "b_014", "type": "paragraph", "text": "Signal has warned the bill could create vulnerabilities that hackers or foreign adversaries may exploit if companies are required to redesign systems for lawful access purposes." },
+        { "id": "b_015", "type": "paragraph", "text": "The federal government has argued the legislation is intended to modernize investigative tools for police and intelligence agencies in an era of encrypted communications and digital crime." },
+        { "id": "b_016", "type": "paragraph", "text": "The bill also includes language stating providers cannot be forced to introduce a 'systemic vulnerability' into their systems." },
+        { "id": "b_017", "type": "paragraph", "text": "NordVPN and the Canadian Chamber of Commerce have also issued similar warnings." }
+      ]
+    },
+
+    { "_record_id": "claim_001", "kind": "claim", "text": "Bill C-22 is the Canadian federal government's proposed lawful access legislation.", "block_id": "b_001", "category": "factual", "confidence": "high" },
+    { "_record_id": "claim_002", "kind": "claim", "text": "The bill would require core providers to maintain operational and technical capabilities for extracting and organizing information for authorized access.", "block_id": "b_003", "category": "legislative_content", "confidence": "high" },
+    { "_record_id": "claim_003", "kind": "claim", "text": "The bill proposes requiring providers to retain transmission metadata for up to one year.", "block_id": "b_005", "category": "legislative_content", "confidence": "high" },
+    { "_record_id": "claim_004", "kind": "claim", "text": "Meta supports portions of the legislation dealing with lawful access requests but opposes Part 2.", "block_id": "b_006", "category": "company_position", "confidence": "high" },
+    { "_record_id": "claim_005", "kind": "claim", "text": "Meta's statement claims Part 2 could require companies to weaken encryption and install 'government spyware' on their systems.", "block_id": "b_007", "category": "company_position", "confidence": "high" },
+    { "_record_id": "claim_006", "kind": "claim", "text": "Apple stated to Reuters that Bill C-22 as drafted would undermine privacy and security features.", "block_id": "b_010", "category": "company_position", "confidence": "high" },
+    { "_record_id": "claim_007", "kind": "claim", "text": "Apple says it 'will never' insert backdoors into its products.", "block_id": "b_011", "category": "company_position", "confidence": "high" },
+    { "_record_id": "claim_008", "kind": "claim", "text": "Signal vice-president Udbhav Tiwari said Signal would rather leave Canada than compromise on encryption promises.", "block_id": "b_013", "category": "company_position", "confidence": "high" },
+    { "_record_id": "claim_009", "kind": "claim", "text": "The bill includes language stating providers cannot be forced to introduce a 'systemic vulnerability' into their systems.", "block_id": "b_016", "category": "legislative_content", "confidence": "medium" },
+    { "_record_id": "claim_010", "kind": "claim", "text": "NordVPN and the Canadian Chamber of Commerce have also issued similar warnings about the bill.", "block_id": "b_017", "category": "factual", "confidence": "medium" },
+
+    { "_record_id": "entity_meta", "kind": "entity", "name": "Meta", "entity_type": "organization", "mention_block_ids": ["b_006", "b_007", "b_008"], "context": "Operator of Facebook, Instagram, WhatsApp" },
+    { "_record_id": "entity_apple", "kind": "entity", "name": "Apple", "entity_type": "organization", "mention_block_ids": ["b_009", "b_010", "b_011"], "context": "Consumer technology and devices" },
+    { "_record_id": "entity_signal", "kind": "entity", "name": "Signal", "entity_type": "organization", "mention_block_ids": ["b_012", "b_013", "b_014"], "context": "End-to-end encrypted messaging platform" },
+    { "_record_id": "entity_nordvpn", "kind": "entity", "name": "NordVPN", "entity_type": "organization", "mention_block_ids": ["b_017"], "context": "VPN service provider" },
+    { "_record_id": "entity_chamber", "kind": "entity", "name": "Canadian Chamber of Commerce", "entity_type": "organization", "mention_block_ids": ["b_017"], "context": "Business advocacy organization" },
+    { "_record_id": "entity_parliament", "kind": "entity", "name": "Parliament of Canada", "entity_type": "government_body", "mention_block_ids": ["b_002"], "context": "Studying the proposed legislation" },
+    { "_record_id": "entity_tiwari", "kind": "entity", "name": "Udbhav Tiwari", "entity_type": "person", "mention_block_ids": ["b_013"], "context": "Signal vice-president" },
+
+    { "_record_id": "source_meta_statement", "kind": "cited_source", "name": "Meta corporate statement", "description": "Statement published by Meta the week before this article, addressing Part 2 of Bill C-22." },
+    { "_record_id": "source_apple_reuters", "kind": "cited_source", "name": "Apple comments to Reuters", "description": "Apple's statement provided to Reuters regarding the bill's impact on encryption and product features." },
+    { "_record_id": "source_signal_globe", "kind": "cited_source", "name": "Globe and Mail interview with Signal VP Udbhav Tiwari", "description": "Signal's position on potential withdrawal from the Canadian market if compelled to weaken encryption." }
+  ]
+}

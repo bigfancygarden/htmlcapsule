@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-capsule-spec="{{SPEC_VERSION}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="capsule-compiler/{{GENERATOR_VERSION}}">
+  <meta name="capsule-id" content="{{CAPSULE_ID}}">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;">
+  <title>{{TITLE}}</title>
+
+  <script id="capsule-manifest" type="application/json">
+{{MANIFEST_JSON}}
+  </script>
+
+  <script id="capsule-data" type="application/json">
+{{DATA_JSON}}
+  </script>
+
+  <style id="capsule-style">
+{{STYLE_CSS}}
+  </style>
+</head>
+<body>
+  <a href="#capsule-root" class="skip-link">Skip to content</a>
+
+  <main id="capsule-root">
+    <header class="capsule-header">
+      <div class="capsule-header-inner">
+        <div class="capsule-badge" id="header-badge">Decision Board</div>
+        <h1 id="header-title"></h1>
+        <p id="header-description"></p>
+        <div class="capsule-meta" id="header-meta"></div>
+      </div>
+    </header>
+
+    <div class="progress-bar" role="region" aria-label="Decision progress">
+      <div class="progress-inner">
+        <div class="progress-stats" id="progress-stats" aria-live="polite"></div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="capsule-toolbar" aria-label="Toolbar">
+      <div class="capsule-toolbar-inner">
+        <div class="filters">
+          <label class="filter-group">
+            <span class="filter-label">Group by:</span>
+            <select id="group-select" aria-label="Group by category">
+              <option value="none">None</option>
+              <option value="category" selected>Category</option>
+              <option value="decision">Decision</option>
+            </select>
+          </label>
+          <label class="filter-group">
+            <span class="filter-label">Sort:</span>
+            <select id="sort-select" aria-label="Sort records">
+              <option value="default" selected>Original order</option>
+              <option value="title-asc">Title (A–Z)</option>
+              <option value="title-desc">Title (Z–A)</option>
+              <option value="category">Category</option>
+              <option value="decision">Decision status</option>
+            </select>
+          </label>
+          <label class="filter-group">
+            <span class="filter-label">Show:</span>
+            <select id="filter-select" aria-label="Filter by decision status">
+              <option value="all" selected>All</option>
+              <option value="pending">Undecided</option>
+              <option value="approve">Approved</option>
+              <option value="reject">Rejected</option>
+              <option value="defer">Deferred</option>
+              <option value="skip">Skipped</option>
+            </select>
+          </label>
+        </div>
+        <div class="toolbar-actions">
+          <button id="btn-copy-json" class="btn-ghost" aria-label="Copy data as JSON">Copy JSON</button>
+          <button id="btn-print" class="btn-ghost" aria-label="Print or save as PDF">Print</button>
+          <button id="btn-bulk-clear" class="btn-ghost" aria-label="Clear all decisions">Clear all</button>
+          <button id="btn-export" class="btn-primary" aria-label="Export response">Export response</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="capsule-content">
+      <div id="cards-container" class="cards-container"></div>
+
+      <section class="summary-section" aria-labelledby="summary-heading">
+        <h2 id="summary-heading">Overall notes</h2>
+        <textarea id="summary-notes"
+                  placeholder="Optional: summary of your reasoning, conditions, or follow-ups..."
+                  rows="3"
+                  aria-label="Summary notes"></textarea>
+      </section>
+
+      <details class="about-section" id="about-section">
+        <summary>About this artifact</summary>
+        <pre id="about-content"></pre>
+      </details>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script id="capsule-runtime">
+{{RUNTIME_JS}}
+  </script>
+</body>
+</html>

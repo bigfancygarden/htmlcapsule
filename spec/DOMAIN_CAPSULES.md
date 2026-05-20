@@ -1,0 +1,389 @@
+# Domain Capsules — Named Schemas
+
+**Status:** Open namespace. The Core spec defines the outer contract (manifest, data block, sealed convention, capabilities). This document defines named domain schemas that fit inside it.
+
+A Domain Capsule is a regular Capsule whose `manifest.type` follows the `domain.<name>` convention and whose `capsule-data` block conforms to a published schema for that domain. The outer contract is identical to a Conversation Capsule or any other capsule. The difference is that consumers know what to expect inside the data block.
+
+Domain Capsules are how the format absorbs specialist work (maps, datasets, code snapshots, contracts, implementation notes, design systems) without sprawling the Core spec. Each domain owns its own data-block schema. The Core stays small.
+
+## Why named domains exist
+
+Reading the data block of a Conversation Capsule is easy: it's a synthesis of a chat, structured around whatever sections the conversation produced. Reading the data block of an arbitrary Domain Capsule is harder. Without a named schema, every consumer has to reverse-engineer the producer.
+
+The named-domain pattern fixes that. If `manifest.type` is `domain.implementation_notes`, a consumer knows:
+- What fields will be in the data block
+- What capabilities are likely declared
+- What `ai_usage_guidance` rules apply
+- How to render it usefully
+- What it's *not* (it's not arbitrary unstructured notes)
+
+The convention is open: anyone can declare a new domain. The catalog below is the set of domains the project ships with examples for.
+
+## Naming convention
+
+`manifest.type` for a Domain Capsule:
+
+```
+domain.<name>
+```
+
+Where `<name>` is a lowercase identifier, optionally with underscores. Examples:
+
+- `domain.implementation_notes`
+- `domain.design_system`
+- `domain.map`
+- `domain.dataset`
+- `domain.deal`
+- `domain.code_snapshot`
+
+If the domain has internal subtypes, those are expressed inside the data block, not in the type string.
+
+## Required fields beyond the Core
+
+Every Domain Capsule MUST:
+
+1. Declare `manifest.type` in `domain.<name>` form.
+2. Conform to the published data-block schema for that name (this document, or a domain-specific spec referenced from here).
+3. Include an `ai_usage_guidance` block in the data block with at least:
+   - `allowed_tasks`: tasks an AI consumer is permitted to perform with this capsule
+   - `restricted_tasks`: tasks an AI consumer should refuse
+   - `preferred_language`: tone, register, or audience for AI output derived from this capsule
+
+This is the acceptable-use clause aimed at the next model, not the next human. For Domain Capsules in regulated or high-stakes territory (legal, medical, financial, geospatial, mining), the `ai_usage_guidance` block is where you say "summarize this map, but do not estimate resources or imply economic viability."
+
+## Initial domains
+
+The project ships two initial named domains with canonical examples. Both are battle-tested patterns in the wild rather than theoretical proposals.
+
+### `domain.implementation_notes`
+
+**Purpose:** Preserve the gap between a spec and what actually got built. Capture the decisions an implementer (human or AI) made along the way so the next person picking up the work can re-engage without losing context.
+
+**Origin:** The pattern was popularized by Thariq Shihipar's prompt: *"implement \<SPEC\> and while you do, keep a running implementation-notes.html file ... with decisions you had to make weren't in the spec, things you had to change, tradeoffs you had to make or anything else I should know."*
+
+**Production path:** Almost always live-capture — maintained during the implementation, sealed when the work is handed off.
+
+**Data block schema:**
+
+```json
+{
+  "spec_reference": {
+    "title": "string — what spec this implementation works against",
+    "url_or_path": "string — link or path to the spec",
+    "version": "string — version of the spec implemented against",
+    "scope": "string — which part of the spec this capsule covers"
+  },
+  "implementation_summary": "string — short paragraph naming what was built",
+  "design_decisions": [
+    {
+      "decision": "string — what was decided",
+      "context": "string — what part of the spec was ambiguous or silent",
+      "rationale": "string — why this choice",
+      "alternatives_considered": ["string"]
+    }
+  ],
+  "deviations": [
+    {
+      "spec_section": "string — what part of the spec was departed from",
+      "deviation": "string — how the implementation differs",
+      "why": "string — reason for the departure",
+      "reversible": "boolean — can this be brought back into spec compliance later?"
+    }
+  ],
+  "tradeoffs": [
+    {
+      "question": "string — what choice was being made",
+      "options_considered": ["string"],
+      "chosen": "string",
+      "why": "string"
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "string — what the implementer wants the spec author to confirm or revise",
+      "context": "string",
+      "urgency": "low | medium | high"
+    }
+  ],
+  "ai_usage_guidance": {
+    "allowed_tasks": [
+      "summarize the design decisions",
+      "surface open questions for review",
+      "identify high-risk deviations",
+      "draft a revised spec section based on resolved decisions"
+    ],
+    "restricted_tasks": [
+      "do not treat deviations as bugs without consulting the why",
+      "do not auto-resolve open questions",
+      "do not collapse tradeoff alternatives into a single recommendation"
+    ],
+    "preferred_language": "technical, plainspoken, calibrated about uncertainty"
+  }
+}
+```
+
+**Required capabilities:** `about`, plus at least one export. Recommended: `copy_as_markdown` (so the notes can be pasted into a spec-review tool) and `download_json`.
+
+**Canonical example:** [`spec/examples/implementation_notes_example.html`](examples/implementation_notes_example.html).
+
+### `domain.design_system`
+
+**Purpose:** Package a living design system (tokens, components, usage notes) as a single portable HTML file. The capsule is the source of truth for design decisions that span a marketing site, an app, internal tools, and AI-assisted UI generation.
+
+**Origin:** Pattern demonstrated by Thariq Shihipar in his *How I AI* podcast appearance — a `design_system.html` file passed between repos and projects, used as input to AI tools that need to know the visual language.
+
+**Production path:** Usually compile (extracted from a repo or design tool) or hybrid (extracted then hand-edited). Updated as the design system evolves; each version is a new sealed capsule.
+
+**Data block schema:**
+
+```json
+{
+  "design_system_name": "string",
+  "version": "string — semver of the design system itself, not the capsule",
+  "tokens": {
+    "colors": [{"name": "string", "value": "string", "usage": "string"}],
+    "typography": [{"name": "string", "font_family": "string", "size": "string", "weight": "string", "line_height": "string", "usage": "string"}],
+    "spacing": [{"name": "string", "value": "string", "usage": "string"}],
+    "radius": [{"name": "string", "value": "string", "usage": "string"}],
+    "shadows": [{"name": "string", "value": "string", "usage": "string"}]
+  },
+  "components": [
+    {
+      "name": "string",
+      "purpose": "string",
+      "variants": ["string"],
+      "states": ["string"],
+      "props_or_attributes": [{"name": "string", "type": "string", "default": "string"}],
+      "usage_notes": "string",
+      "do_not": ["string"]
+    }
+  ],
+  "patterns": [
+    {
+      "name": "string — composition pattern (form layout, card grid, navigation, etc.)",
+      "when_to_use": "string",
+      "components_used": ["string"]
+    }
+  ],
+  "ai_usage_guidance": {
+    "allowed_tasks": [
+      "generate new UI that uses these tokens",
+      "compose new components from existing primitives",
+      "suggest variant additions consistent with the existing system"
+    ],
+    "restricted_tasks": [
+      "do not invent token values outside the published set",
+      "do not deprecate components without flagging the breaking change",
+      "do not generate marketing copy that contradicts the design system's tone notes"
+    ],
+    "preferred_language": "match the system's existing voice (specified separately if needed)"
+  }
+}
+```
+
+**Required capabilities:** `about`, `copy_as_json`, plus optionally domain-specific capabilities like `design.preview_component` or `design.copy_token` for interactive design system browsers.
+
+**Canonical example:** *Forthcoming — pattern is shipped, formal example is the next concrete deliverable.*
+
+### `domain.briefing`
+
+**Purpose:** A single-page printable summary derived from a longer source capsule. Designed to fit on one 8.5×11 sheet in print preview. The thing you'd hand a colleague, a stakeholder, or your future self when the full source is too much to read but the conclusions still need to travel.
+
+**Origin:** The pattern of "long source plus short forked briefing" emerged from real use. Some capsules are inherently long (transcripts, dialogues, detailed research, full domain dumps). Forcing them to fit on a page would damage them. The cleaner move is to keep the source long and produce a separate, sealed one-pager that points back to it.
+
+**Production path:** Almost always *fork* — derived from a parent capsule by AI summary, manual editing, or a compiler step. The briefing carries explicit lineage so the chain back to the source is honest.
+
+**Layout convention:** Single-page letter (8.5×11). Print preview is the source of truth. Two-region design:
+- **Top half**: title, lede, key points (the "in one breath" version)
+- **Bottom half**: supporting detail, sources, caveats, parent capsule reference
+
+Black-and-white readable. Color is decoration. Soft cap of ~600–900 words of visible text.
+
+**Data block schema:**
+
+```json
+{
+  "lineage": {
+    "parent_uuid": "string — uuid of the source capsule (canonical identifier as of Core v0.1.5)",
+    "parent_title": "string — human-readable for the briefing's own use",
+    "parent_artifact_id": "string — optional, the source's legacy slug if it had one",
+    "derivation_method": "ai_summary | manual_edit | compiler | hybrid",
+    "derivation_note": "string — what was kept, what was cut, why"
+  },
+  "title": "string — short, the one thing to take away",
+  "lede": "string — one paragraph, the briefing in one breath",
+  "key_points": [
+    {"point": "string — the takeaway", "detail": "string — short supporting context (optional)"}
+  ],
+  "supporting_facts": [
+    {"label": "string", "value": "string"}
+  ],
+  "caveats": ["string"],
+  "sources": [
+    {
+      "label": "string — usually the parent capsule",
+      "url_or_path": "string",
+      "role": "parent | external_reference | regulatory_source"
+    }
+  ],
+  "ai_usage_guidance": {
+    "allowed_tasks": [
+      "redistribute as a stakeholder briefing",
+      "summarize further",
+      "extract the parent reference for deeper context"
+    ],
+    "restricted_tasks": [
+      "do not re-derive substantive content beyond what's in the briefing",
+      "do not treat the briefing as the full source of truth — check parent for detail",
+      "do not strip the parent reference"
+    ],
+    "preferred_language": "concise, direct, scannable"
+  }
+}
+```
+
+**Required manifest fields beyond Core:**
+- `type: "domain.briefing"`
+- `lineage.parent_capsule_id` is required (a briefing without a parent is just a short capsule)
+- Optional but encouraged: `layout: "single_page_letter"` to signal the print-ready convention to consumers
+
+**Required capabilities:** `about`, plus at least one export. Recommended: `print_to_pdf` (most direct use case), `copy_as_markdown` (so the briefing can be re-pasted into other tools).
+
+**Canonical example:** [`spec/examples/briefing_example.html`](examples/briefing_example.html) — a one-page printable briefing on TN visa eligibility under USMCA, demonstrating the fork pattern (a briefing distilled from a longer source conversation).
+
+### `domain.exploration_map`
+
+**Purpose:** Package a single thematic map of a mineral exploration project as a portable, print-ready deliverable. The capsule is the atomic unit of a map that would appear in a news release, investor deck, technical report exhibit, or regulatory filing — a bounded geographic view of a project area, frozen at a moment, attributable and versioned.
+
+**Origin:** Mineral exploration produces a recurring set of map deliverables: project location maps, geology overlays, drill plans, geochemistry anomaly maps, remote-sensing alteration maps. These get emailed as PDFs of unknown provenance, embedded in slide decks, printed for field use, and forwarded to geologists, investors, and regulators. Each one is a bounded snapshot of specific layers from a spatial database — exactly the capsule contract.
+
+**Production path:** Compiler — a Python build script queries PostGIS for a project's frozen snapshot geometry and relevant thematic layers, renders everything to inline SVG using equirectangular projection, and assembles a validator-clean capsule. The script is deterministic: same inputs, same output. `generator.kind: "compiler"`.
+
+**Layout convention:** 8.5×11 portrait, print-targeted. The page contains: title block (top), map canvas (center), legend + scale bar + north arrow (sidebar or footer), caveats strip (bottom). Screen view adds a sticky toolbar outside the printable area for export controls; hidden at `@media print`.
+
+**Map types:** Internal subtypes expressed via `map_type` in the data block — not separate domains. Four vector-primary types (`project_location`, `geology`, `drill_plan`, `geochem`) share the `layers[].features_geojson` shape. Two raster-primary types (`mineral_spectral`, `geophysics`) use `layers[].raster_data_uri` instead. A single layer carries one or the other, never both.
+
+| `map_type` | Primary layers | Typical source |
+|---|---|---|
+| `project_location` | Claims outline, surrounding claims, roads, towns, topo grid | Provincial claims tables, NTS grid, infrastructure |
+| `geology` | Bedrock geology polygons, project outline | Geological survey datasets |
+| `drill_plan` | Collar points, traces, significant intercepts, project outline | Drillhole database + assays |
+| `geochem` | Sample points (proportional/classified symbols), project outline | Geochem survey results |
+| `mineral_spectral` | ASTER/remote-sensing index heatmap, project outline | S2 grid cells or rasterized COGs |
+| `geophysics` | Mag/EM/gravity grids or contours, project outline | Geophysical survey grids |
+
+**Data block schema:**
+
+```json
+{
+  "map_type": "project_location | geology | drill_plan | geochem | mineral_spectral | geophysics",
+
+  "project": {
+    "name": "string — project name",
+    "operator": "string — company operating the project",
+    "ticker": "string — optional, e.g. 'CSE: LP'",
+    "jurisdiction": "string — province/state/country",
+    "nts_sheets": ["string — NTS map sheet references"],
+    "commodities": ["string — target commodities, e.g. 'Au', 'Cu'"],
+    "area_ha": "number — total project area in hectares",
+    "snapshot_id": "string — mintel project_version ID or equivalent, ties to source-data provenance"
+  },
+
+  "extent": {
+    "bbox_wgs84": {
+      "min_lon": "number", "min_lat": "number",
+      "max_lon": "number", "max_lat": "number"
+    },
+    "center": { "lon": "number", "lat": "number" },
+    "crs": "string — always 'EPSG:4326' for storage; note projection used for rendering",
+    "projection": "string — rendering projection, e.g. 'equirectangular'",
+    "scale_denominator": "number — intended print scale (valid only at print size)"
+  },
+
+  "layers": [
+    {
+      "name": "string — human label, e.g. 'Property Claims'",
+      "type": "polygon | point | line | grid",
+      "source": "string — provenance: table name, dataset, or file the data came from",
+      "source_date": "string — ISO 8601 date of the source data snapshot",
+
+      "features_geojson": "GeoJSON FeatureCollection — for vector layers (polygon, point, line)",
+      "raster_data_uri": "string — data:image/png;base64,... — for grid/raster layers (mineral_spectral, geophysics)",
+      "raster_bounds": "object — { min_lon, min_lat, max_lon, max_lat } — georeferencing for raster_data_uri",
+      "raster_value_range": "object — { min, max, unit, index_name } — what the colors represent",
+
+      "style": {
+        "fill": "string — CSS color",
+        "fill_opacity": "number",
+        "stroke": "string — CSS color",
+        "stroke_width": "number",
+        "symbol": "string — optional, for point layers: 'circle', 'triangle', 'cross', etc.",
+        "symbol_size_field": "string — optional, field name for proportional symbols",
+        "color_field": "string — optional, field name for classified coloring",
+        "color_ramp": ["string — CSS colors for classified/graduated rendering"]
+      },
+
+      "visible": "boolean — whether this layer is rendered (allows carrying data for export without display)",
+      "z_order": "number — draw order (lower = drawn first / underneath)"
+    }
+  ],
+
+  "legend": [
+    {
+      "label": "string",
+      "layer_ref": "string — matches a layer name",
+      "swatches": [
+        { "label": "string", "fill": "string", "stroke": "string" }
+      ]
+    }
+  ],
+
+  "title_block": {
+    "title": "string — map title",
+    "subtitle": "string — optional, e.g. area/district name",
+    "figure_number": "string — optional, e.g. 'Figure 1'",
+    "date": "string — map production date",
+    "author": "string — person or system that produced the map",
+    "notes": "string — optional, brief methodological note"
+  },
+
+  "scale_bar_segments_m": ["number — distance labels for the scale bar"],
+
+  "caveats": [
+    "string — e.g. 'Claim boundaries as of 2026-05-15. Do not use as legal evidence of tenure.'",
+    "string — e.g. 'Scale valid only at 8.5×11 print size.'",
+    "string — e.g. 'ASTER indices are relative anomaly indicators, not assay values.'"
+  ]
+}
+```
+
+A layer carries **either** `features_geojson` (vector) **or** `raster_data_uri` + `raster_bounds` (raster), never both. This acknowledges that mineral spectral and geophysics data are fundamentally grid-shaped — coercing a 24M-row S2 cell grid into GeoJSON polygons would bloat file size for no benefit. The build script pre-renders the grid to a PNG and embeds it as a data URI, georeferenced by `raster_bounds`.
+
+**Two versioning axes:**
+- **Source-data provenance:** `project.snapshot_id` ties the map to the specific frozen snapshot from the source database (e.g., a mintel `project_version` ID). This answers "which version of the claims data was this map built from?"
+- **Capsule-to-capsule lineage:** When a map is reissued (new claims staked, new drill results), the new capsule records the previous capsule's UUID in `manifest.parents[]` per Core rule. This answers "what's the history of this deliverable?" without consumers needing access to the source database.
+
+**File size considerations:** Inline GeoJSON for a busy region (hundreds of claim polygons + geology + infrastructure) can exceed 1 MB quickly. Build scripts should apply polygon simplification (Douglas-Peucker or similar) to context layers that don't need survey-grade precision. The 15 MB hard cap gives runway, but leaner capsules open faster and travel better.
+
+**Required capabilities:** `about`, `print_to_pdf`, `copy_as_json`, `download_json`. Optionally: `map.export_geojson` (if the capsule exposes a GeoJSON download of its vector layers). Do not declare interactive capabilities like `map.zoom_to_layer` or `map.pan` unless the runtime genuinely implements them — most print-targeted maps are static SVG renders where zoom and pan would be dishonest.
+
+**Scale disclaimer:** Because screen zoom changes the effective scale, capsules should display a visible note: "Scale 1:50,000 — valid at 8.5×11 print size." The `scale_denominator` field records the intended print scale; consumers should not assume it holds at arbitrary screen zoom levels.
+
+**Canonical example:** *In progress — first working example targeting a mintel project with `map_type: project_location`.*
+
+## How to propose a new domain
+
+A new domain earns a place in this document when:
+
+1. The pattern exists in the wild with at least one working example.
+2. The data-block schema is concrete (named fields, named types).
+3. Consumer guardrails have been thought through — either via `ai_usage_guidance` (structured, opt-in, in the `x-` extension namespace if not load-bearing), `caveats[]` (prose, always available), or the `description` field. The mechanism depends on the domain; the requirement is that the producer has considered what consumers should and shouldn't infer.
+4. The boundary against neighboring domains is clear (a `domain.dataset` is not a `domain.code_snapshot` even if it ships data alongside a query).
+
+Proposals can be drafted as a section in this document. The bar isn't "comprehensive coverage of every edge case" — it's "concrete enough that two independent implementers would produce structurally compatible capsules."
+
+## What this document is not
+
+- Not exhaustive. Many domains the format could serve aren't listed yet (legal contracts, scientific datasets, medical records, financial filings). They get added when there's a working example and a thought-through schema.
+- Not a closed catalog. Anyone can declare a new domain using the naming convention. This document lists the ones the project itself ships examples for.
+- Not a substitute for the Core spec. Every Domain Capsule still must conform to all twelve Core rules. The domain schema sits inside the data block; the outer contract is unchanged.

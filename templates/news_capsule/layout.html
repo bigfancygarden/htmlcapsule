@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-capsule-spec="{{SPEC_VERSION}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="capsule-compiler/{{GENERATOR_VERSION}}">
+  <meta name="capsule-id" content="{{CAPSULE_ID}}">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;">
+  <title>{{TITLE}}</title>
+
+  <script id="capsule-manifest" type="application/json">
+{{MANIFEST_JSON}}
+  </script>
+
+  <script id="capsule-data" type="application/json">
+{{DATA_JSON}}
+  </script>
+
+  <style id="capsule-style">
+{{STYLE_CSS}}
+  </style>
+</head>
+<body>
+  <a href="#capsule-root" class="skip-link">Skip to content</a>
+
+  <main id="capsule-root">
+    <header class="capsule-header" role="banner">
+      <div class="capsule-header-inner">
+        <div class="capsule-badge">News Capsule</div>
+        <h1 id="article-title"></h1>
+        <p id="article-subtitle" class="article-subtitle" hidden></p>
+        <div class="article-byline">
+          <span id="article-author"></span>
+          <span class="byline-sep" aria-hidden="true">·</span>
+          <span id="article-publisher"></span>
+          <span class="byline-sep" aria-hidden="true">·</span>
+          <time id="article-published"></time>
+        </div>
+        <div class="capture-note" id="capture-note"></div>
+      </div>
+    </header>
+
+    <nav class="capsule-toolbar" aria-label="Toolbar">
+      <div class="capsule-toolbar-inner">
+        <div class="left-actions">
+          <button id="btn-toggle-sidebar" class="btn-ghost" aria-pressed="true" aria-controls="sidebar">
+            <span class="btn-icon" aria-hidden="true">↔</span> Toggle panel
+          </button>
+        </div>
+        <div class="filters">
+          <label class="filter-group">
+            <span class="filter-label">Claims:</span>
+            <select id="filter-select" aria-label="Filter claims by verdict">
+              <option value="all" selected>All</option>
+              <option value="pending">Unmarked</option>
+              <option value="approve">Verified</option>
+              <option value="reject">Disputed</option>
+              <option value="defer">Needs check</option>
+              <option value="skip">No opinion</option>
+            </select>
+          </label>
+        </div>
+        <div class="toolbar-actions">
+          <button id="btn-copy-json" class="btn-ghost" aria-label="Copy capsule data as JSON">Copy JSON</button>
+          <button id="btn-copy-md" class="btn-ghost" aria-label="Copy article as Markdown">Copy MD</button>
+          <button id="btn-print" class="btn-ghost" aria-label="Print or save as PDF">Print</button>
+          <button id="btn-export" class="btn-primary" aria-label="Export response">Export response</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="capsule-layout">
+      <article class="article-body" aria-label="Article body">
+        <div id="article-blocks"></div>
+
+        <section class="reader-notes" aria-labelledby="reader-notes-heading">
+          <h2 id="reader-notes-heading">Your overall notes</h2>
+          <textarea id="summary-notes"
+                    placeholder="Optional: your overall take on the article, follow-up questions, things to verify..."
+                    rows="3"
+                    aria-label="Overall notes"></textarea>
+        </section>
+      </article>
+
+      <aside class="sidebar" id="sidebar" aria-label="Claims, entities, and sources">
+        <div class="sidebar-tabs" role="tablist">
+          <button class="sidebar-tab active" role="tab" aria-selected="true" data-tab="claims" id="tab-claims">
+            Claims <span class="tab-count" id="count-claims">0</span>
+          </button>
+          <button class="sidebar-tab" role="tab" aria-selected="false" data-tab="entities" id="tab-entities">
+            Entities <span class="tab-count" id="count-entities">0</span>
+          </button>
+          <button class="sidebar-tab" role="tab" aria-selected="false" data-tab="sources" id="tab-sources">
+            Sources <span class="tab-count" id="count-sources">0</span>
+          </button>
+        </div>
+
+        <div class="sidebar-panel active" role="tabpanel" aria-labelledby="tab-claims" id="panel-claims">
+          <div class="panel-summary" id="claims-summary"></div>
+          <div id="claims-list"></div>
+        </div>
+        <div class="sidebar-panel" role="tabpanel" aria-labelledby="tab-entities" id="panel-entities" hidden>
+          <div id="entities-list"></div>
+        </div>
+        <div class="sidebar-panel" role="tabpanel" aria-labelledby="tab-sources" id="panel-sources" hidden>
+          <div id="sources-list"></div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="capsule-footer">
+      <div class="capsule-footer-inner">
+        <div class="provenance">
+          <strong>Provenance.</strong>
+          This capsule is a personal annotation of an article published elsewhere.
+          <span id="footer-source-line"></span>
+          The full article is at <a id="footer-original-link" href="#" rel="noopener noreferrer"></a>.
+          This is a <code id="footer-content-mode">summary_only</code> capsule, not a republication.
+        </div>
+
+        <details class="about-section" id="about-section">
+          <summary>About this capsule</summary>
+          <pre id="about-content"></pre>
+        </details>
+      </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script id="capsule-runtime">
+{{RUNTIME_JS}}
+  </script>
+</body>
+</html>

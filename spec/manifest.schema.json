@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://capsule.spec/manifest/v0.3.0",
+  "title": "Capsule Manifest v0.3.0",
+  "description": "Schema for the capsule-manifest section of a Capsule.",
+  "type": "object",
+  "required": [
+    "spec_version",
+    "uuid",
+    "title",
+    "description",
+    "type",
+    "created_at",
+    "generator",
+    "source",
+    "privacy",
+    "capabilities"
+  ],
+  "anyOf": [
+    {"required": ["capsule_version"]},
+    {"required": ["artifact_version"]}
+  ],
+  "properties": {
+    "spec_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Capsule spec version. Semver."
+    },
+    "capsule_id": {
+      "type": "string",
+      "pattern": "^capsule:.+$",
+      "description": "DEPRECATED in v0.3.0. Optional human-readable slug (e.g., capsule:tn_visa_briefing). The UUID is the canonical machine identity, and slugs aren't guaranteed unique — two unrelated conversations can produce the same slug. The slug is fully derivable from `title` (slugify it at display time), so storing it is redundant. Still accepted in v0.3 for backward compatibility; planned for removal in v0.4. New capsules should rely on `uuid` and `title` only."
+    },
+    "capsule_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Instance version. Semver. Introduced in v0.2.0; replaces the legacy artifact_version field."
+    },
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^artifact:.+$",
+      "description": "DEPRECATED in v0.2.0. Legacy alias for capsule_id. Still accepted; new capsules should use capsule_id."
+    },
+    "artifact_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "DEPRECATED in v0.2.0. Legacy alias for capsule_version. Still accepted; new capsules should use capsule_version."
+    },
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUIDv4. Globally unique per compilation. The canonical machine identifier for the capsule (as of Core v0.1.5)."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "type": {
+      "type": "string",
+      "description": "Free-form artifact type. Recommended values: interactive_report, decision_board, assessment, reference, dashboard, learning_object, collection, form, narrative, summary, briefing, custom. LLMs producing capsules in the wild often reach for 'summary' or 'briefing' which are now recommended values."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "audience": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Intended recipient or group. Distinct from privacy.visibility (access control); audience describes intent."
+    },
+    "generator": {
+      "type": "object",
+      "required": ["name", "version", "kind"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "kind": {
+          "type": "string",
+          "enum": ["compiler", "llm", "human", "hybrid"],
+          "description": "What kind of process produced the HTML. Adjusts validator and registry trust expectations."
+        },
+        "spec_provided": {
+          "type": "boolean",
+          "description": "For kind: llm — whether the producer was given the spec as context."
+        },
+        "spec_version_used": {
+          "type": "string",
+          "description": "The spec version the producer targeted."
+        }
+      },
+      "additionalProperties": false
+    },
+    "synthesis": {
+      "type": ["object", "null"],
+      "description": "Present when an LLM or other process synthesized the data content. Absent or null when data came from a structured source.",
+      "required": ["kind", "model", "human_reviewed"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Recommended values: ai_extraction, ai_summarization, ai_generation, llm_summary, llm_synthesis, other. Free-form."
+        },
+        "model": { "type": "string" },
+        "source_input": { "type": "string" },
+        "human_reviewed": { "type": "boolean" },
+        "synthesized_at": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string", "maxLength": 2000 }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": ["origin", "snapshot_type", "snapshot_id", "included_records"],
+      "properties": {
+        "origin": {
+          "type": "string",
+          "description": "Where the data came from. Recommended values: private_database, web_research, public_documents, ai_synthesis, user_input, observation. Free-form to accommodate the LLM-in-the-wild case which has no private database."
+        },
+        "snapshot_type": {
+          "type": "string",
+          "description": "Recommended values: portable_excerpt, full_table, computed, summary, synthesis, aggregation, capture. Free-form to accommodate AI-synthesized capsules."
+        },
+        "snapshot_id": {
+          "type": "string",
+          "pattern": "^snapshot:.+$"
+        },
+        "included_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_schema_version": {
+          "type": "string"
+        },
+        "spec_received": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Version string of the Core spec the producer was given (e.g., 'v0.1.0 · 2026-05-16'). Optional but encouraged for LLM-produced capsules — lets future readers correlate output with the spec version that produced it."
+        },
+        "prompt_received": {
+          "type": "string",
+          "maxLength": 5000,
+          "description": "Verbatim prompt the producer was given. Optional but encouraged for LLM-produced capsules — turns the manifest into a self-documenting research record."
+        },
+        "references": {
+          "type": "array",
+          "description": "Individual upstream sources this capsule draws from.",
+          "items": {
+            "type": "object",
+            "required": ["id", "title"],
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "hash": { "type": "string", "pattern": "^(sha256|sha384|sha512):[a-f0-9]+$" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "privacy": {
+      "type": "object",
+      "required": [
+        "visibility",
+        "contains_private_data",
+        "redaction_applied",
+        "external_dependencies"
+      ],
+      "properties": {
+        "visibility": {
+          "type": "string",
+          "enum": ["private", "shared", "public"]
+        },
+        "contains_private_data": {
+          "type": "boolean"
+        },
+        "redaction_applied": {
+          "type": "boolean"
+        },
+        "redaction_method": {
+          "type": "string",
+          "enum": ["field_removal", "value_masking", "aggregation", "none"]
+        },
+        "redaction_profile": {
+          "type": "string",
+          "description": "Named profile identifier. Rules live in the private system; the capsule records which profile was applied."
+        },
+        "reviewed_by": {
+          "type": "string"
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "external_dependencies": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "integrity": {
+      "type": "object",
+      "required": ["content_hash", "hash_scope"],
+      "properties": {
+        "content_hash": {
+          "type": "string",
+          "pattern": "^(sha256|sha384|sha512):[a-f0-9]+$"
+        },
+        "hash_scope": {
+          "type": "string",
+          "enum": ["data+manifest", "full_document", "data_only"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)?$",
+        "description": "Either a core capability (e.g., 'about', 'copy_as_json') or a domain-namespaced capability following '<domain>.<action>' (e.g., 'media.play_audio', 'map.zoom_to_layer'). Core capabilities reserved by the spec: filter, sort, search, annotate, highlight, rank, group, compare, copy_as_json, copy_as_markdown, copy_as_csv, copy_as_prompt, download_json, download_csv, print_to_pdf, export_response, about. Domain capabilities are open under the dotted naming convention."
+      },
+      "contains": { "const": "about" },
+      "description": "Must include 'about' and at least one export capability. Core capabilities are reserved single words; domain capabilities use '<domain>.<action>' namespacing."
+    },
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "parents": {
+      "type": "array",
+      "description": "Provenance: capsules this one was forked from. A new capsule records each upstream capsule that informed it (one parent if continuing a single capsule, multiple if combining/comparing). Each entry is a hard machine-actionable pointer (UUID + denormalized title for human readability). Introduced in v0.3.0.",
+      "items": {
+        "type": "object",
+        "required": ["uuid", "title"],
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The parent capsule's UUID (v4). Machine-actionable provenance reference."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "The parent capsule's title at the time of forking. Denormalized for human readability so readers don't have to dereference the UUID to know what the parent was. Frozen at fork-time; doesn't update if the parent is later re-compiled."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "related": {
+      "type": "array",
+      "description": "DEPRECATED in v0.3.0 and planned for removal in v0.4. Was intended for soft associations between capsules (sibling, supersedes, related) but was unused in practice. Hard provenance now lives in `parents` (UUID-based). Soft associations belong in capsule prose, not in structured metadata — schema fields invite the AI to fabricate edges that aren't load-bearing.",
+      "items": {
+        "type": "object",
+        "required": ["capsule_id", "title", "relationship"],
+        "properties": {
+          "capsule_id": { "type": "string", "pattern": "^capsule:.+$" },
+          "title": { "type": "string" },
+          "relationship": {
+            "type": "string",
+            "enum": ["parent", "sibling", "supersedes", "related"]
+          },
+          "uuid": { "type": "string", "format": "uuid" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "compilation": {
+      "type": "object",
+      "properties": {
+        "compiled_at": { "type": "string", "format": "date-time" },
+        "source_query": { "type": "string" },
+        "compilation_duration_ms": { "type": "integer", "minimum": 0 },
+        "warnings": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "output_size_bytes": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "patternProperties": {
+    "^x-": {
+      "description": "Extension fields. Capsule authors may add x-prefixed top-level properties to carry experimental, domain-specific, or vendor-specific metadata without forking the schema. Standard consumers should ignore unknown x- fields."
+    }
+  },
+  "additionalProperties": false
+}

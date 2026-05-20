@@ -1,0 +1,149 @@
+{
+  "uuid": "c2bfd2b2-1d68-45c1-a52d-88dbbf8dfcc6",
+  "snapshot_id": "snapshot:ai_tools_q2_2026",
+  "created_at": "2026-05-15T00:00:00Z",
+  "title": "AI Tool Selection — Q2 2026 Engineering Stack",
+  "description": "Eight candidate AI tools under review for adoption by the engineering team. Decide which to approve, reject, defer to next quarter, or skip. Notes welcome on conditions or alternatives.",
+  "capsule_version": "1.0.0",
+  "snapshot_type": "portable_excerpt",
+  "visibility": "shared",
+  "audience": "engineering-leadership",
+  "redaction_profile": "internal-v1",
+  "redaction_method": "field_removal",
+  "reviewed_by": "author",
+  "source_references": [
+    { "id": "src-trial-reports", "title": "Q1 tool trial reports", "hash": "sha256:7f3a5b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a" },
+    { "id": "src-cost-analysis", "title": "Cost analysis spreadsheet 2026-Q1", "hash": "sha256:b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3" }
+  ],
+  "query_description": "All AI tools in the evaluation queue with completed trial reports",
+  "records": [
+    {
+      "title": "Claude Code",
+      "category": "Developer tools",
+      "description": "CLI-based AI coding assistant from Anthropic. Strong at multi-file edits, agentic tasks, and complex refactoring across large codebases.",
+      "context": "Trialed by 6 engineers over 4 weeks. Most reported significant time savings on routine refactoring and test writing.",
+      "evidence_for": [
+        "Average 32% reduction in time-to-merge for refactor PRs",
+        "Handles multi-file context better than line-by-line tools",
+        "Integrates with existing terminal workflows",
+        "Strong at writing tests against existing code"
+      ],
+      "evidence_against": [
+        "Token costs ~$80/engineer/month at current usage",
+        "Occasional incorrect edits requiring careful review",
+        "Learning curve for prompting effectively"
+      ]
+    },
+    {
+      "title": "GitHub Copilot Workspace",
+      "category": "Developer tools",
+      "description": "GitHub's task-based AI workspace for translating issues into pull requests with multi-step planning and editing.",
+      "context": "Two engineers tested for 3 weeks. Limited adoption due to overlap with existing tooling.",
+      "evidence_for": [
+        "Tight GitHub integration with native issue linking",
+        "Reasonable PR-quality output for small tasks",
+        "Already covered by org-wide GitHub Enterprise license"
+      ],
+      "evidence_against": [
+        "Weaker than Claude Code on complex multi-file changes",
+        "Limited terminal/CLI access during planning phase",
+        "Most engineers preferred their current setup"
+      ]
+    },
+    {
+      "title": "Cursor",
+      "category": "Developer tools",
+      "description": "AI-first code editor based on VS Code with deep model integration, including Cmd-K, agent mode, and codebase indexing.",
+      "context": "Mixed reception. Strong individual results but causes IDE fragmentation across the team.",
+      "evidence_for": [
+        "Excellent inline editing with Cmd-K",
+        "Strong codebase indexing for cross-file context",
+        "Many engineers report 'love it' satisfaction"
+      ],
+      "evidence_against": [
+        "Forks VS Code — diverges from team standard setup",
+        "$20/engineer/month on top of existing IDE costs",
+        "Shared keybindings/extensions config gets harder to maintain"
+      ]
+    },
+    {
+      "title": "Linear AI",
+      "category": "Project management",
+      "description": "Linear's built-in AI for triage, duplicate detection, sprint planning suggestions, and issue summarization.",
+      "context": "Already enabled for free on existing Linear subscription. Used informally for 2 months.",
+      "evidence_for": [
+        "Zero additional cost",
+        "Saves PM team ~3 hours/week on triage",
+        "Issue summaries are accurate and well-formatted"
+      ],
+      "evidence_against": [
+            "Limited to Linear's data — no cross-tool context",
+            "Some duplicate-detection false positives"
+      ]
+    },
+    {
+      "title": "Granola",
+      "category": "Meetings",
+      "description": "Background meeting note-taker with transcription, automatic summary generation, and integration with note systems.",
+      "context": "Privacy review required before approval. Data residency in US-East.",
+      "evidence_for": [
+        "Transcription quality is excellent for our accent diversity",
+        "Saves meeting organizers ~2 hours/week",
+        "Markdown export integrates with our docs setup"
+      ],
+      "evidence_against": [
+        "Privacy review still pending — meetings may include customer data",
+        "$18/user/month adds up across the team",
+        "Some users find background recording invasive"
+      ]
+    },
+    {
+      "title": "Perplexity Pro",
+      "category": "Research",
+      "description": "AI-powered research assistant with citations, web search integration, and follow-up question chaining.",
+      "context": "Several engineers and PMs use the free tier informally. Pro upgrade under consideration.",
+      "evidence_for": [
+        "Strong citation accuracy compared to other tools",
+        "Useful for technology surveys and competitive research",
+        "$20/user/month for unlimited Pro queries"
+      ],
+      "evidence_against": [
+        "Free tier already covers most use cases",
+        "Overlap with Claude's web search capabilities",
+        "Hard to justify org-wide rollout vs. ad-hoc personal subscriptions"
+      ]
+    },
+    {
+      "title": "v0 by Vercel",
+      "category": "Design & prototyping",
+      "description": "AI UI generation tool that produces React components and Tailwind layouts from natural language prompts.",
+      "context": "Design team trialed for two prototype projects. Output quality variable.",
+      "evidence_for": [
+        "Fast UI prototyping — from idea to clickable mockup in minutes",
+        "Output uses our existing Tailwind setup",
+        "Helps designers communicate intent to engineers"
+      ],
+      "evidence_against": [
+        "Generated code rarely production-ready without rework",
+        "Better for exploration than final deliverables",
+        "Figma still preferred for full design specs"
+      ]
+    },
+    {
+      "title": "Notion AI",
+      "category": "Documentation",
+      "description": "AI features built into Notion workspace: writing assistance, summarization, Q&A across docs, and database autofill.",
+      "context": "Notion is already the team's docs platform. AI add-on is $10/user/month.",
+      "evidence_for": [
+        "Zero setup — works on existing docs",
+        "Q&A feature surfaces buried info effectively",
+        "Improves consistency of meeting notes and one-pagers"
+      ],
+      "evidence_against": [
+        "Adds $10/user/month to existing Notion bill",
+        "Q&A quality depends on docs being kept current",
+        "Overlap with Granola for meeting summaries"
+      ]
+    }
+  ]
+}

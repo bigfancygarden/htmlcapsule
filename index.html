@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="description" content="Capsules — a single-file HTML contract for AI work. The sealed-handoff layer between Canvas/Artifacts and a repo.">
+  <meta name="color-scheme" content="light dark">
+  <title>Capsules — an HTML contract for AI work</title>
+
+  <script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "5.0.0",
+  "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
+  "title": "Capsules — an HTML contract for AI work",
+  "description": "Landing page for the Capsule project, aimed at builders working with Claude Code, ChatGPT, Gemini, and similar tools.",
+  "type": "landing_page",
+  "created_at": "2026-05-19T00:00:00Z",
+  "generator": {
+    "name": "human + Claude",
+    "version": "Opus 4.7 (1M context)",
+    "kind": "hybrid"
+  },
+  "source": {
+    "origin": "project_authorship",
+    "snapshot_type": "landing_page",
+    "snapshot_id": "snapshot:capsule_project_landing_page_v5_2026_05_19",
+    "included_records": 1,
+    "spec_received": "v0.3.0 · 2026-05-19"
+  },
+  "privacy": {
+    "visibility": "shared",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json",
+    "copy_as_markdown",
+    "download_json",
+    "download_capsule",
+    "print_to_pdf"
+  ],
+  "synthesis": {
+    "kind": "human_authored_with_ai_assistance",
+    "model": "Claude Opus 4.7",
+    "human_reviewed": true
+  }
+}</script>
+
+  <script id="capsule-data" type="application/json">{
+  "audience": "builders working with Claude Code, ChatGPT, Gemini, Codex; people who already produce HTML files from LLMs informally",
+  "thesis": "HTML is what LLMs already default to for rich output. A capsule is that file plus a small contract (manifest, sources, sealed convention) that makes it portable across tools, time, and people.",
+  "four_layers": [
+    {"layer": "Think", "tool": "Chat"},
+    {"layer": "Shape", "tool": "Canvas, Artifacts, IDE"},
+    {"layer": "Seal", "tool": "Capsules"},
+    {"layer": "Harden", "tool": "Repos, Codex, Git"}
+  ],
+  "core_rules": [
+    "One file. A single .html document.",
+    "No network. No fetch, no CDN, no external CSS. Works identically over file:// and http://.",
+    "Five required blocks: capsule-manifest, capsule-data, capsule-style, capsule-root, capsule-runtime.",
+    "Manifest required fields: spec_version, uuid, capsule_version, title, description, type, created_at, generator, source, privacy, capabilities. Optional: parents (provenance — UUIDs of upstream capsules this one was forked from).",
+    "Honest provenance. generator.kind is one of: compiler, llm, human, hybrid.",
+    "Read-only data. The runtime never modifies the capsule-data block.",
+    "Capabilities don't lie. Every declared capability must have a working implementation.",
+    "Response export structure. Typed payloads carry a capsule_reference.",
+    "Accessibility baseline. Semantic HTML, keyboard nav, ARIA, prefers-reduced-motion, skip link, lang.",
+    "Capsules cannot be unshared. Treat redaction and audience as final.",
+    "Runtime JS string-literal rule. Multi-line strings use backtick template literals.",
+    "Render content in HTML, not at runtime. Readable artifact lives in the HTML body."
+  ],
+  "families": [
+    {"family": "Conversation", "use": "Sealed summary of an AI work session"},
+    {"family": "Domain", "use": "Sealed export of a domain object (map, design system, implementation notes, dataset, deal)"},
+    {"family": "Project", "use": "Snapshot of where a sustained thing stands at a moment"}
+  ],
+  "domains_shipped": [
+    {
+      "name": "domain.implementation_notes",
+      "origin": "Thariq Shihipar's viral implementation-notes.html prompt",
+      "fields": ["spec_reference", "design_decisions[]", "deviations[]", "tradeoffs[]", "open_questions[]", "ai_usage_guidance"]
+    },
+    {
+      "name": "domain.design_system",
+      "origin": "Thariq's living-design-system pattern from the How I AI podcast",
+      "fields": ["design_system_name", "version", "tokens{}", "components[]", "patterns[]", "ai_usage_guidance"]
+    }
+  ],
+  "is_not": [
+    "A new file format. It's HTML.",
+    "A new editing surface. Canvas and Artifacts cover that.",
+    "A competitor to MCP. MCP is live-connection, capsules are sealed-snapshot. Complementary.",
+    "A SaaS or product.",
+    "A knowledge graph or universal ontology."
+  ],
+  "phases": [
+    {"phase": 1, "name": "Format", "state": "exists", "note": "Core spec at v0.3.0. Full spec at v0.3.2. Twelve rules."},
+    {"phase": 2, "name": "Compiler", "state": "half-built", "note": "Reference compiler + validator + two compiler templates. First independent compiler-kind producer (Mintel) shipped, validating cleanly against the reference validator. Definition of done still TBD."},
+    {"phase": 3, "name": "Domain capsules", "state": "partial", "note": "2 schemas shipped. Map, dataset, deal pending."},
+    {"phase": 4, "name": "Network layer", "state": "not built", "note": "Registry, lineage, importers. Deferred."}
+  ],
+  "positioning": {
+    "thariq": "Thariq Shihipar (Claude Code) makes the substrate case for HTML on X and on podcasts (\"HTML is the new markdown\"). This project makes the contract case. Same substrate, different moment in the lifecycle.",
+    "anti_context_loss": "Capsules exist so AI work survives across tools, time, and sessions. Not anti-platform. Anti-context-loss."
+  },
+  "links": {
+    "repo": "https://github.com/bigfancygarden/capsule",
+    "core_spec": "CAPSULE_CORE.md",
+    "full_spec": "spec/CAPSULE_SPEC.md",
+    "domain_capsules": "spec/DOMAIN_CAPSULES.md",
+    "domain_example": "spec/examples/implementation_notes_example.html",
+    "glossary": "GLOSSARY.md",
+    "precedents": "PRECEDENTS.md",
+    "examples": "examples/",
+    "spec_examples": "spec/examples/"
+  }
+}</script>
+
+  <style id="capsule-style">
+    :root {
+      --bg: #fbfaf7;
+      --surface: #ffffff;
+      --surface-soft: #f5f3ee;
+      --code-bg: #f4f2ec;
+      --ink: #15171c;
+      --ink-soft: #383d47;
+      --muted: #6f7480;
+      --rule: #e7e3d8;
+
+      --indigo: #5b5cf6;
+      --indigo-soft: #efeefe;
+      --indigo-ink: #2e2a82;
+      --coral: #ea580c;
+      --coral-soft: #fff1e6;
+      --coral-ink: #9a3412;
+      --mint: #059669;
+      --mint-soft: #e7f7f0;
+      --mint-ink: #04543d;
+      --amber: #b45309;
+      --amber-soft: #fdf2dc;
+      --amber-ink: #6f3a09;
+
+      --radius: 12px;
+      --radius-lg: 18px;
+
+      --sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
+
+      --shadow-sm: 0 1px 3px rgba(21, 23, 28, 0.04);
+      --shadow: 0 4px 14px rgba(21, 23, 28, 0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0c0d12;
+        --surface: #171922;
+        --surface-soft: #1f222b;
+        --code-bg: #1a1c25;
+        --ink: #f3f4f7;
+        --ink-soft: #c8ccd4;
+        --muted: #898f9c;
+        --rule: #2a2d37;
+
+        --indigo: #818cf8;
+        --indigo-soft: #1a1740;
+        --indigo-ink: #c7d2fe;
+        --coral: #fb923c;
+        --coral-soft: #2c1810;
+        --coral-ink: #fdba74;
+        --mint: #34d399;
+        --mint-soft: #062e1f;
+        --mint-ink: #6ee7b7;
+        --amber: #fbbf24;
+        --amber-soft: #2a1d04;
+        --amber-ink: #fcd34d;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: var(--ink);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    .skip-link {
+      position: absolute; left: -9999px; top: 0;
+      background: var(--indigo); color: #fff;
+      padding: 0.65rem 1rem; z-index: 100;
+      border-radius: 0 0 var(--radius) 0;
+      font-weight: 600; text-decoration: none;
+    }
+    .skip-link:focus { left: 0; }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* HERO */
+    .hero { padding: 2rem 0 4rem; border-bottom: 1px solid var(--rule); margin-bottom: 4rem; }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      padding: 0.3rem 0.7rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      margin-bottom: 1.75rem;
+    }
+    .kicker::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--mint);
+      border-radius: 50%;
+    }
+    h1 {
+      font-size: clamp(2.75rem, 6vw, 4.5rem);
+      line-height: 1;
+      letter-spacing: -0.035em;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      color: var(--ink);
+    }
+    h1 .accent { color: var(--indigo); }
+    .tagline {
+      font-size: clamp(1.15rem, 2vw, 1.4rem);
+      color: var(--ink-soft);
+      max-width: 55ch;
+      line-height: 1.45;
+      margin-bottom: 1.75rem;
+      font-weight: 400;
+    }
+    .tagline code {
+      font-family: var(--mono);
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 0.1em 0.35em;
+      border-radius: 5px;
+      color: var(--indigo);
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn, button {
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.6rem 1rem;
+      border: 1px solid var(--rule);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .btn:hover, button:hover {
+      background: var(--surface-soft);
+      border-color: var(--indigo);
+      text-decoration: none;
+    }
+    .btn:focus-visible, button:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+    .btn.primary, button.primary {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+    .btn.primary:hover, button.primary:hover {
+      background: var(--indigo);
+      border-color: var(--indigo);
+    }
+    .hero-meta {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .hero-meta strong { color: var(--ink-soft); font-weight: 600; }
+
+    /* SECTIONS */
+    section { margin-bottom: 4.5rem; }
+    .section-head { margin-bottom: 1.5rem; }
+    .section-num {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+    h2 {
+      font-size: clamp(1.45rem, 2.8vw, 2.1rem);
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      font-weight: 700;
+      color: var(--ink);
+      max-width: 30ch;
+    }
+    h2 .accent { color: var(--indigo); }
+    h2 .accent-coral { color: var(--coral); }
+    .lead {
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      max-width: 60ch;
+      margin-top: 0.85rem;
+    }
+    p { color: var(--ink-soft); max-width: 65ch; }
+    a {
+      color: var(--indigo);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid color-mix(in srgb, var(--indigo) 30%, transparent);
+    }
+    a:hover { border-bottom-color: var(--indigo); color: var(--indigo-ink); }
+    code {
+      font-family: var(--mono);
+      font-size: 0.86em;
+      background: var(--code-bg);
+      color: var(--coral-ink);
+      padding: 0.12em 0.4em;
+      border-radius: 5px;
+    }
+    em { font-style: italic; color: var(--ink); }
+    strong { font-weight: 700; color: var(--ink); }
+    pre {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--rule);
+      overflow-x: auto;
+      line-height: 1.55;
+    }
+    pre .key { color: var(--indigo); }
+    pre .str { color: var(--mint-ink); }
+    pre .comment { color: var(--muted); }
+
+    /* QUOTE */
+    .quote {
+      padding: 1.5rem 1.75rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-left: 4px solid var(--coral);
+      border-radius: var(--radius);
+      margin: 1.5rem 0;
+      max-width: 60ch;
+    }
+    .quote-text {
+      font-size: 1.25rem;
+      color: var(--ink);
+      letter-spacing: -0.015em;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    .quote-cite {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* LAYERS */
+    .layers {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 720px) { .layers { grid-template-columns: repeat(2, 1fr); } }
+    .layer {
+      padding: 1.2rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+    }
+    .layer .step {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+      letter-spacing: 0.06em;
+    }
+    .layer .name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+    .layer .tool {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .layer.seal {
+      background: var(--indigo);
+      border-color: var(--indigo);
+    }
+    .layer.seal .step,
+    .layer.seal .name,
+    .layer.seal .tool { color: white; }
+    .layer.seal .step { opacity: 0.65; }
+    .layer.seal .tool { opacity: 0.9; font-weight: 500; }
+
+    /* RULES — compact numbered list */
+    .rules {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.55rem;
+      counter-reset: rule;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 720px) { .rules { grid-template-columns: 1fr; } }
+    .rule {
+      padding: 0.7rem 1rem 0.7rem 2.5rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      position: relative;
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      counter-increment: rule;
+    }
+    .rule::before {
+      content: counter(rule, decimal-leading-zero);
+      position: absolute;
+      left: 0.7rem;
+      top: 0.7rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--indigo);
+      font-weight: 700;
+    }
+    .rule strong { color: var(--ink); font-weight: 600; }
+
+    /* FAMILIES — compact */
+    .families {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 780px) { .families { grid-template-columns: 1fr; } }
+    .family {
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--rule);
+      background: var(--surface);
+      position: relative;
+      border-left: 4px solid var(--accent-color);
+    }
+    .family.conversation { --accent-color: var(--indigo); }
+    .family.domain { --accent-color: var(--coral); }
+    .family.project { --accent-color: var(--mint); }
+    .family .label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--accent-color);
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .family h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--ink); }
+    .family p { font-size: 0.9rem; color: var(--ink-soft); margin: 0; }
+
+    /* DOMAIN SCHEMAS */
+    .domains {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 780px) { .domains { grid-template-columns: 1fr; } }
+    .domain {
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+    }
+    .domain-name {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--indigo);
+      margin-bottom: 0.3rem;
+    }
+    .domain-origin {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .domain-fields {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      background: var(--code-bg);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      color: var(--ink-soft);
+    }
+    .domain-fields .field { color: var(--indigo); }
+    .domain-fields .arr { color: var(--coral); }
+
+    /* PROMPT */
+    .prompt-block {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+    }
+    .prompt-label {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ISNT */
+    .isnt {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 1.5rem;
+    }
+    .isnt-chip {
+      padding: 0.5rem 0.9rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+    }
+    .isnt-chip::before { content: '× '; color: var(--coral); font-weight: 700; }
+    .isnt-chip strong { color: var(--ink); }
+
+    /* PHASES */
+    .phases {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+    .phase {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 0.85rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+    }
+    .phase-num {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .phase-body h3 { font-size: 0.98rem; font-weight: 700; color: var(--ink); margin-bottom: 0.15rem; }
+    .phase-body p { font-size: 0.85rem; color: var(--muted); margin: 0; }
+    .phase-state {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .phase-state.exists { background: var(--mint-soft); color: var(--mint-ink); }
+    .phase-state.half { background: var(--amber-soft); color: var(--amber-ink); }
+    .phase-state.notbuilt { background: var(--surface-soft); color: var(--muted); }
+    @media (max-width: 600px) {
+      .phase { grid-template-columns: 1fr; gap: 0.4rem; }
+      .phase-state { justify-self: start; }
+    }
+
+    /* ABOUT */
+    details.about {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+    details.about > summary {
+      cursor: pointer;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    details.about > summary::-webkit-details-marker { display: none; }
+    details.about > summary::before {
+      content: '+';
+      color: var(--indigo);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    details.about[open] > summary::before { content: '−'; }
+    details.about > summary:hover { background: var(--surface-soft); }
+    .about-body { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--rule); padding-top: 1.25rem; }
+    .about-body h4 {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin: 1.25rem 0 0.5rem;
+    }
+    .about-body h4:first-child { margin-top: 0; }
+    .about-body pre { font-size: 0.78rem; max-height: 22rem; }
+
+    /* FOOTER */
+    footer {
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 700px) { footer { grid-template-columns: repeat(2, 1fr); } }
+    .footer-block strong {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+      font-weight: 700;
+    }
+    .footer-block a {
+      display: block;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      margin-bottom: 0.35rem;
+      border: none;
+      font-weight: 400;
+    }
+    .footer-block a:hover { color: var(--indigo); }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem; left: 50%;
+      transform: translate(-50%, 10px);
+      background: var(--ink);
+      color: var(--bg);
+      padding: 0.7rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 600px) {
+      main { padding: 1.5rem 1rem 3rem; }
+    }
+    @media print {
+      .skip-link, .toast, button { display: none; }
+      details.about > summary::before { display: none; }
+      details.about > summary { display: none; }
+      body { background: white; }
+      main { max-width: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+<a class="skip-link" href="#capsule-root">Skip to content</a>
+
+<main id="capsule-root">
+
+  <header class="hero">
+    <span class="kicker">Working note · v0.3.0 · for builders</span>
+    <h1>A sealed HTML <span class="accent">memory object</span> <br>for AI work worth preserving.</h1>
+    <p class="tagline">Single-file, self-contained, sealed at the moment work was done. Human-readable, machine-readable, and provenance-bearing in one object. LLMs, deterministic compilers, and human authors all produce the same envelope shape — <strong>that's the multi-producer interop story, and it's what makes capsules different from yet another save format</strong>.</p>
+    <div class="hero-actions">
+      <a href="CAPSULE_CORE.md" class="btn primary">Read the Core spec →</a>
+      <a href="spec/examples/" class="btn">See examples</a>
+      <a href="spec/DOMAIN_CAPSULES.md" class="btn">Domain schemas</a>
+    </div>
+    <p class="hero-meta"><strong>Spec v0.3.0</strong> · full spec v0.3.2 · 12 rules · 5 required blocks · 0 network deps</p>
+  </header>
+
+  <section aria-labelledby="thesis-heading">
+    <div class="section-head">
+      <span class="section-num">01 · WHAT'S ALREADY HAPPENING</span>
+      <h2>The substrate <span class="accent">has settled</span>.</h2>
+    </div>
+    <p class="lead">Claude, ChatGPT, Gemini, and Codex all default to producing self-contained HTML files for rich output. Plans. Specs. Mockups. Briefings. Dashboards. The files open in any browser, work offline, and carry their own structure.</p>
+    <div class="quote">
+      <p class="quote-text">"HTML is the new markdown."</p>
+      <p class="quote-cite">— Thariq Shihipar (Claude Code), <em>How I AI</em> podcast</p>
+    </div>
+    <div class="quote" style="border-left-color: var(--mint);">
+      <p class="quote-text">"The format you ask for is part of the runtime contract."</p>
+      <p class="quote-cite">— Blake Crosley, <em>HTML Is the Format AI Agents Want</em></p>
+    </div>
+    <p>Three voices, one substrate, three positions on the lifecycle:</p>
+    <ul style="list-style: none; padding-left: 0; margin-top: 1rem;">
+      <li style="margin-bottom: 0.65rem;"><strong style="color: var(--indigo);">Thariq</strong> makes the <strong>substrate case</strong>. HTML as the editing medium during work.</li>
+      <li style="margin-bottom: 0.65rem;"><strong style="color: var(--mint);">Blake</strong> makes the <strong>control-surface case</strong>. HTML as the agent UI users inspect live.</li>
+      <li><strong style="color: var(--coral);">This project</strong> makes the <strong>contract case</strong>. HTML as the sealed handoff once the live work is done.</li>
+    </ul>
+    <p style="margin-top: 1.25rem;">Same substrate. Three slots on the lifecycle. The capsule contract is what turns those one-off HTML files into something that travels across tools, time, and people after the work is done.</p>
+  </section>
+
+  <section aria-labelledby="layers-heading">
+    <div class="section-head">
+      <span class="section-num">02 · WHERE CAPSULES FIT</span>
+      <h2>The seal layer <span class="accent">everyone skips</span>.</h2>
+    </div>
+    <div class="layers">
+      <div class="layer">
+        <div class="step">01</div>
+        <div class="name">Think</div>
+        <div class="tool">Chat</div>
+      </div>
+      <div class="layer">
+        <div class="step">02</div>
+        <div class="name">Shape</div>
+        <div class="tool">Canvas, Artifacts</div>
+      </div>
+      <div class="layer seal">
+        <div class="step">03</div>
+        <div class="name">Seal</div>
+        <div class="tool">Capsules</div>
+      </div>
+      <div class="layer">
+        <div class="step">04</div>
+        <div class="name">Harden</div>
+        <div class="tool">Repos, Codex</div>
+      </div>
+    </div>
+    <p class="lead">Canvas and Artifacts are about live editing. Repos are about production. Between them is the moment when something is done changing and needs to leave the workspace cleanly. That's where capsules sit.</p>
+  </section>
+
+  <section aria-labelledby="promises-heading">
+    <div class="section-head">
+      <span class="section-num">03 · TWO PROMISES</span>
+      <h2 id="promises-heading">What capsules <span class="accent">guarantee</span>.</h2>
+    </div>
+    <p class="lead">Most modern documents phone home. Most sharing platforms let you "unshare." Capsules do neither, on purpose. Two load-bearing trust properties, both by construction:</p>
+    <div class="layers" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem;">
+      <div class="layer seal" style="text-align: left; padding: 1.4rem;">
+        <div class="step" style="margin-bottom: 0.6rem;">01</div>
+        <div class="name" style="font-size: 1.15rem; margin-bottom: 0.5rem;">Capsules can't be unshared.</div>
+        <p style="margin: 0; color: var(--ink-soft); font-size: 0.95rem;">Once a capsule reaches a recipient, the bytes are theirs. No retraction, no expiring link that revokes access, no "deleted from your view." Same contract as a paper memo or a sent email. This forces honest authoring discipline: redact and audience-scope <em>before</em> sharing, because there's no undo. Core Rule 10.</p>
+      </div>
+      <div class="layer seal" style="text-align: left; padding: 1.4rem;">
+        <div class="step" style="margin-bottom: 0.6rem;">02</div>
+        <div class="name" style="font-size: 1.15rem; margin-bottom: 0.5rem;">Capsules don't phone home.</div>
+        <p style="margin: 0; color: var(--ink-soft); font-size: 0.95rem;">Zero <code>fetch</code>, zero analytics, zero tracking pixels. Once a capsule opens, the recipient's view is unobservable to the author — no view counts, no "X opened your capsule," no engagement metrics. Hosting platforms can track wrapper-level activity; the capsule itself is mute. Privacy by construction, not by policy. Core Rule 2.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="rules-heading">
+    <div class="section-head">
+      <span class="section-num">04 · THE CONTRACT</span>
+      <h2>Twelve rules. <span class="accent">One page</span>.</h2>
+    </div>
+    <p class="lead">Pasteable into any LLM prompt. See <a href="CAPSULE_CORE.md"><code>CAPSULE_CORE.md</code></a> for the canonical version.</p>
+    <div class="rules">
+      <div class="rule"><strong>One file.</strong> A single <code>.html</code> document.</div>
+      <div class="rule"><strong>No network.</strong> Zero <code>fetch</code>, CDN, external CSS.</div>
+      <div class="rule"><strong>Five required blocks</strong> with reserved IDs.</div>
+      <div class="rule"><strong>Manifest required fields.</strong> Identity, provenance, capabilities, privacy.</div>
+      <div class="rule"><strong>Honest provenance.</strong> <code>generator.kind</code>: compiler, llm, human, hybrid.</div>
+      <div class="rule"><strong>Read-only data.</strong> Runtime never mutates the data block.</div>
+      <div class="rule"><strong>Capabilities don't lie.</strong> Declared = implemented.</div>
+      <div class="rule"><strong>Typed response exports.</strong> Carry a <code>capsule_reference</code>.</div>
+      <div class="rule"><strong>Accessibility baseline.</strong> Semantic HTML, keyboard nav, ARIA.</div>
+      <div class="rule"><strong>Cannot be unshared.</strong> Treat audience as final.</div>
+      <div class="rule"><strong>Backtick string literals</strong> in runtime JS.</div>
+      <div class="rule"><strong>Render in HTML.</strong> Not at runtime.</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="families-heading">
+    <div class="section-head">
+      <span class="section-num">05 · THREE FAMILIES</span>
+      <h2>Same outer rules. <span class="accent">Different content.</span></h2>
+    </div>
+    <div class="families">
+      <div class="family conversation">
+        <div class="label">conversation</div>
+        <h3>Conversation Capsule</h3>
+        <p>Sealed summary of an AI work session. What was figured out, decided, left open.</p>
+      </div>
+      <div class="family domain">
+        <div class="label">domain.&lt;name&gt;</div>
+        <h3>Domain Capsule</h3>
+        <p>Sealed export of a domain object. Named schema per type. See below.</p>
+      </div>
+      <div class="family project">
+        <div class="label">project</div>
+        <h3>Project Capsule</h3>
+        <p>Snapshot of where a sustained thing stands. Composes other capsules plus synthesis.</p>
+      </div>
+    </div>
+    <p style="margin-top: 1.5rem; padding: 1rem 1.2rem; background: var(--surface-soft); border-left: 3px solid var(--mint); border-radius: var(--radius); color: var(--ink-soft); font-size: 0.95rem;"><strong style="color: var(--mint-ink);">Already use Obsidian, Tana, or a second-brain system?</strong> Capsules don't replace it. They're the layer where your finished thinking <em>exits</em> your knowledge base as a portable, sealed artifact someone else can open — months later, on a different machine, with no platform login. The workshop stays in your PKM. The capsules are the finished products that ship out of it.</p>
+  </section>
+
+  <section aria-labelledby="domains-heading">
+    <div class="section-head">
+      <span class="section-num">06 · DOMAIN SCHEMAS — SHIPPED</span>
+      <h2>Two formal schemas. <span class="accent-coral">More coming.</span></h2>
+    </div>
+    <p class="lead">Domain Capsules formalize the patterns already in use. The namespace is open: anyone can declare <code>domain.&lt;name&gt;</code>. See <a href="spec/DOMAIN_CAPSULES.md">spec/DOMAIN_CAPSULES.md</a> for the catalog.</p>
+    <div class="domains">
+      <div class="domain">
+        <div class="domain-name">domain.implementation_notes</div>
+        <p class="domain-origin">Origin: Thariq's viral implementation-notes.html prompt. Captures the gap between a spec and what got built.</p>
+        <div class="domain-fields">
+          <span class="field">spec_reference</span>: { title, url, version, scope }<br>
+          <span class="field">design_decisions</span><span class="arr">[]</span>: { decision, context, rationale, alternatives_considered }<br>
+          <span class="field">deviations</span><span class="arr">[]</span>: { spec_section, deviation, why, reversible }<br>
+          <span class="field">tradeoffs</span><span class="arr">[]</span>: { question, options_considered, chosen, why }<br>
+          <span class="field">open_questions</span><span class="arr">[]</span>: { question, context, urgency }<br>
+          <span class="field">ai_usage_guidance</span><span style="color: var(--muted); font-size: 0.82rem;"> — advisory, non-enforceable; under review for v0.4 (see spec Appendix E.3)</span>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.88rem;"><a href="spec/examples/implementation_notes_example.html">→ Canonical example</a></p>
+      </div>
+      <div class="domain">
+        <div class="domain-name">domain.design_system</div>
+        <p class="domain-origin">Origin: Thariq's living-design-system pattern from the How I AI podcast. Portable design system as a single file.</p>
+        <div class="domain-fields">
+          <span class="field">design_system_name</span>, <span class="field">version</span><br>
+          <span class="field">tokens</span>: { colors, typography, spacing, radius, shadows }<br>
+          <span class="field">components</span><span class="arr">[]</span>: { name, variants, states, props, usage_notes }<br>
+          <span class="field">patterns</span><span class="arr">[]</span>: { name, when_to_use, components_used }<br>
+          <span class="field">ai_usage_guidance</span><span style="color: var(--muted); font-size: 0.82rem;"> — advisory, non-enforceable; under review for v0.4 (see spec Appendix E.3)</span>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.88rem; color: var(--muted);">Canonical example forthcoming</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="produce-heading">
+    <div class="section-head">
+      <span class="section-num">07 · PRODUCE ONE</span>
+      <h2>Paste this. <span class="accent">Get a capsule.</span></h2>
+    </div>
+    <p class="lead">The simplest production path. Works in Claude, ChatGPT, Gemini.</p>
+    <div class="prompt-block">
+      <div class="prompt-label">
+        <span>Prompt fragment (paste into any LLM)</span>
+        <button type="button" id="copy-prompt" style="padding: 0.3rem 0.7rem; font-size: 0.78rem;">Copy</button>
+      </div>
+<pre>Produce a Capsule per Core v0.3.0. Output a single .html file
+with the five embedded blocks: capsule-manifest, capsule-data,
+capsule-style, capsule-root, capsule-runtime. Set generator.kind to
+"llm" and generator.version to your model ID. Include the "about"
+capability plus at least one export (copy_as_json recommended).
+Pre-render content in the HTML body (rule 12). Use backtick template
+literals for multi-line strings in runtime JS (rule 11).
+
+[paste the twelve rules from CAPSULE_CORE.md]
+
+The data to put in the capsule:
+
+[paste your data]</pre>
+    </div>
+  </section>
+
+  <section aria-labelledby="isnt-heading">
+    <div class="section-head">
+      <span class="section-num">08 · WHAT IT ISN'T</span>
+      <h2>Sharp negative space.</h2>
+    </div>
+    <div class="isnt">
+      <span class="isnt-chip"><strong>A new file format.</strong> It's HTML.</span>
+      <span class="isnt-chip"><strong>A new paradigm.</strong> An old one — sealed documents with manifests — applied to a new problem.</span>
+      <span class="isnt-chip"><strong>A new editing surface.</strong> Canvas covers that.</span>
+      <span class="isnt-chip"><strong>A competitor to MCP.</strong> Complementary.</span>
+      <span class="isnt-chip"><strong>A SaaS.</strong> No accounts, no server.</span>
+      <span class="isnt-chip"><strong>A knowledge graph.</strong> Not a second brain. Not a tag soup.</span>
+      <span class="isnt-chip"><strong>Anti-platform.</strong> Anti-context-loss.</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="phases-heading">
+    <div class="section-head">
+      <span class="section-num">09 · STATUS</span>
+      <h2>Four phases. <span class="accent">One shipped.</span></h2>
+    </div>
+    <div class="phases">
+      <div class="phase">
+        <span class="phase-num">01</span>
+        <div class="phase-body">
+          <h3>Format</h3>
+          <p>Single-file HTML, manifest, sealed convention. Twelve rules.</p>
+        </div>
+        <span class="phase-state exists">EXISTS</span>
+      </div>
+      <div class="phase">
+        <span class="phase-num">02</span>
+        <div class="phase-body">
+          <h3>Compiler</h3>
+          <p>Reference compiler + validator + two compiler templates. First independent compiler-kind producer (Mintel) has shipped capsules that validate at 26/26 against the reference. Definition of done still TBD.</p>
+        </div>
+        <span class="phase-state half">HALF-BUILT</span>
+      </div>
+      <div class="phase">
+        <span class="phase-num">03</span>
+        <div class="phase-body">
+          <h3>Domain capsules</h3>
+          <p>Schemas shipped for <code>implementation_notes</code> and <code>design_system</code>. Map, dataset, deal pending.</p>
+        </div>
+        <span class="phase-state half">PARTIAL</span>
+      </div>
+      <div class="phase">
+        <span class="phase-num">04</span>
+        <div class="phase-body">
+          <h3>Network layer</h3>
+          <p>Registry, lineage, importers. Deferred. Possibly never.</p>
+        </div>
+        <span class="phase-state notbuilt">NOT BUILT</span>
+      </div>
+    </div>
+  </section>
+
+  <details class="about" id="about">
+    <summary>About this capsule</summary>
+    <div class="about-body">
+      <p style="font-size: 0.9rem; color: var(--muted);">This page is itself a Capsule per Core v0.3.0 (full spec v0.3.2). All five required blocks inline, no network, no analytics.</p>
+
+      <h4>Export this page</h4>
+      <div class="hero-actions" style="margin-bottom: 0;">
+        <button type="button" id="copy-json">Copy data JSON</button>
+        <button type="button" id="copy-md">Copy Markdown</button>
+        <button type="button" id="download-json">Download JSON</button>
+        <button type="button" id="download-capsule">Download capsule</button>
+        <button type="button" id="print-pdf">Print / Save PDF</button>
+      </div>
+
+      <h4>Manifest</h4>
+      <pre id="manifest-view">Loading manifest...</pre>
+    </div>
+  </details>
+
+  <footer>
+    <div class="footer-block">
+      <strong>The work</strong>
+      <a href="https://github.com/bigfancygarden/capsule">GitHub repo</a>
+      <a href="RESEARCH.md">Research log</a>
+    </div>
+    <div class="footer-block">
+      <strong>Specs</strong>
+      <a href="CAPSULE_CORE.md">Core (one page)</a>
+      <a href="spec/CAPSULE_SPEC.md">Full spec</a>
+      <a href="spec/DOMAIN_CAPSULES.md">Domain catalog</a>
+    </div>
+    <div class="footer-block">
+      <strong>Reference</strong>
+      <a href="GLOSSARY.md">Glossary</a>
+      <a href="PRECEDENTS.md">Precedents</a>
+    </div>
+    <div class="footer-block">
+      <strong>Examples</strong>
+      <a href="examples/">Compiler inputs</a>
+      <a href="spec/examples/implementation_notes_example.html">Domain example</a>
+    </div>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="capsule-runtime">
+  (function () {
+    'use strict';
+
+    var manifestEl = document.getElementById('capsule-manifest');
+    var dataEl = document.getElementById('capsule-data');
+    var manifest = JSON.parse(manifestEl.textContent);
+    var data = JSON.parse(dataEl.textContent);
+
+    var manifestView = document.getElementById('manifest-view');
+    if (manifestView) {
+      manifestView.textContent = JSON.stringify(manifest, null, 2);
+    }
+
+    var toast = document.getElementById('toast');
+    var toastTimer = null;
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('visible');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove('visible'); }, 2400);
+    }
+
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    function copyText(text, successMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(
+          function () { showToast(successMsg); },
+          function () {
+            if (fallbackCopy(text)) showToast(successMsg);
+            else showToast(`Copy failed`);
+          }
+        );
+      } else {
+        if (fallbackCopy(text)) showToast(successMsg);
+        else showToast(`Copy failed`);
+      }
+    }
+
+    var promptText = [
+      `Produce a Capsule per Core v0.3.0. Output a single .html file`,
+      `with the five embedded blocks: capsule-manifest, capsule-data,`,
+      `capsule-style, capsule-root, capsule-runtime. Set generator.kind to`,
+      `"llm" and generator.version to your model ID. Include the "about"`,
+      `capability plus at least one export (copy_as_json recommended).`,
+      `Pre-render content in the HTML body (rule 12). Use backtick template`,
+      `literals for multi-line strings in runtime JS (rule 11).`,
+      ``,
+      `[paste the twelve rules from CAPSULE_CORE.md]`,
+      ``,
+      `The data to put in the capsule:`,
+      ``,
+      `[paste your data]`
+    ].join(`\n`);
+
+    function asMarkdown() {
+      var lines = [];
+      lines.push(`# ${manifest.title}`);
+      lines.push(``);
+      lines.push(`> ${data.thesis}`);
+      lines.push(``);
+      lines.push(`## Where capsules fit`);
+      data.four_layers.forEach(function (l) { lines.push(`- ${l.layer} → ${l.tool}`); });
+      lines.push(``);
+      lines.push(`## Twelve rules`);
+      data.core_rules.forEach(function (r, i) { lines.push(`${i+1}. ${r}`); });
+      lines.push(``);
+      lines.push(`## Three families`);
+      data.families.forEach(function (f) { lines.push(`- **${f.family}.** ${f.use}`); });
+      lines.push(``);
+      lines.push(`## Domain schemas shipped`);
+      data.domains_shipped.forEach(function (d) {
+        lines.push(`- **${d.name}** — ${d.origin}`);
+        lines.push(`  Fields: ${d.fields.join(', ')}`);
+      });
+      lines.push(``);
+      lines.push(`## Phases`);
+      data.phases.forEach(function (p) { lines.push(`${p.phase}. **${p.name}** (${p.state}) — ${p.note}`); });
+      lines.push(``);
+      lines.push(`Capsule: ${manifest.uuid} v${manifest.capsule_version}`);
+      return lines.join(`\n`);
+    }
+
+    function downloadJson() {
+      var payload = JSON.stringify({ manifest: manifest, data: data }, null, 2);
+      var blob = new Blob([payload], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'capsule-landing-page.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`JSON downloaded`);
+    }
+
+    function downloadCapsule() {
+      var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = (manifest.title || 'capsule').replace(/[^\w-]+/g, '_') + '.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`Capsule downloaded`);
+    }
+
+    var copyJsonBtn = document.getElementById('copy-json');
+    var copyMdBtn = document.getElementById('copy-md');
+    var downloadJsonBtn = document.getElementById('download-json');
+    var downloadCapsuleBtn = document.getElementById('download-capsule');
+    var printPdfBtn = document.getElementById('print-pdf');
+    var copyPromptBtn = document.getElementById('copy-prompt');
+
+    if (copyJsonBtn) copyJsonBtn.addEventListener('click', function () { copyText(JSON.stringify(data, null, 2), `Data JSON copied`); });
+    if (copyMdBtn) copyMdBtn.addEventListener('click', function () { copyText(asMarkdown(), `Markdown copied`); });
+    if (downloadJsonBtn) downloadJsonBtn.addEventListener('click', downloadJson);
+    if (downloadCapsuleBtn) downloadCapsuleBtn.addEventListener('click', downloadCapsule);
+    if (printPdfBtn) printPdfBtn.addEventListener('click', function () { window.print(); });
+    if (copyPromptBtn) copyPromptBtn.addEventListener('click', function () { copyText(promptText, `Prompt fragment copied`); });
+  })();
+</script>
+</body>
+</html>

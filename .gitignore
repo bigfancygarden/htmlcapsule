@@ -1,0 +1,122 @@
+# =============================================================================
+# .gitignore for htmlcapsule
+# =============================================================================
+# Draft for the new public repo. Covers Python compiler/validator artifacts,
+# macOS/editor cruft, and defense-in-depth against accidentally committing
+# personal content from the original private corpus.
+
+# -----------------------------------------------------------------------------
+# OS files
+# -----------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# -----------------------------------------------------------------------------
+# Editors and IDEs
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# -----------------------------------------------------------------------------
+# Python (compiler/validator/tooling)
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing / coverage
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# -----------------------------------------------------------------------------
+# Local config / secrets — never commit
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+*.local
+secrets/
+credentials/
+*.pem
+*.key
+
+# -----------------------------------------------------------------------------
+# Defense-in-depth: don't accidentally commit personal content
+# -----------------------------------------------------------------------------
+# If someone clones this repo and adds their own personal capsules,
+# they go in personal_capsules/ (or similar) and stay out of the public repo.
+# The public repo ships canonical examples in examples/ only.
+personal_capsules/
+private_capsules/
+my_capsules/
+
+# Scratch files / ad-hoc testing
+scratch/
+tmp/
+*.scratch.html
+*.scratch.json
+
+# -----------------------------------------------------------------------------
+# Build outputs (currently none, but reserved)
+# -----------------------------------------------------------------------------
+output/
+generated/
+.cache/
+
+# -----------------------------------------------------------------------------
+# Logs
+# -----------------------------------------------------------------------------
+*.log
+logs/
+
+# -----------------------------------------------------------------------------
+# Misc
+# -----------------------------------------------------------------------------
+.npm
+node_modules/
+package-lock.json.bak

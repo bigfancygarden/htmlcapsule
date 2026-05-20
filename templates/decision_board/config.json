@@ -1,0 +1,36 @@
+{
+  "template_id": "decision_board",
+  "template_version": "0.1.0",
+  "capsule_type": "decision_board",
+  "description": "Interactive board for reviewing options and capturing per-record decisions (approve/reject/defer) with optional notes.",
+  "default_capabilities": [
+    "filter",
+    "sort",
+    "group",
+    "annotate",
+    "export_response",
+    "copy_as_json",
+    "print_to_pdf",
+    "about"
+  ],
+  "response_type": "form_data",
+  "expected_data_fields": {
+    "required": ["title"],
+    "optional": ["description", "category", "evidence_for", "evidence_against", "context"],
+    "types": {
+      "title": "string",
+      "description": "string",
+      "category": "string",
+      "evidence_for": "array",
+      "evidence_against": "array",
+      "context": "string"
+    }
+  },
+  "ui_options": {
+    "decision_choices": ["approve", "reject", "defer", "skip"],
+    "default_decision": null,
+    "allow_per_record_notes": true,
+    "allow_summary_note": true,
+    "group_by_field": "category"
+  }
+}
