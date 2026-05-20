@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="description" content="Capsule — a profile of HTML for sealed, self-contained memory objects of work worth preserving. Open spec, reference implementation, examples.">
+<meta name="description" content="Capsule is an approach for working with HTML artifacts: sealed, single-file, everything inside the page. No network. Open spec, reference implementation, examples.">
 <meta name="color-scheme" content="light">
-<title>Capsule — a profile of HTML for AI work</title>
+<title>Capsule: An Approach for Working with HTML Artifacts</title>
 
 <script id="capsule-manifest" type="application/json">{
   "spec_version": "0.3.0",
-  "capsule_version": "6.1.1",
+  "capsule_version": "7.0.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "title": "Capsule — a profile of HTML for AI work",
-  "description": "Landing page for the Capsule project. An editorial/anatomy hybrid layout, light-only, single accent.",
+  "title": "Capsule: An Approach for Working with HTML Artifacts",
+  "description": "Landing page for the Capsule project. Repositioned from AI-jargon framing to a plainer HTML-artifact framing. Editorial/anatomy hybrid layout, light-only.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -51,8 +51,8 @@
 }</script>
 
 <script id="capsule-data" type="application/json">{
-  "audience": "builders working with Claude, ChatGPT, Gemini, Codex; people sealing AI work for preservation, sharing, or archive",
-  "thesis": "A capsule is a sealed, self-contained HTML memory object for work worth preserving. Single file, no network, manifest + provenance + capabilities inside.",
+  "audience": "anyone working with HTML artifacts — LLM users, builders, archivists, people who want a saved page to still work years from now",
+  "thesis": "Capsule is an approach for working with HTML artifacts. One sealed HTML file with everything inside it: manifest, data, provenance, capabilities. No network, no platform.",
   "promises": [
     {
       "name": "Cannot be unshared",
@@ -888,7 +888,7 @@
 
   <!-- ====== TOP STRIP ====== -->
   <div class="strip">
-    <span><strong>capsule</strong> — a profile of HTML for AI work</span>
+    <span><strong>Capsule:</strong> an approach for working with HTML artifacts</span>
     <span>spec <span class="v">v0.3.0</span> · core · full v0.3.2</span>
     <nav class="strip-nav" aria-label="Section navigation">
       <a href="#promises">Promises</a>
@@ -906,9 +906,9 @@
   <!-- ====== HERO ====== -->
   <header class="hero">
     <div>
-      <p class="eyebrow">An open spec · 2026</p>
-      <h1>A sealed envelope <em>for AI&nbsp;work.</em></h1>
-      <p class="lede">One HTML file. No network. Manifest, sources, and provenance — all inside. Open it in any browser today, or in a decade.</p>
+      <p class="eyebrow">Open spec · 2026</p>
+      <h1>An approach for working with <em>HTML&nbsp;artifacts.</em></h1>
+      <p class="lede">One HTML file with everything inside it — manifest, data, provenance. No network, no platform. Opens in any browser today, or years from now.</p>
       <div class="cta">
         <a href="CAPSULE_CORE.md" class="btn primary">Read the Core spec</a>
         <a href="https://github.com/bigfancygarden/htmlcapsule" class="btn github" rel="noopener">
@@ -917,7 +917,7 @@
         </a>
         <a href="spec/examples/" class="btn">See examples</a>
       </div>
-      <p class="hero-meta">12 rules<span class="pip">·</span>5 required blocks<span class="pip">·</span>0 network deps</p>
+      <p class="hero-meta">12 rules<span class="pip">·</span>5 blocks<span class="pip">·</span>0 network</p>
     </div>
     <figure class="seal" aria-label="Capsule wax-seal mark">
       <div class="seal-circle">
@@ -932,18 +932,18 @@
   <section class="s" id="promises" aria-labelledby="promises-h">
     <span class="sec-num">I <span class="dash">—</span> Two promises</span>
     <h2 class="sec-h" id="promises-h">What capsules <em>guarantee.</em></h2>
-    <p class="sec-lead">Most modern documents phone home; most platforms let you unshare. Capsules do neither, by construction — not by policy.</p>
+    <p class="sec-lead">Most documents phone home. Most platforms let you unshare. Capsules do neither — not by policy, by construction.</p>
 
     <div class="promises-grid">
       <article class="promise">
         <div class="promise-mark">i.</div>
         <h3><em>Cannot be unshared.</em></h3>
-        <p>Once a capsule reaches a recipient, the bytes are theirs. No retraction, no expiring link, no platform that revokes access. This forces honest authoring discipline: redact before sharing, because there is no undo. <em>(Core Rule 10.)</em></p>
+        <p>Once a capsule reaches you, the bytes are yours. No retraction, no expiring link, no platform that revokes access. Forces honest authoring — redact before sharing, because there is no undo. <em>(Core Rule 10.)</em></p>
       </article>
       <article class="promise">
         <div class="promise-mark">ii.</div>
         <h3><em>Never phones home.</em></h3>
-        <p>Zero fetch, zero analytics, zero tracking pixels. Once opened, the recipient's view is unobservable to the author. Hosting platforms can track wrapper-level activity; the capsule itself is mute. <em>(Core Rule 2.)</em></p>
+        <p>Zero fetch. Zero analytics. Zero tracking pixels. Once a capsule opens, the recipient is unobservable. Hosting platforms can track wrapper-level activity; the file itself is mute. <em>(Core Rule 2.)</em></p>
       </article>
     </div>
   </section>
@@ -952,7 +952,7 @@
   <section class="s" id="anatomy" aria-labelledby="anatomy-h">
     <span class="sec-num">II <span class="dash">—</span> What's inside</span>
     <h2 class="sec-h" id="anatomy-h">A file with <em>discipline.</em></h2>
-    <p class="sec-lead">Five named blocks, one manifest, no hidden network. The same envelope serves a research note, a decision board, a design system, or a map.</p>
+    <p class="sec-lead">Five named blocks. One manifest. The same shape holds a research note, a decision board, a design system, or a map.</p>
 
     <div class="anatomy">
       <figure class="file" aria-label="Anatomy of a capsule">
@@ -1034,7 +1034,7 @@
   <section class="s" id="rules" aria-labelledby="rules-h">
     <span class="sec-num">III <span class="dash">—</span> The contract</span>
     <h2 class="sec-h" id="rules-h">Twelve rules. <em>One page.</em></h2>
-    <p class="sec-lead">Pasteable into any LLM prompt. Each rule traces to an observed failure mode — none is decorative. See <a href="CAPSULE_CORE.md">CAPSULE_CORE.md</a> for the canonical version.</p>
+    <p class="sec-lead">Pasteable into any LLM prompt. Each rule names a failure we hit and fixed. See <a href="CAPSULE_CORE.md">CAPSULE_CORE.md</a> for the canonical version.</p>
 
     <ol class="rules-grid">
       <li class="rule"><div class="body"><strong>One file.</strong>A single <code>.html</code> document. No companions, no sidecars.</div></li>
@@ -1056,7 +1056,7 @@
   <section class="s" id="produce" aria-labelledby="produce-h">
     <span class="sec-num">IV <span class="dash">—</span> Produce one</span>
     <h2 class="sec-h" id="produce-h">Paste this. <em>Get a capsule.</em></h2>
-    <p class="sec-lead">Works in Claude, ChatGPT, Gemini, Codex. The simplest path from a conversation to a sealed file.</p>
+    <p class="sec-lead">Works in Claude, ChatGPT, Gemini, Codex. The simplest path from a conversation to a sealed HTML file.</p>
 
     <div class="coupon">
       <div class="coupon-dashed" aria-hidden="true">— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —</div>
@@ -1086,7 +1086,7 @@ Data to embed:
   <section class="s" id="status" aria-labelledby="status-h">
     <span class="sec-num">V <span class="dash">—</span> Where it stands</span>
     <h2 class="sec-h" id="status-h">Four phases. <em>One shipped.</em></h2>
-    <p class="sec-lead">The format exists. The compiler is half-built. The network layer may never come, and that's a feature, not a delay.</p>
+    <p class="sec-lead">The format exists. The compiler is half-built. The network layer may never come — that's a feature, not a delay.</p>
 
     <table class="status">
       <tbody>
@@ -1122,7 +1122,7 @@ Data to embed:
   <details class="about" id="about">
     <summary>About this capsule</summary>
     <div class="about-body">
-      <p style="font-family: var(--serif); font-style: italic; color: var(--ink-soft); font-size: 15px; max-width: 60ch; margin: 0;">This page is itself a Capsule per Core v0.3.0 (full spec v0.3.2). All five required blocks inline. No network, no analytics. Validates against the reference validator.</p>
+      <p style="font-family: var(--serif); font-style: italic; color: var(--ink-soft); font-size: 15px; max-width: 60ch; margin: 0;">This page is itself a Capsule per Core v0.3.0 (full spec v0.3.2). Five required blocks, all inline. No network, no analytics. Validates against the reference validator.</p>
 
       <h4>Export this page</h4>
       <div class="export-row">
@@ -1141,7 +1141,7 @@ Data to embed:
   <!-- ====== FOOTER ====== -->
   <footer class="foot">
     <div class="foot-isnt">
-      <strong>What this isn't:</strong> a new file format (it's HTML), a SaaS, a new editing surface, a competitor to MCP, a knowledge graph, or anti-platform. It's anti-context-loss.
+      <strong>What this isn't:</strong> a new file format — it's HTML. Not a SaaS, not a new editing surface, not a competitor to MCP, not a knowledge graph. Anti-context-loss, not anti-platform.
     </div>
     <div class="foot-col">
       <h4>Spec</h4>
@@ -1164,7 +1164,7 @@ Data to embed:
     </div>
     <div class="colophon">
       <span>Set in Iowan Old Style · JetBrains Mono · Apache 2.0</span>
-      <span>capsule:landing/v6.0.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v7.0.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 
