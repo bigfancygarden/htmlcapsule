@@ -20,6 +20,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 - **For the full specification:** [spec/CAPSULE_SPEC.md](spec/CAPSULE_SPEC.md) — formal definition, validation rules, security model, response protocol, integrity-hash recipe.
 - **For working examples:** [`examples/`](examples/) (JSON inputs for the compiler) and [`spec/examples/`](spec/examples/) (canonical example capsules).
 - **For domain schemas:** [`spec/DOMAIN_CAPSULES.md`](spec/DOMAIN_CAPSULES.md) — `implementation_notes`, `design_system`, `exploration_map`.
+- **For the research narrative:** [RESEARCH.md](RESEARCH.md) — what we're investigating, findings F1–F18, open questions, methodology.
 - **For the glossary:** [`GLOSSARY.md`](GLOSSARY.md).
 - **For positioning vs. related work:** [`PRECEDENTS.md`](PRECEDENTS.md).
 
