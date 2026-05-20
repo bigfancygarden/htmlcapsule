@@ -8,7 +8,7 @@
 
 The hypothesis: the substrate (HTML) has already won as the universal display layer. What's missing is discipline — a contract, manifest, versioning, capabilities, and integrity guarantees — so that an LLM conversation, a database query, a hand-written report, a geospatial map, or a research summary can all preserve themselves into the same envelope and live in the same archive. The strongest claim the format makes is **multi-producer interop**: LLMs (Claude, ChatGPT, Gemini), deterministic compilers (Python/Node build scripts), and human authors all produce the same envelope shape.
 
-Capsules are not a working format — you still edit in your tools of choice. They are a **publish / preserve / share** format. PDFs were the previous answer; they're closed and lossy. Capsules give the same role to HTML, which is alive, programmable, and re-loadable by future tools (including future AI).
+Capsules are not a working format — you still edit in your tools of choice. They are a **publish / preserve / share** format. PDFs were the previous answer; they're closed and lossy. Capsules give the same role to HTML, which is alive, programmable, and re-readable years later by both audiences that will reopen the work: humans, and the LLMs they'll be asked to continue the work with. AI-native export is the load-bearing case the format is designed for; long-tail human readability falls out for free.
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 

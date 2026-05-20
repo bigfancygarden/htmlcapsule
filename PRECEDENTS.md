@@ -10,6 +10,8 @@ Confidence note: positioning is solid; specific versions, governance details, an
 
 Not precedents in the historical sense. Contemporaneous voices arguing related cases in 2026. Worth tracking because the discourse is forming in real time and the capsule project sits inside it rather than upstream of it.
 
+The wave around "HTML is the new markdown" (Thariq's thread, the HN debate, Simon Willison's amplification, follow-on tooling like Display.dev and `dogum/html-artifacts`) has validated the *symptom* — that AI tools want to emit rich single-file HTML and that recipients want to read it. It has not yet validated any particular *standard* for what those files should contain. Capsule's bet is that the standard layer is what the substrate is still missing; the wave is the demand signal, not the answer.
+
 ### Thariq Shihipar (Claude Code, Anthropic)
 
 Substrate evangelist. The originating public articulation of "HTML is the new markdown." Active on X (@trq212) and on podcasts (the *How I AI* episode with Claire Vo, May 2026). Demonstrates the pattern with concrete examples: `implementation-notes.html` from spec implementation work, `design-system.html` as a portable living style guide, weekly HTML status updates sent to managers. Has assembled a public gallery of 20 HTML artifacts across nine categories (code review, exploration, design systems, prototyping, diagrams, research, reports, custom editors, agent UI).
