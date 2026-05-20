@@ -39,9 +39,10 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
 
 ## What a capsule isn't
 
-- **Not a new file format.** It's a profile of HTML — files have the `.html` extension and open in any browser.
-- **Not a SaaS or product.** No accounts, no server.
-- **Not a knowledge graph or second brain.** Capsules are atomic outputs, not collected inputs.
+- **Not a new file format.** A profile of HTML — `.html` extension, opens in any browser.
+- **Not a SaaS, product, or working tool.** No accounts, no server, no live editing. You edit in your tool of choice (LLM chat, code editor, notes app, database GUI, IDE) and emit a capsule when you have something worth sealing.
+- **Not a knowledge graph, second brain, or notes app.** This is the most common misread, so it's worth saying directly: capsules are *atomic outputs, not collected inputs.* The manifest, the UUIDs, and the `parents[]` lineage exist so a single capsule can stand alone with full provenance — *not* so you can traverse from one capsule to a graph of related ones. We deliberately have not built (and likely won't build) a network layer, an importer, a vault format, a graph viewer, or anything that turns a folder of capsules into a navigable wiki. If you're looking for "everything I know, queryable, in one place," the right tools are Roam, Obsidian, Notion, Anytype, TiddlyWiki — capsules are what you might *publish out of* one of those, not what they become.
+- **Not a version-control system.** The `parents[]` field is provenance lineage (where this capsule came from), not a version chain to manage. Capsules don't replace git, don't replace your tool's edit history, and don't try to be the place where iterative editing happens. If you need versioning, edit in your working tool and emit a new capsule. A folder of `v1.html` / `v2.html` / `v3-final.html` is the failure mode the format is designed to *avoid*, not its expected workflow.
 - **Not competing with Canvas/Artifacts/MCP.** Capsules are the *sealed* layer downstream of working canvases — complementary, not competing.
 
 ## Reference implementation
