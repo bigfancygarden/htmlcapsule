@@ -1504,3 +1504,53 @@ def check_external_link_tags(html_scannable):
 **Why it's not built yet.** Empirically discovered while wiring `htmlcapsule.org` as the canonical home for the spec: adding `<link rel="canonical" href="https://htmlcapsule.org/">` to a valid capsule made the validator fail it. The canonical link tag was removed for now to keep the validator green. The data-block `links.canonical` field carries the same information machine-readably.
 
 **When this earns a v0.4 schema slot.** Whenever the validator gets its next focused pass — this is a small, contained change that doesn't affect any other rule. Could ship as a v0.3.x validator patch if not bundled with anything else. Low risk: no existing valid capsule uses `<link rel="canonical">` (it would already have failed), so the refinement is purely additive — same capsules still pass, plus canonical-link-bearing ones start passing too.
+
+### E.10 Design-tool bundler compatibility note
+
+**Issue.** A spec-aware LLM can produce capsule-compliant *intent* (correct manifest, correct capabilities, correct provenance, correct reasoning about Rule 2 conflicts) and still emit a non-conforming file because the surrounding **export pipeline** wraps the output in a single-page-app bundler shell. The model is not the integration boundary; the export step is.
+
+Concretely, observed in a Claude Design session with `CAPSULE_CORE.md` attached as context (see RESEARCH.md F19):
+
+```html
+<head><style>… thumbnail + loading styles only …</style></head>
+<body>
+  <div id="__bundler_thumbnail">…</div>
+  <div id="__bundler_loading">Unpacking…</div>
+  <script>/* bundler reads next two blocks, fetches blob URLs, DOM-injects */</script>
+  <script type="__bundler/manifest">… base64+gzip assets …</script>
+  <script type="__bundler/template">… HTML template as JSON …</script>
+</body>
+```
+
+Against the reference validator: 4/10 pass, 5 fail. No reserved `id="capsule-*"` blocks exist *as written*. They would exist after `DOMContentLoaded` hydration runs — but Rule 12 explicitly forbids that pattern (content must be pre-rendered in the HTML at build time, not produced by runtime JavaScript), and Rule 2 is violated by the bundler's `fetch()` calls on blob URLs.
+
+**Two verifiers, different criteria.** The design tool's own verifier reported "valid" on the same file. Both verifiers are internally consistent — they're checking different artifacts:
+
+- **Design-tool verifier:** the *unpacked logical content* after the bundler runs.
+- **Reference validator:** the *file bytes as parsed by an HTML renderer with no JavaScript*.
+
+The spec is unambiguous about which interpretation matters (the file on disk), but a fresh tool author would not know that without reading the spec carefully. This is a generalizable cross-tool integration lesson: **"validates against my checker" ≠ "validates against the standard's checker"** — the standard has to specify exactly what it validates over.
+
+**What we did instead.** For raw HTML exports from the design canvas (not the bundler shell), a deterministic structural transformation produced valid capsules at 25/25 each:
+
+- Strip per-element inline CSS resets (the design canvas's normalization layer, ≈4 MB of bloat per file)
+- Strip canvas metadata attributes (`data-om-id`, `data-jsx-*`, `data-om-*`)
+- Strip the redundant `@import url('Google Fonts')` (fonts are also embedded as `data:` URIs above)
+- Unwrap the design canvas's outer `<div class="dc-card">` wrapper
+- Merge the two `<style>` blocks (head fonts + body design CSS) into a single `<style id="capsule-style">`
+- Wrap the visible content in `<main id="capsule-root">`
+- Inject `<script id="capsule-manifest">`, `<script id="capsule-data">`, `<script id="capsule-runtime">`
+- Add CSP `<meta http-equiv>` header
+- Add an "About this capsule" `<details>` panel styled to match the design's accent
+
+This conversion bridge is reusable for any design tool whose raw canvas export is structurally similar.
+
+**Why this is not a rule change.** Rule 12 is doing exactly what it was designed to do: catching the JS-render-everything failure mode in a fresh independent producer. Relaxing the rule to accommodate bundler-SPA outputs would defeat the format's archival-readability property entirely (capsules must be readable years from now, in any browser, including ones where JavaScript fails or is disabled).
+
+**What this earns in v0.4.** Nothing structural — no new fields, no relaxed rules, no validator changes. The right outcome is a **documented integration pattern**:
+
+- **For tool authors:** if your tool produces capsules, the file on disk must contain the five reserved blocks and visible content *before* any JavaScript runs. The bundler/hydration pattern is incompatible with Rule 12 by design.
+- **For users of design / no-code / app-builder tools:** if your tool's "export as HTML" pipeline wraps output in a bundler, you have two paths: (1) export the raw canvas HTML and run a conversion bridge, or (2) treat the design tool as a working canvas and re-emit the capsule from a compiler that targets the spec directly.
+- **For the spec:** no change. This appendix entry is the documentation.
+
+**When this graduates to normative text.** If multiple independent tool integrations hit the same boundary and a common conversion-bridge pattern emerges, the spec could promote that pattern into an informative appendix in a future v0.x — describing the canonical "design-canvas-shape → capsule" mapping without endorsing any specific tool. Until then, the empirical finding lives in RESEARCH.md F19 and the convertor script lives alongside the reference compiler.
