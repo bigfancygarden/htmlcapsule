@@ -1404,7 +1404,7 @@ Until then, this entry is the design memory.
 **Lean: don't build, advise wrappers.** The format already has the right primitive for "don't share this content" — `privacy.redaction_applied` with `redaction_method` and `redaction_profile`. The intended model is: **decide what's shareable before sealing, redact what isn't, then seal.** Encryption pulls capsules toward "selective-access messaging," which is a different problem space better served by:
 
 - **OS/wrapper-level encryption** (AES-encrypted ZIP, `.age`-encrypted wrappers, `gpg`-encrypted files) around the capsule. Recipient unlocks the wrapper, opens the capsule. The capsule itself stays pure and validator-clean.
-- **Hosting-platform auth gates** (per the MinDev pattern in §11 hosting discussion). The platform controls *delivery*; the capsule itself doesn't gate its internal contents.
+- **Hosting-platform auth gates** (per the MinDev pattern; see Appendix B for general distribution guidance). The platform controls *delivery*; the capsule itself doesn't gate its internal contents.
 - **Authenticated channels** for transport (Signal, encrypted email, password-protected file storage). The capsule travels through the secure channel; the format itself stays neutral.
 
 **Why building encryption into the format is worse than these alternatives:**
