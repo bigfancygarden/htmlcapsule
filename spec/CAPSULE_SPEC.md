@@ -1507,9 +1507,13 @@ def check_external_link_tags(html_scannable):
 
 ### E.10 Design-tool bundler compatibility note
 
-**Issue.** A spec-aware LLM can produce capsule-compliant *intent* (correct manifest, correct capabilities, correct provenance, correct reasoning about Rule 2 conflicts) and still emit a non-conforming file because the surrounding **export pipeline** wraps the output in a single-page-app bundler shell. The model is not the integration boundary; the export step is.
+**Issue.** Multi-producer interop assumes a producer's output is the artifact a consumer verifies. A subtle integration failure is possible when the producer's *output* is well-formed but a generic post-processing step (typically a "save as standalone HTML" bundler) mutates the artifact *after* verification has cleared. The file shipped to the consumer is then structurally a single-page-app hydration shell, not a capsule, even though every step in isolation looked correct.
 
 Concretely, observed in a Claude Design session with `CAPSULE_CORE.md` attached as context (see RESEARCH.md F19):
+
+1. The model wrote a 40 KB single HTML file that **does** validate against the reference validator (24/25 pass, 1 heuristic warn, 0 fail). Five reserved `id="capsule-*"` blocks present at the byte level, `<main id="capsule-root">` populated with 5,388 chars of pre-rendered visible text, honest provenance (`generator.kind: "llm"`), zero fetch.
+2. A subsequent "Save as standalone HTML" step ran a general-purpose bundler over that valid file. The bundler is built to inline external assets for designs that *aren't* self-contained — running it over input that already is self-contained is destructive, not idempotent.
+3. The 52 KB output of step 2 is structurally a bundler shell:
 
 ```html
 <head><style>… thumbnail + loading styles only …</style></head>
@@ -1522,35 +1526,39 @@ Concretely, observed in a Claude Design session with `CAPSULE_CORE.md` attached 
 </body>
 ```
 
-Against the reference validator: 4/10 pass, 5 fail. No reserved `id="capsule-*"` blocks exist *as written*. They would exist after `DOMContentLoaded` hydration runs — but Rule 12 explicitly forbids that pattern (content must be pre-rendered in the HTML at build time, not produced by runtime JavaScript), and Rule 2 is violated by the bundler's `fetch()` calls on blob URLs.
+Against the reference validator: 4/10 pass, 5 fail. No reserved `id="capsule-*"` blocks exist *as written* — they would exist after `DOMContentLoaded` hydration runs, but Rule 12 explicitly forbids that pattern (content must be pre-rendered in the HTML at build time, not produced by runtime JavaScript), and Rule 2 is violated by the bundler's `fetch()` calls on blob URLs.
 
-**Two verifiers, different criteria.** The design tool's own verifier reported "valid" on the same file. Both verifiers are internally consistent — they're checking different artifacts:
+**The mechanism is a process-ordering issue, not a spec-interpretation disagreement.**
 
-- **Design-tool verifier:** the *unpacked logical content* after the bundler runs.
-- **Reference validator:** the *file bytes as parsed by an HTML renderer with no JavaScript*.
+Both the producer's verifier and the reference validator agree on the model's actual capsule output (the 40 KB file at step 1) — both score it as conforming. They also agree on the post-bundler file (the 52 KB file at step 3) — both would score it as non-conforming, if asked. The bug is that the verification gate ran at step 1 but did not re-run after step 2 mutated the artifact.
 
-The spec is unambiguous about which interpretation matters (the file on disk), but a fresh tool author would not know that without reading the spec carefully. This is a generalizable cross-tool integration lesson: **"validates against my checker" ≠ "validates against the standard's checker"** — the standard has to specify exactly what it validates over.
+This generalizes as: **verify-before-mutate alone is insufficient; the verification gate must re-run after any pipeline step that touches the artifact, or be the *last* step before the artifact leaves the producer.** A multi-step export pipeline that mutates an artifact between verification and ship can produce a file the verifier never actually checked. This is closer in spirit to the build-pipeline / artifact-signing problem in software supply chains than to a spec-interpretation disagreement.
 
-**What we did instead.** For raw HTML exports from the design canvas (not the bundler shell), a deterministic structural transformation produced valid capsules at 25/25 each:
+**What the conversion bridge does (separate path, for canvas mockups not capsules).**
+
+For raw HTML exports from a design canvas — distinct from the bundler output above — a deterministic structural transformation produces valid capsules:
 
 - Strip per-element inline CSS resets (the design canvas's normalization layer, ≈4 MB of bloat per file)
 - Strip canvas metadata attributes (`data-om-id`, `data-jsx-*`, `data-om-*`)
-- Strip the redundant `@import url('Google Fonts')` (fonts are also embedded as `data:` URIs above)
-- Unwrap the design canvas's outer `<div class="dc-card">` wrapper
+- Strip any redundant `@import url('Google Fonts')` (if the same fonts are also embedded as `data:` URIs)
+- Unwrap the design canvas's outer wrapper (e.g., `<div class="dc-card">`)
 - Merge the two `<style>` blocks (head fonts + body design CSS) into a single `<style id="capsule-style">`
 - Wrap the visible content in `<main id="capsule-root">`
 - Inject `<script id="capsule-manifest">`, `<script id="capsule-data">`, `<script id="capsule-runtime">`
 - Add CSP `<meta http-equiv>` header
-- Add an "About this capsule" `<details>` panel styled to match the design's accent
+- Add an "About this capsule" `<details>` panel for export buttons
 
-This conversion bridge is reusable for any design tool whose raw canvas export is structurally similar.
+This conversion bridge is reusable for any design tool whose raw canvas export is structurally similar. It does *not* apply to bundler-wrapped outputs — for those, the correct mitigation is to skip the bundler entirely on input that is already capsule-shaped.
 
-**Why this is not a rule change.** Rule 12 is doing exactly what it was designed to do: catching the JS-render-everything failure mode in a fresh independent producer. Relaxing the rule to accommodate bundler-SPA outputs would defeat the format's archival-readability property entirely (capsules must be readable years from now, in any browser, including ones where JavaScript fails or is disabled).
+**Why this is not a rule change.** Rule 12 is doing exactly what it was designed to do: catching the JS-render-everything failure mode in a fresh independent producer. Relaxing the rule to accommodate bundler-SPA outputs would defeat the format's archival-readability property entirely (capsules must be readable years from now, in any browser, including ones where JavaScript fails or is disabled). The spec is not the layer where this problem gets solved — the producer's pipeline ordering is.
 
 **What this earns in v0.4.** Nothing structural — no new fields, no relaxed rules, no validator changes. The right outcome is a **documented integration pattern**:
 
-- **For tool authors:** if your tool produces capsules, the file on disk must contain the five reserved blocks and visible content *before* any JavaScript runs. The bundler/hydration pattern is incompatible with Rule 12 by design.
-- **For users of design / no-code / app-builder tools:** if your tool's "export as HTML" pipeline wraps output in a bundler, you have two paths: (1) export the raw canvas HTML and run a conversion bridge, or (2) treat the design tool as a working canvas and re-emit the capsule from a compiler that targets the spec directly.
+- **For tool authors:** if your tool produces capsules, the verification gate must be the last thing that touches the artifact, or it must re-run after every subsequent mutation. A generic "make this self-contained" pipeline that runs after the capsule is written will likely destroy the capsule, because the capsule is already self-contained in a specific structural way.
+- **For users of design / no-code / app-builder tools:** if your tool offers a separate "save as standalone HTML" step downstream of producing a capsule, that step is probably the bundler — and it may invalidate the capsule. Skip the bundler if the file is already capsule-shaped.
+- **For canvas-raw exports** (mockups, not capsules): use a conversion bridge (see structural-transformation list above). The integration point is the canvas export, not the bundler output.
 - **For the spec:** no change. This appendix entry is the documentation.
 
 **When this graduates to normative text.** If multiple independent tool integrations hit the same boundary and a common conversion-bridge pattern emerges, the spec could promote that pattern into an informative appendix in a future v0.x — describing the canonical "design-canvas-shape → capsule" mapping without endorsing any specific tool. Until then, the empirical finding lives in RESEARCH.md F19 and the convertor script lives alongside the reference compiler.
+
+**Empirical record.** This is also the first independently-confirmed reproduction of an LLM-kind producer reaching conformance directly from `CAPSULE_CORE.md` as a prompt input — strengthening the multi-producer interop claim in §1. The model produced a 24/25-passing, 0-fail file; the integration failure was downstream of the model, in the bundler step.

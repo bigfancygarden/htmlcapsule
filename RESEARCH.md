@@ -390,7 +390,9 @@ Both risks are now ongoing discipline rather than one-time fixes.
 
 ### F19: Design-tool integration experiment — Claude Design with CAPSULE_CORE.md attached
 
-**Experiment.** Asked a design tool (Claude Design, claude.ai/design) to produce a landing-page design and export the result as a Capsule per Core v0.3.0, with `CAPSULE_CORE.md` attached as conversation context. The session produced *two* relevant outputs, with very different structural shapes — both worth recording.
+**Experiment.** Asked a design tool (Claude Design, claude.ai/design) to produce a landing-page design and export the result as a Capsule per Core v0.3.0, with `CAPSULE_CORE.md` attached as conversation context. The session produced *three* relevant artifacts, with quite different structural shapes — all worth recording. Two were valid; one was not.
+
+> **Note on finding evolution.** This finding was substantially revised after the model self-corrected its export choice. An initial draft treated the bundler-wrapped 52 KB file as "the model's capsule output" and framed the discrepancy as "two verifiers checking different criteria." The model's reply clarified — and our reference validator confirmed — that the model first wrote a 40 KB file that **does** validate cleanly (24/25 pass, 0 fail), then a separate "Save as standalone HTML" step ran a general-purpose bundler over that valid file and produced the 52 KB shell. So the finding is not "spec-aware intent, non-conforming output" — it's "spec-aware conforming output, destroyed by a downstream pipeline step that should not have run." The revised version below is the accurate record.
 
 **Output A — three design-variation files from the canvas (dc-card wrapped).**
 
@@ -399,13 +401,58 @@ These were the JSX/HTML mockups exported earlier in the same session, before the
 - Was 4.8–5.7 MB on disk, ~75% of which was per-element inline `style="accent-color:auto; align-content:normal; ..."` CSS resets that Claude Design's canvas applies (≈10 KB per element × ~385 elements). These are normalization for the design canvas, not the design itself.
 - Wrapped visible content in `<div class="dc-card" data-om-id="...">` — Claude Design's canvas-card container.
 - Had two `<style>` blocks: one in the head (woff2 fonts as `data:` URIs) and one inside the body (the actual design CSS, with a redundant `@import url('https://fonts.googleapis.com/...')` that violated Rule 2 even though the same fonts were already embedded as `data:` URIs above).
-- Had no `id="capsule-*"` blocks of any kind. Pure design exports.
+- Had no `id="capsule-*"` blocks of any kind. Pure design exports — not capsules, design mockups.
 
 A structural transformation script (strip resets, strip `data-om-*`, strip the redundant `@import`, unwrap dc-card, merge `<style>` blocks into `<style id="capsule-style">`, wrap content in `<main id="capsule-root">`, inject `<script id="capsule-manifest">` + `<script id="capsule-data">` + `<script id="capsule-runtime">`, add CSP meta) converted each to a valid capsule at 25/25, ~1.5 MB final (essentially the embedded woff2 fonts plus thin content). The visual design was preserved bit-for-bit; the bloat removed was Claude Design's canvas safety net, not the design itself.
 
-**Output B — "Save as standalone HTML" export from the tool's bundler.**
+**Output B1 — the model's actual capsule output (40 KB, pre-bundler).**
 
-Later in the same session, the user clicked "Save as standalone HTML." The 52 KB file produced is structurally a **single-page-app bundler shell**, not a capsule:
+After the user asked explicitly for "the landing page as a Capsule per the attached Core spec," the model wrote a 40 KB single HTML file. Validated against the reference validator:
+
+**24/25 pass, 1 warn, 0 fail.**
+
+| Validator check | Result | Notes |
+|---|---|---|
+| HTML5 doctype | PASS | — |
+| `<html>` + `<body>` tags | PASS | — |
+| All required sections present | PASS | All five `id="capsule-*"` blocks at the byte level |
+| No external resource references | PASS | Zero network fetches |
+| Manifest section parseable | PASS | Honest provenance (see below) |
+| All required manifest fields | PASS | — |
+| Manifest field types | PASS | — |
+| Capsule version present | PASS | `capsule_version: "8.0.0"` |
+| Recommended manifest fields | PASS | — |
+| `generator.kind` recognized | PASS | `"llm"` |
+| `source` block | PASS | `origin: "authored"`, snapshot fields populated |
+| `privacy` block | PASS | `external_dependencies: false` |
+| `spec_version` recognized | PASS | `0.3.0` |
+| `spec_version` ↔ `source.spec_received` agree | PASS | — |
+| `capabilities` include `about` + one export | PASS | — |
+| Data section parseable | PASS | — |
+| Content hash verifies | PASS | No integrity block (optional for LLM-kind) — passes by absence |
+| Field format patterns | PASS | — |
+| All capabilities have impl markers (heuristic) | **WARN** | `copy_as_prompt` — implementation exists but the function name doesn't match the validator's marker regex (false negative on a soft check). |
+| Runtime JS strings well-formed | PASS | — |
+| Content pre-rendered in HTML | PASS | 5388 chars of visible text in `<main id="capsule-root">` |
+| File size under 15 MB | PASS | 41,724 bytes |
+
+This is a third independent producer kind reaching conformance — joining the reference compiler (`generator.kind: "compiler"`) and the hand-authored landing (`generator.kind: "human"` / `"hybrid"`). **All three producer kinds in the spec's interop claim are now empirically demonstrated.**
+
+What the model got right structurally:
+
+- **Five reserved IDs at the byte level** — `capsule-manifest`, `capsule-data`, `capsule-style`, `capsule-root`, `capsule-runtime`, all present in the parsed-as-written file with no JavaScript needing to run.
+- **`<main id="capsule-root">` populated with 5,388 chars of pre-rendered visible text** — directly satisfies Rule 12 without ambiguity.
+- **Honest provenance**: `generator.kind: "llm"`, `name: "claude.ai"`, `version: "claude"`. Declined to guess its own model ID and noted the user could pin tighter (e.g., `"claude-opus-4-7"`).
+- **Correctly handled the Rule 2 / Google Fonts conflict** before writing: picked system-font fallback (`ui-monospace, SF Mono, Cascadia Code, Menlo, Consolas, DejaVu Sans Mono`) rather than `@import` or fetched fonts. The right call.
+- **Skipped QR code per spec guidance** — the qrcode library wasn't available in its environment, so it followed the spec's *"don't fake a QR by hand"* directive rather than producing a wrong one.
+- **Capabilities declared with implementation intent** — `about`, `copy_as_json`, `copy_as_markdown`, `copy_as_prompt`, `download_json`, `download_capsule`, `print_to_pdf`. Added a self-check that warns to the console for any declared-but-not-implemented capability (Rule 7 self-audit baked into the file).
+- **Sensible defaults** — `source.origin: "authored"` rather than `"private_database"`, accessibility nods, print stylesheet.
+
+The single validator warn was a heuristic false-negative on `copy_as_prompt` — the function existed but didn't match the marker regex pattern. Zero hard failures. **The pre-bundler file is a deployable, conforming capsule.**
+
+**Output B2 — the same file after "Save as standalone HTML" ran (52 KB, post-bundler).**
+
+The user then clicked "Save as standalone HTML." Claude Design's bundler — a general-purpose pipeline built to inline external assets for designs that *aren't* self-contained — ran over the already-self-contained B1 and wrapped it in a single-page-app hydration shell:
 
 ```
 <head>
@@ -428,70 +475,50 @@ Later in the same session, the user clicked "Save as standalone HTML." The 52 KB
 </body>
 ```
 
-Validator score against the reference validator: **4/10 pass, 1 warn, 5 fail.**
+Validator score: **4/10 pass, 1 warn, 5 fail** — required sections missing (the bundler uses `script[type="__bundler/*"]` instead of `id="capsule-*"`), `fetch(s.src)` in the asset-assembly step violates Rule 2, manifest unfindable, content not pre-rendered (zero visible text in `<main id="capsule-root">` because no such element exists at parse time).
 
-| Validator check | Result | Cause |
-|---|---|---|
-| HTML5 doctype | PASS | — |
-| `<html>` + `<body>` tags | PASS | — |
-| Required sections present | **FAIL** | No `id="capsule-manifest"`, `id="capsule-data"`, `id="capsule-style"`, `id="capsule-root"`, or `id="capsule-runtime"`. The bundler uses `script[type="__bundler/manifest"]` and `script[type="__bundler/template"]` instead. |
-| No external resource references | **FAIL** | `fetch(s.src)` in the bundler's asset-assembly step |
-| Manifest section parseable | **FAIL** | Same root cause — wrong IDs |
-| Data section parseable | **FAIL** | Same |
-| Content hash verifies | **FAIL** | Manifest unfindable |
-| Content pre-rendered (Rule 12) | WARN | 0 chars of visible text in `<main id="capsule-root">` (no such element exists — content gets DOM-injected post-load) |
-| Runtime JS strings well-formed | PASS | — |
-| File size under cap | PASS | 52 KB |
+Architecturally, this is **exactly the failure mode Rule 12 was written to catch** — content packed into JS, rehydrated on load, body empty at parse time. Open the file with JavaScript disabled (iOS Files preview, email previewer, archive viewer, old browser) and you see the loading spinner forever, then a `<noscript>` fallback. Same shape as F14's JS-render-everything failure pattern, but inverted into a deliberate hydration architecture.
 
-**What the model got right** (worth recording carefully — the model's reasoning was good):
+The mechanism is innocent — Claude Design's bundler exists for a legitimate purpose (inlining externally-referenced assets into a transportable single file). The bug is that **it should be skipped, not run, when the input is already capsule-shaped.** Running a "make this self-contained" pipeline over a file that is already self-contained is destructive, not idempotent.
 
-- **Correctly flagged Rule 2 conflict** before writing: Google Fonts would need either embedding or system fallback. Picked system fallback (`ui-monospace, SF Mono, Cascadia Code, Menlo, Consolas, DejaVu Sans Mono`). The right call.
-- **Correctly declined to guess its own model ID** — wrote `generator: { name: "claude.ai", version: "claude", kind: "llm" }` and noted the user could pin tighter (e.g., `"claude-opus-4-7"`). Honest provenance.
-- **Skipped QR code per spec guidance** — explicitly noted the qrcode library wasn't available in its environment, followed the spec's own *"don't fake a QR by hand"* directive.
-- **Generated fresh UUIDv4** (Rule 4 of the schema).
-- **Declared capabilities with implementation intent** — about, copy_as_json, copy_as_markdown, copy_as_prompt, download_json, download_capsule, print_to_pdf. Even added a console-warning self-check for capabilities without handlers (Rule 7 self-audit).
-- **Picked sensible defaults** — `source.origin: "authored"` rather than `"private_database"` (because no DB extraction occurred), accessibility nods, print stylesheet.
+**The actual integration boundary: a process-ordering issue, not a verifier-criteria mismatch.**
 
-The model read the spec, reasoned about conflicts, made principled choices, and flagged uncertainty upfront. **The model's output was spec-aware.**
+An earlier draft framed B1 ↔ B2 as a discrepancy between two verifiers checking different things. That was wrong. The clarified mechanism (confirmed by the model and re-checked against our validator):
 
-**What the export pipeline did anyway:**
+- The model wrote B1 and ran its own verification on the as-written bytes. B1 validates against both the model's verifier *and* our reference validator. Both agree it's a conforming capsule.
+- The user then triggered a separate "Save as standalone HTML" step that ran the bundler over B1, producing B2. The verification gate had already cleared on B1; it did not re-run on B2.
+- B2 fails both verifiers, because it is structurally not a capsule — it's a bundler shell that *contains* a capsule template inside an `__bundler/template` block.
 
-The "Save as standalone HTML" step ran the model's output through a bundler that:
-- Packed all visible content into `script[type="__bundler/*"]` blobs as base64+gzip
-- Replaced the document body with a thumbnail + loading shell
-- Inserted a hydration script that runs on `DOMContentLoaded`
-- Added a `fetch()` call in the asset-assembly path
+So the lesson generalizes as: **"verify-before-mutate, but always re-verify after any pipeline step that touches the artifact."** A multi-step export pipeline that mutates the artifact between verifications can ship a file that the verifier never actually checked. In the Claude Design case, the verifier ran at the right point in the conversation flow but not at the right point in the file-mutation flow.
 
-This is **architecturally the exact thing Rule 12 was written to catch** — content packed into JS, rehydrated on load, body empty at parse time. Open the file with JavaScript disabled (iOS Files preview, email previewer, archive viewer, old browser) and you see the loading spinner forever, then a `<noscript>` fallback message. Same failure mode as the F14 JS-render-everything pattern, but inverted into a deliberate architecture.
+(This is closer in spirit to the build-pipeline / artifact-signing problem in software supply chains than to a spec-interpretation disagreement. The signature/verification gate has to be the *last* thing that touches the artifact before it leaves the producer, or there is a window where the artifact and the gate disagree.)
 
-**Two verifiers, different criteria.**
+**What the model self-corrected.**
 
-Claude Design's own verifier reported "valid" on the same file our reference validator scored 4/10. The discrepancy is interpretation:
+After being shown the validator score on B2 alongside the diagnosis, the model's reply was sharp: *"You're right, and the diagnosis is accurate… The file is already standalone. Running the bundler will wrap it in an SPA hydration shell that violates Rules 2, 3, and 12. Skipping the bundler — the file you have is the deliverable."* It correctly identified the actual deployable as B1, named the bundler as the source of the destruction, and rephrased the original "two verifiers" framing as a process bug ("I shipped two files in sequence and only validated the first").
 
-- **Claude Design's verifier** evidently checks the *unpacked* logical content — *after* the bundler hydrates, does the DOM contain a manifest, data, capabilities, etc.? Under that interpretation, the file is valid.
-- **Our reference validator** parses the file bytes as written, before any JavaScript runs. Under that interpretation, none of the required structure exists.
-
-Both are internally consistent. They're checking different things. **The spec is unambiguous about which interpretation matters** (the file on disk, as it would be parsed by an HTML renderer with no JavaScript), but a fresh tool author wouldn't know that without reading the spec carefully. This is a generalizable lesson about cross-tool validation: **"validates against my checker" ≠ "validates against the standard's checker"**, and the standard has to be specific about what it validates.
+This is itself a relevant data point for multi-producer interop: a spec-aware model, when given the empirical evidence, can self-diagnose the integration boundary and correctly route around it.
 
 **Implications for multi-producer interop:**
 
-- **The model is not the integration boundary; the export pipeline is.** A spec-aware model can produce spec-compliant intent that a downstream tool step then overrides. This is a meaningful piece of infrastructure knowledge for anyone integrating capsules with design / no-code / app-builder tools.
-- **The conversion bridge is the practical integration point** for Output-A-shaped exports (dc-card-wrapped raw HTML). The structural transformation we used works mechanically.
-- **The bundler-wrapped Output B requires a different bridge** — one that decodes the bundler manifest + template, reconstructs the visible HTML, and re-emits it as a capsule with the reserved IDs. We didn't build that bridge for this experiment; the Output A path was sufficient.
-- **Self-containment ≠ capsule-compliance.** Both Output A and Output B are self-contained at runtime (no network apart from the one Rule-2-violating fetch). Self-containment is necessary but not sufficient. The five-required-blocks contract, the reserved IDs, the pre-rendered-in-HTML rule, the no-network-at-render — these together are what "capsule" means.
+- **All three producer kinds are now empirically demonstrated.** Compiler (`compile.py`), LLM (B1, claude.ai/design with `CAPSULE_CORE.md`), and hand-authored / hybrid (the canonical landing page) all produce files passing the reference validator. The interop claim in the README is now backed by an independent third producer.
+- **The model can produce conforming capsules from the Core spec prompt alone.** No special tooling, no per-capsule template, no human cleanup step — `CAPSULE_CORE.md` plus a description of the desired content was sufficient.
+- **The downstream pipeline is the integration risk, not the model.** A spec-aware producer can be undone by a generic post-processing step that doesn't know about the spec. The mitigation is process discipline (re-verify after every mutation), not a rule change.
+- **Self-containment is necessary but not sufficient for capsule-compliance.** B2 is self-contained at runtime; it is still not a capsule. The five-required-blocks contract + reserved IDs + pre-rendered-in-HTML + no-network-at-render are what the format means by "capsule," beyond mere bundling.
 
-**Implication for the spec:**
+**Implications for the spec:**
 
-- **No rule change motivated.** Rule 12 is doing exactly what it was designed to do — catching the JS-render-everything failure mode in a fresh independent producer. Relaxing it to accommodate bundler-SPA outputs would defeat the format's archival readability property entirely.
-- **A formal compatibility note** belongs in the spec so future tool integrators understand the boundary. Captured as Appendix E.10 ("Design-tool bundler compatibility note") in the v0.4 candidates list. Documents the incompatibility, names the integration point, doesn't propose a fix.
-- **The conversion bridge** (the script we wrote during this experiment) is reusable for future Claude-Design–shaped exports. If similar tools appear with similar bundler patterns, the bridge generalizes.
+- **No rule change motivated.** Rule 12 caught exactly what it was designed to catch. The spec's normative content is unchanged by this finding.
+- **A formal compatibility note** lives in Appendix E.10 as a v0.4 candidate. It documents the bundler-incompatibility pattern, names the integration point (skip the bundler on already-capsule-shaped input; or, equivalently, the bundler's input is the integration point, not its output), and articulates the verify-before-mutate / re-verify-after-mutate process discipline.
+- **The conversion bridge** (the structural-transformation script from the Output A path) is reusable for future canvas-shaped exports from any tool with a similar `dc-card`-style wrapper.
 
 **What we did with the outputs:**
 
-- Output A (dc-card raw HTML): converted three design-variation files to valid capsules at 25/25 each, ~1.5 MB after stripping the canvas-reset bloat. These are deployable.
-- Output B (bundler-wrapped "standalone HTML"): not shipped. Would have failed public validation badly and would have contradicted everything the spec claims about pre-rendering. Used as the empirical evidence for this finding.
+- **Output A** (dc-card raw HTML from the canvas): converted three design-variation files to valid capsules at 25/25 each, ~1.5 MB after stripping the canvas-reset bloat. Deployable.
+- **Output B1** (the model's pre-bundler 40 KB file): validates 24/25 / 0 fail. Documented here as the empirical LLM-producer exemplar. Not shipped as the project's canonical landing (we already have one), but recorded as evidence of the LLM-producer path working end-to-end.
+- **Output B2** (post-bundler 52 KB shell): not shipped; failed validation; serves as the empirical evidence for E.10 and for the "skip the bundler on capsule-shaped input" guidance.
 
-The clean record: the model can be told about a spec and reason about it correctly; the surrounding pipeline may or may not honor that reasoning; the spec is the contract that resolves the ambiguity between the two.
+The clean record: **the LLM-producer path works.** A spec-aware model with the Core spec attached can produce a conforming capsule on the first try. The integration risk is downstream pipeline steps that mutate the artifact after verification has cleared — the mitigation is process, not a rule change.
 
 ## Open questions
 
