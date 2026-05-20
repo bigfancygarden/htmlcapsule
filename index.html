@@ -4,18 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="description" content="Capsule: an approach for working with HTML artifacts. One sealed HTML file with everything inside — manifest, data, provenance. No network. Built to be re-read years later by humans and by the LLMs they ask to continue the work. Open spec, reference implementation, examples.">
+<meta name="description" content="A first-person essay on writing down an open spec for sealed HTML artifacts — the journey from copy-pasting between AI tools to treating HTML as the canonical work product, and what it takes to make those files trustworthy.">
 <meta name="color-scheme" content="light">
-<title>Capsule — an approach for working with HTML artifacts</title>
+<title>What I do with all the HTML I get from AI — htmlcapsule</title>
 
 <script id="capsule-manifest" type="application/json">
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "9.1.0",
-  "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v9.1.0 is a narrative restructure on top of v9.0's bright visual design: hero now leads with the substrate observation (HTML won as the AI artifact format) and the felt question (\"what do you do with all these HTML artifacts?\"), and section I becomes \"Four questions\" — archive, share, fork, export — with Capsule's answer to each. The previous v9.0 \"two promises\" content (cannot be unshared, never phones home) is folded into the share/archive answers. Same visual design as v9.0 (cool light paper, electric-blue accent, all-sans). Same logical capsule as v7.x / v8 / v9.0 (UUID 7d1a1ac8 preserved across redesigns).",
-  "type": "landing_page",
+  "capsule_version": "10.0.0",
+  "title": "What I do with all the HTML I get from AI",
+  "description": "Landing page for the Capsule project. v10.0.0 is a complete narrative restructure: the landing-page format is replaced with a first-person essay drawing on the maintainer's actual journey with AI tools — copy-pasting between chat systems, the share-link discontent, the Claude Design pivot, the QGIS / React-GIS rabbit hole, and the realization that led to writing down a contract for HTML artifacts. The 12-rule grid, anatomy diagram, four-questions section, and status table are gone; the essay carries the meaning and the spec details live in CAPSULE_CORE.md. Same visual palette as v9 (cool light paper, electric-blue accent, all-sans). Same logical capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10).",
+  "type": "essay",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
     "name": "human + Claude",
@@ -24,8 +24,8 @@
   },
   "source": {
     "origin": "project_authorship",
-    "snapshot_type": "landing_page",
-    "snapshot_id": "snapshot:htmlcapsule_landing_bright_v9_2026_05_20",
+    "snapshot_type": "essay",
+    "snapshot_id": "snapshot:htmlcapsule_landing_essay_v10_2026_05_20",
     "spec_received": "v0.3.0 · 2026-05-19",
     "included_records": 1
   },
@@ -39,7 +39,6 @@
     "about",
     "copy_as_json",
     "copy_as_markdown",
-    "copy_as_prompt",
     "download_json",
     "download_capsule",
     "print_to_pdf"
@@ -54,74 +53,35 @@
 
 <script id="capsule-data" type="application/json">
 {
-  "title": "An approach for working with HTML artifacts",
+  "title": "What I do with all the HTML I get from AI",
+  "subtitle": "Notes on starting an open spec for sealed HTML artifacts",
+  "byline": "B. F. Garden · 2026-05-20",
   "tagline": "One file. Everything inside — manifest, data, provenance. No network, no platform. Built to be re-read years from now — by humans, and by the LLMs they ask to reopen the work.",
-  "audience": "anyone working with HTML artifacts — LLM users producing them, builders consuming them, archivists preserving them, and the future readers (human and AI) who will reopen them years later",
+  "audience": "anyone with HTML artifacts piling up from AI tools — and the future readers (human and AI) who will reopen them years later",
+  "essay": [
+    "Just want to give you my journey here with AI tools. I've been using all the chat systems, chatgpt, claude web, gemini web.. and then more recently using more claude code CLI and codex CLI.. and now been using the Claude Harness/App and the Codex Harness/App.. but in any case, for the longest time, I was doing work in each, and then copying and pasting data in/out.. pasting it into other chats, pasting it into Google Docs or notes or obsidian.. trying to reliably get my info \"out\" of the AI systems and into a format that I can either archive or easily share with friends.",
+    "I know there's been the share button for these chats for a long time but something doesn't sit right with it for me. The chats either get lost for me, or I'm not confident or sure what version they're displaying, or if they're displaying the conversation all the way, or only at a certain point, or if they're still updating after the fact. I'm sure I could dig into the documentation on this and get a sense for it, but will it change? Will it ever be intuitive to me? I'm not sure it will. I'm also not sure that it will stay the same once I look into it, and I'm not sure that it's the same between all these systems. I'm also not sure that I can paste these links into other AI's or LLM's and have them evaluate it or work off it or build it. It's a mess.",
+    "Now, also, around the same time, they put out artifacts, and those were quite neat, but again.. didn't really know how to use them or put them into my workflow. When Claude Design came out, though, I knew something was different.. because it could give these beautiful and editable interfaces, and it could be downloaded as html or \"handed off\" to claude code for implementation. That was huge, because up until that point I was getting designs and throwing it into my claude code projects to try and get it to implement into my react-based apps and systems. But throughout here it's been a fight. It's been a fight between making and doing \"work\" inside of one system, and then getting it into a format that AI can natively talk to and work on and iterate on with me.",
+    "Putting things into HTML has been a huge shift for me. Even just with the chat conversations, I was always trying to get the data \"out\" by asking Claude or ChatGPT for a summary in markdown or to make me a PDF version. Or copying and pasting stuff into notes or word or Google Docs.. it never looked good. The only way I could get pixel perfect looking stuff is if I asked to do a react/html render and then use something like playwright to \"print\" to a jpeg or pdf.",
+    "For example, one thing I always do is make maps in QGIS that are jpegs or PDFs. I would constantly be going back and forth between the app and chat agents. I'm sure there is a way that I could have wired something up so that the codex or claude code CLI could have talked to QGIS and made edits, maybe through a database, but this is still so clunky. So I decided to try to create a sort of GIS system inside react (with Postgres on the backend and tools like GDAL) so I could get the exact interface I wanted.. but this started to get clunky too. Furthermore since I was trying to share content with other users.. stuff like maps, and tables, often related.. I was trying to bring a portal that connected up to my working react GIS system so I could share content with my end users (which would have usually been maps or excel tables, with no real provenance or unique identifiers other than file names and \"v1, v2, v3\" type stuff).",
+    "I was also really interested in Claude Design's ability to work with maps. Cartography. Like, it was a way of iterating through things so much faster than I could have previously done it with either illustrator or qgis.. So then it hit me.. why not embrace HTML for this? If Claude Design is using HTML as its substrate, then why don't I setup my work to be more friendly to that?",
+    "So I started doing that. Instead of trying to convert what Claude Design or Claude Code or any chat LLM was giving me into something else, I just kept it as HTML. But raw HTML by itself has its own problems. I still couldn't reliably tell what I was looking at — where it came from, whether it was complete, what version it was, whether the page would even render the same next month. The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.",
+    "So I started writing down what HTML would need to be to be trustworthy as an artifact — the same way a PDF is trustworthy as \"this is what was sent, that's the file.\" First version of the rules was rough. Just: save it as one HTML file, put a small JSON manifest at the top naming what the file is and where it came from, don't reach out to the network so it works the same on disk as on a server, put the content into the HTML body so it still renders when JavaScript isn't running.",
+    "Then I started using it for real work — capsules of QGIS-style maps, capsules of chat conversations I wanted to keep, capsules of decision matrices, capsules of design systems Claude Design gave me — and stuff broke. A photo capsule rendered blank on iPhone because Claude had put the photo inside a <script> block and iOS didn't run inline scripts. A markdown export silently crashed because of a JavaScript newline bug. An LLM lied about where the data came from because the manifest field was too easy to make up.",
+    "Each failure became a numbered rule. Twelve so far, over about five weeks. The most important one is rule 12: render the content into the HTML at build time, don't make JavaScript do it at runtime. Capsules are archives, not apps. The whole point is that the file still works when nothing else does.",
+    "Today the format is a one-page spec (CAPSULE_CORE.md), a small Python compiler and validator with 26 conformance checks, and a working corpus across the kinds of stuff I actually do. The LLMs I use all produce conformant capsules when I paste the one-page spec into a system prompt — Claude, ChatGPT, Gemini, Codex. And it works in compilers I build too: Mintel, the mining-intel app I work on, is the first independent producer that validates clean at 26/26.",
+    "What I want for it: not much. It stays a research project. The spec rule for itself is \"no addition without empirical pressure\" — change it when real producers and recipients push on it, not when something sounds like a good idea on a Tuesday. If you have HTML artifacts piling up — from any AI tool that defaults to \"save as HTML\" — this might be useful. The spec (CAPSULE_CORE.md) is one page. The examples (spec/examples/) show what conformant capsules look like. The research log (RESEARCH.md) is where the iterations live."
+  ],
+  "about_format": {
+    "description": "A Capsule is a single sealed .html file with five inline blocks (manifest, data, style, root, runtime) and twelve rules. No network, no platform. Works in any browser today, or years from now."
+  },
   "spec": { "core": "v0.3.0", "full": "v0.3.2", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
-  "questions": [
-    {
-      "id": "archive",
-      "label": "i. Archive",
-      "question": "How do you archive it?",
-      "answer": "It's just a .html file. Save it anywhere — Dropbox, USB, GitHub, an inbox, a folder on disk. The manifest makes the file self-describing for a future reader (human or LLM). No host. No link to maintain.",
-      "ref": "no externals · core rule 02"
-    },
-    {
-      "id": "share",
-      "label": "ii. Share",
-      "question": "How do you share it?",
-      "answer": "The bytes are the artifact. No host required, no link to expire, no platform to revoke access. Once it reaches a recipient, it's theirs — cannot be unshared.",
-      "ref": "cannot be unshared · core rule 10"
-    },
-    {
-      "id": "fork",
-      "label": "iii. Fork",
-      "question": "How do you fork it?",
-      "answer": "The manifest's parents[] field records lineage. Paste a capsule into a new LLM session as context; the next capsule it produces knows what it built on. Provenance travels with the artifact.",
-      "ref": "parents[] · manifest field"
-    },
-    {
-      "id": "export",
-      "label": "iv. Export",
-      "question": "How do you get it out of your LLM?",
-      "answer": "Paste the produce prompt. Out comes a sealed .html you can save — not a link inside the chat, not a hosted artifact you depend on, just bytes you control.",
-      "ref": "produce prompt · §IV"
-    }
-  ],
-  "blocks": [
-    { "id": "#capsule-manifest", "mime": "application/json",            "purpose": "identity · provenance · capabilities" },
-    { "id": "#capsule-data",     "mime": "application/json",            "purpose": "bounded snapshot · read-only" },
-    { "id": "#capsule-style",    "mime": "text/css · inline",           "purpose": "all styling · no externals" },
-    { "id": "#capsule-root",     "mime": "text/html",                   "purpose": "pre-rendered content · readable w/o JS" },
-    { "id": "#capsule-runtime",  "mime": "text/javascript · inline",    "purpose": "enhancement only · buttons, exports" }
-  ],
-  "rules": [
-    { "n": 1,  "head": "One file.",                "body": "A single .html document. No companions, no sidecars." },
-    { "n": 2,  "head": "No network.",              "body": "Zero fetch, CDN, ES modules. Works identically over file:// and http://." },
-    { "n": 3,  "head": "Five required blocks.",    "body": "capsule-manifest, capsule-data, capsule-style, capsule-root, capsule-runtime." },
-    { "n": 4,  "head": "Required manifest fields.","body": "Identity, generator, source, privacy, capabilities. Optional: parents[]." },
-    { "n": 5,  "head": "Honest provenance.",       "body": "generator.kind: compiler · llm · human · hybrid." },
-    { "n": 6,  "head": "Read-only data.",          "body": "Runtime never mutates the data block." },
-    { "n": 7,  "head": "Capabilities don’t lie.", "body": "Every declared capability has a working implementation." },
-    { "n": 8,  "head": "Typed response exports.",  "body": "capsule_reference + payload, per response schema." },
-    { "n": 9,  "head": "Accessibility baseline.",  "body": "Semantic HTML, ARIA, keyboard nav, prefers-reduced-motion, lang." },
-    { "n": 10, "head": "Cannot be unshared.",      "body": "Once sent, the bytes are theirs. Redact before sharing." },
-    { "n": 11, "head": "Backtick string literals.","body": "Multi-line strings in runtime JS use template literals." },
-    { "n": 12, "head": "Render in HTML.",          "body": "Content lives in the body, not behind a script tag." }
-  ],
-  "produce_prompt": "Produce a Capsule per Core v0.3.0.\nOutput a single .html file with five inline blocks:\ncapsule-manifest, capsule-data, capsule-style,\ncapsule-root, capsule-runtime.\n\nSet generator.kind to \"llm\" and version to your model ID.\nInclude the \"about\" capability plus copy_as_json.\nPre-render content in HTML (rule 12). Use backtick\ntemplate literals for multi-line strings (rule 11).\n\n[paste the twelve rules from CAPSULE_CORE.md]\n\nData to embed:\n[paste your data]",
-  "phases": [
-    { "n": 1, "name": "Format",          "desc": "Single-file HTML, manifest, sealed convention. Core v0.3.0, full v0.3.2.",                                                "state": "Exists",     "state_class": "done" },
-    { "n": 2, "name": "Compiler",        "desc": "Reference compiler + validator + two templates. First independent producer (Mintel) validates clean at 26/26.",            "state": "Half-built", "state_class": "partial" },
-    { "n": 3, "name": "Domain capsules", "desc": "Schemas shipped for implementation_notes, design_system, exploration_map. Map, dataset, deal pending.",                    "state": "Partial",    "state_class": "partial" },
-    { "n": 4, "name": "Network layer",   "desc": "Registry, lineage, importers. Deferred — possibly never. Local files travel further than infrastructure.",                "state": "Not built",  "state_class": "none" }
-  ],
   "not_this": "What this isn't: a new file format (it's HTML), a SaaS, a new editing surface, a competitor to MCP, a knowledge graph, or anti-platform. It's anti-context-loss.",
   "links": {
-    "spec":      [["Core (one page)", "CAPSULE_CORE.md"], ["Full spec", "spec/CAPSULE_SPEC.md"], ["Domain catalog", "spec/DOMAIN_CAPSULES.md"]],
-    "reference": [["Research log", "RESEARCH.md"], ["Glossary", "GLOSSARY.md"], ["Precedents", "PRECEDENTS.md"], ["Examples", "spec/examples/"]],
-    "source":    [["GitHub", "https://github.com/bigfancygarden/htmlcapsule"], ["Reference impl", "compiler/"], ["This page", "#about-capsule"]]
+    "spec":      [["Core (one page)", "CAPSULE_CORE.md"], ["Full spec", "spec/CAPSULE_SPEC.md"]],
+    "reference": [["Research log", "RESEARCH.md"], ["Examples", "spec/examples/"]],
+    "source":    [["GitHub", "https://github.com/bigfancygarden/htmlcapsule"]]
   }
 }
 </script>
@@ -148,13 +108,12 @@
     --accent-soft: #3d70f5;
     --accent-deep: #0c3bb8;
 
-    /* Typography — all-sans; mono reserved for code */
+    /* Typography — all-sans; mono reserved for code and meta */
     --sans:  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
     --mono:  ui-monospace, "SF Mono", "Menlo", "Cascadia Code", Consolas, "DejaVu Sans Mono", monospace;
 
-    /* Density */
-    --gap-section: clamp(96px, 14vw, 168px);
-    --gap-block:   clamp(28px, 4vw, 44px);
+    /* Reading column */
+    --measure: 68ch;
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -229,405 +188,107 @@
   }
   .cb-topnav a:hover, .cb-topnav a:focus { color: var(--accent); }
 
-  /* ---------- Hero ---------- */
-  .cb-hero {
-    padding: clamp(40px, 6vw, 72px) 0 clamp(40px, 5vw, 64px);
-    max-width: 22ch;
+  /* ---------- Essay layout ---------- */
+  .cb-essay {
+    max-width: var(--measure);
+    margin: clamp(48px, 8vw, 96px) auto 0;
   }
-  .cb-eyebrow {
-    font: 500 12.5px/1 var(--mono);
+  .cb-essay-head {
+    margin: 0 0 clamp(36px, 5vw, 56px);
+    padding-bottom: clamp(24px, 3vw, 32px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .cb-essay-eyebrow {
+    font: 500 12px/1 var(--mono);
     letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 28px;
-  }
-  .cb-eyebrow::before {
-    content: ""; display: inline-block;
-    width: 18px; height: 1px;
-    background: var(--accent);
-    vertical-align: 0.32em; margin-right: 10px;
-  }
-  .cb-title {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: clamp(44px, 6.4vw, 76px);
-    line-height: 1.0;
-    letter-spacing: -0.032em;
-    color: var(--ink);
-    margin: 0 0 20px;
-    text-wrap: balance;
-  }
-  .cb-title em {
-    font-style: normal;
-    color: var(--accent);
-    font-weight: 700;
-  }
-  .cb-sub {
-    font: 400 18px/1.45 var(--sans);
-    color: var(--ink-soft);
-    max-width: 36ch;
-    margin: 0 0 28px;
-    text-wrap: pretty;
-  }
-  .cb-cta { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 36px; }
-  .cb-btn {
-    font: 600 14px/1 var(--sans);
-    letter-spacing: -0.005em;
-    padding: 14px 22px;
-    border-radius: 2px;
-    border: 1.5px solid var(--ink);
-    color: var(--ink);
-    background: transparent;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background .15s, color .15s, border-color .15s;
-    display: inline-flex; align-items: center; gap: 10px;
-  }
-  .cb-btn:hover, .cb-btn:focus { background: var(--ink); color: var(--paper); border-color: var(--ink); outline: none; }
-  .cb-btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-  .cb-btn.primary:hover, .cb-btn.primary:focus { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .cb-btn .arrow { font-weight: 400; }
-
-  .cb-stats {
-    display: flex; gap: clamp(28px, 5vw, 64px); flex-wrap: wrap;
-    padding-top: 20px;
-    border-top: 1px solid var(--rule);
-    max-width: 640px;
-  }
-  .cb-stat .v {
-    display: block;
-    font: 700 32px/1 var(--sans);
-    color: var(--ink);
-    letter-spacing: -0.03em;
-    margin-bottom: 4px;
-    font-feature-settings: "tnum";
-  }
-  .cb-stat .l {
-    font: 500 12px/1.2 var(--mono);
-    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink-mute);
+    margin: 0 0 18px;
+  }
+  .cb-essay-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(32px, 4.8vw, 50px);
+    line-height: 1.1;
+    letter-spacing: -0.028em;
+    color: var(--ink);
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .cb-essay-subtitle {
+    font: 400 18px/1.4 var(--sans);
+    color: var(--ink-mute);
+    margin: 0 0 24px;
+    max-width: 50ch;
+    text-wrap: pretty;
+  }
+  .cb-essay-byline {
+    font: 500 12.5px/1 var(--mono);
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+    margin: 0;
+  }
+  .cb-essay-body p {
+    font: 400 17.5px/1.65 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 1.4em;
+    text-wrap: pretty;
+  }
+  .cb-essay-body p:last-child { margin-bottom: 0; }
+  .cb-essay-body a {
+    color: var(--accent);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+  .cb-essay-body a:hover, .cb-essay-body a:focus {
+    color: var(--accent-deep);
+    border-bottom-color: var(--accent-deep);
+  }
+  .cb-essay-body code {
+    background: var(--paper-soft);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.88em;
+    color: var(--ink);
   }
 
-  /* ---------- Section header ---------- */
-  .cb-section { margin-top: var(--gap-section); }
-  .cb-sec-num {
-    font: 500 12.5px/1 var(--mono);
+  /* ---------- About this format (small panel) ---------- */
+  .cb-about-format {
+    max-width: var(--measure);
+    margin: clamp(64px, 9vw, 96px) auto 0;
+    padding: 28px 32px;
+    background: var(--paper-soft);
+    border-radius: 4px;
+  }
+  .cb-about-format h2 {
+    font: 500 11px/1 var(--mono);
     letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--ink-mute);
     margin: 0 0 16px;
+    font-weight: 500;
   }
-  .cb-sec-num .accent { color: var(--accent); }
-  .cb-sec-title {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: clamp(36px, 5.4vw, 60px);
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    margin: 0 0 18px;
-    max-width: 18ch;
-    text-wrap: balance;
-  }
-  .cb-sec-title em { color: var(--accent); font-style: normal; font-weight: 700; }
-  .cb-sec-lead {
-    font: 400 18px/1.5 var(--sans);
+  .cb-about-format p {
+    font: 400 15.5px/1.55 var(--sans);
     color: var(--ink-soft);
+    margin: 0 0 16px;
     max-width: 56ch;
-    margin: 0 0 var(--gap-block);
-    text-wrap: pretty;
   }
-
-  /* ---------- I. Promises ---------- */
-  .cb-promises {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(24px, 3vw, 40px);
-  }
-  .cb-promise {
-    padding: 36px 36px 32px;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-  }
-  .cb-promise-mark {
-    font: 500 12px/1 var(--mono);
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    margin: 0 0 22px;
-  }
-  .cb-promise-h {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 28px;
-    line-height: 1.08;
-    letter-spacing: -0.022em;
-    color: var(--ink);
-    margin: 0 0 14px;
-  }
-  .cb-promise-body {
-    font: 400 16px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 20px;
-    text-wrap: pretty;
-    max-width: 38ch;
-  }
-  .cb-promise-ref {
+  .cb-about-format .stats {
     font: 500 12px/1 var(--mono);
     letter-spacing: 0.06em;
-    color: var(--ink-mute);
-    margin: 0;
-  }
-
-  /* ---------- II. Anatomy — five-block diagram ---------- */
-  .cb-anatomy {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    gap: clamp(32px, 6vw, 80px);
-    align-items: start;
-  }
-  .cb-anatomy-figure {
-    display: flex; flex-direction: column;
-    gap: 8px;
-    padding: 28px;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-  }
-  .cb-anatomy-cap {
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.12em;
-    color: var(--ink-mute);
-    text-transform: uppercase;
-    padding: 4px 6px 12px;
-    border-bottom: 1px solid var(--rule);
-    margin-bottom: 8px;
-    display: flex; justify-content: space-between;
-  }
-  .cb-block {
-    display: grid;
-    grid-template-columns: 28px 1fr;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 8px;
-    border-radius: 3px;
-    transition: background .15s;
-  }
-  .cb-block:hover { background: var(--paper-deep); }
-  .cb-block-n {
-    font: 500 11px/1 var(--mono);
-    color: var(--ink-faint);
-    letter-spacing: 0.06em;
-  }
-  .cb-block-row {
-    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
-  }
-  .cb-block-id {
-    font: 500 15px/1 var(--mono);
     color: var(--ink);
-    letter-spacing: -0.005em;
+    margin: 0 0 16px;
   }
-  .cb-block-mime {
-    font: 400 12px/1 var(--mono);
-    color: var(--ink-mute);
-    letter-spacing: 0.04em;
-  }
-  .cb-block-purpose {
-    font: 400 14px/1.4 var(--sans);
-    color: var(--ink-soft);
-    margin-top: 4px;
-  }
+  .cb-about-format .stats span { margin-right: 14px; }
+  .cb-about-format .stats span:last-child { margin-right: 0; }
+  .cb-about-format .stats em { color: var(--accent); font-style: normal; font-weight: 700; margin-right: 4px; }
+  .cb-about-format .links { font: 400 14.5px/1.6 var(--sans); margin: 0; }
+  .cb-about-format .links a { margin-right: 14px; }
 
-  .cb-anatomy-text {
-    padding-top: 8px;
-  }
-  .cb-anatomy-text h3 {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 1.2;
-    color: var(--ink);
-    margin: 24px 0 8px;
-    letter-spacing: -0.018em;
-  }
-  .cb-anatomy-text h3:first-child { margin-top: 0; }
-  .cb-anatomy-text p {
-    font: 400 16px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0;
-    max-width: 38ch;
-  }
-
-  /* ---------- III. Rules ---------- */
-  .cb-rules-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1px;
-    background: var(--rule-soft);
-    border-top: 1px solid var(--rule);
-    border-left: 1px solid var(--rule);
-    border-right: 1px solid var(--rule);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .cb-rule {
-    background: var(--paper);
-    padding: 22px 24px 26px;
-    display: flex; flex-direction: column;
-    border-bottom: 1px solid var(--rule);
-  }
-  .cb-rule-n {
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.1em;
-    color: var(--accent);
-    margin: 0 0 10px;
-  }
-  .cb-rule-head {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 1.2;
-    color: var(--ink);
-    margin: 0 0 6px;
-    letter-spacing: -0.018em;
-  }
-  .cb-rule-body {
-    font: 400 14px/1.5 var(--sans);
-    color: var(--ink-soft);
-    margin: 0;
-  }
-
-  /* ---------- IV. Produce ---------- */
-  .cb-produce {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-    gap: clamp(32px, 6vw, 72px);
-    align-items: start;
-  }
-  .cb-produce-aside h3 {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 1.2;
-    color: var(--ink);
-    margin: 0 0 8px;
-    letter-spacing: -0.018em;
-  }
-  .cb-produce-aside p {
-    font: 400 15px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 18px;
-    max-width: 36ch;
-  }
-  .cb-produce-aside .compat {
-    font: 500 12px/1 var(--mono);
-    letter-spacing: 0.06em;
-    color: var(--ink-mute);
-  }
-  .cb-produce-aside .compat span { color: var(--ink); }
-
-  .cb-fence {
-    background: var(--ink);
-    color: var(--paper-soft);
-    border-radius: 6px;
-    overflow: hidden;
-    font-family: var(--mono);
-    box-shadow: 0 1px 0 var(--rule), 0 24px 48px -28px rgba(28,26,22,0.18);
-  }
-  .cb-fence-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 18px;
-    border-bottom: 1px solid color-mix(in oklab, var(--paper) 12%, transparent);
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.08em;
-    color: color-mix(in oklab, var(--paper) 55%, transparent);
-  }
-  .cb-fence-bar .lang { color: var(--accent-soft); }
-  .cb-copy {
-    background: transparent;
-    border: 1px solid color-mix(in oklab, var(--paper) 22%, transparent);
-    color: var(--paper-soft);
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.08em;
-    padding: 6px 12px;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-  .cb-copy:hover, .cb-copy:focus {
-    border-color: var(--accent-soft);
-    color: var(--paper);
-    outline: none;
-  }
-  .cb-fence pre {
-    margin: 0;
-    padding: 22px 24px 26px;
-    font: 400 13.5px/1.65 var(--mono);
-    color: color-mix(in oklab, var(--paper) 92%, transparent);
-    white-space: pre-wrap;
-    overflow-x: auto;
-  }
-
-  /* ---------- V. Status ---------- */
-  .cb-phases {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1px;
-    background: var(--rule-soft);
-    border-top: 1px solid var(--rule);
-    border-left: 1px solid var(--rule);
-    border-right: 1px solid var(--rule);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .cb-phase {
-    background: var(--paper);
-    padding: 24px 24px 28px;
-    border-bottom: 1px solid var(--rule);
-    display: flex; flex-direction: column;
-  }
-  .cb-phase-n {
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.12em;
-    color: var(--ink-mute);
-    margin: 0 0 14px;
-  }
-  .cb-phase-name {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 1.15;
-    letter-spacing: -0.022em;
-    color: var(--ink);
-    margin: 0 0 8px;
-  }
-  .cb-phase-desc {
-    font: 400 13.5px/1.5 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 18px;
-    flex: 1;
-  }
-  .cb-phase-state {
-    display: inline-flex; align-items: center; gap: 8px;
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.06em;
-    color: var(--ink-mute);
-    text-transform: uppercase;
-  }
-  .cb-pip {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--ink-faint);
-    box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--rule);
-  }
-  .cb-phase-state.done    .cb-pip { background: var(--accent); box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--accent); }
-  .cb-phase-state.done    { color: var(--accent); }
-  .cb-phase-state.partial .cb-pip { background: var(--ink); box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--ink); }
-  .cb-phase-state.partial { color: var(--ink); }
-
-  /* ---------- About / exports ---------- */
+  /* ---------- About / exports panel ---------- */
   .cb-about {
-    margin-top: var(--gap-section);
+    max-width: var(--measure);
+    margin: clamp(56px, 8vw, 80px) auto 0;
     background: var(--paper-soft);
     border-radius: 4px;
     overflow: hidden;
@@ -699,39 +360,20 @@
 
   /* ---------- Footer ---------- */
   .cb-foot {
-    margin-top: var(--gap-section);
+    max-width: var(--measure);
+    margin: clamp(56px, 8vw, 80px) auto 0;
     padding-top: 36px;
     border-top: 1px solid var(--rule);
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
-    gap: 36px;
   }
   .cb-foot-isnt {
-    font: 400 15px/1.5 var(--sans);
+    font: 400 14px/1.55 var(--sans);
     color: var(--ink-soft);
-    margin: 0;
-    max-width: 40ch;
+    margin: 0 0 24px;
+    max-width: 56ch;
   }
   .cb-foot-isnt strong { color: var(--ink); font-weight: 500; }
-  .cb-foot-col h4 {
-    font: 500 11px/1 var(--mono);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    margin: 0 0 14px;
-  }
-  .cb-foot-col ul { list-style: none; padding: 0; margin: 0; }
-  .cb-foot-col li { margin-bottom: 8px; }
-  .cb-foot-col a {
-    color: var(--ink);
-    border-bottom: none;
-    font: 400 14.5px/1.4 var(--sans);
-  }
-  .cb-foot-col a:hover, .cb-foot-col a:focus { color: var(--accent); }
   .cb-colophon {
-    grid-column: 1 / -1;
-    margin-top: 16px;
-    padding-top: 20px;
+    padding-top: 16px;
     border-top: 1px solid var(--rule-soft);
     font: 500 11.5px/1 var(--mono);
     letter-spacing: 0.06em;
@@ -757,29 +399,25 @@
   @media (prefers-reduced-motion: reduce) { .cb-toast { transition: opacity 0.001s; } }
 
   /* ---------- Responsive ---------- */
-  @media (max-width: 900px) {
-    .cb-promises { grid-template-columns: 1fr; }
-    .cb-anatomy { grid-template-columns: 1fr; }
-    .cb-rules-grid { grid-template-columns: repeat(2, 1fr); }
-    .cb-produce { grid-template-columns: 1fr; }
-    .cb-phases { grid-template-columns: repeat(2, 1fr); }
-    .cb-foot { grid-template-columns: 1fr 1fr; }
-    .cb-foot-isnt { grid-column: 1 / -1; }
+  @media (max-width: 720px) {
+    #capsule-root { padding: 24px 18px 48px; }
+    .cb-essay { margin-top: clamp(32px, 6vw, 56px); }
+    .cb-essay-body p { font-size: 16.5px; }
+    .cb-about-format { padding: 24px; }
   }
-  @media (max-width: 540px) {
+  @media (max-width: 480px) {
     body { font-size: 16px; }
-    .cb-rules-grid { grid-template-columns: 1fr; }
-    .cb-phases { grid-template-columns: 1fr; }
-    .cb-foot { grid-template-columns: 1fr; }
+    .cb-essay-body p { font-size: 16px; line-height: 1.6; }
   }
 
   /* ---------- Print ---------- */
   @media print {
     body { background: white; color: black; font-size: 11pt; }
-    .cb-topbar, .cb-cta, .cb-export, .cb-toast, .skip-link, .cb-fence-bar .cb-copy { display: none !important; }
+    .cb-topbar, .cb-export, .cb-toast, .skip-link { display: none !important; }
     a { color: black; border-bottom: none; }
-    .cb-promise, .cb-fence, .cb-rule, .cb-phase, .cb-anatomy-figure, .cb-about { background: white !important; border: 1px solid #ccc; color: black; }
-    .cb-fence pre { color: black; }
+    .cb-essay { max-width: 100%; margin-top: 0; }
+    .cb-about-format, .cb-about { background: white; border: 1px solid #ccc; }
+    .cb-essay-body p { color: black; }
   }
 </style>
 </head>
@@ -794,220 +432,64 @@
       <span><strong>Capsule</strong><span class="sep">·</span>open spec v0.3.0</span>
     </div>
     <nav class="cb-topnav" aria-label="Primary">
-      <a href="#questions">Questions</a>
-      <a href="#anatomy">Anatomy</a>
-      <a href="#rules">Rules</a>
-      <a href="#produce">Produce</a>
-      <a href="#status">Status</a>
+      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="RESEARCH.md">Research log</a>
+      <a href="spec/examples/">Examples</a>
       <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
     </nav>
   </header>
 
-  <section class="cb-hero" aria-labelledby="hero-title">
-    <p class="cb-eyebrow">The substrate is settled</p>
-    <h1 class="cb-title" id="hero-title">What do you do with all these <em>HTML artifacts?</em></h1>
-    <p class="cb-sub">LLMs emit them by default. Agents return them. Chats render them. Now you have a pile — and four basic questions.</p>
-    <nav class="cb-cta" aria-label="Primary actions">
-      <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-      <a href="https://github.com/bigfancygarden/htmlcapsule" class="cb-btn">View on GitHub</a>
-    </nav>
-    <div class="cb-stats" aria-label="At a glance">
-      <div class="cb-stat"><span class="v">12</span><span class="l">rules</span></div>
-      <div class="cb-stat"><span class="v">5</span><span class="l">required blocks</span></div>
-      <div class="cb-stat"><span class="v">0</span><span class="l">network deps</span></div>
+  <article class="cb-essay">
+    <header class="cb-essay-head">
+      <p class="cb-essay-eyebrow">Notes · 2026-05-20</p>
+      <h1 class="cb-essay-title">What I do with all the HTML I get from AI</h1>
+      <p class="cb-essay-subtitle">Notes on starting an open spec for sealed HTML artifacts.</p>
+      <p class="cb-essay-byline">B. F. Garden · htmlcapsule.org</p>
+    </header>
+
+    <div class="cb-essay-body">
+      <p>Just want to give you my journey here with AI tools. I've been using all the chat systems, chatgpt, claude web, gemini web.. and then more recently using more claude code CLI and codex CLI.. and now been using the Claude Harness/App and the Codex Harness/App.. but in any case, for the longest time, I was doing work in each, and then copying and pasting data in/out.. pasting it into other chats, pasting it into Google Docs or notes or obsidian.. trying to reliably get my info "out" of the AI systems and into a format that I can either archive or easily share with friends.</p>
+
+      <p>I know there's been the share button for these chats for a long time but something doesn't sit right with it for me. The chats either get lost for me, or I'm not confident or sure what version they're displaying, or if they're displaying the conversation all the way, or only at a certain point, or if they're still updating after the fact. I'm sure I could dig into the documentation on this and get a sense for it, but will it change? Will it ever be intuitive to me? I'm not sure it will. I'm also not sure that it will stay the same once I look into it, and I'm not sure that it's the same between all these systems. I'm also not sure that I can paste these links into other AI's or LLM's and have them evaluate it or work off it or build it. It's a mess.</p>
+
+      <p>Now, also, around the same time, they put out artifacts, and those were quite neat, but again.. didn't really know how to use them or put them into my workflow. When Claude Design came out, though, I knew something was different.. because it could give these beautiful and editable interfaces, and it could be downloaded as html or "handed off" to claude code for implementation. That was huge, because up until that point I was getting designs and throwing it into my claude code projects to try and get it to implement into my react-based apps and systems. But throughout here it's been a fight. It's been a fight between making and doing "work" inside of one system, and then getting it into a format that AI can natively talk to and work on and iterate on with me.</p>
+
+      <p>Putting things into HTML has been a huge shift for me. Even just with the chat conversations, I was always trying to get the data "out" by asking Claude or ChatGPT for a summary in markdown or to make me a PDF version. Or copying and pasting stuff into notes or word or Google Docs.. it never looked good. The only way I could get pixel perfect looking stuff is if I asked to do a react/html render and then use something like playwright to "print" to a jpeg or pdf.</p>
+
+      <p>For example, one thing I always do is make maps in QGIS that are jpegs or PDFs. I would constantly be going back and forth between the app and chat agents. I'm sure there is a way that I could have wired something up so that the codex or claude code CLI could have talked to QGIS and made edits, maybe through a database, but this is still so clunky. So I decided to try to create a sort of GIS system inside react (with Postgres on the backend and tools like GDAL) so I could get the exact interface I wanted.. but this started to get clunky too. Furthermore since I was trying to share content with other users.. stuff like maps, and tables, often related.. I was trying to bring a portal that connected up to my working react GIS system so I could share content with my end users (which would have usually been maps or excel tables, with no real provenance or unique identifiers other than file names and "v1, v2, v3" type stuff).</p>
+
+      <p>I was also really interested in Claude Design's ability to work with maps. Cartography. Like, it was a way of iterating through things so much faster than I could have previously done it with either illustrator or qgis.. So then it hit me.. why not embrace HTML for this? If Claude Design is using HTML as its substrate, then why don't I setup my work to be more friendly to that?</p>
+
+      <p>So I started doing that. Instead of trying to convert what Claude Design or Claude Code or any chat LLM was giving me into something else, I just kept it as HTML. But raw HTML by itself has its own problems. I still couldn't reliably tell what I was looking at — where it came from, whether it was complete, what version it was, whether the page would even render the same next month. The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.</p>
+
+      <p>So I started writing down what HTML would need to be to be trustworthy as an artifact — the same way a PDF is trustworthy as "this is what was sent, that's the file." First version of the rules was rough. Just: save it as one HTML file, put a small JSON manifest at the top naming what the file is and where it came from, don't reach out to the network so it works the same on disk as on a server, put the content into the HTML body so it still renders when JavaScript isn't running.</p>
+
+      <p>Then I started using it for real work — capsules of QGIS-style maps, capsules of chat conversations I wanted to keep, capsules of decision matrices, capsules of design systems Claude Design gave me — and stuff broke. A photo capsule rendered blank on iPhone because Claude had put the photo inside a <code>&lt;script&gt;</code> block and iOS didn't run inline scripts. A markdown export silently crashed because of a JavaScript newline bug. An LLM lied about where the data came from because the manifest field was too easy to make up.</p>
+
+      <p>Each failure became a numbered rule. Twelve so far, over about five weeks. The most important one is rule 12: render the content into the HTML at build time, don't make JavaScript do it at runtime. Capsules are archives, not apps. The whole point is that the file still works when nothing else does.</p>
+
+      <p>Today the format is a one-page spec (<a href="CAPSULE_CORE.md">CAPSULE_CORE.md</a>), a small Python compiler and validator with 26 conformance checks, and a working corpus across the kinds of stuff I actually do. The LLMs I use all produce conformant capsules when I paste the one-page spec into a system prompt — Claude, ChatGPT, Gemini, Codex. And it works in compilers I build too: Mintel, the mining-intel app I work on, is the first independent producer that validates clean at 26/26.</p>
+
+      <p>What I want for it: not much. It stays a research project. The spec rule for itself is "no addition without empirical pressure" — change it when real producers and recipients push on it, not when something sounds like a good idea on a Tuesday. If you have HTML artifacts piling up — from any AI tool that defaults to "save as HTML" — this might be useful. The <a href="CAPSULE_CORE.md">spec</a> is one page. The <a href="spec/examples/">examples</a> show what conformant capsules look like. The <a href="RESEARCH.md">research log</a> is where the iterations live.</p>
     </div>
-  </section>
+  </article>
 
-  <section class="cb-section" id="questions" aria-labelledby="questions-title">
-    <p class="cb-sec-num"><span class="accent">I.</span> Four questions</p>
-    <h2 class="cb-sec-title" id="questions-title">Archive. Share. Fork. <em>Export.</em></h2>
-    <p class="cb-sec-lead">The things raw HTML artifacts don't answer on their own. Capsule is the discipline that makes them answer — by construction, not by hosting.</p>
-
-    <div class="cb-promises">
-      <article class="cb-promise">
-        <p class="cb-promise-mark">i. Archive</p>
-        <h3 class="cb-promise-h">How do you archive it?</h3>
-        <p class="cb-promise-body">It's just a .html file. Save it anywhere — Dropbox, USB, GitHub, an inbox, a folder on disk. The manifest makes the file self-describing for a future reader.</p>
-        <p class="cb-promise-ref">no externals · core rule 02</p>
-      </article>
-      <article class="cb-promise">
-        <p class="cb-promise-mark">ii. Share</p>
-        <h3 class="cb-promise-h">How do you share it?</h3>
-        <p class="cb-promise-body">The bytes are the artifact. No host required, no link to expire, no platform to revoke access. Once it reaches a recipient, it's theirs.</p>
-        <p class="cb-promise-ref">cannot be unshared · core rule 10</p>
-      </article>
-      <article class="cb-promise">
-        <p class="cb-promise-mark">iii. Fork</p>
-        <h3 class="cb-promise-h">How do you fork it?</h3>
-        <p class="cb-promise-body">The manifest's parents[] field records lineage. Paste a capsule into a new LLM session; the next one it produces knows what it built on.</p>
-        <p class="cb-promise-ref">parents[] · manifest field</p>
-      </article>
-      <article class="cb-promise">
-        <p class="cb-promise-mark">iv. Export</p>
-        <h3 class="cb-promise-h">How do you get it out of your LLM?</h3>
-        <p class="cb-promise-body">Paste the produce prompt. Out comes a sealed .html you can save — not a link inside the chat, not a hosted artifact you depend on, just bytes you control.</p>
-        <p class="cb-promise-ref">produce prompt · §IV</p>
-      </article>
-    </div>
-  </section>
-
-  <section class="cb-section" id="anatomy" aria-labelledby="anatomy-title">
-    <p class="cb-sec-num"><span class="accent">II.</span> Anatomy</p>
-    <h2 class="cb-sec-title" id="anatomy-title">Five blocks. <em>One file.</em></h2>
-    <p class="cb-sec-lead">Every capsule contains the same five inline blocks — the same shape holds a research note, a decision board, a design system, or a map.</p>
-
-    <div class="cb-anatomy">
-      <figure class="cb-anatomy-figure" aria-label="Capsule file structure">
-        <figcaption class="cb-anatomy-cap"><span>capsule.html</span><span>sealed 2026-05-20</span></figcaption>
-        <div class="cb-block">
-          <span class="cb-block-n">01</span>
-          <div>
-            <div class="cb-block-row">
-              <span class="cb-block-id">#capsule-manifest</span>
-              <span class="cb-block-mime">application/json</span>
-            </div>
-            <div class="cb-block-purpose">Identity, provenance, capabilities.</div>
-          </div>
-        </div>
-        <div class="cb-block">
-          <span class="cb-block-n">02</span>
-          <div>
-            <div class="cb-block-row">
-              <span class="cb-block-id">#capsule-data</span>
-              <span class="cb-block-mime">application/json</span>
-            </div>
-            <div class="cb-block-purpose">The bounded snapshot, read-only at runtime.</div>
-          </div>
-        </div>
-        <div class="cb-block">
-          <span class="cb-block-n">03</span>
-          <div>
-            <div class="cb-block-row">
-              <span class="cb-block-id">#capsule-style</span>
-              <span class="cb-block-mime">text/css · inline</span>
-            </div>
-            <div class="cb-block-purpose">All styling — no externals.</div>
-          </div>
-        </div>
-        <div class="cb-block">
-          <span class="cb-block-n">04</span>
-          <div>
-            <div class="cb-block-row">
-              <span class="cb-block-id">#capsule-root</span>
-              <span class="cb-block-mime">text/html</span>
-            </div>
-            <div class="cb-block-purpose">Pre-rendered content, readable without JS.</div>
-          </div>
-        </div>
-        <div class="cb-block">
-          <span class="cb-block-n">05</span>
-          <div>
-            <div class="cb-block-row">
-              <span class="cb-block-id">#capsule-runtime</span>
-              <span class="cb-block-mime">text/javascript · inline</span>
-            </div>
-            <div class="cb-block-purpose">Enhancement only — buttons, exports, dynamic UI.</div>
-          </div>
-        </div>
-      </figure>
-
-      <div class="cb-anatomy-text">
-        <h3>Manifest is the answer to <em>what is this?</em></h3>
-        <p>Machine-readable identity, generator, source, privacy, capabilities. Validates against the reference validator.</p>
-        <h3>Root is what people actually read.</h3>
-        <p>Visible in iOS Files, email previews, screen readers — anywhere JS doesn't run, the page still works.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="cb-section" id="rules" aria-labelledby="rules-title">
-    <p class="cb-sec-num"><span class="accent">III.</span> The contract</p>
-    <h2 class="cb-sec-title" id="rules-title">Twelve rules. <em>One page.</em></h2>
-    <p class="cb-sec-lead">Each rule names a failure we hit and fixed. Pasteable into any LLM prompt. See <a href="CAPSULE_CORE.md">CAPSULE_CORE.md</a> for the canonical version.</p>
-
-    <ol class="cb-rules-grid">
-      <li class="cb-rule"><p class="cb-rule-n">R-01</p><h4 class="cb-rule-head">One file.</h4><p class="cb-rule-body">A single .html document. No companions, no sidecars.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-02</p><h4 class="cb-rule-head">No network.</h4><p class="cb-rule-body">Zero fetch, CDN, ES modules. Works identically over file:// and http://.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-03</p><h4 class="cb-rule-head">Five required blocks.</h4><p class="cb-rule-body">manifest, data, style, root, runtime.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-04</p><h4 class="cb-rule-head">Required manifest fields.</h4><p class="cb-rule-body">Identity, generator, source, privacy, capabilities. Optional: parents[].</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-05</p><h4 class="cb-rule-head">Honest provenance.</h4><p class="cb-rule-body">generator.kind: compiler · llm · human · hybrid.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-06</p><h4 class="cb-rule-head">Read-only data.</h4><p class="cb-rule-body">Runtime never mutates the data block.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-07</p><h4 class="cb-rule-head">Capabilities don&rsquo;t lie.</h4><p class="cb-rule-body">Every declared capability has a working implementation.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-08</p><h4 class="cb-rule-head">Typed response exports.</h4><p class="cb-rule-body">capsule_reference + payload, per response schema.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-09</p><h4 class="cb-rule-head">Accessibility baseline.</h4><p class="cb-rule-body">Semantic HTML, ARIA, keyboard, prefers-reduced-motion, lang.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-10</p><h4 class="cb-rule-head">Cannot be unshared.</h4><p class="cb-rule-body">Once sent, the bytes are theirs. Redact before sharing.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-11</p><h4 class="cb-rule-head">Backtick string literals.</h4><p class="cb-rule-body">Multi-line strings in runtime JS use template literals.</p></li>
-      <li class="cb-rule"><p class="cb-rule-n">R-12</p><h4 class="cb-rule-head">Render in HTML.</h4><p class="cb-rule-body">Content lives in the body, not behind a script tag.</p></li>
-    </ol>
-  </section>
-
-  <section class="cb-section" id="produce" aria-labelledby="produce-title">
-    <p class="cb-sec-num"><span class="accent">IV.</span> Produce one</p>
-    <h2 class="cb-sec-title" id="produce-title">Paste this. <em>Get a capsule.</em></h2>
-    <p class="cb-sec-lead">The simplest path from a conversation to a sealed HTML file.</p>
-
-    <div class="cb-produce">
-      <div class="cb-produce-aside">
-        <h3>Works in any LLM.</h3>
-        <p>Drop the prompt fragment into the system message and paste your data underneath. Tested in <span>Claude</span>, <span>ChatGPT</span>, <span>Gemini</span>, <span>Codex</span>.</p>
-        <p class="compat">prompt · 412 bytes · utf-8</p>
-      </div>
-
-      <div class="cb-fence">
-        <div class="cb-fence-bar">
-          <span><span class="lang">prompt</span> · LLM fragment</span>
-          <button class="cb-copy" type="button" data-capsule-action="copy_as_prompt" aria-label="Copy prompt fragment">Copy</button>
-        </div>
-<pre id="prompt-text">Produce a Capsule per Core v0.3.0.
-Output a single .html file with five inline blocks:
-capsule-manifest, capsule-data, capsule-style,
-capsule-root, capsule-runtime.
-
-Set generator.kind to "llm" and version to your model ID.
-Include the "about" capability plus copy_as_json.
-Pre-render content in HTML (rule 12). Use backtick
-template literals for multi-line strings (rule 11).
-
-[paste the twelve rules from CAPSULE_CORE.md]
-
-Data to embed:
-[paste your data]</pre>
-      </div>
-    </div>
-  </section>
-
-  <section class="cb-section" id="status" aria-labelledby="status-title">
-    <p class="cb-sec-num"><span class="accent">V.</span> Status</p>
-    <h2 class="cb-sec-title" id="status-title">Four phases. <em>One shipped.</em></h2>
-    <p class="cb-sec-lead">The format exists. The compiler is half-built. The network layer may never come — that's a feature, not a delay.</p>
-
-    <ol class="cb-phases">
-      <li class="cb-phase">
-        <p class="cb-phase-n">i.</p>
-        <h3 class="cb-phase-name">Format</h3>
-        <p class="cb-phase-desc">Single-file HTML, manifest, sealed convention. Core v0.3.0, full v0.3.2.</p>
-        <span class="cb-phase-state done"><span class="cb-pip" aria-hidden="true"></span>Exists</span>
-      </li>
-      <li class="cb-phase">
-        <p class="cb-phase-n">ii.</p>
-        <h3 class="cb-phase-name">Compiler</h3>
-        <p class="cb-phase-desc">Reference compiler, validator, two templates. Mintel validates clean at 26/26.</p>
-        <span class="cb-phase-state partial"><span class="cb-pip" aria-hidden="true"></span>Half-built</span>
-      </li>
-      <li class="cb-phase">
-        <p class="cb-phase-n">iii.</p>
-        <h3 class="cb-phase-name">Domain capsules</h3>
-        <p class="cb-phase-desc">implementation_notes, design_system, exploration_map shipped. Map, dataset, deal pending.</p>
-        <span class="cb-phase-state partial"><span class="cb-pip" aria-hidden="true"></span>Partial</span>
-      </li>
-      <li class="cb-phase">
-        <p class="cb-phase-n">iv.</p>
-        <h3 class="cb-phase-name">Network layer</h3>
-        <p class="cb-phase-desc">Registry, lineage, importers. Deferred — possibly never. Local files travel further.</p>
-        <span class="cb-phase-state"><span class="cb-pip" aria-hidden="true"></span>Not built</span>
-      </li>
-    </ol>
-  </section>
+  <aside class="cb-about-format" aria-labelledby="about-format-h">
+    <h2 id="about-format-h">About this format</h2>
+    <p>A Capsule is a single sealed <code>.html</code> file with five inline blocks (manifest, data, style, root, runtime) and twelve rules. No network, no platform. Works in any browser today, or years from now.</p>
+    <p class="stats">
+      <span><em>12</em> rules</span>
+      <span><em>5</em> required blocks</span>
+      <span><em>0</em> network deps</span>
+    </p>
+    <p class="links">
+      <a href="CAPSULE_CORE.md">Read the spec</a>
+      <a href="spec/CAPSULE_SPEC.md">Full spec</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+      <a href="RESEARCH.md">Research log</a>
+      <a href="spec/examples/">Examples</a>
+    </p>
+  </aside>
 
   <details class="cb-about" id="about-capsule">
     <summary>About this capsule · exports · manifest</summary>
@@ -1016,7 +498,6 @@ Data to embed:
       <div class="cb-export" role="group" aria-label="Export actions">
         <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
         <button type="button" data-capsule-action="copy_as_markdown">Copy as Markdown</button>
-        <button type="button" data-capsule-action="copy_as_prompt">Copy prompt fragment</button>
         <button type="button" data-capsule-action="download_json">Download JSON</button>
         <button type="button" data-capsule-action="download_capsule">Download capsule (.html)</button>
         <button type="button" data-capsule-action="print_to_pdf">Print · PDF</button>
@@ -1028,34 +509,9 @@ Data to embed:
 
   <footer class="cb-foot" role="contentinfo">
     <p class="cb-foot-isnt"><strong>What this isn't:</strong> a new file format (it's HTML), a SaaS, a new editing surface, a competitor to MCP, or a knowledge graph. It's anti-context-loss.</p>
-    <div class="cb-foot-col">
-      <h4>Spec</h4>
-      <ul>
-        <li><a href="CAPSULE_CORE.md">Core (one page)</a></li>
-        <li><a href="spec/CAPSULE_SPEC.md">Full spec</a></li>
-        <li><a href="spec/DOMAIN_CAPSULES.md">Domain catalog</a></li>
-      </ul>
-    </div>
-    <div class="cb-foot-col">
-      <h4>Reference</h4>
-      <ul>
-        <li><a href="RESEARCH.md">Research log</a></li>
-        <li><a href="GLOSSARY.md">Glossary</a></li>
-        <li><a href="PRECEDENTS.md">Precedents</a></li>
-        <li><a href="spec/examples/">Examples</a></li>
-      </ul>
-    </div>
-    <div class="cb-foot-col">
-      <h4>Source</h4>
-      <ul>
-        <li><a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a></li>
-        <li><a href="compiler/">Reference impl</a></li>
-        <li><a href="#about-capsule">This page</a></li>
-      </ul>
-    </div>
     <div class="cb-colophon">
-      <span>Set in system sans · Mono for code · Apache 2.0</span>
-      <span>capsule:landing/v9.1.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>Set in system sans · Apache 2.0</span>
+      <span>capsule:landing/v10.0.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
@@ -1118,55 +574,32 @@ Data to embed:
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }
 
-  // Markdown export. Rule 11: backtick template literals for multi-line strings.
+  // Markdown export — builds a portable markdown version of the essay.
+  // Rule 11: any string with newlines uses a backtick template literal.
   function buildMarkdown() {
     var lines = [];
     var push = function (s) { lines.push(s); };
     push(`# ${data.title}`);
     push(``);
-    push(data.tagline);
+    push(`*${data.subtitle}*`);
     push(``);
-    push(`> Capsule landing page · spec ${data.spec.core} · released ${data.spec.released}`);
+    push(`${data.byline}`);
+    push(``);
+    push(`---`);
+    push(``);
+    data.essay.forEach(function (p) {
+      push(p);
+      push(``);
+    });
+    push(`---`);
+    push(``);
+    push(`## About this format`);
+    push(``);
+    push(data.about_format.description);
     push(``);
     push(`**${data.stats.rules}** rules · **${data.stats.blocks}** required blocks · **${data.stats.network_deps}** network deps`);
     push(``);
-    push(`## I — Four questions`);
-    push(``);
-    data.questions.forEach(function (q) {
-      push(`### ${q.question}`);
-      push(``);
-      push(q.answer);
-      push(``);
-      push(`_${q.ref}_`);
-      push(``);
-    });
-    push(`## II — Anatomy`);
-    push(``);
-    push(`| Block | MIME | Purpose |`);
-    push(`| --- | --- | --- |`);
-    data.blocks.forEach(function (b) {
-      push(`| \`${b.id}\` | ${b.mime} | ${b.purpose} |`);
-    });
-    push(``);
-    push(`## III — Twelve rules`);
-    push(``);
-    data.rules.forEach(function (r) {
-      push(`${r.n}. **${r.head}** ${r.body}`);
-    });
-    push(``);
-    push(`## IV — Produce one`);
-    push(``);
-    push('```');
-    push(data.produce_prompt);
-    push('```');
-    push(``);
-    push(`## V — Status`);
-    push(``);
-    push(`| # | Phase | Description | State |`);
-    push(`| --- | --- | --- | --- |`);
-    data.phases.forEach(function (ph) {
-      push(`| ${ph.n} | ${ph.name} | ${ph.desc} | ${ph.state} |`);
-    });
+    push(`Spec: [CAPSULE_CORE.md](CAPSULE_CORE.md) · Full spec: [spec/CAPSULE_SPEC.md](spec/CAPSULE_SPEC.md) · Research log: [RESEARCH.md](RESEARCH.md) · Examples: [spec/examples/](spec/examples/) · Source: [github.com/bigfancygarden/htmlcapsule](https://github.com/bigfancygarden/htmlcapsule)`);
     push(``);
     push(`---`);
     push(``);
@@ -1192,11 +625,6 @@ Data to embed:
       var md = buildMarkdown();
       return copyText(md).then(function () {
         toast(`Copied as Markdown · ${md.length.toLocaleString()} chars`);
-      });
-    },
-    copy_as_prompt: function () {
-      return copyText(data.produce_prompt).then(function () {
-        toast(`Copied prompt fragment · ${data.produce_prompt.length} chars`);
       });
     },
     download_json: function () {
