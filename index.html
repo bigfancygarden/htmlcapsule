@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "9.0.0",
+  "capsule_version": "9.1.0",
   "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v9.0.0 reverses the v8 terminal aesthetic: cool light paper (#f4f5f7), cool charcoal ink, electric-blue accent (#1652f0), all-sans typography (no serif, no warm tones), generous whitespace, one focal idea per section, mono reserved for code only. Roughly half the visible text vs. v8 — promises pull one-sentence essences, anatomy pairs a five-block diagram with two short callouts, rules are a quiet three-column grid, status is a horizontal four-phase strip. Dual-audience framing preserved in the data block (audience / tagline) and exports, but no longer crowds the hero. Same logical capsule as v7.x and v8 (UUID 7d1a1ac8 preserved across redesigns).",
+  "description": "Landing page for the Capsule project. v9.1.0 is a narrative restructure on top of v9.0's bright visual design: hero now leads with the substrate observation (HTML won as the AI artifact format) and the felt question (\"what do you do with all these HTML artifacts?\"), and section I becomes \"Four questions\" — archive, share, fork, export — with Capsule's answer to each. The previous v9.0 \"two promises\" content (cannot be unshared, never phones home) is folded into the share/archive answers. Same visual design as v9.0 (cool light paper, electric-blue accent, all-sans). Same logical capsule as v7.x / v8 / v9.0 (UUID 7d1a1ac8 preserved across redesigns).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -59,18 +59,34 @@
   "audience": "anyone working with HTML artifacts — LLM users producing them, builders consuming them, archivists preserving them, and the future readers (human and AI) who will reopen them years later",
   "spec": { "core": "v0.3.0", "full": "v0.3.2", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
-  "promises": [
+  "questions": [
     {
-      "id": "persistence",
-      "title": "Cannot be unshared",
-      "body": "Once a capsule reaches you, the bytes are yours. No retraction, no expiring link, no platform that revokes access. Forces honest authoring — redact before sharing, because there is no undo.",
-      "enforced_by": "core rule 10"
+      "id": "archive",
+      "label": "i. Archive",
+      "question": "How do you archive it?",
+      "answer": "It's just a .html file. Save it anywhere — Dropbox, USB, GitHub, an inbox, a folder on disk. The manifest makes the file self-describing for a future reader (human or LLM). No host. No link to maintain.",
+      "ref": "no externals · core rule 02"
     },
     {
-      "id": "silence",
-      "title": "Never phones home",
-      "body": "Zero fetch. Zero analytics. Zero tracking pixels. Once a capsule opens, the recipient is unobservable. Hosting platforms can track wrapper-level activity; the file itself is mute.",
-      "enforced_by": "core rule 02"
+      "id": "share",
+      "label": "ii. Share",
+      "question": "How do you share it?",
+      "answer": "The bytes are the artifact. No host required, no link to expire, no platform to revoke access. Once it reaches a recipient, it's theirs — cannot be unshared.",
+      "ref": "cannot be unshared · core rule 10"
+    },
+    {
+      "id": "fork",
+      "label": "iii. Fork",
+      "question": "How do you fork it?",
+      "answer": "The manifest's parents[] field records lineage. Paste a capsule into a new LLM session as context; the next capsule it produces knows what it built on. Provenance travels with the artifact.",
+      "ref": "parents[] · manifest field"
+    },
+    {
+      "id": "export",
+      "label": "iv. Export",
+      "question": "How do you get it out of your LLM?",
+      "answer": "Paste the produce prompt. Out comes a sealed .html you can save — not a link inside the chat, not a hosted artifact you depend on, just bytes you control.",
+      "ref": "produce prompt · §IV"
     }
   ],
   "blocks": [
@@ -215,7 +231,7 @@
 
   /* ---------- Hero ---------- */
   .cb-hero {
-    padding: clamp(72px, 14vw, 144px) 0 clamp(64px, 10vw, 112px);
+    padding: clamp(40px, 6vw, 72px) 0 clamp(40px, 5vw, 64px);
     max-width: 22ch;
   }
   .cb-eyebrow {
@@ -234,11 +250,11 @@
   .cb-title {
     font-family: var(--sans);
     font-weight: 700;
-    font-size: clamp(48px, 8.4vw, 100px);
-    line-height: 0.98;
-    letter-spacing: -0.035em;
+    font-size: clamp(44px, 6.4vw, 76px);
+    line-height: 1.0;
+    letter-spacing: -0.032em;
     color: var(--ink);
-    margin: 0 0 32px;
+    margin: 0 0 20px;
     text-wrap: balance;
   }
   .cb-title em {
@@ -247,13 +263,13 @@
     font-weight: 700;
   }
   .cb-sub {
-    font: 400 19px/1.45 var(--sans);
+    font: 400 18px/1.45 var(--sans);
     color: var(--ink-soft);
     max-width: 36ch;
-    margin: 0 0 40px;
+    margin: 0 0 28px;
     text-wrap: pretty;
   }
-  .cb-cta { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 64px; }
+  .cb-cta { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 36px; }
   .cb-btn {
     font: 600 14px/1 var(--sans);
     letter-spacing: -0.005em;
@@ -274,16 +290,16 @@
 
   .cb-stats {
     display: flex; gap: clamp(28px, 5vw, 64px); flex-wrap: wrap;
-    padding-top: 28px;
+    padding-top: 20px;
     border-top: 1px solid var(--rule);
     max-width: 640px;
   }
   .cb-stat .v {
     display: block;
-    font: 700 40px/1 var(--sans);
+    font: 700 32px/1 var(--sans);
     color: var(--ink);
     letter-spacing: -0.03em;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     font-feature-settings: "tnum";
   }
   .cb-stat .l {
@@ -778,7 +794,7 @@
       <span><strong>Capsule</strong><span class="sep">·</span>open spec v0.3.0</span>
     </div>
     <nav class="cb-topnav" aria-label="Primary">
-      <a href="#promises">Promises</a>
+      <a href="#questions">Questions</a>
       <a href="#anatomy">Anatomy</a>
       <a href="#rules">Rules</a>
       <a href="#produce">Produce</a>
@@ -788,9 +804,9 @@
   </header>
 
   <section class="cb-hero" aria-labelledby="hero-title">
-    <p class="cb-eyebrow">Open spec · 2026</p>
-    <h1 class="cb-title" id="hero-title">An approach for working with <em>HTML artifacts.</em></h1>
-    <p class="cb-sub">One file. Everything inside it. No network, no platform.</p>
+    <p class="cb-eyebrow">The substrate is settled</p>
+    <h1 class="cb-title" id="hero-title">What do you do with all these <em>HTML artifacts?</em></h1>
+    <p class="cb-sub">LLMs emit them by default. Agents return them. Chats render them. Now you have a pile — and four basic questions.</p>
     <nav class="cb-cta" aria-label="Primary actions">
       <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
       <a href="https://github.com/bigfancygarden/htmlcapsule" class="cb-btn">View on GitHub</a>
@@ -802,23 +818,35 @@
     </div>
   </section>
 
-  <section class="cb-section" id="promises" aria-labelledby="promises-title">
-    <p class="cb-sec-num"><span class="accent">I.</span> Promises</p>
-    <h2 class="cb-sec-title" id="promises-title">What capsules <em>guarantee.</em></h2>
-    <p class="cb-sec-lead">Most documents phone home. Most platforms let you unshare. Capsules do neither — not by policy, by construction.</p>
+  <section class="cb-section" id="questions" aria-labelledby="questions-title">
+    <p class="cb-sec-num"><span class="accent">I.</span> Four questions</p>
+    <h2 class="cb-sec-title" id="questions-title">Archive. Share. Fork. <em>Export.</em></h2>
+    <p class="cb-sec-lead">The things raw HTML artifacts don't answer on their own. Capsule is the discipline that makes them answer — by construction, not by hosting.</p>
 
     <div class="cb-promises">
       <article class="cb-promise">
-        <p class="cb-promise-mark">i. Persistence</p>
-        <h3 class="cb-promise-h">Cannot be unshared.</h3>
-        <p class="cb-promise-body">Once a capsule reaches you, the bytes are yours. No retraction, no expiring link, no platform that revokes access.</p>
-        <p class="cb-promise-ref">enforced by · core rule 10</p>
+        <p class="cb-promise-mark">i. Archive</p>
+        <h3 class="cb-promise-h">How do you archive it?</h3>
+        <p class="cb-promise-body">It's just a .html file. Save it anywhere — Dropbox, USB, GitHub, an inbox, a folder on disk. The manifest makes the file self-describing for a future reader.</p>
+        <p class="cb-promise-ref">no externals · core rule 02</p>
       </article>
       <article class="cb-promise">
-        <p class="cb-promise-mark">ii. Silence</p>
-        <h3 class="cb-promise-h">Never phones home.</h3>
-        <p class="cb-promise-body">Zero fetch. Zero analytics. Zero tracking pixels. Once a capsule opens, the recipient is unobservable.</p>
-        <p class="cb-promise-ref">enforced by · core rule 02</p>
+        <p class="cb-promise-mark">ii. Share</p>
+        <h3 class="cb-promise-h">How do you share it?</h3>
+        <p class="cb-promise-body">The bytes are the artifact. No host required, no link to expire, no platform to revoke access. Once it reaches a recipient, it's theirs.</p>
+        <p class="cb-promise-ref">cannot be unshared · core rule 10</p>
+      </article>
+      <article class="cb-promise">
+        <p class="cb-promise-mark">iii. Fork</p>
+        <h3 class="cb-promise-h">How do you fork it?</h3>
+        <p class="cb-promise-body">The manifest's parents[] field records lineage. Paste a capsule into a new LLM session; the next one it produces knows what it built on.</p>
+        <p class="cb-promise-ref">parents[] · manifest field</p>
+      </article>
+      <article class="cb-promise">
+        <p class="cb-promise-mark">iv. Export</p>
+        <h3 class="cb-promise-h">How do you get it out of your LLM?</h3>
+        <p class="cb-promise-body">Paste the produce prompt. Out comes a sealed .html you can save — not a link inside the chat, not a hosted artifact you depend on, just bytes you control.</p>
+        <p class="cb-promise-ref">produce prompt · §IV</p>
       </article>
     </div>
   </section>
@@ -1027,7 +1055,7 @@ Data to embed:
     </div>
     <div class="cb-colophon">
       <span>Set in system sans · Mono for code · Apache 2.0</span>
-      <span>capsule:landing/v9.0.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v9.1.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
@@ -1102,14 +1130,14 @@ Data to embed:
     push(``);
     push(`**${data.stats.rules}** rules · **${data.stats.blocks}** required blocks · **${data.stats.network_deps}** network deps`);
     push(``);
-    push(`## I — Promises`);
+    push(`## I — Four questions`);
     push(``);
-    data.promises.forEach(function (p) {
-      push(`### ${p.title}`);
+    data.questions.forEach(function (q) {
+      push(`### ${q.question}`);
       push(``);
-      push(p.body);
+      push(q.answer);
       push(``);
-      push(`_${p.enforced_by}_`);
+      push(`_${q.ref}_`);
       push(``);
     });
     push(`## II — Anatomy`);
