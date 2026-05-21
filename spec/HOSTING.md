@@ -37,6 +37,25 @@ What the headers mean:
 
 A host that doesn't include these headers is still a valid host of the pattern — it just provides one less independent verification. A host that includes them and serves bytes that don't match earns the recipient's mistrust.
 
+## Visibility tiers as host-side policy (not a format concern)
+
+Hosts make access-control decisions independent of the format. Capsule itself takes no position on whether a hosted artifact should be world-readable, organization-scoped, token-gated, or fully private — those are *host policy* choices, not format properties. A capsule that travels by email is "as accessible as the recipient's inbox"; the same capsule hosted on MinDev under an `org` visibility is reachable only to authenticated org members; the same capsule hosted on htmlbin is anonymous-publishable. The bytes don't change; the access policy does.
+
+Hosts SHOULD document their visibility model clearly, because producers and recipients need to understand what gating applies. Common tiers observed across host implementations:
+
+| Tier | Who can fetch | Notes |
+|---|---|---|
+| `private` | Uploader + explicit ACL grantees | Default for most hosts |
+| `org` | Members of the uploading organization (typically Firebase- or SSO-authenticated) | Common in industry-tied hosts |
+| `shared-by-token` | Anyone with a per-recipient share-token URL | Supports revocation, audit, expiry, view-cap |
+| `public` | Anonymous resolvable | Functionally equivalent to a long-lived share token with no revocation or audit; some hosts deliberately do not offer this tier |
+
+**Worked example (2026-05-21):** MinDev shipped a security-driven change that *removed the `public` tier entirely*, on the basis that a single field bypassing every downstream access control was a structural mismatch with the host's other layers (token-scoped delivery, fetch logging, watermarking). All previously-`public` capsules were migrated to `org`; producers attempting to push with `visibility=public` now receive a `400` with a clear message redirecting them to the share-token path. This is a host-side policy decision; the capsule format is unchanged, and the same capsules hosted elsewhere (htmlbin, self-hosted, AirDrop) remain anonymous-resolvable. The format/host split working as designed.
+
+**Implication for producers** (especially compiler-kind producers that emit QR codes or other resolvable pointers): host-side policy can change without notice, and *format artifacts should not bake in assumptions about resolution semantics*. The Core spec's QR-code recommendation to encode `urn:uuid:<uuid>` (rather than a live URL) exists precisely so producers don't ship artifacts that silently break when host policy changes. See [`RESEARCH.md` F23](../RESEARCH.md) for the empirical case that validated this choice (Mintel had been encoding live MinDev URLs in QR codes; every previously-printed map's QR became a 403 for anonymous scanners overnight when MinDev removed the `public` tier).
+
+If a producer explicitly wants anonymous-resolvable QRs or links, the right path is to mint a share token at upload time and encode the share-URL (`/api/c/share/<token>` or equivalent), not the bare-UUID URL. The share-URL form is anonymous-resolvable *by design* and stays anonymous-resolvable across host policy changes; the bare-UUID URL is contingent on whatever visibility tier the host happens to support today.
+
 ## Anti-patterns — what hosts of capsules should not do
 
 | Anti-pattern | Why it breaks the pattern |

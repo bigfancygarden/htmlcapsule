@@ -727,6 +727,60 @@ Four lifecycle layers; convergence-pattern findings at three of them. The format
 - [PRECEDENTS.md](PRECEDENTS.md) — Raunaq / html-docs.com + Matan / Workplane entries added to "Current voices in HTML-for-AI"; position table grew to 9 rows
 - [voices/README.md](voices/README.md) — queue tracking and graduation rule
 
+### F23: URN-not-URL QR encoding — empirical validation of a deliberate spec choice
+
+**Date:** 2026-05-21
+
+The Core spec ([CAPSULE_CORE.md](CAPSULE_CORE.md) Rule 4 supplementary QR-code guidance) recommends embedding a QR code that encodes `urn:uuid:<uuid>` — the URN form, not a live URL. The reasoning at the time was that URNs are non-resolvable but *honest* about being non-resolvable, while URLs encode a host's distribution policy and that policy can change without the format changing. A real-world incident on 2026-05-21 validated this reasoning concretely.
+
+**What happened:**
+
+Mintel's `build_exploration_map_capsule.py` had been encoding `https://mindev.ca/c/<uuid>` in the on-map QR (the rationale: a phone scanning a printed map could land directly on the live capsule). This was a deviation from the spec — fine in isolation because MinDev was a known host and the URLs worked at the time.
+
+On 2026-05-21 MinDev shipped a security-driven schema change that removed the `public` visibility tier entirely. Existing `public` rows migrated to `org`; the `mindev.ca/c/<uuid>` URL pattern now returns `403 {"error":"forbidden"}` to anonymous callers. Org members keep access via Firebase auth; external recipients need a share-token URL (`mindev.ca/api/c/share/<token>`) instead.
+
+**Immediate consequence:** every previously-printed Mintel map carrying a QR pointing at the live URL now resolves to a 403 for any anonymous scanner. The QR didn't break structurally — it still scans, still produces a URL — but the URL has changed semantic meaning. Was: *"fetch this capsule"*. Now: *"fetch this capsule if you happen to be authenticated to the right org on the device scanning the code"*. The producer (Mintel) had no way to know in advance that this change would happen on the host side; the printed maps in the wild can't be recalled.
+
+**What this validates:**
+
+- **URN form for the QR is the right default**, not the URL form. URN is honest about being a pointer-without-resolution-guarantee. URL encodes an assumption about host behavior that the format has no business making.
+- **The format/host split documented in [`spec/HOSTING.md`](spec/HOSTING.md) is real, not theoretical.** Format-layer artifacts (capsules) should not bake in host-layer policy decisions (visibility tiers, auth gating, resolution semantics) because those decisions belong to the host and can change without the format changing. The capsule's bytes are identical before and after MinDev's change; what changed was who-can-fetch-them — a pure host concern.
+- **The deliberate spec choice was correct**, even though the URN form is "less convenient" for the immediate scan-and-view use case. Convenience that's contingent on host policy isn't durable; honest pointers that require an extra step are durable. The convenience-vs-durability trade-off has now been demonstrated empirically, not just argued abstractly.
+
+**The fallback pattern that does work:**
+
+If a producer wants the QR to resolve to a live capsule via the URL form, the right path is:
+
+1. Producer asks host to mint a share token at upload time (the Mintel-side ask currently flagged in MINTEL_TODOS.md: `?mint_share_token=true` on the upload endpoint, returning a `share_url` in the response)
+2. Producer encodes `https://<host>/api/c/share/<token>` in the QR
+3. This URL is anonymous-resolvable *by design*, has revocation, has audit, has expiry, has view-cap — and survives host policy changes because the share-token endpoint exists specifically for anonymous resolution
+
+The URN form remains the right default; the share-URL form is opt-in for cases where the producer explicitly wants anonymous resolution AND has minted a token at build time AND has accepted the share-token's audit/revocation tradeoffs.
+
+**Spec implications:**
+
+None directly — the spec already says URN. This is post-hoc empirical validation, not a spec change. A one-paragraph addition to `spec/HOSTING.md` (landed alongside this finding) names visibility tiers as host-side policy and cites this case as the canonical example of why format artifacts shouldn't bake in resolution-semantics assumptions.
+
+**Open question:**
+
+What should a producer's build script do for capsules whose host visibility is `org` (where anonymous scan won't resolve)? Three reasonable patterns, currently unsettled across implementations:
+
+1. **Always encode the URN** (safe default; recipient has to type or paste UUID into a host UI to view).
+2. **Encode the URL but add an alt-text/caption** like "Sign in to <org> to view" so a scanner knows what to expect.
+3. **Encode the share-URL when a token has been minted** (opt-in to anonymous resolution; requires producer to have requested a share token at upload time).
+
+Currently the canonical convention to recommend isn't settled. Worth tracking whether other compiler-kind producers reach for one shape vs. another — if a second independent producer makes a different choice and ships, the convergence (or divergence) becomes a future finding.
+
+**Methodological note — the agent-to-agent collaboration pattern:**
+
+This finding emerged from a Claude-on-MinDev-side conversation pushed through to a Claude-on-Mintel-side conversation via the user as a human-router. Each agent owned its own system's concerns: MinDev's agent diagnosed the threat model + drove the schema change + posted prod verification; Mintel's agent audited the producer-side fallout + flagged the QR-encoding gap + committed to build-script patches in its own domain. The htmlcapsule project's record (this finding) is then the third surface that absorbs the cross-domain learning. Worth tracking as a pattern: multi-agent + human-router collaboration is producing real research artifacts (this F-finding) faster than a single-agent loop probably would.
+
+**Cross-references:**
+- [CAPSULE_CORE.md Rule 4 supplementary QR guidance](CAPSULE_CORE.md) — the deliberate URN-not-URL spec choice
+- [spec/HOSTING.md "Visibility tiers as host-side policy"](spec/HOSTING.md) — the addition that names this as the canonical example
+- [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) — the Mintel Copper Dome capsule observed there used the URL form in its QR
+- [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin) — the broader host-contract pattern; visibility tiers are one axis hosts vary on
+
 ## Open questions
 
 In rough priority:

@@ -30,6 +30,7 @@ Interactive-archive category named; lifecycle decomposition (live-editing / form
 - **F20** — First publicly-fetchable Mintel production capsule (Copper Dome, 13.7 MB) validates spec at scale; five empirical findings around it (`9bdb2db`).
 - **F21** — Independent convergence on the host-contract pattern (MinDev + htmlbin) (`2a21d76`).
 - **F22** — Independent convergence on the live-editing-layer pattern (html-docs.com + workplane.co) (`1f298cf`).
+- **F23** — URN-not-URL QR encoding empirically validated by a host-side visibility-tier removal (MinDev dropped `public`, breaking Mintel-encoded URL QRs for anonymous scanners overnight). Also added "Visibility tiers as host-side policy" section to `spec/HOSTING.md` naming this case.
 
 ### Added — infrastructure & citability
 
