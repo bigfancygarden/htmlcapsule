@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.8.0",
+  "capsule_version": "11.9.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.8.0 introduces a research-paper-style numbering taxonomy across the opening sections: 'Observation 1' / 'Question 1' / 'Answer 1a' (Thariq, viewing strategy) / 'Answer 1b' (htmlbin.dev, hosting layer) / 'Answer 1c' (maintainer, custom producer + registry). Corner labels updated from 'NN · kind' to the bare taxonomy identifier (e.g., 'Observation 1' instead of '00 · observation'). Section H2 kickers updated to include the number ('Observation 1:' / 'Question 1:'). Answer card tags inside variant 00b updated from 'Answer A/B' to 'Answer 1a/1b'. Variant 00c (the maintainer's case study) reframed from a separate 'case study' beat into 'Answer 1c · custom producer + registry · maintainer's own answer' — same prose content and cream background, but the kicker is now a parallel `.cb-answer-tag` line in mono accent uppercase, matching the visual treatment of 1a and 1b inside 00b. Question 1 lead now mentions all three answers explicitly and links forward to 1c via in-page anchor. Numbering scheme is extensible: future Observation 2 / Question 2 / Answer 2a etc. slot in naturally as the analysis grows. v11.7.0 added the grey background + white answer cards. UUID 7d1a1ac8 preserved through v11.8.",
+  "description": "Landing page in hero framing exploration mode. v11.9.0 adds Observation 2 (variant 00d) at the end of the opening narrative, after Answer 1c and before the hero gallery. Observation 2 introduces a second premise on a different axis from Observation 1's HTML-as-substrate claim: presentation lock-in. Title: 'Observation 2: File over app is as relevant today as it ever was.' Quotes Steph Ango (Kepano)'s 'File over app' essay — canonical thesis verbatim ('If you want to create digital artifacts that last, they must be files you can control, in formats that are easy to retrieve and read') with cite-link to https://stephango.com/file-over-app. Then carries the maintainer's reflection on Obsidian's plugin route: well-intentioned but undermines the principle — when presentation requires plugin installs, you're back at 'app over file'. White background (matches Observation 1; signals 'back to observation mode' after the grey question + cream Answer 1c). v11.8 introduced the research-paper numbering taxonomy (Observation 1 / Question 1 / Answer 1a/1b/1c). UUID 7d1a1ac8 preserved through v11.9.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -73,7 +73,8 @@
     { "num": "09", "framing": "Context-led · plain-English on-ramp", "title": "HTML you can keep.", "sub": "AI tools increasingly produce HTML: reports, maps, demos, dashboards, visual notes, and interactive documents. HTML Capsule is an open spec for saving that work as one self-contained .html file. A Capsule includes its own content, styles, metadata, provenance, and validation rules, with no required network access. It is not a new file format — it is a stricter way to package HTML so the work can be archived, shared, inspected, and continued later by humans, tools, and LLMs.", "tagline": "One file. No network. Built to last." },
     { "num": "00",  "id": "Observation 1", "framing": "Observation 1 · two leading voices",                    "title": "Observation 1: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Editorial opening: an observation about HTML as the de-facto AI substrate, with self-aware footnote on the word 'substrate', backed by two voice quotes (Thariq Shihipar on markdown becoming restricting under more-powerful agents; Andrej Karpathy on telling LLMs to 'structure your response as HTML'). White background.", "kind": "section" },
     { "num": "00b", "id": "Question 1",    "framing": "Question 1 · three answers (1a Thariq, 1b htmlbin.dev, 1c maintainer)", "title": "Question 1: What do you do with all that HTML?",                 "sub": "Three answers in different shapes: Answer 1a is Thariq's FAQ recommendation (open the HTML locally, or upload to S3); Answer 1b is Utkarsh Sengar's htmlbin.dev (agent-first hosting layer — short URLs + /raw); Answer 1c is the maintainer's own custom-producer + custom-registry approach, rendered below in its own section (00c). Grey background (var(--paper-soft)); 1a and 1b sit in white answer cards lifted out of the grey.", "kind": "section" },
-    { "num": "00c", "id": "Answer 1c",     "framing": "Answer 1c · custom producer + registry · maintainer's own",                "title": "Maybe let's take it a step further.",                              "sub": "Soft-cream background. Maintainer's first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues — so they get standalone, permanent, AI-friendly artifacts without a database to maintain. Also names MinDev as the registry that catches those artifacts. Acknowledges the file-size tradeoff explicitly. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.",                                                        "kind": "section" }
+    { "num": "00c", "id": "Answer 1c",     "framing": "Answer 1c · custom producer + registry · maintainer's own",                "title": "Maybe let's take it a step further.",                              "sub": "Soft-cream background. Maintainer's first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues — so they get standalone, permanent, AI-friendly artifacts without a database to maintain. Also names MinDev as the registry that catches those artifacts. Acknowledges the file-size tradeoff explicitly. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.",                                                        "kind": "section" },
+    { "num": "00d", "id": "Observation 2", "framing": "Observation 2 · file over app + the Obsidian-plugin critique",            "title": "Observation 2: File over app is as relevant today as it ever was.", "sub": "Second observation, parallel to Observation 1 but on a different axis: presentation lock-in. Quotes Steph Ango (Kepano)'s 'File over app' essay (the canonical thesis: 'If you want to create digital artifacts that last, they must be files you can control, in formats that are easy to retrieve and read'), then carries maintainer's reflection on how Obsidian's plugin route — well-intentioned — undermines the principle: when presentation requires plugin installs, you're back at app over file. White background, matching Observation 1.", "kind": "section" }
   ],
   "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
@@ -1267,6 +1268,23 @@
       </div>
     </article>
 
+    <!-- 00d — Observation 2 (file over app, Kepano + Obsidian-plugin critique) -->
+    <article class="cb-frame is-observation" data-num="00d" aria-labelledby="frame-00d-title">
+      <span class="cb-frame-num">Observation 2</span>
+      <div class="cb-frame-inner">
+        <h2 class="cb-frame-title is-observation-h" id="frame-00d-title"><span class="cb-kicker">Observation 2:</span> File over app is as relevant today as it ever was.</h2>
+
+        <p class="cb-frame-lead">The principle, from Steph Ango (Kepano):</p>
+
+        <figure class="cb-quote">
+          <blockquote>If you want to create digital artifacts that last, they must be files you can control, in formats that are easy to retrieve and read.</blockquote>
+          <figcaption>— Steph Ango (<a href="https://x.com/kepano" rel="noopener">@kepano</a>) · <a href="https://stephango.com/file-over-app" rel="noopener">"File over app"</a></figcaption>
+        </figure>
+
+        <p class="cb-frame-prose">But something happened along the way. Obsidian enthusiasts went down a plugin route that, while well-intentioned, began to break the whole thing — or at least make it more fragile. The presentation is such a key part of things: the look, the feel, the layout. When you need to install a bunch of plugins (third-party or otherwise) to get what you want, are you really any better off? You're straight back at <em>app over file</em>.</p>
+      </div>
+    </article>
+
     <!-- 01 — Discipline (left, technical, default paper) -->
     <article class="cb-frame" data-num="01" aria-labelledby="frame-01-title">
       <span class="cb-frame-num">01 / 09</span>
@@ -1434,7 +1452,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.8.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.9.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
