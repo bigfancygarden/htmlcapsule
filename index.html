@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="description" content="HTML Capsule: an approach for working with HTML artifacts. One sealed HTML file with everything inside — manifest, data, provenance. No network. Built to be re-read years later by humans and by the LLMs they ask to continue the work. Open spec, reference implementation, examples.">
+<meta name="description" content="HTML Capsule landing page — currently in hero framing exploration mode. Eight candidate framings side by side; reverts to single-direction hero once a winner is picked. Open spec for sealed, self-contained, provenance-bearing HTML artifacts.">
 <meta name="color-scheme" content="light">
-<title>HTML Capsule — an approach for working with HTML artifacts</title>
+<title>HTML Capsule — hero framing exploration</title>
 
 <script id="capsule-manifest" type="application/json">
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.15.0",
-  "title": "HTML Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the HTML Capsule project. v10.15.0 locks in the brand mark's final geometry: capsule outline expanded to fill the full viewBox (rect 30×16, rx 8), stroke weight tightened from 2.2 → 1.8 for a more refined linework matching the source design more closely, and the </> brackets pushed further out (apex at x=6 and x=26) so the code symbol breathes inside the capsule. Same SVG shape, same currentColor integration, just dialed-in proportions. v10.14.0 introduced the brand mark (replacing the placeholder 'C' glyph). v10.13.0 attributed maintainership in the footer colophon (Luke Schuss · lukeschuss.com). v10.12.0 tightened the top bar to 'HTML Capsule' brand + version badge + GitHub-icon-only nav. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.15).",
+  "capsule_version": "11.0.0",
+  "title": "HTML Capsule — hero framing exploration",
+  "description": "Landing page in temporary hero framing exploration mode. The conventional hero/four-questions/voices/footer structure (v10.x) is replaced with eight candidate hero variants stacked vertically — each with its own framing approach (discipline / outcome / substrate question / contract / max-short / PDF comparison / mark-first / problem question), its own layout (left-aligned, centered, dark inverted, mark-led), and its own background color. Numbering is for reference; the winning framing will become the page and the rest will be removed. The previous landing layout (v10.15) is preserved at commit 94c3802 in git. Same logical landing capsule (UUID 7d1a1ac8 preserved from v7 through v11.0).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -54,141 +54,34 @@
 
 <script id="capsule-data" type="application/json">
 {
-  "title": "An approach for working with HTML artifacts",
-  "tagline": "One sealed HTML file with everything inside — manifest, data, provenance. No network, no platform. Built to be re-read years from now — by humans and by the LLMs they ask to reopen the work.",
-  "audience": "anyone with HTML artifacts piling up from AI tools — and the future readers (human and AI) who will reopen them years later",
-  "hero": {
-    "eyebrow": "Open spec · 2026",
-    "title": "An approach for working with HTML artifacts.",
-    "sub": "LLMs emit them by default. Agents return them. Chats render them. The format your tools already speak is the format your work should land in."
+  "mode": "hero_framing_exploration",
+  "title": "Hero framing exploration",
+  "intro": {
+    "eyebrow": "Hero framing exploration · 2026-05-21",
+    "title": "Picking the right framing.",
+    "sub": "Eight candidate heroes below. Each tries a different angle — discipline, outcome, comparison, question — with its own copy, layout, and background. Scroll, pick winners. Previous landing (v10.15) preserved at commit 94c3802."
   },
-  "bridge": {
-    "premise": "The durable unit of knowledge is shifting from the note to the artifact.",
-    "consequence": "So HTML is the substrate. Now what?"
-  },
-  "tools_not_apps": {
-    "heading": "Tools, not apps.",
-    "paragraphs": [
-      "Capsules can have rich runtime tools — measure, filter, annotate, search, export — without becoming applications. The line is the JavaScript-off test: does the substance of the content depend on JS to exist? If no, it's an interactive archive — tools query the content but don't generate it. If yes, it's an app, and the spec says no.",
-      "Mintel's exploration-map capsules ship click-to-measure and click-to-find-coordinates. With JS off, the map still renders (via the static image fallback), the legend and attribution are still there. The tools are gone; the substance isn't."
-    ],
-    "link_text": "Read the spec — §2.3 Rendering Model",
-    "link_url": "spec/CAPSULE_SPEC.md"
-  },
+  "variants": [
+    { "num": "01", "framing": "Discipline · research-led", "title": "A discipline for HTML artifacts.", "sub": "AI tools emit HTML by default. Capsule is the contract that makes those artifacts durable, inspectable, and re-readable years from now." },
+    { "num": "02", "framing": "Outcome-led", "title": "Sealed HTML. Built to last.", "sub": "One file. No network. Built to be re-opened years from now — by humans, and by the LLMs they ask to continue the work." },
+    { "num": "03", "framing": "Substrate · question", "title": "HTML is the substrate. Now what?", "sub": "An open spec for what to do with the HTML that AI tools already give you — so it survives the chat it was born in." },
+    { "num": "04", "framing": "Contract · interop-first", "title": "A contract for HTML artifacts.", "sub": "Manifest. Provenance. Integrity. No network. The same envelope whether an LLM, a build script, or a human writes it." },
+    { "num": "05", "framing": "Max-short · benefit-led", "title": "HTML you can keep.", "sub": "Sealed. Self-contained. Provenance-bearing. One file you can email, archive, or fork." },
+    { "num": "06", "framing": "Comparison · familiar anchor", "title": "Like a PDF, but alive.", "sub": "PDFs are sealed and closed. Capsules are sealed and open — programmable, inspectable, re-renderable. The HTML profile for work worth preserving." },
+    { "num": "07", "framing": "Visual-led · brand-first", "title": "HTML Capsule", "sub": "A profile of HTML for sealed, self-contained artifacts. One file. Twelve rules. Zero network." },
+    { "num": "08", "framing": "Problem · why-this-exists", "title": "Where does AI's HTML go?", "sub": "Capsule is the discipline that makes AI-generated HTML durable, inspectable, and shareable beyond the platform that produced it." }
+  ],
   "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
-  "questions": [
-    {
-      "id": "archive",
-      "label": "i. Archive",
-      "question": "How do you archive it?",
-      "answer": "It's just a .html file. Save it anywhere — Dropbox, USB, GitHub, an inbox, a folder on disk. The manifest makes the file self-describing for a future reader.",
-      "ref": "no externals · core rule 02"
-    },
-    {
-      "id": "share",
-      "label": "ii. Share",
-      "question": "How do you share it?",
-      "answer": "The bytes are the artifact. No host required, no link to expire, no platform to revoke access. Once it reaches a recipient, it's theirs.",
-      "ref": "cannot be unshared · core rule 10"
-    },
-    {
-      "id": "fork",
-      "label": "iii. Fork",
-      "question": "How do you fork it?",
-      "answer": "The manifest's parents[] field records lineage. Paste a capsule into a new LLM session; the next one it produces knows what it built on.",
-      "ref": "parents[] · manifest field"
-    },
-    {
-      "id": "export",
-      "label": "iv. Export",
-      "question": "How do you get it out of your LLM?",
-      "answer": "Paste the produce prompt from the spec. Out comes a sealed .html you can save — not a link inside the chat, not a hosted artifact you depend on, just bytes you control.",
-      "ref": "produce prompt · CAPSULE_CORE.md"
-    }
+  "footer_links": [
+    ["Core spec", "CAPSULE_CORE.md"],
+    ["Full spec", "spec/CAPSULE_SPEC.md"],
+    ["Research log", "RESEARCH.md"],
+    ["Notes (journey)", "notes.html"],
+    ["GitHub", "https://github.com/bigfancygarden/htmlcapsule"],
+    ["About this page", "#about-capsule"]
   ],
-  "file_over_app": {
-    "heading": "File over app, taken further.",
-    "body": "Steph Ango's principle says your work should live in files you control, in formats that outlive any specific app. Capsule agrees — and pushes it one step further: not just the data, but the presentation. The HTML file carries its own styles and rendering. No app dependency, no plugin layer, no theme to install. The file is the experience.",
-    "link_text": "Read the principle",
-    "link_url": "https://stephango.com/file-over-app"
-  },
-  "adjacent_voices": {
-    "heading": "Adjacent voices",
-    "lead": "People thinking about this from related angles. Not endorsements either way — just the conversation Capsule is part of.",
-    "entries": [
-      {
-        "name": "Thariq Shihipar",
-        "claim": "HTML is the new markdown.",
-        "blurb": "Public observation that LLMs and agents are emitting single self-contained HTML files as their default artifact format. The substrate observation Capsule builds on.",
-        "link_text": "Read on X",
-        "link_url": "https://x.com/trq212"
-      },
-      {
-        "name": "Andrej Karpathy",
-        "claim": "LLM wiki + \"structure your response as HTML.\"",
-        "blurb": "Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip lays out a four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) and names HTML as the current best default. Capsule sits between — HTML as the substrate, with a contract on the file.",
-        "link_text": "Read the archive",
-        "link_url": "voices/karpathy-html-progression-2026.html"
-      },
-      {
-        "name": "Blake Crosley",
-        "claim": "HTML is the format AI agents want.",
-        "blurb": "Argues HTML preserves spatial structure, interaction, and density in a way markdown linearizes away. The control-surface framing: HTML as what agents should produce, live and inspectable.",
-        "link_text": "Read the post",
-        "link_url": "https://blakecrosley.com/blog/html-is-the-format-agents-want"
-      },
-      {
-        "name": "Simon Willison",
-        "claim": "Tracking the HTML-from-LLM wave.",
-        "blurb": "Has written extensively about LLM-emitted HTML on his blog and amplified Thariq's substrate observation. Also runs Datasette — a different shape of single-file substrate (SQLite with a built-in HTML viewer).",
-        "link_text": "Read the blog",
-        "link_url": "https://simonwillison.net/"
-      },
-      {
-        "name": "Utkarsh Sengar — htmlbin.dev",
-        "claim": "\"Agent-first HTML hosting.\"",
-        "blurb": "Launched htmlbin.dev in May 2026 (about the same week as htmlcapsule) — public hosting infrastructure for agent-emitted HTML, short URLs, /raw endpoint. Independent convergence with the MinDev hosting pattern — complementary layer to Capsule's format discipline (the format is hosting-agnostic).",
-        "link_text": "Read on htmlbin.dev",
-        "link_url": "https://htmlbin.dev/"
-      },
-      {
-        "name": "Jeremy Howard — llms.txt",
-        "claim": "A markdown file at /llms.txt to make sites LLM-readable.",
-        "blurb": "Proposed September 2024 (fast.ai / Answer.AI). Modeled after robots.txt + sitemap.xml. Now adopted as a Chrome Lighthouse audit. Site-level discoverability convention; complementary layer to Capsule's artifact-level discipline — a site that hosts capsules should have an /llms.txt that indexes them. htmlcapsule.org has one.",
-        "link_text": "Read the proposal",
-        "link_url": "https://llmstxt.org/"
-      },
-      {
-        "name": "Raunaq Bhutoria — html-docs.com",
-        "claim": "\"Create beautiful docs and webpages with your Agents.\"",
-        "blurb": "Engineer at Meta. Built html-docs.com as a live collaboration layer for agent-generated HTML — agents publish via Claude Code skill / MCP / HTTP API, humans review with comments, agents read the comments and revise. The agent ↔ human review loop named as a workflow primitive. Endorsed by Karpathy + Thariq on the homepage. Complementary lifecycle layer to Capsule's seal step — html-docs is where the work is iterated; Capsule is what it becomes when sealed.",
-        "link_text": "Read on html-docs.com",
-        "link_url": "https://html-docs.com/",
-        "layer": "live editing"
-      },
-      {
-        "name": "Matan (matanrak) — Workplane",
-        "claim": "\"Turn AI outputs into live pages.\" / \"The working plane between AI and humans.\"",
-        "blurb": "Independent live-editing layer, second implementation of the same pattern as html-docs.com. MCP-first, multi-agent (Claude Code, Codex, Cursor, Devin, Claude Desktop). Free for individuals, no account required for commenters. Open-source agent skill at work-plane/workplane-skills (MIT). Maintainer is Matan (GitHub: matanrak), based in Israel. The convergence with html-docs.com on the same workflow shape (publish → comment → agent revises) is the empirical signal — documented as F22.",
-        "link_text": "Read on workplane.co",
-        "link_url": "https://workplane.co/",
-        "layer": "live editing"
-      }
-    ]
-  },
-  "journey": {
-    "label": "Notes · 2026-05-20",
-    "pull_quote": "The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.",
-    "cta": "Read the journey",
-    "href": "notes.html"
-  },
-  "not_this": "What this isn't: a new file format (it's HTML), a SaaS, a new editing surface, a competitor to MCP, a knowledge graph, or anti-platform. It's anti-context-loss.",
-  "links": {
-    "spec":      [["Core (one page)", "CAPSULE_CORE.md"], ["Full spec", "spec/CAPSULE_SPEC.md"], ["Domain catalog", "spec/DOMAIN_CAPSULES.md"]],
-    "reference": [["Research log", "RESEARCH.md"], ["Notes (journey essay)", "notes.html"], ["Glossary", "GLOSSARY.md"], ["Examples", "spec/examples/"]],
-    "source":    [["GitHub", "https://github.com/bigfancygarden/htmlcapsule"], ["Reference impl", "compiler/"], ["This page", "#about-capsule"]]
-  }
+  "not_this": "This page is itself a capsule (UUID 7d1a1ac8, v11.0.0). The exploration layout is temporary — once a framing wins, the page rebuilds around it. The prior landing layout (v10.15) is preserved in git at commit 94c3802."
 }
 </script>
 
@@ -239,11 +132,20 @@
   code, kbd, samp { font-family: var(--mono); font-size: 0.92em; }
   ::selection { background: color-mix(in oklab, var(--accent) 22%, transparent); color: var(--ink); }
 
+  /* In exploration mode (v11.x), #capsule-root no longer constrains width;
+     each child block handles its own width via .cb-shell (max-width centered)
+     or .cb-frames (full-bleed). This lets numbered frames extend their
+     background colors edge-to-edge. */
   #capsule-root {
+    width: 100%;
+  }
+  .cb-shell {
     max-width: 1180px;
     margin: 0 auto;
-    padding: 36px clamp(24px, 5vw, 64px) 64px;
+    padding: 0 clamp(24px, 5vw, 64px);
   }
+  .cb-shell.cb-shell-top { padding-top: 36px; }
+  .cb-shell.cb-shell-foot { padding-bottom: 64px; }
 
   /* Top bar */
   .cb-topbar {
@@ -769,6 +671,226 @@
   .cb-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   @media (prefers-reduced-motion: reduce) { .cb-toast { transition: opacity 0.001s; } }
 
+  /* ============================================================
+     Hero framing exploration (v11.x) — explorer intro + frames + slim footer
+     ============================================================ */
+
+  .cb-explorer-intro {
+    padding: 56px 0 36px;
+    max-width: 720px;
+  }
+  .cb-explorer-eyebrow {
+    font: 500 12.5px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 16px;
+  }
+  .cb-explorer-eyebrow::before {
+    content: ""; display: inline-block;
+    width: 18px; height: 1px;
+    background: var(--accent);
+    vertical-align: 0.32em; margin-right: 10px;
+  }
+  .cb-explorer-h {
+    font: 700 clamp(28px, 4vw, 40px)/1.05 var(--sans);
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .cb-explorer-sub {
+    font: 400 16px/1.55 var(--sans);
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin: 0;
+  }
+  .cb-explorer-sub code {
+    background: var(--paper-soft);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.86em;
+  }
+
+  /* Frames container — full bleed */
+  .cb-frames {
+    width: 100%;
+    margin-top: 24px;
+  }
+
+  .cb-frame {
+    width: 100%;
+    position: relative;
+    padding: clamp(72px, 11vh, 128px) clamp(28px, 6vw, 80px);
+    min-height: clamp(440px, 70vh, 640px);
+    display: flex;
+    align-items: center;
+    border-top: 1px solid color-mix(in oklab, currentColor 8%, transparent);
+  }
+  .cb-frame-inner {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .cb-frame-num {
+    position: absolute;
+    top: clamp(20px, 3.5vh, 32px);
+    right: clamp(28px, 6vw, 80px);
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    opacity: 0.7;
+  }
+  .cb-frame-tag {
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 24px;
+  }
+  .cb-frame-tag::before {
+    content: ""; display: inline-block;
+    width: 16px; height: 1px;
+    background: currentColor;
+    vertical-align: 0.32em; margin-right: 10px;
+  }
+  .cb-frame-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(34px, 5.2vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -0.034em;
+    color: var(--ink);
+    margin: 0 0 22px;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .cb-frame-title em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .cb-frame-title.is-huge {
+    font-size: clamp(48px, 8vw, 96px);
+    max-width: 13ch;
+  }
+  .cb-frame-title.is-wordmark {
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    max-width: none;
+    margin-bottom: 18px;
+    color: var(--ink-soft);
+  }
+  .cb-frame-sub {
+    font: 400 17px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+    max-width: 52ch;
+    text-wrap: pretty;
+  }
+  .cb-frame-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .cb-frame-stats {
+    display: flex;
+    gap: clamp(24px, 4vw, 44px);
+    flex-wrap: wrap;
+    margin-top: 32px;
+    padding-top: 22px;
+    border-top: 1px solid color-mix(in oklab, currentColor 14%, transparent);
+  }
+  .cb-stat-mini .v {
+    display: block;
+    font: 700 24px/1 var(--sans);
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+    font-feature-settings: "tnum";
+  }
+  .cb-stat-mini .l {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* Layout modifiers */
+  .cb-frame.is-centered .cb-frame-inner { text-align: center; }
+  .cb-frame.is-centered .cb-frame-title,
+  .cb-frame.is-centered .cb-frame-sub { margin-left: auto; margin-right: auto; }
+  .cb-frame.is-centered .cb-frame-cta,
+  .cb-frame.is-centered .cb-frame-stats { justify-content: center; }
+  .cb-frame.is-centered .cb-frame-tag::before { display: none; }
+
+  /* Mark-first variant */
+  .cb-frame.is-mark-first .cb-frame-bigmark {
+    display: block;
+    margin: 0 auto 20px;
+    width: clamp(140px, 22vw, 220px);
+    height: auto;
+    color: var(--ink);
+  }
+
+  /* Dark inverted variant */
+  .cb-frame.is-dark { color: var(--paper); }
+  .cb-frame.is-dark .cb-frame-title { color: var(--paper); }
+  .cb-frame.is-dark .cb-frame-sub { color: color-mix(in oklab, var(--paper) 78%, transparent); }
+  .cb-frame.is-dark .cb-frame-tag { color: var(--accent-soft); }
+  .cb-frame.is-dark .cb-frame-num { color: color-mix(in oklab, var(--paper) 50%, transparent); }
+  .cb-frame.is-dark .cb-stat-mini .v { color: var(--paper); }
+  .cb-frame.is-dark .cb-stat-mini .l { color: color-mix(in oklab, var(--paper) 60%, transparent); }
+  .cb-frame.is-dark .cb-btn {
+    background: transparent; color: var(--paper); border-color: var(--paper);
+  }
+  .cb-frame.is-dark .cb-btn:hover, .cb-frame.is-dark .cb-btn:focus {
+    background: var(--paper); color: var(--ink); border-color: var(--paper);
+  }
+  .cb-frame.is-dark .cb-btn.primary {
+    background: var(--paper); color: var(--ink); border-color: var(--paper);
+  }
+  .cb-frame.is-dark .cb-btn.primary:hover, .cb-frame.is-dark .cb-btn.primary:focus {
+    background: var(--accent-soft); border-color: var(--accent-soft); color: #fff;
+  }
+
+  /* Per-variant backgrounds */
+  .cb-frame[data-num="01"] { background: var(--paper); }
+  .cb-frame[data-num="02"] { background: #f0ede5; }   /* warm cream */
+  .cb-frame[data-num="03"] { background: #ecf0f3; }   /* cool gray */
+  .cb-frame[data-num="04"] { background: #ebeef8; }   /* pale blue */
+  .cb-frame[data-num="05"] { background: var(--ink); }
+  .cb-frame[data-num="06"] { background: #f0ebde; }   /* sand */
+  .cb-frame[data-num="07"] { background: #ebf0f7; }   /* soft blue */
+  .cb-frame[data-num="08"] { background: var(--paper-deep); }
+
+  /* Slim footer for exploration mode */
+  .cb-foot-slim {
+    margin: 0 auto;
+    padding: 56px 0 0;
+    display: flex; flex-direction: column;
+    gap: 18px;
+    border-top: 1px solid var(--rule);
+    margin-top: clamp(40px, 6vw, 64px);
+  }
+  .cb-foot-slim-links {
+    display: flex; gap: 22px; flex-wrap: wrap;
+    font: 500 13.5px/1 var(--sans);
+  }
+  .cb-foot-slim-links a { color: var(--ink-soft); border-bottom: none; padding: 4px 0; }
+  .cb-foot-slim-links a:hover, .cb-foot-slim-links a:focus { color: var(--accent); }
+
+  /* Frame responsive tweaks */
+  @media (max-width: 600px) {
+    .cb-frame { padding: clamp(56px, 9vh, 96px) clamp(20px, 5vw, 32px); min-height: auto; }
+    .cb-frame-num { top: 16px; right: 20px; font-size: 10.5px; }
+    .cb-frame-tag { margin-bottom: 20px; }
+    .cb-frame-title { margin-bottom: 18px; }
+    .cb-frame-stats { gap: 20px; }
+    .cb-stat-mini .v { font-size: 20px; }
+  }
+
   /* Responsive */
   @media (max-width: 900px) {
     .cb-hero { grid-template-columns: 1fr; row-gap: 28px; align-items: start; }
@@ -810,227 +932,197 @@
 </style>
 </head>
 <body>
-<a class="skip-link" href="#capsule-root">Skip to content</a>
+<a class="skip-link" href="#frames">Skip to content</a>
 
 <main id="capsule-root">
 
-  <header class="cb-topbar" role="banner">
-    <div class="cb-mark">
-      <svg class="cb-glyph" viewBox="0 0 32 18" width="36" height="20" aria-hidden="true" focusable="false">
-        <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
-        <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
-          <path d="M 13.5 13 L 18.5 5"/>
-          <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
-        </g>
-      </svg>
-      <strong>HTML Capsule</strong>
-      <a class="cb-badge" href="CAPSULE_CORE.md" aria-label="Specification version 0.3.4">v0.3.4</a>
-    </div>
-    <nav class="cb-topnav" aria-label="Primary">
-      <a class="cb-icon-link" href="https://github.com/bigfancygarden/htmlcapsule" aria-label="View source on GitHub" rel="noopener">
-        <svg class="cb-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" focusable="false">
-          <path fill="currentColor" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+  <div class="cb-shell cb-shell-top">
+    <header class="cb-topbar" role="banner">
+      <div class="cb-mark">
+        <svg class="cb-glyph" viewBox="0 0 32 18" width="36" height="20" aria-hidden="true" focusable="false">
+          <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
+            <path d="M 13.5 13 L 18.5 5"/>
+            <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
+          </g>
         </svg>
-        <span class="cb-icon-label">GitHub</span>
-      </a>
-    </nav>
-  </header>
-
-  <section class="cb-hero" aria-labelledby="hero-title">
-    <div class="cb-hero-lead">
-      <p class="cb-eyebrow">Open spec · 2026</p>
-      <h1 class="cb-title" id="hero-title">An approach for working with <em>HTML artifacts.</em></h1>
-    </div>
-    <div class="cb-hero-aside">
-      <p class="cb-sub">LLMs emit them by default. Agents return them. Chats render them. The format your tools already speak is the format your work should land in.</p>
-      <nav class="cb-cta" aria-label="Primary actions">
-        <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-        <a href="https://github.com/bigfancygarden/htmlcapsule" class="cb-btn">View on GitHub</a>
-      </nav>
-      <div class="cb-stats" aria-label="At a glance">
-        <div class="cb-stat"><span class="v">12</span><span class="l">rules</span></div>
-        <div class="cb-stat"><span class="v">5</span><span class="l">required blocks</span></div>
-        <div class="cb-stat"><span class="v">0</span><span class="l">network deps</span></div>
+        <strong>HTML Capsule</strong>
+        <a class="cb-badge" href="CAPSULE_CORE.md" aria-label="Specification version 0.3.4">v0.3.4</a>
       </div>
-    </div>
-  </section>
+      <nav class="cb-topnav" aria-label="Primary">
+        <a class="cb-icon-link" href="https://github.com/bigfancygarden/htmlcapsule" aria-label="View source on GitHub" rel="noopener">
+          <svg class="cb-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" focusable="false">
+            <path fill="currentColor" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span class="cb-icon-label">GitHub</span>
+        </a>
+      </nav>
+    </header>
 
-  <div class="cb-bridge">
-    <p class="cb-bridge-premise">The durable unit of knowledge is shifting from the note to the artifact.</p>
-    <p class="cb-bridge-consequence">So HTML is the substrate. <em>Now what?</em></p>
+    <section class="cb-explorer-intro" aria-labelledby="explorer-title">
+      <p class="cb-explorer-eyebrow">Hero framing exploration · 2026-05-21</p>
+      <h1 class="cb-explorer-h" id="explorer-title">Picking the right framing.</h1>
+      <p class="cb-explorer-sub">Eight candidate heroes below. Each tries a different angle — discipline, outcome, comparison, question — with its own copy, layout, and background. Scroll, pick winners. Previous landing (v10.15) preserved at <a href="https://github.com/bigfancygarden/htmlcapsule/commit/94c3802" rel="noopener"><code>94c3802</code></a>.</p>
+    </section>
   </div>
 
-  <section class="cb-section" id="questions" aria-labelledby="questions-title">
-    <p class="cb-sec-num"><span class="accent">§ I.</span> Four questions</p>
-    <h2 class="cb-sec-title" id="questions-title">Archive. Share. Fork. <em>Export.</em></h2>
-    <p class="cb-sec-lead">The things raw HTML artifacts don't answer on their own. Capsule is the discipline that makes them answer — by construction, not by hosting.</p>
+  <section class="cb-frames" id="frames" aria-label="Hero variants">
 
-    <div class="cb-questions">
-      <article class="cb-question">
-        <p class="cb-question-mark">i. Archive</p>
-        <h3 class="cb-question-h">How do you archive it?</h3>
-        <p class="cb-question-body">It's just a .html file. Save it anywhere — Dropbox, USB, GitHub, an inbox, a folder on disk. The manifest makes the file self-describing for a future reader.</p>
-        <p class="cb-question-ref">no externals · core rule 02</p>
-      </article>
-      <article class="cb-question">
-        <p class="cb-question-mark">ii. Share</p>
-        <h3 class="cb-question-h">How do you share it?</h3>
-        <p class="cb-question-body">The bytes are the artifact. No host required, no link to expire, no platform to revoke access. Once it reaches a recipient, it's theirs.</p>
-        <p class="cb-question-ref">cannot be unshared · core rule 10</p>
-      </article>
-      <article class="cb-question">
-        <p class="cb-question-mark">iii. Fork</p>
-        <h3 class="cb-question-h">How do you fork it?</h3>
-        <p class="cb-question-body">The manifest's parents[] field records lineage. Paste a capsule into a new LLM session; the next one it produces knows what it built on.</p>
-        <p class="cb-question-ref">parents[] · manifest field</p>
-      </article>
-      <article class="cb-question">
-        <p class="cb-question-mark">iv. Export</p>
-        <h3 class="cb-question-h">How do you get it out of your LLM?</h3>
-        <p class="cb-question-body">Paste the produce prompt from the spec. Out comes a sealed .html you can save — not a link inside the chat, not a hosted artifact you depend on, just bytes you control.</p>
-        <p class="cb-question-ref">produce prompt · CAPSULE_CORE.md</p>
-      </article>
-    </div>
-
-    <aside class="cb-aside" aria-labelledby="tools-h">
-      <h3 id="tools-h">Tools, <em>not apps.</em></h3>
-      <p>Capsules can have rich runtime tools — measure, filter, annotate, search, export — without becoming applications. The line is the JavaScript-off test: does the substance of the content depend on JS to exist? If no, it's an interactive archive — tools query the content but don't generate it. If yes, it's an app, and the spec says no.</p>
-      <p>Mintel's exploration-map capsules ship click-to-measure and click-to-find-coordinates. With JS off, the map still renders (via the static image fallback), the legend and attribution are still there. The tools are gone; the substance isn't.</p>
-      <p><a href="spec/CAPSULE_SPEC.md" class="external" rel="noopener">Read the spec — §2.3 Rendering Model</a></p>
-    </aside>
-
-    <aside class="cb-aside" aria-labelledby="aside-h">
-      <h3 id="aside-h">File over app, <em>taken further.</em></h3>
-      <p>Steph Ango's principle says your work should live in files you control, in formats that outlive any specific app. Capsule agrees — and pushes it one step further: not just the data, but the presentation. The HTML file carries its own styles and rendering. No app dependency, no plugin layer, no theme to install. The file <em>is</em> the experience.</p>
-      <p><a href="https://stephango.com/file-over-app" class="external" rel="noopener">Read the principle</a></p>
-    </aside>
-
-    <aside class="cb-voices" aria-labelledby="voices-h">
-      <div class="cb-voices-head">
-        <h3 id="voices-h">Adjacent voices</h3>
-        <p>People thinking about this from related angles, organized by the lifecycle layer each occupies. Not endorsements either way — just the conversation Capsule is part of.</p>
-      </div>
-
-      <section class="cb-voices-group" aria-labelledby="voices-group-format">
-        <h4 id="voices-group-format" class="cb-voices-group-h">Format &amp; substrate observers</h4>
-        <div class="cb-voices-list">
-          <article class="cb-voice">
-            <h5 class="cb-voice-name">Thariq Shihipar</h5>
-            <p class="cb-voice-claim">"HTML is the new markdown."</p>
-            <p class="cb-voice-blurb">Public observation that LLMs and agents are emitting single self-contained HTML files as their default artifact format. The substrate observation Capsule builds on.</p>
-            <p class="cb-voice-link"><a href="https://x.com/trq212" rel="noopener">Read on X</a></p>
-          </article>
-          <article class="cb-voice">
-            <h5 class="cb-voice-name">Andrej Karpathy</h5>
-            <p class="cb-voice-claim">LLM wiki + "structure your response as HTML."</p>
-            <p class="cb-voice-blurb">Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip lays out a four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) and names HTML as the current best default. Capsule sits between — HTML as the substrate, with a contract on the file.</p>
-            <p class="cb-voice-link"><a href="voices/karpathy-html-progression-2026.html">Read the archive</a></p>
-          </article>
-          <article class="cb-voice">
-            <h5 class="cb-voice-name">Blake Crosley</h5>
-            <p class="cb-voice-claim">"HTML is the format AI agents want."</p>
-            <p class="cb-voice-blurb">Argues HTML preserves spatial structure, interaction, and density in a way markdown linearizes away. The control-surface framing: HTML as what agents should produce, live and inspectable.</p>
-            <p class="cb-voice-link"><a href="https://blakecrosley.com/blog/html-is-the-format-agents-want" rel="noopener">Read the post</a></p>
-          </article>
-          <article class="cb-voice">
-            <h5 class="cb-voice-name">Simon Willison</h5>
-            <p class="cb-voice-claim">Tracking the HTML-from-LLM wave.</p>
-            <p class="cb-voice-blurb">Has written extensively about LLM-emitted HTML on his blog and amplified Thariq's substrate observation. Also runs Datasette — a different shape of single-file substrate (SQLite with a built-in HTML viewer).</p>
-            <p class="cb-voice-link"><a href="https://simonwillison.net/" rel="noopener">Read the blog</a></p>
-          </article>
+    <!-- 01 — Discipline (left, technical, default paper) -->
+    <article class="cb-frame" data-num="01" aria-labelledby="frame-01-title">
+      <span class="cb-frame-num">01 / 08</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Discipline · research-led</p>
+        <h2 class="cb-frame-title" id="frame-01-title">A discipline for <em>HTML artifacts.</em></h2>
+        <p class="cb-frame-sub">AI tools emit HTML by default. Capsule is the contract that makes those artifacts durable, inspectable, and re-readable years from now.</p>
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+          <a href="https://github.com/bigfancygarden/htmlcapsule" class="cb-btn">View on GitHub</a>
         </div>
-      </section>
-
-      <section class="cb-voices-group" aria-labelledby="voices-group-layers">
-        <h4 id="voices-group-layers" class="cb-voices-group-h">Layers Capsule composes with</h4>
-        <div class="cb-voices-list">
-          <article class="cb-voice">
-            <h5 class="cb-voice-name">Raunaq Bhutoria — html-docs.com <span class="cb-voice-layer">live editing</span></h5>
-            <p class="cb-voice-claim">"Create beautiful docs and webpages with your Agents."</p>
-            <p class="cb-voice-blurb">Engineer at Meta. Built html-docs.com as a live collaboration layer for agent-generated HTML — agents publish via Claude Code skill / MCP / HTTP API, humans review with comments, agents read the comments and revise. The agent ↔ human review loop named as a workflow primitive. Endorsed by Karpathy + Thariq on the homepage. Complementary lifecycle layer to Capsule's seal step — html-docs is where the work is iterated; Capsule is what it becomes when sealed.</p>
-            <p class="cb-voice-link"><a href="https://html-docs.com/" rel="noopener">Read on html-docs.com</a></p>
-          </article>
-          <article class="cb-voice">
-            <h5 class="cb-voice-name">Matan (matanrak) — Workplane <span class="cb-voice-layer">live editing</span></h5>
-            <p class="cb-voice-claim">"Turn AI outputs into live pages." / "The working plane between AI and humans."</p>
-            <p class="cb-voice-blurb">Independent live-editing layer, second implementation of the same pattern as html-docs.com. MCP-first, multi-agent (Claude Code, Codex, Cursor, Devin, Claude Desktop). Free for individuals, no account required for commenters. Open-source agent skill at <code>work-plane/workplane-skills</code> (MIT). Maintainer is Matan (GitHub: matanrak), based in Israel. The convergence with html-docs.com on the same workflow shape (publish → comment → agent revises) is the empirical signal — documented as F22.</p>
-            <p class="cb-voice-link"><a href="https://workplane.co/" rel="noopener">Read on workplane.co</a></p>
-          </article>
-          <article class="cb-voice">
-            <h5 class="cb-voice-name">Utkarsh Sengar — htmlbin.dev <span class="cb-voice-layer">hosting</span></h5>
-            <p class="cb-voice-claim">"Agent-first HTML hosting."</p>
-            <p class="cb-voice-blurb">Launched htmlbin.dev in May 2026 (about the same week as htmlcapsule) — public hosting infrastructure for agent-emitted HTML, short URLs, /raw endpoint. Independent convergence with the MinDev hosting pattern — complementary layer to Capsule's format discipline (the format is hosting-agnostic).</p>
-            <p class="cb-voice-link"><a href="voices/utsengar-htmlbin-2026.html">Read the archive</a></p>
-          </article>
-          <article class="cb-voice">
-            <h5 class="cb-voice-name">Jeremy Howard — llms.txt <span class="cb-voice-layer">site discovery</span></h5>
-            <p class="cb-voice-claim">A markdown file at /llms.txt to make sites LLM-readable.</p>
-            <p class="cb-voice-blurb">Proposed September 2024 (fast.ai / Answer.AI). Modeled after robots.txt + sitemap.xml. Now adopted as a Chrome Lighthouse audit. Site-level discoverability convention; complementary layer to Capsule's artifact-level discipline — a site that hosts capsules should have an /llms.txt that indexes them. htmlcapsule.org has one.</p>
-            <p class="cb-voice-link"><a href="https://llmstxt.org/" rel="noopener">Read the proposal</a></p>
-          </article>
+        <div class="cb-frame-stats">
+          <div class="cb-stat-mini"><span class="v">12</span><span class="l">rules</span></div>
+          <div class="cb-stat-mini"><span class="v">5</span><span class="l">required blocks</span></div>
+          <div class="cb-stat-mini"><span class="v">0</span><span class="l">network deps</span></div>
         </div>
-      </section>
-    </aside>
-
-    <aside class="cb-journey" aria-labelledby="journey-cta">
-      <div>
-        <p class="cb-journey-meta">Notes · 2026-05-20</p>
-        <p class="cb-journey-quote">The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.</p>
       </div>
-      <a id="journey-cta" href="notes.html" class="cb-btn">Read the journey <span class="arrow">→</span></a>
-    </aside>
+    </article>
+
+    <!-- 02 — Sealed / outcome-led (centered, warm cream) -->
+    <article class="cb-frame is-centered" data-num="02" aria-labelledby="frame-02-title">
+      <span class="cb-frame-num">02 / 08</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Outcome-led</p>
+        <h2 class="cb-frame-title" id="frame-02-title">Sealed HTML. <em>Built to last.</em></h2>
+        <p class="cb-frame-sub">One file. No network. Built to be re-opened years from now — by humans, and by the LLMs they ask to continue the work.</p>
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 03 — Substrate question (left, cool gray) -->
+    <article class="cb-frame" data-num="03" aria-labelledby="frame-03-title">
+      <span class="cb-frame-num">03 / 08</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Substrate · question</p>
+        <h2 class="cb-frame-title" id="frame-03-title">HTML is the substrate. <em>Now what?</em></h2>
+        <p class="cb-frame-sub">An open spec for what to do with the HTML that AI tools already give you — so it survives the chat it was born in.</p>
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 04 — Contract / interop-first (left, pale blue) -->
+    <article class="cb-frame" data-num="04" aria-labelledby="frame-04-title">
+      <span class="cb-frame-num">04 / 08</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Contract · interop-first</p>
+        <h2 class="cb-frame-title" id="frame-04-title">A contract for <em>HTML artifacts.</em></h2>
+        <p class="cb-frame-sub">Manifest. Provenance. Integrity. No network. The same envelope whether an LLM, a build script, or a human writes it.</p>
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+          <a href="spec/CAPSULE_SPEC.md" class="cb-btn">Full spec</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 05 — Max-short / benefit-led (centered, dark inverted, huge type) -->
+    <article class="cb-frame is-centered is-dark" data-num="05" aria-labelledby="frame-05-title">
+      <span class="cb-frame-num">05 / 08</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Max-short · benefit-led</p>
+        <h2 class="cb-frame-title is-huge" id="frame-05-title">HTML you can keep.</h2>
+        <p class="cb-frame-sub">Sealed. Self-contained. Provenance-bearing. One file you can email, archive, or fork.</p>
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 06 — PDF comparison (left, sand) -->
+    <article class="cb-frame" data-num="06" aria-labelledby="frame-06-title">
+      <span class="cb-frame-num">06 / 08</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Comparison · familiar anchor</p>
+        <h2 class="cb-frame-title" id="frame-06-title">Like a PDF, <em>but alive.</em></h2>
+        <p class="cb-frame-sub">PDFs are sealed and closed. Capsules are sealed and open — programmable, inspectable, re-renderable. The HTML profile for work worth preserving.</p>
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 07 — Mark-first / brand-led (centered, soft blue, big mark + wordmark) -->
+    <article class="cb-frame is-centered is-mark-first" data-num="07" aria-labelledby="frame-07-title">
+      <span class="cb-frame-num">07 / 08</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Visual-led · brand-first</p>
+        <svg class="cb-frame-bigmark" viewBox="0 0 32 18" aria-hidden="true" focusable="false">
+          <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
+            <path d="M 13.5 13 L 18.5 5"/>
+            <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
+          </g>
+        </svg>
+        <h2 class="cb-frame-title is-wordmark" id="frame-07-title">HTML Capsule</h2>
+        <p class="cb-frame-sub">A profile of HTML for sealed, self-contained artifacts. One file. Twelve rules. Zero network.</p>
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 08 — Problem question / why-this-exists (left, deeper paper) -->
+    <article class="cb-frame" data-num="08" aria-labelledby="frame-08-title">
+      <span class="cb-frame-num">08 / 08</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Problem · why-this-exists</p>
+        <h2 class="cb-frame-title" id="frame-08-title">Where does <em>AI's HTML</em> go?</h2>
+        <p class="cb-frame-sub">Capsule is the discipline that makes AI-generated HTML durable, inspectable, and shareable beyond the platform that produced it.</p>
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </article>
+
   </section>
 
-  <details class="cb-about" id="about-capsule">
-    <summary>About this capsule · exports · manifest</summary>
-    <div class="cb-about-body">
-      <p>This page is itself a Capsule per Core v0.3.0 (full spec v0.3.2). Five required blocks, all inline. No network, no analytics. Validates against the reference validator.</p>
-      <div class="cb-export" role="group" aria-label="Export actions">
-        <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
-        <button type="button" data-capsule-action="copy_as_markdown">Copy as Markdown</button>
-        <button type="button" data-capsule-action="copy_as_prompt">Copy prompt fragment</button>
-        <button type="button" data-capsule-action="download_json">Download JSON</button>
-        <button type="button" data-capsule-action="download_capsule">Download capsule (.html)</button>
-        <button type="button" data-capsule-action="print_to_pdf">Print · PDF</button>
+  <div class="cb-shell cb-shell-foot">
+    <details class="cb-about" id="about-capsule">
+      <summary>About this page · exports · manifest</summary>
+      <div class="cb-about-body">
+        <p>This page is itself a Capsule per Core v0.3.0 (full spec v0.3.4). Five required blocks, all inline. No network, no analytics. Validates against the reference validator. Mode: <code>hero_framing_exploration</code> — the eight numbered sections above are candidate framings; this layout is temporary.</p>
+        <div class="cb-export" role="group" aria-label="Export actions">
+          <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
+          <button type="button" data-capsule-action="copy_as_markdown">Copy variants as Markdown</button>
+          <button type="button" data-capsule-action="copy_as_prompt">Copy prompt fragment</button>
+          <button type="button" data-capsule-action="download_json">Download JSON</button>
+          <button type="button" data-capsule-action="download_capsule">Download capsule (.html)</button>
+          <button type="button" data-capsule-action="print_to_pdf">Print · PDF</button>
+        </div>
+        <h4>Manifest</h4>
+        <pre id="manifest-pretty">Loading manifest…</pre>
       </div>
-      <h4>Manifest</h4>
-      <pre id="manifest-pretty">Loading manifest…</pre>
-    </div>
-  </details>
+    </details>
 
-  <footer class="cb-foot" role="contentinfo">
-    <p class="cb-foot-isnt"><strong>What this isn't:</strong> a new file format (it's HTML), a SaaS, a new editing surface, a competitor to MCP, or a knowledge graph. It's anti-context-loss.</p>
-    <div class="cb-foot-col">
-      <h4>Spec</h4>
-      <ul>
-        <li><a href="CAPSULE_CORE.md">Core (one page)</a></li>
-        <li><a href="spec/CAPSULE_SPEC.md">Full spec</a></li>
-        <li><a href="spec/DOMAIN_CAPSULES.md">Domain catalog</a></li>
-      </ul>
-    </div>
-    <div class="cb-foot-col">
-      <h4>Reference</h4>
-      <ul>
-        <li><a href="notes.html">Notes (journey)</a></li>
-        <li><a href="RESEARCH.md">Research log</a></li>
-        <li><a href="GLOSSARY.md">Glossary</a></li>
-        <li><a href="spec/examples/">Examples</a></li>
-      </ul>
-    </div>
-    <div class="cb-foot-col">
-      <h4>Source</h4>
-      <ul>
-        <li><a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a></li>
-        <li><a href="compiler/">Reference impl</a></li>
-        <li><a href="#about-capsule">This page</a></li>
-      </ul>
-    </div>
-    <div class="cb-colophon">
-      <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-      <span>capsule:landing/v10.15.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
-    </div>
-  </footer>
+    <footer class="cb-foot-slim" role="contentinfo">
+      <nav class="cb-foot-slim-links" aria-label="Footer navigation">
+        <a href="CAPSULE_CORE.md">Core spec</a>
+        <a href="spec/CAPSULE_SPEC.md">Full spec</a>
+        <a href="RESEARCH.md">Research log</a>
+        <a href="notes.html">Notes (journey)</a>
+        <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+        <a href="#about-capsule">About this page</a>
+      </nav>
+      <div class="cb-colophon">
+        <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
+        <span>capsule:landing/v11.0.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+      </div>
+    </footer>
+  </div>
 </main>
 
 <div class="cb-toast" id="toast" role="status" aria-live="polite"></div>
@@ -1108,61 +1200,25 @@ Data to embed:
     var push = function (s) { lines.push(s); };
     push(`# ${data.title}`);
     push(``);
-    push(`> ${data.tagline}`);
+    push(`> ${data.intro.title} ${data.intro.sub}`);
     push(``);
-    push(`**${data.stats.rules}** rules · **${data.stats.blocks}** required blocks · **${data.stats.network_deps}** network deps`);
+    push(`Mode: \`${data.mode}\` · Spec: Core ${data.spec.core} · Full ${data.spec.full}`);
     push(``);
-    push(`## ${data.bridge.consequence}`);
+    push(`## Variants`);
     push(``);
-    push(`> ${data.bridge.premise}`);
-    push(``);
-    push(`### Four questions`);
-    push(``);
-    data.questions.forEach(function (q) {
-      push(`#### ${q.question}`);
+    data.variants.forEach(function (v) {
+      push(`### ${v.num} — ${v.title}`);
       push(``);
-      push(q.answer);
+      push(`_${v.framing}_`);
       push(``);
-      push(`_${q.ref}_`);
+      push(v.sub);
       push(``);
     });
-    push(`### ${data.tools_not_apps.heading}`);
-    push(``);
-    data.tools_not_apps.paragraphs.forEach(function (p) {
-      push(p);
-      push(``);
-    });
-    push(`→ [${data.tools_not_apps.link_text}](${data.tools_not_apps.link_url})`);
-    push(``);
-    push(`### ${data.file_over_app.heading}`);
-    push(``);
-    push(data.file_over_app.body);
-    push(``);
-    push(`→ [${data.file_over_app.link_text}](${data.file_over_app.link_url})`);
-    push(``);
-    push(`### ${data.adjacent_voices.heading}`);
-    push(``);
-    push(data.adjacent_voices.lead);
-    push(``);
-    data.adjacent_voices.entries.forEach(function (v) {
-      push(`**${v.name}** — *${v.claim}*`);
-      push(``);
-      push(v.blurb);
-      push(``);
-      push(`→ [${v.link_text}](${v.link_url})`);
-      push(``);
-    });
-    push(`### ${data.journey.cta}`);
-    push(``);
-    push(`> ${data.journey.pull_quote}`);
-    push(``);
-    push(`→ [${data.journey.cta}](${data.journey.href}) (${data.journey.label})`);
-    push(``);
     push(`---`);
     push(``);
     push(data.not_this);
     push(``);
-    push(`_capsule:landing/v${manifest.capsule_version} · uuid ${manifest.uuid} · sealed ${manifest.created_at.slice(0, 10)}_`);
+    push(`_capsule:landing/v${manifest.capsule_version} · uuid ${manifest.uuid} · sealed ${manifest.created_at.slice(0, 10)} · mode: ${data.mode}_`);
     return lines.join(`\n`);
   }
 

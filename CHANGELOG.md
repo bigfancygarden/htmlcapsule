@@ -55,9 +55,11 @@ Interactive-archive category named; lifecycle decomposition (live-editing / form
 - **Landing-page colophon** — adds "maintained by Luke Schuss · Vancouver" line; also fixes a stale static colophon version string (`v10.11.0` → `v10.13.0`) carried over from v10.11→v10.12 ship. Landing bumped to v10.13.0.
 - **GitHub repo description** updated to lead with "HTML Capsule" and include "Maintained by Luke Schuss" (visible on the repo's main page).
 
-### Changed — landing page (v10.2 through v10.15)
+### Changed — landing page (v10.2 through v11.0)
 
-Twelve landing iterations during this version window. Highlights:
+The landing went into **hero framing exploration mode** at v11.0.0 — the conventional hero/four-questions/voices/footer structure (v10.x) was replaced with eight numbered candidate hero variants stacked vertically, each with its own framing (discipline / outcome / substrate question / contract / max-short / PDF comparison / mark-first / problem question), its own layout (left-aligned, centered, dark inverted, mark-led), and its own background color. Numbering is for reference; the winning framing will become the page and the rest will be removed. The v10.15 landing structure is preserved in git at commit `94c3802`.
+
+Twelve incremental v10.x iterations preceded the v11.0 reset. Highlights:
 
 - **v10.2** — "File over app, taken further" aside citing Steph Ango's principle (`5457f5b`).
 - **v10.3** — Hero pivoted from narrow single-column stack to horizontal two-column split (title left, sub/CTA/stats right) (`5457f5b`).
@@ -73,6 +75,7 @@ Twelve landing iterations during this version window. Highlights:
 - **v10.13** — Maintainer attribution: footer colophon now reads "maintained by Luke Schuss · Vancouver" (linked to `lukeschuss.com`); also fixes a stale static colophon version string (`v10.11.0` → `v10.13.0`) per Rule 12 pre-rendered-content discipline.
 - **v10.14** — First real brand mark: the placeholder "C" glyph in the top bar is replaced with an inline-SVG horizontal capsule outline containing the `</>` code symbol — a literal rendering of "HTML in a capsule" (concept from ChatGPT image generation; redrawn as SVG for crisp scaling and `currentColor` integration). Monochrome, picks up `--ink` automatically. 36×20 on desktop, 30×17 on phones via the 600px breakpoint.
 - **v10.15** — Brand-mark geometry locked in: capsule outline expanded to fill the full viewBox (rect `30×16`, `rx 8`), stroke weight tightened `2.2 → 1.8` for more refined linework matching the source design more closely, brackets pushed further out (`<` apex at x=6, `>` apex at x=26) so the code symbol breathes inside the capsule. Same SVG shape, same `currentColor` integration, dialed-in proportions.
+- **v11.0** — Page restructured to **hero framing exploration mode** (major bump). Topbar + small explorer intro + 8 numbered candidate hero variants stacked vertically + slim footer. Each variant has its own framing tag, layout treatment (left / centered / centered+dark / mark-first), and background color (paper / cream / cool gray / pale blue / ink / sand / soft blue / paper-deep). Variant 05 is dark-inverted to break the visual rhythm. Big mark variant (07) uses a 220px-wide inline SVG render of the brand mark. Data block restructured from the multi-section `hero/bridge/questions/voices/journey` shape to a flat `intro + variants[]` shape; runtime `buildMarkdown` regenerated. `#capsule-root` CSS loosened (no longer max-width-constrained) so frame backgrounds can bleed full-width; child blocks use new `.cb-shell` class for max-width centering where needed. Same UUID `7d1a1ac8` preserved; validator passes 25/25.
 
 ### Changed — PRECEDENTS.md
 
