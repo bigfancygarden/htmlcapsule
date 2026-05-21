@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.2.0",
+  "capsule_version": "11.3.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in temporary hero framing exploration mode. v11.2.0 adds variant 00 at the TOP of the gallery — an observation-led preamble candidate, designed to sit above whichever hero gets picked. Opens with the observation 'HTML has emerged as a key substrate for AI-assisted work' (with self-aware footnote about the word 'substrate'), then quotes two leading voices (Thariq Shihipar and Andrej Karpathy) as the proof, then poses the leadin question 'what do you do with all that HTML?'. Editorial/research-paper voice rather than product-pitch voice. v11.1.0 added variant 09 (plain-English context-led on-ramp) and swapped variant 06's 'but alive' → 'but inspectable'. v11.0.0 replaced the conventional hero/four-questions/voices/footer structure (v10.x) with the nine-candidate-hero gallery. The winning framing will become the page; the rest will be removed. v10.15 preserved at commit 94c3802. Same UUID 7d1a1ac8 preserved through v11.2.",
+  "description": "Landing page in temporary hero framing exploration mode. v11.3.0 removes the meta 'Hero framing exploration · Picking the right framing' explainer section that used to sit above the gallery — the page now opens directly with variant 00 (Observation preamble). Adds variant 00b ('Lived practice · maintainer's own use'), a paired case-study preamble that opens with Thariq's FAQ answer about viewing HTML files and then has the maintainer's own first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues — explicitly acknowledging the file-size tradeoff. Sits on a soft-cream background (#fcfaf3) immediately below variant 00's editorial white. v11.2.0 added variant 00 (observation-led preamble at top of gallery). v11.1.0 added variant 09 (plain-English context-led on-ramp) and swapped variant 06's 'but alive' → 'but inspectable'. v11.0.0 replaced the conventional v10.x structure with the candidate gallery. v10.15 preserved at commit 94c3802. UUID 7d1a1ac8 preserved through v11.3.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -71,7 +71,8 @@
     { "num": "07", "framing": "Visual-led · brand-first", "title": "HTML Capsule", "sub": "A profile of HTML for sealed, self-contained artifacts. One file. Twelve rules. Zero network." },
     { "num": "08", "framing": "Problem · why-this-exists", "title": "Where does AI's HTML go?", "sub": "Capsule is the discipline that makes AI-generated HTML durable, inspectable, and shareable beyond the platform that produced it." },
     { "num": "09", "framing": "Context-led · plain-English on-ramp", "title": "HTML you can keep.", "sub": "AI tools increasingly produce HTML: reports, maps, demos, dashboards, visual notes, and interactive documents. HTML Capsule is an open spec for saving that work as one self-contained .html file. A Capsule includes its own content, styles, metadata, provenance, and validation rules, with no required network access. It is not a new file format — it is a stricter way to package HTML so the work can be archived, shared, inspected, and continued later by humans, tools, and LLMs.", "tagline": "One file. No network. Built to last." },
-    { "num": "00", "framing": "Observation-led preamble · designed to sit above any hero", "title": "Observation: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Two leading voices, same direction: Thariq Shihipar on markdown becoming restricting as agents get more powerful, and Andrej Karpathy on telling LLMs to structure responses as HTML. So the question becomes: what do you do with all that HTML?", "kind": "preamble" }
+    { "num": "00", "framing": "Observation-led preamble · designed to sit above any hero", "title": "Observation: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Two leading voices, same direction: Thariq Shihipar on markdown becoming restricting as agents get more powerful, and Andrej Karpathy on telling LLMs to structure responses as HTML. So the question becomes: what do you do with all that HTML?", "kind": "preamble" },
+    { "num": "00b", "framing": "Lived practice · maintainer's own use", "title": "Maybe let's take it a step further.", "sub": "Pairs with 00. Opens with Thariq's FAQ answer (open the HTML locally, or upload to S3 for sharing), then the maintainer's own first-person account of building map-making tooling that emits HTML conforming to the Capsule spec — so clients get standalone, permanent, AI-friendly artifacts without a database to maintain. Acknowledges the file-size tradeoff explicitly.", "kind": "preamble" }
   ],
   "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
@@ -942,6 +943,48 @@
     font-weight: 600;
   }
 
+  /* Case-study preamble (variant 00b) — Thariq quote + maintainer narrative */
+  .cb-frame[data-num="00b"] { background: #fcfaf3; }
+  .cb-frame.is-case-study .cb-frame-inner { max-width: 760px; }
+  .cb-frame-kicker-line {
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 14px;
+  }
+  .cb-frame.is-case-study .cb-frame-bridge {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: clamp(26px, 3.4vw, 38px);
+    line-height: 1.18;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+    font-style: italic;
+    margin: 32px 0 22px;
+    max-width: 22ch;
+  }
+  .cb-frame-prose {
+    font: 400 16.5px/1.6 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    max-width: 60ch;
+  }
+  .cb-frame-signoff {
+    font: 500 13px/1.4 var(--mono);
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+    margin: 28px 0 28px;
+  }
+  .cb-frame-signoff a {
+    color: var(--ink-mute);
+    border-bottom: 1px solid color-mix(in oklab, var(--ink-mute) 35%, transparent);
+  }
+  .cb-frame-signoff a:hover, .cb-frame-signoff a:focus {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
   /* Context-led variant — multiple stacked sub paragraphs + tagline punch */
   .cb-frame.is-context-led .cb-frame-sub + .cb-frame-sub { margin-top: -8px; }
   .cb-frame.is-context-led .cb-frame-sub code {
@@ -1057,12 +1100,6 @@
         </a>
       </nav>
     </header>
-
-    <section class="cb-explorer-intro" aria-labelledby="explorer-title">
-      <p class="cb-explorer-eyebrow">Hero framing exploration · 2026-05-21</p>
-      <h1 class="cb-explorer-h" id="explorer-title">Picking the right framing.</h1>
-      <p class="cb-explorer-sub">An observation-led preamble (00) followed by nine candidate heroes (01–09). Each candidate tries a different angle — discipline, outcome, comparison, question, plain-English on-ramp — with its own copy, layout, and background. The preamble is designed to sit <em>above</em> whichever hero wins; the heroes are designed to stand alone. Scroll, pick winners. Previous landing (v10.15) preserved at <a href="https://github.com/bigfancygarden/htmlcapsule/commit/94c3802" rel="noopener"><code>94c3802</code></a>.</p>
-    </section>
   </div>
 
   <section class="cb-frames" id="frames" aria-label="Hero variants">
@@ -1090,7 +1127,35 @@
         <p class="cb-frame-leadin">So the question becomes: <em>what do you do with all that HTML?</em></p>
 
         <div class="cb-frame-cta">
-          <a href="#frame-01-title" class="cb-btn primary">Scroll the framings <span class="arrow">↓</span></a>
+          <a href="#frame-00b-title" class="cb-btn primary">Take it further <span class="arrow">↓</span></a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 00b — Case study preamble (Thariq FAQ + maintainer's own use; pairs with 00) -->
+    <article class="cb-frame is-observation is-case-study" data-num="00b" aria-labelledby="frame-00b-title">
+      <span class="cb-frame-num">00b · case study</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Lived practice · maintainer's own use</p>
+
+        <p class="cb-frame-kicker-line">From Thariq's FAQ:</p>
+
+        <figure class="cb-quote">
+          <blockquote><strong>How do I view the HTML file?</strong> I tend just open it in a browser locally (you can ask Claude to open it), or upload to S3 if you want a shareable link.</blockquote>
+          <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a></figcaption>
+        </figure>
+
+        <h2 class="cb-frame-bridge" id="frame-00b-title">Maybe let's take it a step further.</h2>
+
+        <p class="cb-frame-prose">When I'm doing my work — for example, creating JPEG/geospatial maps and reports for clients or colleagues — I've designed my map-making tool to emit HTML according to domain-specific logic that conforms to my HTML Capsule spec. That way they get exactly the thing they want and need: it's standalone (doesn't require maintaining a database or datasets), and it's permanent. And it's also HTML, so it's AI/LLM friendly.</p>
+
+        <p class="cb-frame-prose">Does the file size creep up? Yes — but frankly, I don't care. The tradeoff is worth it for me: I get a permanent object that doesn't require me to maintain a database. Plus, it can be used offline, by either me or them.</p>
+
+        <p class="cb-frame-signoff">— Luke Schuss · maintainer · Vancouver · <a href="https://lukeschuss.com" rel="noopener">lukeschuss.com</a></p>
+
+        <div class="cb-frame-cta">
+          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+          <a href="spec/examples/" class="cb-btn">See examples</a>
         </div>
       </div>
     </article>
@@ -1262,7 +1327,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.2.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.3.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
