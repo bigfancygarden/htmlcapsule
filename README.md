@@ -4,15 +4,17 @@
 
 **Spec home: [htmlcapsule.org](https://htmlcapsule.org)** — landing page is itself a valid Capsule.
 
-`htmlcapsule` is the open specification, reference implementation, and example set for **Capsule** — a profile of HTML for portable, structured, provenance-bearing snapshots of work that's worth preserving across tools, time, and people.
+`htmlcapsule` is a **research project** that produces an open specification, reference implementation, example corpus, and research log for **Capsule** — a profile of HTML for sealed, self-contained, provenance-bearing snapshots of work worth preserving.
 
-The hypothesis: the substrate (HTML) has already won as the universal display layer. What's missing is discipline — a contract, manifest, versioning, capabilities, and integrity guarantees — so that an LLM conversation, a database query, a hand-written report, a geospatial map, or a research summary can all preserve themselves into the same envelope and live in the same archive. The strongest claim the format makes is **multi-producer interop**: LLMs (Claude, ChatGPT, Gemini), deterministic compilers (Python/Node build scripts), and human authors all produce the same envelope shape.
+The hypothesis: the substrate (HTML) has already won as the universal display layer for AI-generated work; what's missing is *discipline* — a contract, manifest, integrity guarantees, capability honesty, and pre-rendered content — so that artifacts from LLMs, deterministic compilers, and human authors all carry the same envelope shape. The strongest claim the format makes is **multi-producer interop**: LLMs (Claude, ChatGPT, Gemini, Codex), deterministic compilers (Python/Node build scripts), and human authors all produce the same envelope shape. Empirically validated as of v0.3.4 with Mintel as the first independent compiler-kind producer (see [F20](RESEARCH.md)).
+
+The project's discipline is **empirical-pressure-driven**: spec changes emerge from observed production failures across multiple producer kinds; rules earn their slot when a real failure forces the addition, and the corpus drives the spec — not the other way around. The current state of that research is recorded in [RESEARCH.md](RESEARCH.md) as numbered findings F1–F22, with parked v0.4+ candidates in [`spec/CAPSULE_SPEC.md`](spec/CAPSULE_SPEC.md) Appendix E. Two layer-level convergences have been observed independently within the project's first two weeks: F21 (hosting pattern, MinDev + htmlbin) and F22 (live-editing pattern, html-docs + workplane).
 
 Capsules are not a working format — you still edit in your tools of choice. They are a **publish / preserve / share** format. PDFs were the previous answer; they're closed and lossy. Capsules give the same role to HTML, which is alive, programmable, and re-readable years later by both audiences that will reopen the work: humans, and the LLMs they'll be asked to continue the work with. AI-native export is the load-bearing case the format is designed for; long-tail human readability falls out for free.
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 
-**Current state:** Core spec at **v0.3.0**, full spec at **v0.3.4**, reference validator at 26 checks.
+**Current state:** Core spec at **v0.3.0**, full spec at **v0.3.4**, reference validator at 26 checks. Research log at **F22**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
 
 ## Start here
 
@@ -20,7 +22,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 - **For the full specification:** [spec/CAPSULE_SPEC.md](spec/CAPSULE_SPEC.md) — formal definition, validation rules, security model, response protocol, integrity-hash recipe.
 - **For working examples:** [`examples/`](examples/) (JSON inputs for the compiler) and [`spec/examples/`](spec/examples/) (canonical example capsules).
 - **For domain schemas:** [`spec/DOMAIN_CAPSULES.md`](spec/DOMAIN_CAPSULES.md) — `implementation_notes`, `design_system`, `exploration_map`.
-- **For the research narrative:** [RESEARCH.md](RESEARCH.md) — what we're investigating, findings F1–F18, open questions, methodology.
+- **For the research narrative:** [RESEARCH.md](RESEARCH.md) — what we're investigating, findings F1–F22, open questions, methodology.
 - **For the glossary:** [`GLOSSARY.md`](GLOSSARY.md).
 - **For positioning vs. related work:** [`PRECEDENTS.md`](PRECEDENTS.md).
 
@@ -48,7 +50,9 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
 ## Reference implementation
 
 - [`compiler/compile.py`](compiler/compile.py) — produces capsules from JSON + template directories
-- [`compiler/validate.py`](compiler/validate.py) — reference validator with 26 conformance checks
+- [`compiler/validate.py`](compiler/validate.py) — reference validator with 26 conformance checks. Two modes:
+  - **Local file mode**: `python3 compiler/validate.py path/to/capsule.html`
+  - **URL mode** (added in v0.3.4): `python3 compiler/validate.py <https://host/path/raw>` — fetches the body via the host's `/raw` endpoint, cross-checks any `x-capsule-content-hash` and `x-capsule-uuid` response headers against the manifest, then runs the standard checks. Per the host-contract pattern documented in [`spec/HOSTING.md`](spec/HOSTING.md).
 - [`templates/decision_board/`](templates/decision_board/) and [`templates/news_capsule/`](templates/news_capsule/) — two compiler templates demonstrating the compile path
 - [`examples/`](examples/) — sanitized JSON inputs you can compile yourself
 
@@ -58,8 +62,13 @@ Quick check:
 # Compile a sample capsule
 python3 compiler/compile.py examples/ai_tool_selection.json templates/decision_board -o /tmp/test.html
 
-# Validate it
+# Validate a local file
 python3 compiler/validate.py /tmp/test.html
+
+# Or validate a hosted capsule by URL (fetches /raw, cross-checks any
+# x-capsule-* host-attestation headers against the manifest before
+# running the standard 26 checks)
+python3 compiler/validate.py https://mindev.ca/api/c/9357a933-7ce1-4061-9488-2ca61d81bded/raw
 ```
 
 ## Multi-producer interop
@@ -77,7 +86,7 @@ All three pass the reference validator. All three carry the same manifest shape 
 Two versions move semi-independently:
 
 - **Core spec** (`CAPSULE_CORE.md`): the short, pasteable-into-an-LLM-prompt version. Currently **v0.3.0**.
-- **Full spec** (`spec/CAPSULE_SPEC.md`): the implementer-grade version. Currently **v0.3.2** (doc-only patches on top of v0.3.0).
+- **Full spec** (`spec/CAPSULE_SPEC.md`): the implementer-grade version. Currently **v0.3.4** (doc-and-validator patches on top of v0.3.0; see [CHANGELOG.md](CHANGELOG.md) for the per-patch trajectory).
 
 Core spec versions are tagged in git: `core-v0.1.0` … `core-v0.3.0`. Retrieve any historical version via `git show core-vX.Y.Z:CAPSULE_CORE.md`.
 
@@ -113,7 +122,7 @@ See [`CITATION.cff`](CITATION.cff). GitHub auto-detects this file and renders a 
 
 | Phase | Name | State |
 |---|---|---|
-| 1 | Format | Exists (Core v0.3.0, full spec v0.3.2) |
-| 2 | Compiler | Half-built — reference compiler + validator + corpus of working capsules |
-| 3 | Domain capsules | Partial — `domain.implementation_notes`, `domain.design_system`, and `domain.exploration_map` documented |
+| 1 | Format | Exists (Core v0.3.0, full spec v0.3.4) |
+| 2 | Compiler | Half-built — reference compiler + validator (local file mode + URL mode) + growing corpus across producer kinds. First independent compiler-kind producer (Mintel) shipped + validated (F20) |
+| 3 | Domain capsules | Partial — `domain.implementation_notes`, `domain.design_system`, `domain.exploration_map`, `domain.briefing` documented. `domain.music_stems` in the Idea queue |
 | 4 | Network layer | Not built; possibly never. Capsule registry, lineage graph, importers all deferred. Trust-log primitive sketched in Appendix E.6 but not built. |

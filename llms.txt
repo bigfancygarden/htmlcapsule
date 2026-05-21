@@ -32,6 +32,10 @@ This project is research-led with an empirical-pressure-driven spec discipline: 
 - [Worked examples](https://github.com/bigfancygarden/htmlcapsule/tree/main/spec/examples): Canonical example capsules — `briefing_example.html`, `implementation_notes_example.html`. Each validates at 26/26 strict against the reference validator.
 - [GitHub repository](https://github.com/bigfancygarden/htmlcapsule): Source of truth. Apache 2.0 licensed.
 
+## Project trajectory
+
+- [CHANGELOG.md at repo root](https://github.com/bigfancygarden/htmlcapsule/blob/main/CHANGELOG.md): Curated narrative of what shipped at each spec version (v0.3.0 through v0.3.4), landing iterations, voices archive growth, research findings (F1–F22), and infrastructure additions. Reverse-chronological by version; commit IDs cross-referenced.
+
 ## How to cite
 
 - [CITATION.cff at repo root](https://github.com/bigfancygarden/htmlcapsule/blob/main/CITATION.cff): GitHub auto-detects and renders a "Cite this repository" button. Citation tools (Zotero, citation managers) consume the format directly. Zenodo DOI integration parked for the next milestone release.
