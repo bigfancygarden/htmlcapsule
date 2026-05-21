@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.7.0",
+  "capsule_version": "11.8.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.7.0 differentiates section backgrounds and turns answer blocks into cards. Variant 00b (Question) background changes white → var(--paper-soft) (#eceef2 cool grey), so the opening trio now reads as three distinct visual zones: white observation → grey question → cream case study. The Answer A and Answer B blocks inside 00b are now white cards lifted out of the grey backdrop (8px border-radius, 1px var(--rule) border, 28px/32px padding). Answer typography bumped: heading 19px → 22px, body 15.5px → 16.5px, blockquote-inside-card 15.5px → 17px. Blockquotes inside answer cards drop their own background tint (which would have read as nested-box-inside-card); just the accent left-border now marks them as quotes. Mobile breakpoint adds tighter card padding (22/20) and type-size reductions so cards don't blow out at 375px. v11.6.0 expanded both answers to actually do landscape analysis (htmlbin positioning verbatim + the format/host split observation backed by the htmlbin+MinDev convergence — F21 in RESEARCH.md). v11.5.0 introduced the Observation → Question → Case study restructure. UUID 7d1a1ac8 preserved through v11.7.",
+  "description": "Landing page in hero framing exploration mode. v11.8.0 introduces a research-paper-style numbering taxonomy across the opening sections: 'Observation 1' / 'Question 1' / 'Answer 1a' (Thariq, viewing strategy) / 'Answer 1b' (htmlbin.dev, hosting layer) / 'Answer 1c' (maintainer, custom producer + registry). Corner labels updated from 'NN · kind' to the bare taxonomy identifier (e.g., 'Observation 1' instead of '00 · observation'). Section H2 kickers updated to include the number ('Observation 1:' / 'Question 1:'). Answer card tags inside variant 00b updated from 'Answer A/B' to 'Answer 1a/1b'. Variant 00c (the maintainer's case study) reframed from a separate 'case study' beat into 'Answer 1c · custom producer + registry · maintainer's own answer' — same prose content and cream background, but the kicker is now a parallel `.cb-answer-tag` line in mono accent uppercase, matching the visual treatment of 1a and 1b inside 00b. Question 1 lead now mentions all three answers explicitly and links forward to 1c via in-page anchor. Numbering scheme is extensible: future Observation 2 / Question 2 / Answer 2a etc. slot in naturally as the analysis grows. v11.7.0 added the grey background + white answer cards. UUID 7d1a1ac8 preserved through v11.8.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -71,9 +71,9 @@
     { "num": "07", "framing": "Visual-led · brand-first", "title": "HTML Capsule", "sub": "A profile of HTML for sealed, self-contained artifacts. One file. Twelve rules. Zero network." },
     { "num": "08", "framing": "Problem · why-this-exists", "title": "Where does AI's HTML go?", "sub": "Capsule is the discipline that makes AI-generated HTML durable, inspectable, and shareable beyond the platform that produced it." },
     { "num": "09", "framing": "Context-led · plain-English on-ramp", "title": "HTML you can keep.", "sub": "AI tools increasingly produce HTML: reports, maps, demos, dashboards, visual notes, and interactive documents. HTML Capsule is an open spec for saving that work as one self-contained .html file. A Capsule includes its own content, styles, metadata, provenance, and validation rules, with no required network access. It is not a new file format — it is a stricter way to package HTML so the work can be archived, shared, inspected, and continued later by humans, tools, and LLMs.", "tagline": "One file. No network. Built to last." },
-    { "num": "00",  "framing": "Observation · two leading voices",                    "title": "HTML has emerged as a key substrate for AI-assisted work.", "sub": "Editorial opening: an observation about HTML as the de-facto AI substrate, with self-aware footnote on the word 'substrate', backed by two voice quotes (Thariq Shihipar on markdown becoming restricting under more-powerful agents; Andrej Karpathy on telling LLMs to 'structure your response as HTML'). White background.", "kind": "section" },
-    { "num": "00b", "framing": "Question + two answers in the wild (Thariq, htmlbin.dev)", "title": "Question: What do you do with all that HTML?",                 "sub": "Two existing answers: Thariq's FAQ recommendation (open the HTML locally, or upload to S3 for a shareable link), and Utkarsh Sengar's htmlbin.dev (agent-first HTML hosting — short URLs + /raw endpoint). Same white background as 00; reads as a continuation of the editorial opening.", "kind": "section" },
-    { "num": "00c", "framing": "Maintainer's answer — case study",                     "title": "Maybe let's take it a step further.",                              "sub": "Soft-cream background. Reads as a third answer (after Thariq + htmlbin.dev): the maintainer's first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues — so they get standalone, permanent, AI-friendly artifacts without a database to maintain. Acknowledges the file-size tradeoff explicitly. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.",                                                        "kind": "section" }
+    { "num": "00",  "id": "Observation 1", "framing": "Observation 1 · two leading voices",                    "title": "Observation 1: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Editorial opening: an observation about HTML as the de-facto AI substrate, with self-aware footnote on the word 'substrate', backed by two voice quotes (Thariq Shihipar on markdown becoming restricting under more-powerful agents; Andrej Karpathy on telling LLMs to 'structure your response as HTML'). White background.", "kind": "section" },
+    { "num": "00b", "id": "Question 1",    "framing": "Question 1 · three answers (1a Thariq, 1b htmlbin.dev, 1c maintainer)", "title": "Question 1: What do you do with all that HTML?",                 "sub": "Three answers in different shapes: Answer 1a is Thariq's FAQ recommendation (open the HTML locally, or upload to S3); Answer 1b is Utkarsh Sengar's htmlbin.dev (agent-first hosting layer — short URLs + /raw); Answer 1c is the maintainer's own custom-producer + custom-registry approach, rendered below in its own section (00c). Grey background (var(--paper-soft)); 1a and 1b sit in white answer cards lifted out of the grey.", "kind": "section" },
+    { "num": "00c", "id": "Answer 1c",     "framing": "Answer 1c · custom producer + registry · maintainer's own",                "title": "Maybe let's take it a step further.",                              "sub": "Soft-cream background. Maintainer's first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues — so they get standalone, permanent, AI-friendly artifacts without a database to maintain. Also names MinDev as the registry that catches those artifacts. Acknowledges the file-size tradeoff explicitly. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.",                                                        "kind": "section" }
   ],
   "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
@@ -1194,11 +1194,11 @@
 
   <section class="cb-frames" id="frames" aria-label="Hero variants">
 
-    <!-- 00 — Observation (with proof voices) -->
+    <!-- 00 — Observation 1 (with proof voices) -->
     <article class="cb-frame is-observation" data-num="00" aria-labelledby="frame-00-title">
-      <span class="cb-frame-num">00 · observation</span>
+      <span class="cb-frame-num">Observation 1</span>
       <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00-title"><span class="cb-kicker">Observation:</span> HTML has emerged as a key substrate<sup class="cb-aster">*</sup> for AI-assisted work.</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00-title"><span class="cb-kicker">Observation 1:</span> HTML has emerged as a key substrate<sup class="cb-aster">*</sup> for AI-assisted work.</h2>
         <p class="cb-frame-footnote"><sup>*</sup> I know, I know — "substrate" is overused.</p>
 
         <p class="cb-frame-lead">Two leading voices, same direction:</p>
@@ -1215,16 +1215,16 @@
       </div>
     </article>
 
-    <!-- 00b — Question + two answers in the wild (Thariq, htmlbin.dev) -->
+    <!-- 00b — Question 1 + answers (1a Thariq, 1b htmlbin.dev) -->
     <article class="cb-frame is-observation is-question" data-num="00b" aria-labelledby="frame-00b-title">
-      <span class="cb-frame-num">00b · question</span>
+      <span class="cb-frame-num">Question 1</span>
       <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00b-title"><span class="cb-kicker">Question:</span> What do you do with all that HTML?</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00b-title"><span class="cb-kicker">Question 1:</span> What do you do with all that HTML?</h2>
 
-        <p class="cb-frame-lead">Two existing answers — different shapes, same question:</p>
+        <p class="cb-frame-lead">Three answers, different shapes — two in the wild, one from the maintainer (below in <a href="#frame-00c-title">Answer 1c</a>):</p>
 
         <div class="cb-answer">
-          <p class="cb-answer-tag">Answer A · viewing strategy</p>
+          <p class="cb-answer-tag">Answer 1a · viewing strategy</p>
           <h3 class="cb-answer-h">Open it in a browser. Or upload to S3.</h3>
           <figure class="cb-quote">
             <blockquote><strong>How do I view the HTML file?</strong> I tend just open it in a browser locally (you can ask Claude to open it), or upload to S3 if you want a shareable link.</blockquote>
@@ -1234,7 +1234,7 @@
         </div>
 
         <div class="cb-answer">
-          <p class="cb-answer-tag">Answer B · hosting layer</p>
+          <p class="cb-answer-tag">Answer 1b · hosting layer</p>
           <h3 class="cb-answer-h">Host it on <a href="https://htmlbin.dev/" rel="noopener">htmlbin.dev</a>.</h3>
           <figure class="cb-quote">
             <blockquote>API for agents to share HTML. Agent-native, end to end. Drop HTML — get a public URL.</blockquote>
@@ -1246,11 +1246,11 @@
       </div>
     </article>
 
-    <!-- 00c — Case study: maintainer's own answer (third answer; cream bg picks up the visual shift) -->
+    <!-- 00c — Answer 1c: maintainer's own answer (custom producer + registry; cream bg picks up the visual shift) -->
     <article class="cb-frame is-observation is-case-study" data-num="00c" aria-labelledby="frame-00c-title">
-      <span class="cb-frame-num">00c · case study</span>
+      <span class="cb-frame-num">Answer 1c</span>
       <div class="cb-frame-inner">
-        <p class="cb-frame-kicker-line">Or — the maintainer's answer:</p>
+        <p class="cb-answer-tag">Answer 1c · custom producer + registry · maintainer's own answer</p>
 
         <h2 class="cb-frame-bridge" id="frame-00c-title">Maybe let's take it a step further.</h2>
 
@@ -1434,7 +1434,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.7.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.8.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
