@@ -394,6 +394,65 @@ A new domain earns a place in this document when:
 
 Proposals can be drafted as a section in this document. The bar isn't "comprehensive coverage of every edge case" — it's "concrete enough that two independent implementers would produce structurally compatible capsules."
 
+## Idea queue — domains noodled on but no working example yet
+
+Sits below the proposal bar above. Things the project (or its users) have thought about that haven't yet earned a slot in "Initial domains" because no working capsule exists. The spec discipline says **prototype first, schema later** — these entries live here until someone produces an example that pushes the idea into the formal proposal flow.
+
+When something graduates from this queue to a real domain, move the entry up to "Initial domains" with a full schema. If an idea sits here long enough without empirical pressure and seems unlikely to materialize, delete the entry — the queue isn't a backlog promise.
+
+### `domain.music_stems`
+
+**Idea (2026-05-21):** Hold the stems of a song / loop / sketch in a single capsule, with mute/solo per stem, optional Web Audio API effects (gain, EQ, reverb, filter), MIDI tracks alongside audio, and the friend-rework workflow as the load-bearing use case.
+
+**Provenance of the idea:** Maintainer surfaced it after thinking about Studio One (PreSonus DAW) workflows. DAW projects have MIDI tracks, audio tracks, effects, VSTs — and the maintainer used to swap versions with friends: *"I would get a version from them and rework it or they'd take a version from me and steal the drums or a loop or something and rework it."* A capsule for stems would carry that exchange shape without each party needing the same DAW or having compatible plugins.
+
+**Why it fits the format:**
+
+- Embedded audio via `data:` URIs is empirically tested (F14 photo capsules; F16 image-grounded conversation capsules with embedded media). The CSP already permits `media-src data:` for audio (the feature-driven loosening landed earlier).
+- The interactive runtime (mute, solo, gain, effects toggles) fits cleanly as "interactive archive" affordances per spec §2.3 — the stems *are* the substance in the HTML; the tools query and transform them at runtime but don't generate them. JS-off litmus passes: the listener sees the stem list, credits, lineage notes, and titles even without playback.
+- `parents[]` lineage maps perfectly onto friend-rework workflows. A folder of `.html` capsules with `parents[]` references becomes a traversable history of who-forked-what. The provenance lives in the bytes; visualization is a separate tool.
+
+**Honest constraint:** The 20 MB hard cap scopes this to *sketches, loops, and short songs at lossy quality* (MP3 or Opus at ~128 kbps). Full-length studio multitracks at WAV quality don't fit. That's appropriate — the format is for the *exchange* shape ("here's my version, take what you want"), not the master-recording shape. If empirical pressure ever pushes toward higher-fidelity full-length tracks, a sibling `domain.music_stems.studio` with a different distribution model (separate-file stems + manifest in a `.zip`) could split off.
+
+**Rough data shape (sketch, not normative):**
+
+```json
+{
+  "track": {
+    "title": "…", "tempo_bpm": 120, "key": "Cm",
+    "time_signature": "4/4", "duration_seconds": 240,
+    "exported_from": "Studio One 6.5"
+  },
+  "stems": [
+    {
+      "name": "Drums",
+      "audio_data_uri": "data:audio/opus;base64,…",
+      "default_gain_db": 0, "default_pan": 0, "default_mute": false,
+      "encoding": { "codec": "opus", "bitrate_kbps": 128, "sample_rate_hz": 48000 }
+    }
+  ],
+  "midi_tracks": [
+    {
+      "name": "Melody (MIDI source)",
+      "midi_data_uri": "data:audio/midi;base64,…",
+      "default_instrument": "piano",
+      "note": "Recipient drops into their own DAW with their own instrument"
+    }
+  ],
+  "effects": [
+    { "name": "Reverb",  "type": "convolution", "default_enabled": false, "applies_to": "*" },
+    { "name": "Lowpass", "type": "biquad",      "default_enabled": false, "applies_to": "Vocals" }
+  ],
+  "credits": [{ "role": "Drums", "name": "…", "lineage_note": "from v1" }],
+  "rework_note": "Took v2's drums and bassline, rewrote the melody.",
+  "license": "CC-BY-NC-SA 4.0"
+}
+```
+
+**Recommended capabilities if it ever ships:** `about`, `copy_as_json`, `download_json`, `download_capsule`, plus domain-scoped `audio.play`, `audio.mute_solo`, `audio.gain`, `audio.effects`, and optionally `audio.export_mix` (uses `OfflineAudioContext` to render the current mute/gain/effect state to a single mixed audio file the recipient can download).
+
+**What's missing to graduate:** A working example. Maintainer should pick a short loop or sketch they have lying around, hand-author or LLM-author a single capsule with stems + a mute/solo/play runtime, and see what breaks (file size, audio API quirks across browsers, mobile playback, transport sync across stems). If it works and someone forks it under `parents[]`, this entry moves up to "Initial domains" with a full schema and at least one canonical example.
+
 ## What this document is not
 
 - Not exhaustive. Many domains the format could serve aren't listed yet (legal contracts, scientific datasets, medical records, financial filings). They get added when there's a working example and a thought-through schema.
