@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.1.0",
+  "capsule_version": "10.3.0",
   "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v10.1.0 splits the v10.0 essay-as-landing experiment: the long-form journey essay moved to /notes.html (its own capsule, UUID c5f6a890, with parents[] recording lineage to this landing). The landing returns to a scan-able shape — substrate observation in the hero, a single bridge line (\"So HTML is the substrate. Now what?\"), the four-questions section (Archive · Share · Fork · Export) with Capsule's answer to each, and a small callout linking to the notes essay for depth. Two distinct readers served by two pages instead of one page trying to serve both. Same visual palette as v9/v10 (cool light paper, electric-blue accent, all-sans). Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.1).",
+  "description": "Landing page for the Capsule project. v10.3.0 pivots the hero from a narrow single-column stack to a horizontal two-column split: title (with eyebrow) on the left in a 1.15fr column, sub + CTA + stats stacked on the right in a 1fr column, aligned to the baseline. Title scales up to 78px since it has room horizontally. Stats numerals tighten to 26px. Whole hero now occupies a much shorter vertical band and uses page width properly; collapses to single column below 900px. v10.2.0 added the 'File over app, taken further' aside. v10.1.0 split the v10.0 essay-as-landing experiment: long-form journey essay moved to /notes.html. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.3).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -95,6 +95,12 @@
       "ref": "produce prompt · CAPSULE_CORE.md"
     }
   ],
+  "file_over_app": {
+    "heading": "File over app, taken further.",
+    "body": "Steph Ango's principle says your work should live in files you control, in formats that outlive any specific app. Capsule agrees — and pushes it one step further: not just the data, but the presentation. The HTML file carries its own styles and rendering. No app dependency, no plugin layer, no theme to install. The file is the experience.",
+    "link_text": "Read the principle",
+    "link_url": "https://stephango.com/file-over-app"
+  },
   "journey": {
     "label": "Notes · 2026-05-20",
     "pull_quote": "The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.",
@@ -192,17 +198,28 @@
   .cb-topnav a { color: var(--ink-soft); border-bottom: none; padding: 4px 0; }
   .cb-topnav a:hover, .cb-topnav a:focus { color: var(--accent); }
 
-  /* Hero */
+  /* Hero — horizontal split */
   .cb-hero {
-    padding: clamp(40px, 6vw, 72px) 0 clamp(40px, 5vw, 64px);
-    max-width: 22ch;
+    padding: clamp(28px, 4vw, 48px) 0 clamp(28px, 4vw, 44px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    column-gap: clamp(32px, 5vw, 72px);
+    row-gap: 4px;
+    align-items: end;
+  }
+  .cb-hero-lead { grid-column: 1; min-width: 0; }
+  .cb-hero-aside {
+    grid-column: 2; min-width: 0;
+    display: flex; flex-direction: column;
+    gap: 22px;
+    padding-bottom: 2px;
   }
   .cb-eyebrow {
     font: 500 12.5px/1 var(--mono);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--accent);
-    margin: 0 0 28px;
+    margin: 0 0 20px;
   }
   .cb-eyebrow::before {
     content: ""; display: inline-block;
@@ -213,11 +230,11 @@
   .cb-title {
     font-family: var(--sans);
     font-weight: 700;
-    font-size: clamp(44px, 6.4vw, 76px);
-    line-height: 1.0;
-    letter-spacing: -0.032em;
+    font-size: clamp(40px, 6vw, 78px);
+    line-height: 0.98;
+    letter-spacing: -0.034em;
     color: var(--ink);
-    margin: 0 0 20px;
+    margin: 0;
     text-wrap: balance;
   }
   .cb-title em {
@@ -226,13 +243,13 @@
     font-weight: 700;
   }
   .cb-sub {
-    font: 400 18px/1.45 var(--sans);
+    font: 400 17px/1.5 var(--sans);
     color: var(--ink-soft);
-    max-width: 38ch;
-    margin: 0 0 28px;
+    max-width: 42ch;
+    margin: 0;
     text-wrap: pretty;
   }
-  .cb-cta { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 36px; }
+  .cb-cta { display: flex; gap: 12px; flex-wrap: wrap; margin: 0; }
   .cb-btn {
     font: 600 14px/1 var(--sans);
     letter-spacing: -0.005em;
@@ -252,14 +269,14 @@
   .cb-btn .arrow { font-weight: 400; }
 
   .cb-stats {
-    display: flex; gap: clamp(28px, 5vw, 64px); flex-wrap: wrap;
-    padding-top: 20px;
+    display: flex; gap: clamp(24px, 3.5vw, 44px); flex-wrap: wrap;
+    padding-top: 18px;
     border-top: 1px solid var(--rule);
-    max-width: 640px;
+    margin-top: 4px;
   }
   .cb-stat .v {
     display: block;
-    font: 700 32px/1 var(--sans);
+    font: 700 26px/1 var(--sans);
     color: var(--ink);
     letter-spacing: -0.03em;
     margin-bottom: 4px;
@@ -359,6 +376,34 @@
     letter-spacing: 0.06em;
     color: var(--ink-mute);
     margin: 0;
+  }
+
+  /* File-over-app aside */
+  .cb-aside {
+    margin-top: clamp(40px, 6vw, 64px);
+    padding: 4px 0 4px 28px;
+    border-left: 3px solid var(--accent);
+    max-width: 60ch;
+  }
+  .cb-aside h3 {
+    font: 700 18px/1.25 var(--sans);
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+  .cb-aside h3 em { color: var(--accent); font-style: normal; font-weight: 700; }
+  .cb-aside p {
+    font: 400 15.5px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 12px;
+    text-wrap: pretty;
+  }
+  .cb-aside p:last-child { margin: 0; }
+  .cb-aside .external::after {
+    content: " ↗";
+    color: var(--ink-faint);
+    font-size: 0.85em;
+    border-bottom: none;
   }
 
   /* Journey callout */
@@ -513,6 +558,8 @@
 
   /* Responsive */
   @media (max-width: 900px) {
+    .cb-hero { grid-template-columns: 1fr; row-gap: 28px; align-items: start; }
+    .cb-hero-lead, .cb-hero-aside { grid-column: 1; }
     .cb-questions { grid-template-columns: 1fr; }
     .cb-journey { grid-template-columns: 1fr; }
     .cb-foot { grid-template-columns: 1fr 1fr; }
@@ -552,17 +599,21 @@
   </header>
 
   <section class="cb-hero" aria-labelledby="hero-title">
-    <p class="cb-eyebrow">Open spec · 2026</p>
-    <h1 class="cb-title" id="hero-title">An approach for working with <em>HTML artifacts.</em></h1>
-    <p class="cb-sub">LLMs emit them by default. Agents return them. Chats render them. The format your tools already speak is the format your work should land in.</p>
-    <nav class="cb-cta" aria-label="Primary actions">
-      <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-      <a href="https://github.com/bigfancygarden/htmlcapsule" class="cb-btn">View on GitHub</a>
-    </nav>
-    <div class="cb-stats" aria-label="At a glance">
-      <div class="cb-stat"><span class="v">12</span><span class="l">rules</span></div>
-      <div class="cb-stat"><span class="v">5</span><span class="l">required blocks</span></div>
-      <div class="cb-stat"><span class="v">0</span><span class="l">network deps</span></div>
+    <div class="cb-hero-lead">
+      <p class="cb-eyebrow">Open spec · 2026</p>
+      <h1 class="cb-title" id="hero-title">An approach for working with <em>HTML artifacts.</em></h1>
+    </div>
+    <div class="cb-hero-aside">
+      <p class="cb-sub">LLMs emit them by default. Agents return them. Chats render them. The format your tools already speak is the format your work should land in.</p>
+      <nav class="cb-cta" aria-label="Primary actions">
+        <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
+        <a href="https://github.com/bigfancygarden/htmlcapsule" class="cb-btn">View on GitHub</a>
+      </nav>
+      <div class="cb-stats" aria-label="At a glance">
+        <div class="cb-stat"><span class="v">12</span><span class="l">rules</span></div>
+        <div class="cb-stat"><span class="v">5</span><span class="l">required blocks</span></div>
+        <div class="cb-stat"><span class="v">0</span><span class="l">network deps</span></div>
+      </div>
     </div>
   </section>
 
@@ -599,6 +650,12 @@
         <p class="cb-question-ref">produce prompt · CAPSULE_CORE.md</p>
       </article>
     </div>
+
+    <aside class="cb-aside" aria-labelledby="aside-h">
+      <h3 id="aside-h">File over app, <em>taken further.</em></h3>
+      <p>Steph Ango's principle says your work should live in files you control, in formats that outlive any specific app. Capsule agrees — and pushes it one step further: not just the data, but the presentation. The HTML file carries its own styles and rendering. No app dependency, no plugin layer, no theme to install. The file <em>is</em> the experience.</p>
+      <p><a href="https://stephango.com/file-over-app" class="external" rel="noopener">Read the principle</a></p>
+    </aside>
 
     <aside class="cb-journey" aria-labelledby="journey-cta">
       <div>
@@ -655,7 +712,7 @@
     </div>
     <div class="cb-colophon">
       <span>Set in system sans · Apache 2.0</span>
-      <span>capsule:landing/v10.1.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v10.3.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
@@ -751,6 +808,12 @@ Data to embed:
       push(`_${q.ref}_`);
       push(``);
     });
+    push(`### ${data.file_over_app.heading}`);
+    push(``);
+    push(data.file_over_app.body);
+    push(``);
+    push(`→ [${data.file_over_app.link_text}](${data.file_over_app.link_url})`);
+    push(``);
     push(`### ${data.journey.cta}`);
     push(``);
     push(`> ${data.journey.pull_quote}`);
