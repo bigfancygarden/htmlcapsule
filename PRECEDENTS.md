@@ -33,17 +33,45 @@ Control-surface framing. Blog post: "HTML Is the Format AI Agents Want" ([blakec
 
 **Relevance to capsules:** Reinforces the substrate case from a different angle (agent UI rather than chat output). Sharpens the lifecycle distinction without naming it. Blake is live; capsules are sealed. Both valid, both compatible, different slots.
 
+### Andrej Karpathy
+
+Substrate-progression articulation. Public posts in 2026 laid out a four-step progression for AI output formats — raw text → markdown → HTML → eventually interactive neural simulations — naming HTML as "early but forming new good default" and recommending "structure your response as HTML" as a practical prompt-time tip ([X post, May 11 2026](https://x.com/karpathy/status/2053872850101285137); archived as a first-class quote-archive capsule at [`voices/karpathy-html-progression-2026.html`](voices/karpathy-html-progression-2026.html)). Separately publishes an "LLM wiki" pattern ([gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), April 2026) — a personal knowledge base of markdown files an LLM authors and maintains, framed as "Obsidian is the IDE; the LLM is the programmer; the wiki is the codebase."
+
+**Position:** HTML as the current best step on a named progression. Markdown for the working/source layer (the wiki he maintains); HTML for the output/render layer (the answer to a query). The two positions reconcile if you read them as format-follows-lifecycle: working format vs. publishing format.
+
+**Memorable lines worth knowing:**
+- "Try ask for HTML."
+- "Obsidian is the IDE; the LLM is the programmer; the wiki is the codebase."
+- "Vision is the preferred output channel for AI."
+
+**Relevance to capsules:** The progression names *why* the discipline matters now. If HTML is the current load-bearing step, then a contract on the HTML file is the load-bearing piece of discipline. Capsule sits between his two layers — HTML as the substrate, with a contract on the file.
+
+### Utkarsh Sengar — htmlbin.dev
+
+Hosting-layer articulation. Launched [htmlbin.dev](https://htmlbin.dev/) in May 2026 (about the same week as htmlcapsule). Tagline: *"API for agents to share HTML. One human auth step, then your agent publishes over HTTP."* Self-positioned as "Agent-first HTML hosting." Stack: Cloudflare D1 + KV. Flow: agent generates HTML, calls the htmlbin API, gets back a short URL like `htmlbin.dev/p/{slug}` with a `/raw` endpoint for byte-identical fetch. Side-project author with prior Webflow / Upwork / OpenTable / eBay experience ([utsengar.com](https://utsengar.com/)).
+
+**Position:** Hosting infrastructure for agent-emitted HTML as a primitive. No format discipline imposed — accepts any self-contained HTML; the host's job is publishing, not validating.
+
+**Memorable lines worth knowing:**
+- "Agent-first HTML hosting."
+- "First publish needs one human click; after that, the agent owns it."
+- "Drop HTML. Get a public URL."
+
+**Relevance to capsules:** htmlbin is the public hosting layer that htmlcapsule didn't build. The two are complementary slots in a stack: Capsule supplies the format discipline (manifest, integrity, no network, pre-rendered content); htmlbin supplies the publishing flow. A valid capsule can be hosted on htmlbin, on MinDev, or self-hosted — the format is hosting-agnostic. The independent convergence of htmlbin's hosting pattern with MinDev's (short URL + `/raw` endpoint + minimal chrome + honest authorship attribution) is documented as F21 — empirical evidence that the host-contract sketch in Appendix E.7 is a real shape independent producers reach on their own.
+
 ### The three-position picture
 
-Same substrate, three positions on the lifecycle:
+Same substrate, multiple positions across the lifecycle and layers:
 
 | Voice | Frame | Slot |
 |---|---|---|
-| Thariq | Substrate | "HTML is the new markdown" — the editing medium |
+| Thariq | Substrate is now | "HTML is the new markdown" — the editing medium |
+| Karpathy | Substrate over time | Four-step progression naming HTML as the current best step (and markdown as the working layer beneath it) |
 | Blake | Control surface | "Format is part of the runtime contract" — agent UI / live render |
-| This project | Sealed handoff | The portable archive — manifest, sources, sealed convention |
+| This project | Sealed handoff (format) | The portable archive — manifest, sources, sealed convention |
+| Utkarsh / htmlbin | Hosting layer | Agent-first HTML hosting — short URL, raw endpoint, format-agnostic |
 
-The three positions are healthy differentiation, not competition. Each sits on the same substrate. None is wrong about HTML. The project's specific contribution is the contract that makes HTML files travel after the live work is done.
+The positions are healthy differentiation, not competition. Each sits on the same substrate. The format-layer positions (Thariq, Karpathy, Blake, this project) all stack with the hosting-layer positions (htmlbin, MinDev) — different slots, naturally composable. The project's specific contribution is the contract that makes HTML files travel after the live work is done; hosting layers serve those files; substrate evangelists name why the substrate matters at all.
 
 ## Direct neighbors
 

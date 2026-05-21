@@ -603,6 +603,55 @@ The host attests independently via response headers without modifying the file b
 - The "compact variant" idea (a view-only capsule without the full GeoJSON, just the rendered image + minimal manifest) is interesting for view-only sharing — could shrink a 13.7 MB capsule to ~50 KB. Lacks current empirical pressure but worth flagging.
 - Legacy compiler templates (`templates/decision_board`, `templates/news_capsule`) still don't pre-render data-bearing content. Now that the image-fallback carve-out exists, they could either adopt the pattern or be documented as historical. Not urgent.
 
+### F21: Independent convergence on the host-contract pattern (MinDev + htmlbin)
+
+**Date:** 2026-05-21
+
+Two independent hosting layers have converged on the same shape for serving Capsule-style HTML artifacts, without coordination between them:
+
+1. **MinDev** (private, Mintel-tied; serves the F20 Copper Dome capsule and other Mintel-produced exploration_map capsules).
+2. **htmlbin.dev** (public, agent-first; launched ~May 17-18, 2026 by Utkarsh Sengar, Cloudflare D1 + KV stack). Independent project; not aware of htmlcapsule at launch.
+
+**Shared shape observed:**
+
+| Aspect | MinDev | htmlbin.dev |
+|---|---|---|
+| Short URL identity | UUID — `mindev.ca/api/c/{uuid}` | Slug — `htmlbin.dev/p/{slug}` |
+| `/raw` byte-identical endpoint | `/api/c/{uuid}/raw` | `/p/{slug}/raw` |
+| Host chrome | Recedes to a left rail | Small header + footer attribution |
+| Authorship attribution | Response headers (`x-capsule-content-hash`, `x-capsule-uuid`) | Footer text ("content authored by the agent that uploaded it") |
+| Content mutation | None — serves uploaded bytes byte-identically | None — serves uploaded bytes byte-identically |
+| Validates on upload | Yes (against Capsule spec) | No (accepts any self-contained HTML) |
+| Visibility | Private | Public, OAuth-gated first publish |
+
+**Why this matters:**
+
+The convergence is empirical evidence that the host-contract pattern referenced in Appendix E.7 ("hosting-platform auth gates per the MinDev pattern... the platform controls *delivery*; the capsule itself doesn't gate its internal contents") is a real shape that independent producers reach on their own. The format/host split — *the format defines the artifact, the host serves it* — appears stable across implementations.
+
+This is the empirical pressure the project was waiting for to formalize a host contract beyond the single-implementor MinDev reference. The "what a host should do (and not do)" doc that was previously parked can now be drafted as a description of an observed convention across two independent implementations, not a proposal made in a vacuum.
+
+**Practical implication — the format is hosting-agnostic, demonstrably:**
+
+A valid Capsule can be hosted on MinDev, on htmlbin, or self-hosted, with no format change. Hosts adopt the format optionally; the format imposes nothing on the host beyond "serve the bytes you received." The "format-not-platform" stance is now concrete and verifiable, not aspirational.
+
+**Spec moves to consider:**
+
+- A new doc — `spec/HOSTING.md` or `spec/HOST_CONTRACT.md` — describing the observed pattern: short URL identity + `/raw` byte-identical endpoint + minimal host chrome + (optional) integrity attestation in response headers + no content mutation. Not normative; documentary. Cites MinDev and htmlbin as the two convergent implementations.
+- Possibly update Appendix B (Distribution Guidance) to add htmlbin alongside MinDev as a concrete hosting example.
+- E.7 (MinDev pattern reference) can be annotated as having independent empirical support; no resolution change needed.
+
+**Open questions:**
+
+- Will htmlbin add integrity-attestation headers (`x-capsule-content-hash` style) over time as Capsule-format artifacts get hosted there? If so, the convergence deepens — every host independently arrives at the full pattern, including the attestation layer.
+- Will the host contract crystallize as a formal spec, or stay descriptive? Probably the latter for now — formalizing would require multiple host implementations to agree on protocol particulars (header names, slug format, etc.), which would need outreach. Descriptive documentation captures the observation without prescribing.
+- Should the project provide a "verify a hosted Capsule" mode in `validate.py`? Currently the validator works on local files; could optionally fetch a URL, recompute the integrity hash, and check it against MinDev's `x-capsule-content-hash` header attestation. Small addition, real utility for recipients who want to verify they got what the host claims they got.
+- Worth tracking whether other hosts emerge in this space over the next quarter. Two implementations is convergence; three or more is a pattern that probably deserves formal documentation.
+
+**Cross-references:**
+- [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) — the MinDev side of the convergence, with the Copper Dome capsule.
+- [PRECEDENTS.md "Current voices in HTML-for-AI"](PRECEDENTS.md) — Utkarsh / htmlbin added as a hosting-layer voice; the three-position picture extended to acknowledge format-layer vs. hosting-layer slots.
+- Appendix E.7 in [spec/CAPSULE_SPEC.md](spec/CAPSULE_SPEC.md) — the "MinDev pattern" reference that hinted at this convention; F21 is the empirical validation.
+
 ## Open questions
 
 In rough priority:
