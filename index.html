@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.5.0",
+  "capsule_version": "11.6.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.5.0 restructures the opening trio into a clearer narrative arc: Observation → Question → Case study, then heroes. (1) Variant 00 (Observation, white): drops the 'So the question becomes…' leadin and the 'Take it further ↓' jumplink — the section now ends after the second voice quote. (2) NEW variant 00b (Question, same white): titled 'Question: What do you do with all that HTML?' with two existing answers in the wild — Answer A is Thariq's FAQ quote (open it locally, or upload to S3) moved up from the prior case study; Answer B is Utkarsh Sengar's htmlbin.dev (short URLs + /raw endpoint for agent-emitted HTML; independent convergence with the MinDev hosting pattern). (3) Existing case study renumbered 00b → 00c (soft cream), reframed with kicker 'Or — the maintainer's answer:' so it reads as the third answer after the two above. Corner labels updated for parallel naming: '00 · observation' / '00b · question' / '00c · case study'. New .cb-answer / .cb-answer-tag / .cb-answer-h / .cb-answer-body classes for the answer-block treatment with thin rule between answers. UUID 7d1a1ac8 preserved through v11.5.",
+  "description": "Landing page in hero framing exploration mode. v11.6.0 expands Answer A and Answer B in variant 00b (the Question section) so they actually do landscape analysis instead of just naming the answers. Both answers now have a small body paragraph after the quote: Answer A names what Thariq's view-locally-or-S3 approach offers (minimum-viable, portable substrate) and what it leaves open (no default shareable URL — which is exactly the friction Answer B addresses). Answer B now leads with htmlbin.dev's actual positioning verbatim ('API for agents to share HTML. Agent-native, end to end. Drop HTML — get a public URL.') and then explains both what htmlbin does (purpose-built hosting layer for agent-emitted HTML, OAuth device-code first-publish auth, /p/{slug} short URLs, byte-identical /raw endpoint, minimal host chrome, no format discipline imposed) and why it matters for the project's landscape analysis (htmlbin + MinDev independently converged on the same hosting pattern — empirical evidence that the format/host split is real, not theoretical: hosting is one job, format discipline is another, they compose). Cross-refs to RESEARCH.md F21 (the convergence finding), spec/HOSTING.md (the descriptive pattern), and the full voices/utsengar-htmlbin-2026.html archive. Answer-tag labels gained slot suffixes ('viewing strategy' / 'hosting layer') to signal what kind of slot each occupies in the landscape. Same colors, same structure as v11.5 — just deeper analysis. UUID 7d1a1ac8 preserved through v11.6.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -998,9 +998,10 @@
   .cb-answer-body {
     font: 400 15.5px/1.55 var(--sans);
     color: var(--ink-soft);
-    margin: 0;
+    margin: 0 0 14px;
     max-width: 60ch;
   }
+  .cb-answer-body:last-child { margin-bottom: 0; }
   .cb-answer-body code {
     background: var(--paper-soft);
     padding: 1px 5px;
@@ -1196,21 +1197,27 @@
       <div class="cb-frame-inner">
         <h2 class="cb-frame-title is-observation-h" id="frame-00b-title"><span class="cb-kicker">Question:</span> What do you do with all that HTML?</h2>
 
-        <p class="cb-frame-lead">A couple of answers in the wild:</p>
+        <p class="cb-frame-lead">Two existing answers — different shapes, same question:</p>
 
         <div class="cb-answer">
-          <p class="cb-answer-tag">Answer A</p>
+          <p class="cb-answer-tag">Answer A · viewing strategy</p>
           <h3 class="cb-answer-h">Open it in a browser. Or upload to S3.</h3>
           <figure class="cb-quote">
             <blockquote><strong>How do I view the HTML file?</strong> I tend just open it in a browser locally (you can ask Claude to open it), or upload to S3 if you want a shareable link.</blockquote>
             <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> · FAQ</figcaption>
           </figure>
+          <p class="cb-answer-body">Minimum-viable. The substrate is portable enough that this works for anyone technical — the bytes open in any browser, locally or hosted. The gap it leaves: there's no shareable URL <em>by default</em>. You have to bring your own bucket. Which is the friction Answer B is designed for.</p>
         </div>
 
         <div class="cb-answer">
-          <p class="cb-answer-tag">Answer B</p>
+          <p class="cb-answer-tag">Answer B · hosting layer</p>
           <h3 class="cb-answer-h">Host it on <a href="https://htmlbin.dev/" rel="noopener">htmlbin.dev</a>.</h3>
-          <p class="cb-answer-body">Utkarsh Sengar's hosting layer, purpose-built for agent-emitted HTML: short URLs, a <code>/raw</code> endpoint for fetching the bytes, no chrome around the artifact. Launched May 2026; independent convergence with the MinDev hosting pattern (the format itself stays hosting-agnostic). <a href="voices/utsengar-htmlbin-2026.html">Archive →</a></p>
+          <figure class="cb-quote">
+            <blockquote>API for agents to share HTML. Agent-native, end to end. Drop HTML — get a public URL.</blockquote>
+            <figcaption>— htmlbin.dev positioning · Utkarsh Sengar (<a href="https://x.com/utsengar" rel="noopener">@utsengar</a>)</figcaption>
+          </figure>
+          <p class="cb-answer-body">A purpose-built public hosting layer for agent-emitted HTML, launched May 2026 (the same week as htmlcapsule). One human click for the first publish — OAuth device-code flow — and after that the agent owns the bucket and publishes over HTTP. URL shape <code>/p/{slug}</code> with a byte-identical <code>/raw</code> endpoint, small host header + attribution footer (<em>"hosted by htmlbin — content authored by the agent that uploaded it"</em>), and no format discipline imposed: any self-contained HTML works.</p>
+          <p class="cb-answer-body">What makes htmlbin notable for this landscape: htmlbin and <strong>MinDev</strong> (a separate, industry-tied hosting layer the maintainer also works on) independently converged on the same shape — short URL + <code>/raw</code> + minimal chrome + honest authorship attribution + format-agnostic hosting. Two independent implementations of the same hosting pattern, no coordination. That convergence is empirical evidence that the <strong>format/host split is real, not theoretical</strong>: hosting is one job, format discipline is another. They compose. A valid Capsule can be served by htmlbin, by MinDev, or self-hosted; the format itself is hosting-agnostic. Documented as <a href="RESEARCH.md">F21 in the research log</a>; descriptive pattern in <a href="spec/HOSTING.md">spec/HOSTING.md</a>. Full archive of htmlbin's positioning + architecture: <a href="voices/utsengar-htmlbin-2026.html">voices/utsengar-htmlbin-2026.html →</a></p>
         </div>
       </div>
     </article>
@@ -1403,7 +1410,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.5.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.6.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
