@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="description" content="Capsule: an approach for working with HTML artifacts. One sealed HTML file with everything inside — manifest, data, provenance. No network. Built to be re-read years later by humans and by the LLMs they ask to continue the work. Open spec, reference implementation, examples.">
+<meta name="description" content="HTML Capsule: an approach for working with HTML artifacts. One sealed HTML file with everything inside — manifest, data, provenance. No network. Built to be re-read years later by humans and by the LLMs they ask to continue the work. Open spec, reference implementation, examples.">
 <meta name="color-scheme" content="light">
-<title>Capsule — an approach for working with HTML artifacts</title>
+<title>HTML Capsule — an approach for working with HTML artifacts</title>
 
 <script id="capsule-manifest" type="application/json">
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.11.0",
-  "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v10.11.0 adds Matan (matanrak) / Workplane as the second voice in the live-editing layer alongside Raunaq / html-docs.com — independent convergence on the same workflow pattern (agent publishes → human comments inline → agent reads + revises) shipping in the same window without coordination. Workplane is MCP-first, multi-agent (Claude Code, Codex, Cursor, Devin, Claude Desktop), open-source agent skill at work-plane/workplane-skills (MIT). The convergence is documented as F22 in RESEARCH.md (same shape as the F21 hosting-layer convergence between MinDev + htmlbin). The 'Layers Capsule composes with' panel group now has 4 voices (2 live-editing + 1 hosting + 1 discovery), making the empirical reality that multiple slots have multiple independent implementations visible directly on the landing. v10.10.0 restructured the panel into layer groups. v10.9.0 added Raunaq / html-docs.com (live editing layer's first voice). Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.11).",
+  "capsule_version": "10.12.0",
+  "title": "HTML Capsule — an approach for working with HTML artifacts",
+  "description": "Landing page for the HTML Capsule project. v10.12.0 tightens the top bar: brand reads 'HTML Capsule' (the full name) instead of 'Capsule', a small version badge sits next to it pointing at the current full-spec version (v0.3.4), the inline 'open spec' subtitle is dropped, and the multi-link primary nav is replaced with a single GitHub icon-link. Page <title> and meta description updated to match. Hero, four-questions, asides, voices panel, and footer are unchanged. Mobile breakpoints tightened so the new top bar reflows cleanly at narrow widths. v10.11.0 added Matan (matanrak) / Workplane as the second voice in the live-editing layer alongside Raunaq / html-docs.com — F22 convergence documented in RESEARCH.md. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.12).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -75,7 +75,7 @@
     "link_text": "Read the spec — §2.3 Rendering Model",
     "link_url": "spec/CAPSULE_SPEC.md"
   },
-  "spec": { "core": "v0.3.0", "full": "v0.3.2", "released": "2026-05-19" },
+  "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
   "questions": [
     {
@@ -253,9 +253,11 @@
     border-bottom: 1px solid var(--rule);
   }
   .cb-mark {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap;
     font: 500 14px/1 var(--sans);
     color: var(--ink-soft);
+    min-width: 0;
   }
   .cb-mark .glyph {
     display: inline-grid; place-items: center;
@@ -264,15 +266,48 @@
     border-radius: 2px;
     font: 700 13px/1 var(--sans);
     letter-spacing: 0.02em;
+    flex-shrink: 0;
   }
   .cb-mark strong { color: var(--ink); font-weight: 600; }
-  .cb-mark .sep { color: var(--ink-faint); margin: 0 4px; }
+  .cb-badge {
+    font: 600 11.5px/1 var(--mono);
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in oklab, var(--accent) 28%, transparent);
+    border-radius: 999px;
+    padding: 4px 9px;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 28%, transparent);
+    transition: background .15s, border-color .15s, color .15s;
+    white-space: nowrap;
+  }
+  .cb-badge:hover, .cb-badge:focus {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    outline: none;
+  }
   .cb-topnav {
-    display: flex; gap: 22px; flex-wrap: wrap;
+    display: flex; gap: 18px; flex-wrap: wrap; align-items: center;
     font: 500 13.5px/1 var(--sans);
   }
-  .cb-topnav a { color: var(--ink-soft); border-bottom: none; padding: 4px 0; }
-  .cb-topnav a:hover, .cb-topnav a:focus { color: var(--accent); }
+  .cb-icon-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink-soft);
+    border-bottom: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: color .15s, background .15s;
+  }
+  .cb-icon-link:hover, .cb-icon-link:focus {
+    color: var(--ink);
+    background: var(--paper-soft);
+    outline: none;
+  }
+  .cb-icon { display: block; }
+  .cb-icon-label { font-weight: 500; }
 
   /* Hero — horizontal split */
   .cb-hero {
@@ -746,9 +781,25 @@
     .cb-foot { grid-template-columns: 1fr 1fr; }
     .cb-foot-isnt { grid-column: 1 / -1; }
   }
+  @media (max-width: 600px) {
+    #capsule-root { padding: 24px clamp(16px, 4vw, 24px) 48px; }
+    .cb-topbar { padding-bottom: 18px; gap: 10px; }
+    .cb-mark { font-size: 13.5px; gap: 8px; }
+    .cb-mark .glyph { width: 24px; height: 24px; font-size: 12px; }
+    .cb-badge { font-size: 11px; padding: 3px 7px; }
+    .cb-icon-link { padding: 6px 8px; }
+    .cb-icon-label { display: none; }
+    .cb-stats { gap: 18px; padding-top: 14px; }
+    .cb-stat .v { font-size: 22px; }
+    .cb-cta .cb-btn { padding: 12px 18px; font-size: 13.5px; }
+  }
   @media (max-width: 540px) {
     body { font-size: 16px; }
     .cb-foot { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 380px) {
+    .cb-cta { flex-direction: column; align-items: stretch; }
+    .cb-cta .cb-btn { width: 100%; justify-content: center; }
   }
 
   /* Print */
@@ -768,14 +819,16 @@
   <header class="cb-topbar" role="banner">
     <div class="cb-mark">
       <span class="glyph" aria-hidden="true">C</span>
-      <span><strong>Capsule</strong><span class="sep">·</span>open spec v0.3.0</span>
+      <strong>HTML Capsule</strong>
+      <a class="cb-badge" href="CAPSULE_CORE.md" aria-label="Specification version 0.3.4">v0.3.4</a>
     </div>
     <nav class="cb-topnav" aria-label="Primary">
-      <a href="#questions">Questions</a>
-      <a href="notes.html">Notes</a>
-      <a href="CAPSULE_CORE.md">Spec</a>
-      <a href="spec/examples/">Examples</a>
-      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+      <a class="cb-icon-link" href="https://github.com/bigfancygarden/htmlcapsule" aria-label="View source on GitHub" rel="noopener">
+        <svg class="cb-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" focusable="false">
+          <path fill="currentColor" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        <span class="cb-icon-label">GitHub</span>
+      </a>
     </nav>
   </header>
 

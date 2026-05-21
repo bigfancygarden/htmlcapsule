@@ -47,9 +47,9 @@ Interactive-archive category named; lifecycle decomposition (live-editing / form
 - **`voices/utsengar-htmlbin-2026.html`** v1.0.0 (UUID `b3d8f2a1`) — Utkarsh Sengar's htmlbin.dev, the hosting-layer voice (`ef11394`).
 - **`voices/README.md`** — directory index + queue-tracking pattern (parallel to the Idea queue in DOMAIN_CAPSULES); graduation rule for queued → archived (`5ea0296`).
 
-### Changed — landing page (v10.2 through v10.11)
+### Changed — landing page (v10.2 through v10.12)
 
-Eight landing iterations during this version window. Highlights:
+Nine landing iterations during this version window. Highlights:
 
 - **v10.2** — "File over app, taken further" aside citing Steph Ango's principle (`5457f5b`).
 - **v10.3** — Hero pivoted from narrow single-column stack to horizontal two-column split (title left, sub/CTA/stats right) (`5457f5b`).
@@ -61,6 +61,7 @@ Eight landing iterations during this version window. Highlights:
 - **v10.9** — Raunaq Bhutoria / html-docs.com added (first live-editing-layer voice) (`40f7238`).
 - **v10.10** — Adjacent Voices panel reorganized into two layer-tagged sub-sections: "Format & substrate observers" and "Layers Capsule composes with" (`5ea0296`).
 - **v10.11** — Matan / Workplane added (second live-editing-layer voice); convergence with html-docs documented as F22 (`1f298cf`).
+- **v10.12** — Top bar tightened: brand reads "HTML Capsule" (full project name) instead of "Capsule"; small linked version badge (`v0.3.4`) replaces the inline "open spec v0.3.0" subtitle; multi-link primary nav collapses to a single GitHub icon-link with accessible label. Page `<title>` and meta description updated to match. New mobile breakpoint at 600px hides the "GitHub" label (icon-only on phones), tightens topbar/stat spacing, and shrinks the badge; a 380px breakpoint stacks hero CTAs full-width. Stale `data.spec.full` value in the landing's data block bumped from v0.3.2 → v0.3.4 to match the current full-spec version. Same logical landing capsule (UUID `7d1a1ac8` preserved).
 
 ### Changed — PRECEDENTS.md
 
