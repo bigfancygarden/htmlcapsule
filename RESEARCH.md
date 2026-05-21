@@ -775,11 +775,79 @@ Currently the canonical convention to recommend isn't settled. Worth tracking wh
 
 This finding emerged from a Claude-on-MinDev-side conversation pushed through to a Claude-on-Mintel-side conversation via the user as a human-router. Each agent owned its own system's concerns: MinDev's agent diagnosed the threat model + drove the schema change + posted prod verification; Mintel's agent audited the producer-side fallout + flagged the QR-encoding gap + committed to build-script patches in its own domain. The htmlcapsule project's record (this finding) is then the third surface that absorbs the cross-domain learning. Worth tracking as a pattern: multi-agent + human-router collaboration is producing real research artifacts (this F-finding) faster than a single-agent loop probably would.
 
+**Refinement (2026-05-21, [F24](#f24-host-vs-registry--the-missing-commitment-layer)):** The URN-as-default recommendation in this finding is correct *for producers without signal about host commitments*. The case where a producer knows their target host has declared registry compliance opens a different reasonable choice — encoding the URL becomes a calibrated bet against a published contract rather than a gamble. F24 introduces the host vs. registry distinction and sketches a Capsule Registry Compliance v1 contract in [spec/HOSTING.md](spec/HOSTING.md). The default for general-purpose producers (and for the Mintel build script today, since MinDev has not declared compliance) remains URN; the option to encode URLs becomes available when the destination host has declared compliance.
+
 **Cross-references:**
 - [CAPSULE_CORE.md Rule 4 supplementary QR guidance](CAPSULE_CORE.md) — the deliberate URN-not-URL spec choice
 - [spec/HOSTING.md "Visibility tiers as host-side policy"](spec/HOSTING.md) — the addition that names this as the canonical example
 - [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) — the Mintel Copper Dome capsule observed there used the URL form in its QR
 - [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin) — the broader host-contract pattern; visibility tiers are one axis hosts vary on
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — the synthesis that refines this finding
+
+### F24: Host vs. registry — the missing commitment layer
+
+**Date:** 2026-05-21
+
+[F23](#f23-urn-not-url-qr-encoding--empirical-validation-of-a-deliberate-spec-choice) documented the empirical case where Mintel's URL-encoded QR codes broke after MinDev removed the `public` visibility tier. The first reading of that finding was: *URN is the right default; URL was a deviation that bit Mintel*. In a conversation following the F23 commit, the maintainer pushed back with a sharper question: at build time, Mintel knows it's uploading to MinDev; the URL form is more useful than URN for the recipient; the failure mode isn't producer error, it's that **the host (MinDev) hadn't committed to keeping the URL working**. The refined synthesis: the project's format/host split has been treated as "format and host are independent strangers," but in real workflows producers and hosts often want to be *coordinated via published contracts*. The format itself stays agnostic; some hosts may want to *declare more*.
+
+**The naming move: host vs. registry**
+
+- A **host** serves capsules. No commitments beyond "the bytes go out the way they came in."
+- A **registry** is a host that *commits to keeping serving them in a particular way* — stable URL patterns, visibility honor, deprecation discipline, attestation headers, no surprise breaking changes.
+
+Hosts can choose to remain just hosts or to declare themselves registries (by publishing a compliance statement at a well-known location). The format takes no position; producers and recipients gain a signal they can act on.
+
+**What changes about F23's "URN is the safe default":**
+
+- F23's recommendation is *correct for the case it documented* — producers without signal about host commitments should default to URN because URL form is a bet on unspecified host behavior.
+- F23's recommendation is *incomplete*. When producers know their target host has declared registry compliance — including commitments about URL stability and visibility-tier preservation — encoding the URL becomes a calibrated bet against a published contract, not a guess.
+- The Mintel/MinDev case wasn't "Mintel made a mistake by deviating from spec." It was "Mintel made a reasonable bet on MinDev behavior that MinDev hadn't promised to keep." The fix isn't "always use URN" — it's "encode URN by default; encode URL when the host has declared compliance and visibility commitments are part of the declaration."
+
+**Sketched Capsule Registry Compliance v1 contract (not yet adopted by any host):**
+
+1. **Stable URL pattern.** `<host>/<prefix>/<uuid-or-slug>`. Pattern doesn't change without a major version bump + redirect period.
+2. **`/raw` byte-identical endpoint** at the URL + `/raw`. Never mutates the body.
+3. **Visibility commitment is part of the contract.** Whatever visibility tier a capsule is uploaded under is honored for the capsule's lifetime, OR migration is announced with notice. Removing a tier without grandfathering existing capsules is a breaking change.
+4. **Host-attestation headers** (`x-capsule-content-hash`, `x-capsule-uuid`) on every `/raw` response.
+5. **Honest deprecation.** Breaking changes get a public changelog + deprecation window + migration path. Surprise policy changes that break in-the-wild artifacts are out of compliance.
+6. **Capsule immutability.** The registry serves the bytes it received. No mutation, no re-rendering, no injection.
+
+Full sketch with proposed well-known location (`<host>/.well-known/capsule-compliance.json`) and adoption status is in [`spec/HOSTING.md`](spec/HOSTING.md) under "Hosts vs. registries — the optional commitment layer."
+
+**Mapping the MinDev incident onto the proposed contract:**
+
+- MinDev was operating as a *host*, not a registry, at the time of the `public` removal.
+- The change was *security-correct* but *registry-breaking*: existing-public capsules' anonymous resolvability was removed without grandfathering or notice.
+- If MinDev had been operating under compliance v1, the `public`-removal would have required either grandfathering existing capsules at their original visibility OR a major version bump + migration period.
+- MinDev can retroactively declare compliance v1 (with the recent change being framed as the v0→v1 migration event itself) or refuse to claim it. Producers like Mintel benefit either way: a declared host is safe to encode URLs against; an undeclared host is not.
+
+**Why the host-vs-registry distinction matters more broadly:**
+
+The project's layer picture (format / live-editing / hosting / discovery) treats each layer as independent. The compliance layer adds a *coordination axis*: within a layer, implementations can choose to coordinate via published contracts. Registry compliance is one example; spec/HOSTING.md's descriptive host-contract pattern is another, weaker example. This is how the open web works generally — browsers treat URLs as untrusted by default, but sites can opt into stronger trust by adopting HTTPS / HSTS / CSP / etc. The Capsule project can offer the same opt-in for hosts.
+
+The format/host split stays correct as the *baseline*; the compliance layer is the *upgrade path* for hosts that want to be more than baseline.
+
+**Spec implications:**
+
+- New section in [`spec/HOSTING.md`](spec/HOSTING.md): "Hosts vs. registries — the optional commitment layer" sketches the compliance contract. Stays descriptive (matching HOSTING.md's overall disposition) — defines what a host *could* commit to, doesn't force any host to commit.
+- F23's "URN-only default" recommendation is refined here, not retracted. Default for producers without signal remains URN. Case where a producer has signal (registry compliance declared) opens the URL option as a calibrated bet.
+- **No Core spec change.** CAPSULE_CORE.md Rule 4 supplementary QR guidance still says URN — that remains the right default *for the format itself*, which has no opinion on which hosts produce capsules and where they end up. The format stays agnostic; the registry-compliance layer is opt-in at the host's surface, not at the format's.
+
+**Open questions:**
+
+- **Self-declared vs. third-party verified?** Self-declared (host publishes its own `/.well-known/capsule-compliance.json`) has lower friction; third-party verified has stronger guarantees. No empirical pressure yet to pick. Lean toward self-declared for v1 — easier to bootstrap.
+- **Version-bump discipline for the contract itself?** If compliance v1 ships and then needs revision, what's the upgrade path for hosts that have declared v1? Standard semver-shaped questions; deferrable until at least one host signs on.
+- **Should the format carry a signal about which compliance level its host declared** — e.g., a manifest field naming the registry's declared compliance? Honestly leaning **no**: that would couple format to host, exactly the thing the project deliberately avoids. The compliance declaration belongs at the host's surface (its `/.well-known/`, its docs), not in the capsule's bytes.
+- **First adoption?** MinDev is the natural first candidate — its recent security change can be framed as the v0→v1 migration event. htmlbin is a second candidate; the personal-sharing host the maintainer is planning is a third. If multiple hosts adopt the same compliance level voluntarily, the contract crystallizes into something a future capsule producer can rely on across hosts.
+
+**Methodological note — the pushback was the finding:**
+
+F24 didn't come from a tool, a capsule, or an external piece. It came from the maintainer pushing back on F23's framing during a follow-up conversation: *"isn't what we are dancing around is the registry being htmlcapsule-spec compliant?"* That single sentence reframed F23 from "Mintel made a mistake" into "the project lacks a host-commitment layer." Worth tracking as a research-method observation: the project's most useful conceptual moves are sometimes made by the maintainer pushing back on a finding's first framing, not by new external pressure. F23's empirical event was necessary but not sufficient; the synthesis required the conversational refinement.
+
+**Cross-references:**
+- [F23](#f23-urn-not-url-qr-encoding--empirical-validation-of-a-deliberate-spec-choice) — the precipitating finding; URN-as-default refined here, not retracted
+- [spec/HOSTING.md "Hosts vs. registries"](spec/HOSTING.md) — the compliance contract sketch this finding motivated
+- [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin) — host-pattern convergence; the compliance contract makes explicit what F21 observed implicitly
 
 ## Open questions
 

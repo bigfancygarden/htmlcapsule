@@ -56,6 +56,69 @@ Hosts SHOULD document their visibility model clearly, because producers and reci
 
 If a producer explicitly wants anonymous-resolvable QRs or links, the right path is to mint a share token at upload time and encode the share-URL (`/api/c/share/<token>` or equivalent), not the bare-UUID URL. The share-URL form is anonymous-resolvable *by design* and stays anonymous-resolvable across host policy changes; the bare-UUID URL is contingent on whatever visibility tier the host happens to support today.
 
+## Hosts vs. registries — the optional commitment layer (sketch)
+
+The descriptive pattern above is what hosts that serve capsules well *do*. A subset of hosts may want to declare more — to commit, publicly, to keeping their behavior stable over time so producers can encode contract-protected URLs into artifacts (QR codes, links in printed materials, references in long-lived documents). The term for that committed subset is **registry**.
+
+> **A host serves capsules. A registry is a host that commits to keeping serving them in a particular way.**
+
+This is opt-in. A host can choose to be just a host (no commitments beyond "the bytes go out the way they came in") or to declare itself a registry (signing onto a public compliance contract). The format takes no position; producers and recipients gain a signal they can act on.
+
+### Capsule Registry Compliance v1 — sketched contract
+
+Rough proposed shape. A host that publicly declares **Capsule Registry Compliance v1** commits to the following for the lifetime of v1 (with breaking changes requiring v2 + a migration period):
+
+1. **Stable URL pattern.** Capsules reachable at a URL of the form `<host>/<prefix>/<uuid-or-slug>`. Pattern doesn't change without a major version bump + redirect period of at least N months.
+2. **`/raw` byte-identical endpoint** at the URL + `/raw`. `Content-Type: text/html; charset=utf-8`. Never mutates the body.
+3. **Visibility commitment is part of the contract.** Whatever visibility tier a capsule is uploaded under is honored for the capsule's lifetime, OR migration is announced with at least N months of notice. Removing a visibility tier (or downgrading existing capsules out of it) without grandfathering is a breaking change requiring a major version bump.
+4. **Host-attestation headers** (`x-capsule-content-hash`, `x-capsule-uuid`) on every `/raw` response.
+5. **Honest deprecation.** Breaking changes get a public changelog entry + a deprecation window + a clear migration path. Surprise policy changes that break in-the-wild artifacts are explicitly out of compliance.
+6. **Capsule immutability.** The registry serves the bytes it received. No mutation, no silent re-rendering, no injection.
+
+### Where this lives operationally
+
+A host that declares compliance v1 should publish a machine-readable statement at a well-known location — proposed shape:
+
+```
+GET https://<host>/.well-known/capsule-compliance.json
+
+{
+  "compliance_version": "1.0",
+  "url_pattern": "/c/<uuid>",
+  "raw_suffix": "/raw",
+  "visibility_tiers_supported": ["private", "org", "shared-by-token"],
+  "attestation_headers": ["x-capsule-content-hash", "x-capsule-uuid"],
+  "deprecation_policy_url": "https://<host>/docs/deprecation-policy",
+  "declared_at": "YYYY-MM-DD"
+}
+```
+
+Producers can fetch this once at build time (or at producer-script setup) to confirm the target host has declared compliance. Recipients with tooling that cares about registry guarantees can fetch this to verify what they can rely on.
+
+### Compliance v0 vs. v1
+
+The descriptive pattern earlier in this document (the convergent host-contract observed between MinDev and htmlbin) is roughly **compliance v0** — what hosts have converged on *without formal commitment*. The compliance contract sketched here is what **v1** would look like if a host wanted to make those conventions binding.
+
+Difference:
+- **v0** (descriptive): hosts behave this way today. May change tomorrow without notice.
+- **v1** (declared, normative for the declarant): host commits to behaving this way until they declare v2 + a migration period. Producers can encode contract-protected URLs against v1 hosts.
+
+### Producer-side implication
+
+A producer encoding URLs into capsule QR codes can safely do so when the destination host has **declared registry compliance v1 or higher**. For non-compliant hosts (or unknown hosts), the URN form remains the safe default — see [F23 in RESEARCH.md](../RESEARCH.md) for the empirical case that motivated this distinction. The Core spec's Rule 4 QR guidance defaults to URN precisely because the format itself has no signal about host commitments; producers with signal (because their target host has declared compliance) can make different defaults for their build scripts.
+
+The Mintel/MinDev case in F23 happened because MinDev was operating as a v0 host (descriptive pattern only, no formal commitment). Encoding bare-UUID URLs against a v0 host is a calibrated *guess*. Encoding them against a v1 host is a calibrated *bet against a published contract* — qualitatively different.
+
+### Status
+
+This compliance contract is **sketched, not yet adopted by any host as of 2026-05-21**. No host has published a `/.well-known/capsule-compliance.json` declaration at the time of writing. If MinDev, htmlbin, or another host wants to be the first declarant, the path is:
+
+1. Implement the well-known endpoint per the proposed shape above (or propose changes to the shape if v1 needs refinement before any host signs on).
+2. Publicly commit to the six contract points for the lifetime of v1.
+3. Update this section to record the adoption, with a link to the host's compliance declaration.
+
+Until at least one host signs on, the contract is *descriptive of a possible future*, not a current standard. See [F24 in RESEARCH.md](../RESEARCH.md) for the broader synthesis of why the host-vs-registry distinction matters.
+
 ## Anti-patterns — what hosts of capsules should not do
 
 | Anti-pattern | Why it breaks the pattern |
