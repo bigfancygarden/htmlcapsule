@@ -22,7 +22,8 @@ import sys
 from pathlib import Path
 
 SPEC_VERSION_KNOWN = {"0.1.0", "0.1.1", "0.1.2", "0.1.3", "0.1.4", "0.1.5", "0.1.6", "0.1.7", "0.1.8", "0.2.0", "0.3.0"}
-MAX_FILE_SIZE = 15 * 1024 * 1024
+MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB hard cap (raised from 15 MB in spec v0.3.3)
+SOFT_WARN_SIZE = 15 * 1024 * 1024  # 15 MB — soft warning for email-attachment compatibility
 HASH_PLACEHOLDER = "sha256:pending"
 
 REQUIRED_SECTIONS = {
@@ -581,8 +582,15 @@ def check_field_formats(manifest: dict, result: ValidationResult):
 
 def check_file_size(file_size: int, result: ValidationResult):
     under_limit = file_size <= MAX_FILE_SIZE
-    result.add("File size under 15 MB hard cap", under_limit,
-               f"{file_size:,} bytes" if under_limit else f"{file_size:,} bytes exceeds {MAX_FILE_SIZE:,}")
+    if not under_limit:
+        note = f"{file_size:,} bytes exceeds {MAX_FILE_SIZE:,} (20 MB hard cap)"
+    elif file_size > SOFT_WARN_SIZE:
+        # Above 15 MB but under the 20 MB hard cap — passes, but flag email-attachment risk
+        note = (f"{file_size:,} bytes (above {SOFT_WARN_SIZE:,} soft warn — "
+                f"may not fit common email attachment limits; hosted distribution recommended)")
+    else:
+        note = f"{file_size:,} bytes"
+    result.add("File size under 20 MB hard cap", under_limit, note)
 
 
 # Bug pattern (recurring class observed in LLM-produced capsules through v0.1.1):

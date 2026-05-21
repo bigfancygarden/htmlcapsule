@@ -363,7 +363,19 @@ A layer carries **either** `features_geojson` (vector) **or** `raster_data_uri` 
 - **Source-data provenance:** `project.snapshot_id` ties the map to the specific frozen snapshot from the source database (e.g., a mintel `project_version` ID). This answers "which version of the claims data was this map built from?"
 - **Capsule-to-capsule lineage:** When a map is reissued (new claims staked, new drill results), the new capsule records the previous capsule's UUID in `manifest.parents[]` per Core rule. This answers "what's the history of this deliverable?" without consumers needing access to the source database.
 
-**File size considerations:** Inline GeoJSON for a busy region (hundreds of claim polygons + geology + infrastructure) can exceed 1 MB quickly. Build scripts should apply polygon simplification (Douglas-Peucker or similar) to context layers that don't need survey-grade precision. The 15 MB hard cap gives runway, but leaner capsules open faster and travel better.
+**File size considerations:** Inline GeoJSON for a busy region (hundreds of claim polygons + geology + infrastructure) can exceed 1 MB quickly — and a real production exploration_map capsule has been observed at 13.7 MB (47 polygons + chrome, F20). Build scripts should apply polygon simplification (Douglas-Peucker or similar) to context layers that don't need survey-grade precision. The 20 MB hard cap (raised from 15 MB in spec v0.3.3) gives runway; the 15 MB soft warning flags email-attachment compatibility. Leaner capsules open faster and travel better.
+
+**Rule 12 carve-out — required image fallback for the geometry container.** Maps render polygon and raster geometry into a runtime-drawn SVG. Per spec §2.3 "Carve-out for visualization geometry" (v0.3.3), the compiler MUST embed a static raster rendering of the map as a `data:image/png;base64,…` fallback inside the same container, hidden when the interactive SVG hydrates. The build pipeline already produces this raster (it's the same image that would ship as the PDF/JPEG deliverable in non-capsule workflows), so the cost is one extra `<img>` element and a one-line visibility toggle in the runtime. Without the fallback, the map renders as a blank container in iOS Files preview, email-client previews, search indexers, and text-only LLMs ingesting the HTML — environments where Rule 12's intent matters most. Recommended structure:
+
+```html
+<figure class="map-container" aria-label="{project name} — {map type}">
+  <img id="map-static" src="data:image/png;base64,..." alt="Static rendering of the map" class="map-fallback">
+  <svg id="map-svg" viewBox="0 0 1000 1294" hidden></svg>
+</figure>
+<noscript><style>#map-svg { display: none !important; }</style></noscript>
+```
+
+The compiler should generate the PNG at the same projection and bounding box as the SVG so the two renderings are visually equivalent; the SVG's interactive features (hover, layer toggle, click) are pure progressive enhancement on top.
 
 **Required capabilities:** `about`, `print_to_pdf`, `copy_as_json`, `download_json`. Optionally: `map.export_geojson` (if the capsule exposes a GeoJSON download of its vector layers). Do not declare interactive capabilities like `map.zoom_to_layer` or `map.pan` unless the runtime genuinely implements them — most print-targeted maps are static SVG renders where zoom and pan would be dishonest.
 

@@ -177,7 +177,7 @@ A working prompt fragment:
 > - If the conversation had caveats, nuance, uncertainty, dead ends, or open questions, include those — they're often the most useful preservation later.
 > - If the conversation involved an embedded image, screenshot, chart, or other media that's central to the meaning, embed it as a `data:` URI (the CSP already permits `img-src data:`).
 >
-> The format has a 15 MB hard cap (in the full spec) and typical capsules sit well under 1 MB. There is no penalty for thoroughness and a real cost to omission.
+> The format has a 20 MB hard cap (in the full spec, raised from 15 MB in v0.3.3, with a 15 MB soft warning for email-attachment compatibility) and typical capsules sit well under 1 MB. There is no penalty for thoroughness and a real cost to omission.
 >
 > **The one limit:** be thorough about content that *actually existed in the conversation*. Do not invent. The goal is faithful preservation, not embellishment.
 >

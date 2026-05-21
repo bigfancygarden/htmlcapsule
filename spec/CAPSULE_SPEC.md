@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.2 (Core currently v0.3.0)
+# Capsule Spec v0.3.3 (Core currently v0.3.0)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -181,7 +181,33 @@ The `<main id="capsule-root">` body **must already contain the full readable art
 </script>
 ```
 
-**Validator check:** the reference validator's `check_progressive_enhancement` heuristic counts visible-text bytes inside `<main id="capsule-root">` after stripping `<script>` and `<style>` blocks and HTML tags. Below ~200 chars, the capsule is flagged WARN as likely JS-rendered.
+**Carve-out for visualization geometry** (added v0.3.3, resolves E.5). Some capsules render data-bearing content as runtime-drawn geometry into a pre-declared container — vector maps with hundreds of polygons, scatter plots, network diagrams, anything where the natural shape of the artifact is "draw N geometric primitives into an SVG/Canvas." Pre-rendering the geometry as static markup is often impractical (file size, structural complexity, the wrong shape for the data). Rule 12 still applies: the file must remain legible when scripts don't run. The accepted pattern is to embed a **static image rendering as the JS-disabled fallback** inside the same container, hidden by runtime when the interactive version is ready.
+
+```html
+<!-- The data-bearing container with both renderings -->
+<figure class="map-container" aria-label="Project location — 47 claims, BC">
+  <img id="map-static" src="data:image/png;base64,iVBORw0KGgo..."
+       alt="Static rendering of the project map" class="map-fallback">
+  <svg id="map-svg" viewBox="0 0 1000 1294" hidden></svg>
+</figure>
+<!-- Belt-and-suspenders: hide the SVG entirely when JS is disabled -->
+<noscript><style>#map-svg { display: none !important; }</style></noscript>
+<script id="capsule-runtime">
+  // After hydrating SVG with polygons:
+  document.getElementById('map-static').hidden = true;
+  document.getElementById('map-svg').hidden = false;
+</script>
+```
+
+What this gives:
+
+- **JS-restricted environment** (iOS Files / QuickLook preview, email-client preview, search indexers, text-only LLMs ingesting the HTML): renders the embedded image. The data-bearing content IS in the HTML — as a raster — preserving Rule 12's intent.
+- **JS-enabled browser**: shows the interactive SVG with hover, zoom, selection, layer toggles. The image is suppressed.
+- **The capsule carries both representations.** The image is a true rendering of the data (typically produced by the same pipeline that produced the geometry), not a placeholder. The pre-declared container shape is part of the static HTML.
+
+The image-fallback escape hatch is the principled resolution to the long-standing tension between "render content in the HTML" and "geometry naturally wants runtime drawing." It applies to vector maps, charts, diagrams, and any visualization where static markup would be the wrong shape. Domain schemas for visualization-heavy capsule types should recommend this pattern explicitly — see `domain.exploration_map` in `DOMAIN_CAPSULES.md` for the canonical use.
+
+**Validator check:** the reference validator's `check_progressive_enhancement` heuristic counts visible-text bytes inside `<main id="capsule-root">` after stripping `<script>` and `<style>` blocks and HTML tags. Below ~200 chars, the capsule is flagged WARN as likely JS-rendered. The carve-out above does not change the validator's measurement — visualization capsules pass because the surrounding chrome (titles, legends, attributions, info panels) provides enough static content; the image fallback adds robustness in non-validator environments where Rule 12's intent matters most.
 
 **Producer-side implications:**
 
@@ -607,14 +633,17 @@ The actual base64 data is stored in a corresponding script block:
 
 ### 6.3 Size Limits
 
-| Threshold   | Behavior                                                   |
-|-------------|------------------------------------------------------------|
-| < 2 MB      | Normal. No warnings.                                        |
-| 2 - 5 MB    | Compiler warns. Author confirms.                            |
-| 5 - 15 MB   | Compiler requires explicit `--allow-large` flag.            |
-| > 15 MB     | Blocked. Asset must be excluded or downsampled.             |
+| Threshold   | Behavior                                                                                   |
+|-------------|--------------------------------------------------------------------------------------------|
+| < 2 MB      | Normal. No warnings.                                                                        |
+| 2 - 5 MB    | Compiler warns. Author confirms.                                                            |
+| 5 - 15 MB   | Compiler requires explicit `--allow-large` flag.                                            |
+| 15 - 20 MB  | Allowed, but flagged: may not fit common email attachment limits (Gmail = 25 MB envelope).  |
+| > 20 MB     | Blocked. Asset must be excluded or downsampled, or use a non-email distribution channel.   |
 
-These limits apply to the **total file size** of the compiled capsule. In practice, structured JSON data is compact — size limits are almost always hit by embedded binary assets (images, audio, fonts), not by the data snapshot itself. A capsule with 100,000 JSON records and no images will likely stay well under 2 MB.
+The 15 MB threshold is a **soft warning for distribution-channel compatibility**, not a structural limit. The 20 MB hard cap (raised from 15 MB in v0.3.3) sits below email-attachment ceilings while leaving headroom for production capsules that travel via hosted channels (per the MinDev pattern in Appendix B), AirDrop, Slack, or cloud-storage links. Empirically: browser parse + JSON parse scales linearly at ~5 MB/sec (F5), so a 20 MB capsule loads in well under 250ms on desktop. Distribution, not browser strain, has always been the binding constraint.
+
+These limits apply to the **total file size** of the compiled capsule. In practice, structured JSON data is compact — size limits are almost always hit by embedded binary assets (images, audio, fonts) or, for visualization capsules, by raw GeoJSON / coordinate data in the data block. A capsule with 100,000 records of textual JSON and no images will typically stay well under 2 MB.
 
 ### 6.4 Fallback Behavior
 
@@ -1008,7 +1037,7 @@ A capsule is **valid** if:
 8. Every declared capability has a corresponding implementation in the runtime
 9. No external resource references exist in HTML, CSS, or JavaScript
 10. The data section parses as valid JSON
-11. The file size is under 15 MB
+11. The file size is under 20 MB (with a soft warning between 15 MB and 20 MB for email-attachment compatibility — see §6.3)
 
 A validator tool should produce a report listing pass/fail for each check.
 
@@ -1055,7 +1084,7 @@ These are not deferred features. They are places where the project would stop be
 - **Live collaboration** between multiple recipients on the same capsule. A capsule is one author → one or more recipients with async response. Real-time multi-user state is a SaaS problem, not a file problem.
 - **Bidirectional editing** of the source database from inside the capsule. The capsule is a snapshot. If recipients can edit the source, you're building a remote client, not a portable artifact.
 - **Automatic background sync** with the source database. Capsules are offline-first. Network sync turns them into thin clients.
-- **Unbounded media sizes**. Past 15 MB, the single-file model breaks down for normal distribution. Use a different format.
+- **Unbounded media sizes**. Past the 20 MB hard cap (raised from 15 MB in v0.3.3), the single-file model breaks down for normal distribution. Use a different format.
 - **General-purpose web archival replay**. That's WACZ's job. Capsules are authored deliverables, not faithful captures of arbitrary websites.
 - **Plugin runtime** for arbitrary third-party scripts inside capsules. This breaks the security model — the runtime can only run vetted, inlined code.
 - **Streaming or live-updating data**. Capsules are snapshots. Live data requires a different architecture.
@@ -1334,18 +1363,20 @@ Option 1 is simpler and the canonical-input-string discipline is the load-bearin
 
 The schema's hash pattern already accepts `sha384` and `sha512`, but the validator and reference compiler only emit/verify `sha256`. v0.4 candidate: either implement `sha384`/`sha512` end-to-end, or restrict the pattern to `sha256` until there's a concrete use case for the longer digests. Lean: restrict the pattern. Premature flexibility is more confusing than additive.
 
-### E.5 Rule 12 vs. legacy compiler templates
+### E.5 Rule 12 vs. legacy compiler templates — **RESOLVED in v0.3.3**
 
-**Question.** Rule 12 (added in Core v0.1.3) says readable content should be pre-rendered in the HTML, not produced by runtime JavaScript. The reference compiler templates `templates/decision_board` and `templates/news_capsule` predate this rule and still render primary content via the runtime. The validator's heuristic passes them because it counts *surrounding* static UI text (headings, buttons, labels) and finds enough, but the *primary* content (the decision options, the article body) is still injected by JS at load time.
+**Original question.** Rule 12 (added in Core v0.1.3) says readable content should be pre-rendered in the HTML, not produced by runtime JavaScript. The reference compiler templates `templates/decision_board` and `templates/news_capsule` predate this rule and still render primary content via the runtime. Mintel-style build scripts (Mintel's `build_exploration_map_capsule`) pre-render chrome but draw map geometry via runtime SVG. Both pass the validator's surrounding-text heuristic but fail Rule 12's spirit in environments that don't run JS.
 
-**Two paths.**
+**Resolution.** Rather than tightening Rule 12 enforcement (which would break visualization geometry that can't reasonably be pre-rendered as static markup) or accepting Rule 12 violations as legacy, v0.3.3 names the carve-out explicitly: **§2.3 "Carve-out for visualization geometry"** documents the image-fallback pattern. Data-bearing content rendered into a pre-declared named container is allowed IF a static image rendering is embedded as the JS-disabled fallback inside the same container. The image preserves Rule 12's intent (content IS in the HTML — as a raster) while accommodating geometry that wants runtime drawing.
 
-1. **Tighten Rule 12 enforcement.** Validator measures specifically the *data-bearing* content (records rendered into the DOM), not all visible text. Current compiler templates would fail; we'd fix them by emitting pre-rendered record markup at build time (the data block stays the source of truth; the rendered DOM mirrors it). This is the principled move and matches what LLM-produced capsules in the corpus already do.
-2. **Accept the templates as legacy.** They're v0.1 artifacts; the format has moved past them. The compiler-kind generator-of-record going forward is Mintel-style build scripts (which DO pre-render). Stop using the reference templates as the canonical compile-path examples and document them as historical.
+This resolves both the legacy-template case (those templates could either retire or adopt the image-fallback pattern) and the visualization-geometry case (the principled answer is "carve-out documented, not a Rule 12 exception"). The empirical pressure for this resolution came from F20 — the first publicly-fetchable Mintel production capsule.
 
-**Lean: option 1** for principled consistency, but acknowledge it requires real template rework. If option 2 wins, we should update Phase 2 status to reflect that the "compiler" is a *category* of producer (any deterministic build script) rather than these specific templates.
+**Shipped in v0.3.3:**
+- §2.3 carve-out language with WRONG/RIGHT example
+- `domain.exploration_map` schema: image-fallback as recommended convention
+- No Core rule change; no validator change (the existing heuristic still counts surrounding text)
 
-**Open before shipping.** (a) Decide whether to tighten or to retire. (b) If tighten: design the validator check that measures data-bearing content specifically. (c) If retire: write the deprecation note in `templates/README` and ensure the corpus index still works without them as references.
+**Follow-up still open:** the legacy templates (`templates/decision_board`, `templates/news_capsule`) have not been updated. They remain v0.1-era artifacts and should either adopt the image-fallback pattern or be documented as historical. Not urgent — they aren't blocking new producers.
 
 ### E.6 Author signing + transparency log (Sigstore-shaped)
 

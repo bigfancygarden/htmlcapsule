@@ -135,7 +135,9 @@ No LLM over-declared. This is meaningful because it shows the LLMs treated the c
 - Sub-millisecond interaction (tab switches, filter changes) on the 13 MB capsule.
 - `JSON.stringify` of the full data block: 15ms (well under perceptible-jank threshold).
 
-**Conclusion:** The 15 MB hard cap in the spec is correctly positioned. Browser performance isn't the bottleneck. **Distribution is** — Gmail's 25 MB attachment limit is the real ceiling, hit before browser strain.
+**Conclusion (at time of finding):** The 15 MB hard cap in the spec is correctly positioned. Browser performance isn't the bottleneck. **Distribution is** — Gmail's 25 MB attachment limit is the real ceiling, hit before browser strain.
+
+**Updated by F20 (2026-05-21):** A real production Mintel capsule arrived at 13.7 MB and several real production channels (MinDev hosting, AirDrop, Slack, cloud-storage links) have no equivalent of the email-attachment constraint. Spec v0.3.3 raised the hard cap to 20 MB and added a 15 MB soft warning specifically for email-attachment compatibility — the 15 MB number was always proxying for email-friendliness, not browser strain. The conclusion above still holds; the cap moved up because the distribution-channel landscape has more than one shape.
 
 ### F6: An LLM built half the feedback loop unprompted
 
@@ -546,6 +548,61 @@ Result: the Claude Design file now validates 25/25 clean. All existing examples 
 
 The lesson generalizes: **when an independent producer finds a cleaner convention than the reference examples, the right response is to recognize the cleaner convention in the tooling, not to demand the producer rename.** This is the difference between a spec that ossifies around its reference implementation and one that improves through external pressure. The patch isn't adding spec surface area — it's improving the validator's ability to recognize compliance. The spec discipline principle ("the corpus drives the spec; spec inflation runs the other direction") cuts toward the patch, not against it.
 
+### F20: First publicly-fetchable Mintel production capsule validates spec at scale
+
+**Date:** 2026-05-21
+
+Mintel now publicly serves a real production exploration_map capsule via MinDev. First time the project has end-to-end validated a production third-party capsule (not LLM-corpus, not sanitized example) against the reference validator.
+
+**The capsule:**
+- URL: `https://mindev.ca/api/c/9357a933-7ce1-4061-9488-2ca61d81bded/raw`
+- Type: `domain.exploration_map`
+- Title: "Copper Dome — BC · Project location"
+- Size: **13.73 MB** (99.43% data block — GeoJSON for 47 claim polygons)
+- Generator: `mintel/build_exploration_map_capsule v0.1.0`, `kind: "compiler"`
+- Integrity: `sha256:60282cbd…`, `hash_scope: "data+manifest"` — content hash verifies clean
+- Validator result: **26/26 PASS, 0 warn, 0 fail**
+
+**Five empirical findings:**
+
+**1. The 15 MB cap was always a proxy for email-friendliness, not browser strain.** F5 set the cap at 15 MB from Gmail's 25 MB attachment limit. Mintel's distribution channel is MinDev hosting (no equivalent of the email cap), and the empirical desktop parse ceiling is well above 15 MB. v0.3.3 splits the constraints: hard cap raised to 20 MB, with a 15 MB soft warning explicitly for email-attachment compatibility. The number that was always proxying for one thing now names two things.
+
+**2. Rule 12 vs. visualization geometry — image-fallback resolves E.5.** The Copper Dome capsule pre-renders chrome (title, legend, north arrow, info panel, attribution, QR code; 1,373 chars visible) but draws polygons into an empty `<svg id="map-svg">` container at runtime. The validator's surrounding-text heuristic passes; strictly the data-bearing content depends on JS — iOS Files preview would show an empty white box where the map should be.
+
+The principled resolution (now documented in spec §2.3 "Carve-out for visualization geometry"): visualization geometry rendered into a pre-declared named container is allowed IF a static image rendering is embedded as the JS-disabled fallback in the same container. Preserves Rule 12's intent (content IS in the HTML — as a raster) while accommodating geometry that can't reasonably be pre-rendered as static markup. The image rendering is typically free — it's the same raster the pipeline already produces for non-capsule deliverables (PDF/JPEG exports). One extra `<img>` element and a one-line visibility toggle in runtime.
+
+E.5 was parked specifically waiting for this case. v0.3.3 ships the resolution.
+
+**3. MinDev's hosting model is now empirically demonstrated.** The MinDev response includes:
+
+```
+x-capsule-content-hash: sha256:60282cbdad54708f...
+x-capsule-uuid: 9357a933-7ce1-4061-9488-2ca61d81bded
+```
+
+The host attests independently via response headers without modifying the file body — "wrap, don't modify" per Appendix B distribution guidance and E.7 (MinDev pattern). First publicly-fetchable example of this hosting model. Caveat: header attestation is honest about what the host computed; it's not a signature from the original author (that's still E.6 signing territory).
+
+**4. The compiler-kind integrity path works end-to-end on real production data.** Full integrity block present (`content_hash` + `hash_scope: "data+manifest"`), `generator.kind: "compiler"`, and the validator confirms the hash verifies on a 13.7 MB file. Mintel re-derived the integrity-hash recipe from spec prose alone — bit-identical hashes (noted earlier in F18; this finding adds concrete production-capsule evidence at scale).
+
+**5. Custom namespace use is exemplary.** The `x-mintel` block (`project_id`, `project_version_id`, `project_version_number`) uses the `x-` extension prefix correctly per E.3's recommendation. Consumers that don't know about Mintel ignore the block; domain-specific consumers can dereference back to the source.
+
+**Spec moves landed in v0.3.3:**
+
+- §2.3 Rendering Model — image-fallback carve-out for visualization geometry, with worked example
+- §6.3 Size Limits — hard cap 15 MB → 20 MB; 15-20 MB soft-warn tier added for email-friendliness
+- §14 Validation — list item 11 updated to reflect the new cap and the soft warn
+- §16.2 Out of scope — boundary list mention updated
+- `domain.exploration_map` — image-fallback as required convention; file-size note updated
+- E.5 — resolved (moved from parked-items to shipped)
+- `compiler/validate.py` — `MAX_FILE_SIZE` 15 → 20 MB; file-size check now emits a soft-warn note when the file is between 15 MB and 20 MB
+
+**Open questions remaining:**
+
+- The header-attestation pattern (`x-capsule-content-hash`, `x-capsule-uuid`) should be formalized as a "host contract" if/when there are multiple MinDev-shaped hosts. Currently lives as MinDev convention; would benefit from doc-only canonicalization in a future patch.
+- Mobile browser parsing above 15 MB is undertested. F5's linear-scaling result was desktop-only. Worth an empirical test on iOS Safari and Android Chrome at the new 15-20 MB range before the cap is taken as fully load-tested.
+- The "compact variant" idea (a view-only capsule without the full GeoJSON, just the rendered image + minimal manifest) is interesting for view-only sharing — could shrink a 13.7 MB capsule to ~50 KB. Lacks current empirical pressure but worth flagging.
+- Legacy compiler templates (`templates/decision_board`, `templates/news_capsule`) still don't pre-render data-bearing content. Now that the image-fallback carve-out exists, they could either adopt the pattern or be documented as historical. Not urgent.
+
 ## Open questions
 
 In rough priority:
@@ -773,9 +830,9 @@ As of v0.3.2 (2026-05-20):
 
 - **CSP:** one feature-driven loosening landed (`media-src data:` for embedded audio). All other CSP directives unchanged since the format's launch.
 
-- **Empirical size scaling tested** through 13 MB (synthetic).
+- **Empirical size scaling tested** through 13 MB (synthetic, F5) and 13.7 MB (real production Mintel capsule, F20). Hard cap raised from 15 MB to 20 MB in spec v0.3.3 with a 15 MB soft warning for email-attachment compatibility.
 
-- **Parked v0.4+ directions** (Appendix E of full spec): remove deprecated fields, compiler-kind UUIDv5 carve-out, reconsider `ai_usage_guidance` in domain capsules, hash-algorithm flexibility, Rule 12 vs. legacy compiler templates, author signing + transparency log, password-protected encrypted capsules, validator refinement for non-resource-loading `<link>` tags. None built; each waits for empirical pressure.
+- **Parked v0.4+ directions** (Appendix E of full spec): remove deprecated fields, compiler-kind UUIDv5 carve-out, reconsider `ai_usage_guidance` in domain capsules, hash-algorithm flexibility, author signing + transparency log, password-protected encrypted capsules, validator refinement for non-resource-loading `<link>` tags. None built; each waits for empirical pressure. **E.5 (Rule 12 vs. legacy templates) was resolved in v0.3.3** via the image-fallback carve-out documented in §2.3 — see F20.
 
 **Biggest unbuilt piece:** author-side import tooling (registry + `import.py`). The producer side has matured significantly and the consumer side hasn't moved. The lightweight version (SQLite archive + pair viewer per F7) remains a candidate next concrete build.
 
