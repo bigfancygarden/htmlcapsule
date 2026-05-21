@@ -59,19 +59,34 @@ Hosting-layer articulation. Launched [htmlbin.dev](https://htmlbin.dev/) in May 
 
 **Relevance to capsules:** htmlbin is the public hosting layer that htmlcapsule didn't build. The two are complementary slots in a stack: Capsule supplies the format discipline (manifest, integrity, no network, pre-rendered content); htmlbin supplies the publishing flow. A valid capsule can be hosted on htmlbin, on MinDev, or self-hosted — the format is hosting-agnostic. The independent convergence of htmlbin's hosting pattern with MinDev's (short URL + `/raw` endpoint + minimal chrome + honest authorship attribution) is documented as F21 — empirical evidence that the host-contract sketch in Appendix E.7 is a real shape independent producers reach on their own.
 
-### The three-position picture
+### Jeremy Howard — llms.txt
 
-Same substrate, multiple positions across the lifecycle and layers:
+Site-discoverability articulation. Published the [`/llms.txt` proposal](https://llmstxt.org/) in September 2024 (fast.ai / Answer.AI). A markdown file at the root of a website that gives a curated, LLM-friendly index of the site's content — H1 with site name, optional blockquote summary, H2-delimited "file lists" with markdown links and notes. Modeled explicitly after `robots.txt` and `sitemap.xml` as a web convention. Now [adopted as a Chrome Lighthouse audit](https://developer.chrome.com/docs/lighthouse/agentic-browsing/llms-txt) — the strongest signal that this is becoming part of the web stack. Implementing sites include FastHTML, Answer.AI projects, nbdev-based docs.
 
-| Voice | Frame | Slot |
+**Position:** LLM context windows can't hold full websites; sites need a standard way to expose a concise, curated, machine-readable summary at inference time. Markdown over XML because both humans and LLMs read markdown well.
+
+**Memorable lines worth knowing:**
+- The proposal frames the gap as: "Large language models increasingly rely on website information, but face a critical limitation: context windows are too small to handle most websites in their entirety."
+
+**Relevance to capsules:** Different layer, same family of concerns. `llms.txt` is *site-level discoverability* (one file per domain, markdown, an LLM-friendly table of contents). Capsule is *artifact-level preservation* (one file per work product, HTML with embedded everything). They compose naturally — a site that hosts capsules should have an `/llms.txt` that indexes them; the htmlcapsule project now has [its own](https://htmlcapsule.org/llms.txt) following exactly this pattern. The right read is *not* "llms.txt vs. Capsule" but "llms.txt for discovery, Capsule for the actual durable artifacts the discovery points to." Worth flagging: `llms.txt` is the most "adjacent discipline" entry in this section — it's not strictly about HTML, but it's in the same family of LLM-readable content discipline as everything else here.
+
+### The position picture
+
+Multiple positions across the lifecycle and across the layer stack:
+
+| Voice | Layer | Frame |
 |---|---|---|
-| Thariq | Substrate is now | "HTML is the new markdown" — the editing medium |
-| Karpathy | Substrate over time | Four-step progression naming HTML as the current best step (and markdown as the working layer beneath it) |
-| Blake | Control surface | "Format is part of the runtime contract" — agent UI / live render |
-| This project | Sealed handoff (format) | The portable archive — manifest, sources, sealed convention |
-| Utkarsh / htmlbin | Hosting layer | Agent-first HTML hosting — short URL, raw endpoint, format-agnostic |
+| Thariq | Format — substrate now | "HTML is the new markdown" — the editing medium |
+| Karpathy | Format — substrate over time | Four-step progression naming HTML as the current best step (markdown as the working layer beneath it) |
+| Blake | Format — control surface | "Format is part of the runtime contract" — agent UI / live render |
+| Steph Ango | Format — preservation principle | "File over app" — work should live in files you control |
+| This project | Format — sealed handoff | The portable archive — manifest, sources, sealed convention, twelve rules |
+| Utkarsh / htmlbin | Hosting | Agent-first HTML hosting — short URL, /raw endpoint, format-agnostic |
+| Jeremy Howard / llms.txt | Site discovery | Markdown index at /llms.txt — what's on this site, optimized for LLM consumption |
 
-The positions are healthy differentiation, not competition. Each sits on the same substrate. The format-layer positions (Thariq, Karpathy, Blake, this project) all stack with the hosting-layer positions (htmlbin, MinDev) — different slots, naturally composable. The project's specific contribution is the contract that makes HTML files travel after the live work is done; hosting layers serve those files; substrate evangelists name why the substrate matters at all.
+The positions are healthy differentiation, not competition. Format-layer voices (Thariq, Karpathy, Blake, Steph, this project) describe how the artifact itself should be shaped. Hosting-layer voices (htmlbin, MinDev) describe how artifacts get served. Discovery-layer voices (llms.txt) describe how artifacts get found. The three layers compose: a discovery layer (llms.txt) can point at hosted artifacts; a hosting layer (htmlbin, MinDev) serves format-disciplined artifacts (capsules); the format makes the artifact durable, inspectable, and provenance-bearing on its own.
+
+The project's specific contribution is the format-discipline slot: the contract that makes HTML files travel after the live work is done. The other voices in this picture cover the slots Capsule deliberately doesn't fill.
 
 ## Direct neighbors
 

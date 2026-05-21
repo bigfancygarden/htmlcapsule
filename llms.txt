@@ -1,0 +1,37 @@
+# htmlcapsule
+
+> An open specification, reference implementation, and example corpus for HTML Capsule — a profile of HTML for sealed, self-contained, provenance-bearing snapshots of work worth preserving.
+
+HTML Capsule addresses the gap between AI tools producing HTML artifacts by default (LLM canvases, agent outputs, design-tool exports like Claude Design) and the lack of discipline around making those artifacts durable, inspectable, and shareable beyond the platform that produced them. The format is one sealed `.html` file with five required inline blocks (manifest, data, style, root, runtime), twelve normative rules, and no network dependencies. Producers include LLMs given the Core spec, deterministic compilers, and humans — multi-producer interop is the load-bearing claim.
+
+This project is research-led with an empirical-pressure-driven spec discipline: rules emerge from observed production failures across multiple producer kinds, recorded as numbered F-findings in the research log. The format itself is hosting-agnostic; hosts (MinDev, htmlbin.dev) compose with the format optionally.
+
+## Spec
+
+- [Core spec — twelve rules, one page, designed to paste into an LLM prompt](https://htmlcapsule.org/CAPSULE_CORE.md): The minimal contract producers actually use. Versioned at v0.3.0; tagged in git as `core-v0.3.0`.
+- [Full spec — implementer-grade definition](https://htmlcapsule.org/spec/CAPSULE_SPEC.md): Format definition, validation rules, security model, content-hash recipe (normative test vector), response protocol, parked v0.4+ candidates. Currently v0.3.4.
+- [Domain capsule schemas](https://htmlcapsule.org/spec/DOMAIN_CAPSULES.md): Per-domain extensions of the base contract — `domain.implementation_notes`, `domain.design_system`, `domain.exploration_map` (with image-fallback carve-out for visualization geometry, the F20-driven addition).
+- [Hosting pattern — descriptive convention](https://htmlcapsule.org/spec/HOSTING.md): The shape independent hosts (MinDev, htmlbin.dev) converged on without coordinating. Documents the host-contract pattern for future host implementers; descriptive, not normative.
+- [Glossary](https://htmlcapsule.org/GLOSSARY.md): Vocabulary including Capsule, Domain Capsule, Project Capsule, Interactive archive, Sealed handoff format, Universal AI reader, the four-layer table, phase status.
+
+## Research
+
+- [Research log — F1-F21 findings, methodology, recurring failures](https://htmlcapsule.org/RESEARCH.md): The running narrative of what's been investigated, what's been observed, what's been spec-changed in response. Includes the empirical-pressure-driven spec evolution principle and the corpus across multiple producer kinds.
+- [Precedents and related work](https://htmlcapsule.org/PRECEDENTS.md): Positioning against RO-Crate, BagIt, WARC, EPUB, C2PA, TiddlyWiki, MHTML, Hugging Face Model Cards, plus current voices in the same family (Thariq, Karpathy, Blake, Steph Ango, Utkarsh Sengar, Jeremy Howard).
+- [Maintainer's journey essay (first-person)](https://htmlcapsule.org/notes.html): The personal account of why this project exists — from copy-pasting between AI tools and getting frustrated with share-links to landing on HTML as the substrate and writing the discipline down.
+
+## Voices (archived primary sources)
+
+- [Andrej Karpathy on HTML as the current best default for LLM output (2026-05-11)](https://htmlcapsule.org/voices/karpathy-html-progression-2026.html): Verbatim archive of his X post laying out the four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) plus the "structure your response as HTML" tip.
+- [Utkarsh Sengar — htmlbin.dev — agent-first HTML hosting (2026-05-17)](https://htmlcapsule.org/voices/utsengar-htmlbin-2026.html): Independent public hosting layer that converged with MinDev's hosting pattern. The hosting-layer voice in the conversation Capsule is part of.
+
+## Implementation
+
+- [Reference Python compiler + validator](https://github.com/bigfancygarden/htmlcapsule/tree/main/compiler): Stdlib-only (no pip deps). Compiler renders JSON+templates to capsules; validator runs 26 conformance checks. Validator supports both local files and URLs (URL mode cross-checks any `x-capsule-*` host-attestation headers).
+- [Compiler templates](https://github.com/bigfancygarden/htmlcapsule/tree/main/templates): `decision_board`, `news_capsule`.
+- [Worked examples](https://github.com/bigfancygarden/htmlcapsule/tree/main/spec/examples): Canonical example capsules — `briefing_example.html`, `implementation_notes_example.html`. Each validates at 26/26 strict against the reference validator.
+- [GitHub repository](https://github.com/bigfancygarden/htmlcapsule): Source of truth. Apache 2.0 licensed.
+
+## How to cite
+
+- [CITATION.cff at repo root](https://github.com/bigfancygarden/htmlcapsule/blob/main/CITATION.cff): GitHub auto-detects and renders a "Cite this repository" button. Citation tools (Zotero, citation managers) consume the format directly. Zenodo DOI integration parked for the next milestone release.
