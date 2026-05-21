@@ -70,6 +70,19 @@ Site-discoverability articulation. Published the [`/llms.txt` proposal](https://
 
 **Relevance to capsules:** Different layer, same family of concerns. `llms.txt` is *site-level discoverability* (one file per domain, markdown, an LLM-friendly table of contents). Capsule is *artifact-level preservation* (one file per work product, HTML with embedded everything). They compose naturally — a site that hosts capsules should have an `/llms.txt` that indexes them; the htmlcapsule project now has [its own](https://htmlcapsule.org/llms.txt) following exactly this pattern. The right read is *not* "llms.txt vs. Capsule" but "llms.txt for discovery, Capsule for the actual durable artifacts the discovery points to." Worth flagging: `llms.txt` is the most "adjacent discipline" entry in this section — it's not strictly about HTML, but it's in the same family of LLM-readable content discipline as everything else here.
 
+### Raunaq Bhutoria — html-docs.com
+
+Live-collaboration-layer articulation. Built [html-docs.com](https://html-docs.com/) in May 2026 (timing inferred from [his tweet](https://x.com/raunaqbn) describing it as core to his agentic workflow at Meta). Tagline: *"Create beautiful docs and webpages with your Agents."* / *"Instant web publishing for you and your agents."* Provides three agent-integration paths: a Claude Code skill file (`~/.claude/skills/html-docs/`), an MCP server (`@html-docs/cli --mcp`), and an HTTP API with `x-api-key`. Six tools exposed to agents: `publish`, `publish_file`, `update`, `read`, `comment`, `list_comments`. Real-time multiplayer editing, live comments, version history. Endorsements on the homepage from Ryan Carson, Thariq Shihipar, and Andrej Karpathy.
+
+**Position:** The agent ↔ human review loop as a workflow primitive. *"Review a doc → Comment → Agent reads comments and revises."* No format discipline imposed on the HTML — accepts any agent-emitted output; the discipline is on the workflow shape (publish → comment → revise → iterate), not the artifact shape.
+
+**Memorable lines worth knowing:**
+- "Create beautiful docs and webpages with your Agents."
+- "Instant web publishing for you and your agents."
+- The author's own framing of his Meta workflow: *"1. Create: Claude code generates review-ready HTML docs using html-docs.com/agents. 2. Review: I review the HTML doc with my army of agents and human collaborators. 3. Iterate: Send it back to claude-code to address. If good go build!"*
+
+**Relevance to capsules:** Different lifecycle layer. html-docs.com is the *live editing / collaboration layer* (between agent generation and sealed handoff). Capsule is the *seal step* after the live work stops being actively edited. Same lifecycle distinction the project has already named in the working-vs-publishing-format synthesis (after the Karpathy and Steph Ango discussions). html-docs.com is a concrete example of the canvas-step Capsule explicitly doesn't compete with; Capsule is what a live doc would become when it graduates from active iteration to sealed preservation. SaaS (not open spec), closed-source — which is reasonable for the lifecycle slot it fills (real-time collaboration is hard to do over a sealed file by design).
+
 ### The position picture
 
 Multiple positions across the lifecycle and across the layer stack:
@@ -81,12 +94,20 @@ Multiple positions across the lifecycle and across the layer stack:
 | Blake | Format — control surface | "Format is part of the runtime contract" — agent UI / live render |
 | Steph Ango | Format — preservation principle | "File over app" — work should live in files you control |
 | This project | Format — sealed handoff | The portable archive — manifest, sources, sealed convention, twelve rules |
+| Raunaq / html-docs.com | Live editing | Agent ↔ human review loop — create with Claude Code, review with comments, iterate |
 | Utkarsh / htmlbin | Hosting | Agent-first HTML hosting — short URL, /raw endpoint, format-agnostic |
 | Jeremy Howard / llms.txt | Site discovery | Markdown index at /llms.txt — what's on this site, optimized for LLM consumption |
 
-The positions are healthy differentiation, not competition. Format-layer voices (Thariq, Karpathy, Blake, Steph, this project) describe how the artifact itself should be shaped. Hosting-layer voices (htmlbin, MinDev) describe how artifacts get served. Discovery-layer voices (llms.txt) describe how artifacts get found. The three layers compose: a discovery layer (llms.txt) can point at hosted artifacts; a hosting layer (htmlbin, MinDev) serves format-disciplined artifacts (capsules); the format makes the artifact durable, inspectable, and provenance-bearing on its own.
+The positions are healthy differentiation, not competition. The picture spans the lifecycle of agent-generated HTML:
 
-The project's specific contribution is the format-discipline slot: the contract that makes HTML files travel after the live work is done. The other voices in this picture cover the slots Capsule deliberately doesn't fill.
+- **Live editing** (html-docs.com, plus the canvas/artifact UIs of LLM products themselves) — where work is iterated with the agent in the loop, before anything is sealed
+- **Format / seal step** (Capsule, plus the substrate observers who frame why the format matters: Thariq, Karpathy, Blake, Steph) — what the artifact becomes when it graduates from live editing to sealed preservation
+- **Hosting** (htmlbin, MinDev) — how artifacts get served once sealed
+- **Discovery** (llms.txt) — how artifacts get found by LLMs and humans
+
+The layers compose naturally: a discovery layer (llms.txt) points at hosted artifacts; a hosting layer (htmlbin, MinDev) serves format-disciplined artifacts (capsules); the format-layer (Capsule) makes the artifact durable on its own; an artifact that becomes a capsule may have been iterated for hours in a live-editing layer (html-docs.com) before being sealed.
+
+The project's specific contribution is the format/seal-step slot: the contract that makes HTML files travel after the live work is done. The other voices in this picture cover the slots Capsule deliberately doesn't fill.
 
 ## Direct neighbors
 
