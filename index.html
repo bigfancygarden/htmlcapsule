@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.6.0",
+  "capsule_version": "11.7.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.6.0 expands Answer A and Answer B in variant 00b (the Question section) so they actually do landscape analysis instead of just naming the answers. Both answers now have a small body paragraph after the quote: Answer A names what Thariq's view-locally-or-S3 approach offers (minimum-viable, portable substrate) and what it leaves open (no default shareable URL — which is exactly the friction Answer B addresses). Answer B now leads with htmlbin.dev's actual positioning verbatim ('API for agents to share HTML. Agent-native, end to end. Drop HTML — get a public URL.') and then explains both what htmlbin does (purpose-built hosting layer for agent-emitted HTML, OAuth device-code first-publish auth, /p/{slug} short URLs, byte-identical /raw endpoint, minimal host chrome, no format discipline imposed) and why it matters for the project's landscape analysis (htmlbin + MinDev independently converged on the same hosting pattern — empirical evidence that the format/host split is real, not theoretical: hosting is one job, format discipline is another, they compose). Cross-refs to RESEARCH.md F21 (the convergence finding), spec/HOSTING.md (the descriptive pattern), and the full voices/utsengar-htmlbin-2026.html archive. Answer-tag labels gained slot suffixes ('viewing strategy' / 'hosting layer') to signal what kind of slot each occupies in the landscape. Same colors, same structure as v11.5 — just deeper analysis. UUID 7d1a1ac8 preserved through v11.6.",
+  "description": "Landing page in hero framing exploration mode. v11.7.0 differentiates section backgrounds and turns answer blocks into cards. Variant 00b (Question) background changes white → var(--paper-soft) (#eceef2 cool grey), so the opening trio now reads as three distinct visual zones: white observation → grey question → cream case study. The Answer A and Answer B blocks inside 00b are now white cards lifted out of the grey backdrop (8px border-radius, 1px var(--rule) border, 28px/32px padding). Answer typography bumped: heading 19px → 22px, body 15.5px → 16.5px, blockquote-inside-card 15.5px → 17px. Blockquotes inside answer cards drop their own background tint (which would have read as nested-box-inside-card); just the accent left-border now marks them as quotes. Mobile breakpoint adds tighter card padding (22/20) and type-size reductions so cards don't blow out at 375px. v11.6.0 expanded both answers to actually do landscape analysis (htmlbin positioning verbatim + the format/host split observation backed by the htmlbin+MinDev convergence — F21 in RESEARCH.md). v11.5.0 introduced the Observation → Question → Case study restructure. UUID 7d1a1ac8 preserved through v11.7.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -964,27 +964,29 @@
     font-weight: 600;
   }
 
-  /* Question section (variant 00b) — same white as observation; two answers */
-  .cb-frame[data-num="00b"] { background: #ffffff; }
-  .cb-frame.is-question .cb-frame-inner { max-width: 780px; }
+  /* Question section (variant 00b) — distinct grey background; answers as white cards */
+  .cb-frame[data-num="00b"] { background: var(--paper-soft); }
+  .cb-frame.is-question .cb-frame-inner { max-width: 820px; }
   .cb-answer {
+    background: #ffffff;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 28px 32px;
     margin: 22px 0 0;
-    padding-top: 22px;
-    border-top: 1px solid var(--rule-soft);
   }
-  .cb-answer:first-of-type { border-top: none; padding-top: 0; }
+  .cb-answer:first-of-type { margin-top: 26px; }
   .cb-answer-tag {
     font: 500 11px/1 var(--mono);
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--accent);
-    margin: 0 0 8px;
+    margin: 0 0 10px;
   }
   .cb-answer-h {
-    font: 600 19px/1.3 var(--sans);
-    letter-spacing: -0.012em;
+    font: 600 22px/1.25 var(--sans);
+    letter-spacing: -0.015em;
     color: var(--ink);
-    margin: 0 0 12px;
+    margin: 0 0 16px;
     max-width: 30ch;
   }
   .cb-answer-h a {
@@ -996,10 +998,10 @@
     border-bottom-color: var(--accent);
   }
   .cb-answer-body {
-    font: 400 15.5px/1.55 var(--sans);
+    font: 400 16.5px/1.6 var(--sans);
     color: var(--ink-soft);
     margin: 0 0 14px;
-    max-width: 60ch;
+    max-width: none;
   }
   .cb-answer-body:last-child { margin-bottom: 0; }
   .cb-answer-body code {
@@ -1007,6 +1009,24 @@
     padding: 1px 5px;
     border-radius: 3px;
     font-size: 0.86em;
+  }
+  /* Within an answer card, the inner blockquote loses its own bg so it doesn't
+     read as a nested box; the accent left-border alone marks it as a quote. */
+  .cb-answer .cb-quote {
+    background: transparent;
+    border-radius: 0;
+    padding: 4px 0 4px 18px;
+    margin: 0 0 18px;
+  }
+  .cb-answer .cb-quote blockquote {
+    font: 400 17px/1.55 var(--sans);
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+  .cb-answer .cb-quote figcaption {
+    font: 500 12.5px/1 var(--mono);
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
   }
 
   /* Case-study preamble (variant 00c) — maintainer narrative on soft cream */
@@ -1096,6 +1116,10 @@
     .cb-frame-title { margin-bottom: 18px; }
     .cb-frame-stats { gap: 20px; }
     .cb-stat-mini .v { font-size: 20px; }
+    .cb-answer { padding: 22px 20px; border-radius: 6px; }
+    .cb-answer-h { font-size: 19px; }
+    .cb-answer-body { font-size: 15.5px; }
+    .cb-answer .cb-quote blockquote { font-size: 15.5px; }
   }
 
   /* Responsive */
@@ -1410,7 +1434,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.6.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.7.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
