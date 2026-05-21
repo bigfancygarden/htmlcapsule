@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.9.0",
+  "capsule_version": "10.10.0",
   "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v10.9.0 adds Raunaq Bhutoria / html-docs.com as the seventh entry in the Adjacent voices panel — a live collaboration layer for agent-generated HTML built by a Meta engineer (Raunaq @raunaqbn). Agents publish via Claude Code skill / MCP / HTTP API; humans review with comments; agents read the comments and revise. This adds the live-editing layer to the position picture (which previously covered format, hosting, discovery but not the canvas-step that happens before sealing). Capsule remains the seal step downstream of tools like html-docs. v10.8.0 added Jeremy Howard / llms.txt (discovery layer). v10.7.0 added Utkarsh / htmlbin (hosting layer). v10.6.0 added the durable-unit bridge + 'Tools, not apps.' aside. v10.5.0 introduced /voices/ archive. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.9).",
+  "description": "Landing page for the Capsule project. v10.10.0 restructures the Adjacent voices panel into two layer-organized sub-sections — 'Format & substrate observers' (Thariq, Karpathy, Blake, Simon) and 'Layers Capsule composes with' (Raunaq / html-docs.com live editing; Utkarsh / htmlbin hosting; Jeremy Howard / llms.txt discovery). Each layer-tagged voice in the second group carries a small accent-colored layer label inline with the name. Makes the project's lifecycle-decomposition stance visible in the panel itself, matching the way PRECEDENTS.md now organizes the position table. Steph Ango's file-over-app aside still stands separately above the panel as the structural argument. v10.9.0 added Raunaq / html-docs.com (live editing layer). v10.8.0 added Jeremy Howard / llms.txt (discovery layer). v10.7.0 added Utkarsh / htmlbin (hosting layer). Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.10).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -511,6 +511,22 @@
     margin: 0;
     max-width: 64ch;
   }
+  .cb-voices-group {
+    margin-top: 28px;
+  }
+  .cb-voices-group:first-of-type {
+    margin-top: 0;
+  }
+  .cb-voices-group-h {
+    font: 500 12px/1.2 var(--sans);
+    letter-spacing: 0.005em;
+    color: var(--ink);
+    font-weight: 600;
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+    text-transform: none;
+  }
   .cb-voices-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -522,6 +538,15 @@
     letter-spacing: -0.01em;
     color: var(--ink);
     margin: 0 0 4px;
+  }
+  .cb-voice-layer {
+    display: inline-block;
+    margin-left: 8px;
+    font: 500 10.5px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    vertical-align: 2px;
   }
   .cb-voice-claim {
     font: 500 14.5px/1.35 var(--sans);
@@ -817,52 +842,62 @@
     <aside class="cb-voices" aria-labelledby="voices-h">
       <div class="cb-voices-head">
         <h3 id="voices-h">Adjacent voices</h3>
-        <p>People thinking about this from related angles. Not endorsements either way — just the conversation Capsule is part of.</p>
+        <p>People thinking about this from related angles, organized by the lifecycle layer each occupies. Not endorsements either way — just the conversation Capsule is part of.</p>
       </div>
-      <div class="cb-voices-list">
-        <article class="cb-voice">
-          <h4 class="cb-voice-name">Thariq Shihipar</h4>
-          <p class="cb-voice-claim">"HTML is the new markdown."</p>
-          <p class="cb-voice-blurb">Public observation that LLMs and agents are emitting single self-contained HTML files as their default artifact format. The substrate observation Capsule builds on.</p>
-          <p class="cb-voice-link"><a href="https://x.com/trq212" rel="noopener">Read on X</a></p>
-        </article>
-        <article class="cb-voice">
-          <h4 class="cb-voice-name">Andrej Karpathy</h4>
-          <p class="cb-voice-claim">LLM wiki + "structure your response as HTML."</p>
-          <p class="cb-voice-blurb">Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip lays out a four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) and names HTML as the current best default. Capsule sits between — HTML as the substrate, with a contract on the file.</p>
-          <p class="cb-voice-link"><a href="voices/karpathy-html-progression-2026.html">Read the archive</a></p>
-        </article>
-        <article class="cb-voice">
-          <h4 class="cb-voice-name">Blake Crosley</h4>
-          <p class="cb-voice-claim">"HTML is the format AI agents want."</p>
-          <p class="cb-voice-blurb">Argues HTML preserves spatial structure, interaction, and density in a way markdown linearizes away. The control-surface framing: HTML as what agents should produce, live and inspectable.</p>
-          <p class="cb-voice-link"><a href="https://blakecrosley.com/blog/html-is-the-format-agents-want" rel="noopener">Read the post</a></p>
-        </article>
-        <article class="cb-voice">
-          <h4 class="cb-voice-name">Simon Willison</h4>
-          <p class="cb-voice-claim">Tracking the HTML-from-LLM wave.</p>
-          <p class="cb-voice-blurb">Has written extensively about LLM-emitted HTML on his blog and amplified Thariq's substrate observation. Also runs Datasette — a different shape of single-file substrate (SQLite with a built-in HTML viewer).</p>
-          <p class="cb-voice-link"><a href="https://simonwillison.net/" rel="noopener">Read the blog</a></p>
-        </article>
-        <article class="cb-voice">
-          <h4 class="cb-voice-name">Utkarsh Sengar — htmlbin.dev</h4>
-          <p class="cb-voice-claim">"Agent-first HTML hosting."</p>
-          <p class="cb-voice-blurb">Launched htmlbin.dev in May 2026 (about the same week as htmlcapsule) — public hosting infrastructure for agent-emitted HTML, short URLs, /raw endpoint. Independent convergence with the MinDev hosting pattern — complementary layer to Capsule's format discipline (the format is hosting-agnostic).</p>
-          <p class="cb-voice-link"><a href="https://htmlbin.dev/" rel="noopener">Read on htmlbin.dev</a></p>
-        </article>
-        <article class="cb-voice">
-          <h4 class="cb-voice-name">Jeremy Howard — llms.txt</h4>
-          <p class="cb-voice-claim">A markdown file at /llms.txt to make sites LLM-readable.</p>
-          <p class="cb-voice-blurb">Proposed September 2024 (fast.ai / Answer.AI). Modeled after robots.txt + sitemap.xml. Now adopted as a Chrome Lighthouse audit. Site-level discoverability convention; complementary layer to Capsule's artifact-level discipline — a site that hosts capsules should have an /llms.txt that indexes them. htmlcapsule.org has one.</p>
-          <p class="cb-voice-link"><a href="https://llmstxt.org/" rel="noopener">Read the proposal</a></p>
-        </article>
-        <article class="cb-voice">
-          <h4 class="cb-voice-name">Raunaq Bhutoria — html-docs.com</h4>
-          <p class="cb-voice-claim">"Create beautiful docs and webpages with your Agents."</p>
-          <p class="cb-voice-blurb">Engineer at Meta. Built html-docs.com as a live collaboration layer for agent-generated HTML — agents publish via Claude Code skill / MCP / HTTP API, humans review with comments, agents read the comments and revise. The agent ↔ human review loop named as a workflow primitive. Endorsed by Karpathy + Thariq on the homepage. Complementary lifecycle layer to Capsule's seal step — html-docs is where the work is iterated; Capsule is what it becomes when sealed.</p>
-          <p class="cb-voice-link"><a href="https://html-docs.com/" rel="noopener">Read on html-docs.com</a></p>
-        </article>
-      </div>
+
+      <section class="cb-voices-group" aria-labelledby="voices-group-format">
+        <h4 id="voices-group-format" class="cb-voices-group-h">Format &amp; substrate observers</h4>
+        <div class="cb-voices-list">
+          <article class="cb-voice">
+            <h5 class="cb-voice-name">Thariq Shihipar</h5>
+            <p class="cb-voice-claim">"HTML is the new markdown."</p>
+            <p class="cb-voice-blurb">Public observation that LLMs and agents are emitting single self-contained HTML files as their default artifact format. The substrate observation Capsule builds on.</p>
+            <p class="cb-voice-link"><a href="https://x.com/trq212" rel="noopener">Read on X</a></p>
+          </article>
+          <article class="cb-voice">
+            <h5 class="cb-voice-name">Andrej Karpathy</h5>
+            <p class="cb-voice-claim">LLM wiki + "structure your response as HTML."</p>
+            <p class="cb-voice-blurb">Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip lays out a four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) and names HTML as the current best default. Capsule sits between — HTML as the substrate, with a contract on the file.</p>
+            <p class="cb-voice-link"><a href="voices/karpathy-html-progression-2026.html">Read the archive</a></p>
+          </article>
+          <article class="cb-voice">
+            <h5 class="cb-voice-name">Blake Crosley</h5>
+            <p class="cb-voice-claim">"HTML is the format AI agents want."</p>
+            <p class="cb-voice-blurb">Argues HTML preserves spatial structure, interaction, and density in a way markdown linearizes away. The control-surface framing: HTML as what agents should produce, live and inspectable.</p>
+            <p class="cb-voice-link"><a href="https://blakecrosley.com/blog/html-is-the-format-agents-want" rel="noopener">Read the post</a></p>
+          </article>
+          <article class="cb-voice">
+            <h5 class="cb-voice-name">Simon Willison</h5>
+            <p class="cb-voice-claim">Tracking the HTML-from-LLM wave.</p>
+            <p class="cb-voice-blurb">Has written extensively about LLM-emitted HTML on his blog and amplified Thariq's substrate observation. Also runs Datasette — a different shape of single-file substrate (SQLite with a built-in HTML viewer).</p>
+            <p class="cb-voice-link"><a href="https://simonwillison.net/" rel="noopener">Read the blog</a></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cb-voices-group" aria-labelledby="voices-group-layers">
+        <h4 id="voices-group-layers" class="cb-voices-group-h">Layers Capsule composes with</h4>
+        <div class="cb-voices-list">
+          <article class="cb-voice">
+            <h5 class="cb-voice-name">Raunaq Bhutoria — html-docs.com <span class="cb-voice-layer">live editing</span></h5>
+            <p class="cb-voice-claim">"Create beautiful docs and webpages with your Agents."</p>
+            <p class="cb-voice-blurb">Engineer at Meta. Built html-docs.com as a live collaboration layer for agent-generated HTML — agents publish via Claude Code skill / MCP / HTTP API, humans review with comments, agents read the comments and revise. The agent ↔ human review loop named as a workflow primitive. Endorsed by Karpathy + Thariq on the homepage. Complementary lifecycle layer to Capsule's seal step — html-docs is where the work is iterated; Capsule is what it becomes when sealed.</p>
+            <p class="cb-voice-link"><a href="https://html-docs.com/" rel="noopener">Read on html-docs.com</a></p>
+          </article>
+          <article class="cb-voice">
+            <h5 class="cb-voice-name">Utkarsh Sengar — htmlbin.dev <span class="cb-voice-layer">hosting</span></h5>
+            <p class="cb-voice-claim">"Agent-first HTML hosting."</p>
+            <p class="cb-voice-blurb">Launched htmlbin.dev in May 2026 (about the same week as htmlcapsule) — public hosting infrastructure for agent-emitted HTML, short URLs, /raw endpoint. Independent convergence with the MinDev hosting pattern — complementary layer to Capsule's format discipline (the format is hosting-agnostic).</p>
+            <p class="cb-voice-link"><a href="voices/utsengar-htmlbin-2026.html">Read the archive</a></p>
+          </article>
+          <article class="cb-voice">
+            <h5 class="cb-voice-name">Jeremy Howard — llms.txt <span class="cb-voice-layer">site discovery</span></h5>
+            <p class="cb-voice-claim">A markdown file at /llms.txt to make sites LLM-readable.</p>
+            <p class="cb-voice-blurb">Proposed September 2024 (fast.ai / Answer.AI). Modeled after robots.txt + sitemap.xml. Now adopted as a Chrome Lighthouse audit. Site-level discoverability convention; complementary layer to Capsule's artifact-level discipline — a site that hosts capsules should have an /llms.txt that indexes them. htmlcapsule.org has one.</p>
+            <p class="cb-voice-link"><a href="https://llmstxt.org/" rel="noopener">Read the proposal</a></p>
+          </article>
+        </div>
+      </section>
     </aside>
 
     <aside class="cb-journey" aria-labelledby="journey-cta">
@@ -920,7 +955,7 @@
     </div>
     <div class="cb-colophon">
       <span>Set in system sans · Apache 2.0</span>
-      <span>capsule:landing/v10.9.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v10.10.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
