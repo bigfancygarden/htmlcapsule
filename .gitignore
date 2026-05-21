@@ -28,6 +28,7 @@ Desktop.ini
 .project
 .settings/
 *.sublime-project
+.claude/
 *.sublime-workspace
 
 # -----------------------------------------------------------------------------

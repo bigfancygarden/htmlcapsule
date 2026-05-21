@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.13.0",
+  "capsule_version": "10.14.0",
   "title": "HTML Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the HTML Capsule project. v10.13.0 attributes maintainership in the footer colophon (Luke Schuss · lukeschuss.com) and fixes a stale static colophon version string from v10.11.0 to match the current capsule_version (Rule 12 pre-rendered content discipline). v10.12.0 tightened the top bar: brand reads 'HTML Capsule' (the full name) instead of 'Capsule', a small version badge sits next to it pointing at the current full-spec version (v0.3.4), the inline 'open spec' subtitle is dropped, and the multi-link primary nav is replaced with a single GitHub icon-link. Page <title> and meta description updated to match. Mobile breakpoints tightened so the new top bar reflows cleanly at narrow widths. v10.11.0 added Matan (matanrak) / Workplane as the second voice in the live-editing layer alongside Raunaq / html-docs.com — F22 convergence documented in RESEARCH.md. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.13).",
+  "description": "Landing page for the HTML Capsule project. v10.14.0 replaces the placeholder 'C' glyph in the top bar with the project's new brand mark: an inline-SVG horizontal capsule outline containing the </> code symbol — a literal rendering of 'HTML in a capsule'. The mark is monochrome, picks up currentColor, and scales via viewBox (36×20 on desktop, 30×17 on phones). v10.13.0 attributed maintainership in the footer colophon (Luke Schuss · lukeschuss.com) and fixed a stale static colophon version string. v10.12.0 tightened the top bar to 'HTML Capsule' brand + version badge + GitHub-icon-only nav. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.14).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -259,13 +259,11 @@
     color: var(--ink-soft);
     min-width: 0;
   }
-  .cb-mark .glyph {
-    display: inline-grid; place-items: center;
-    width: 26px; height: 26px;
-    background: var(--ink); color: var(--paper);
-    border-radius: 2px;
-    font: 700 13px/1 var(--sans);
-    letter-spacing: 0.02em;
+  .cb-mark .cb-glyph {
+    display: block;
+    width: 36px;
+    height: auto;
+    color: var(--ink);
     flex-shrink: 0;
   }
   .cb-mark strong { color: var(--ink); font-weight: 600; }
@@ -785,7 +783,7 @@
     #capsule-root { padding: 24px clamp(16px, 4vw, 24px) 48px; }
     .cb-topbar { padding-bottom: 18px; gap: 10px; }
     .cb-mark { font-size: 13.5px; gap: 8px; }
-    .cb-mark .glyph { width: 24px; height: 24px; font-size: 12px; }
+    .cb-mark .cb-glyph { width: 30px; }
     .cb-badge { font-size: 11px; padding: 3px 7px; }
     .cb-icon-link { padding: 6px 8px; }
     .cb-icon-label { display: none; }
@@ -818,7 +816,14 @@
 
   <header class="cb-topbar" role="banner">
     <div class="cb-mark">
-      <span class="glyph" aria-hidden="true">C</span>
+      <svg class="cb-glyph" viewBox="0 0 32 18" width="36" height="20" aria-hidden="true" focusable="false">
+        <rect x="1.4" y="1.4" width="29.2" height="15.2" rx="7.6" ry="7.6" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 11.5 5.6 L 8 9 L 11.5 12.4"/>
+          <path d="M 13.5 13 L 18.5 5"/>
+          <path d="M 20.5 5.6 L 24 9 L 20.5 12.4"/>
+        </g>
+      </svg>
       <strong>HTML Capsule</strong>
       <a class="cb-badge" href="CAPSULE_CORE.md" aria-label="Specification version 0.3.4">v0.3.4</a>
     </div>
@@ -1023,7 +1028,7 @@
     </div>
     <div class="cb-colophon">
       <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-      <span>capsule:landing/v10.13.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v10.14.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
