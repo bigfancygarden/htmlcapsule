@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="A first-person essay on writing down an open spec for sealed HTML artifacts — the journey from copy-pasting between AI tools to treating HTML as the canonical work product, and what it takes to make those files trustworthy.">
+<meta name="color-scheme" content="light">
+<title>What I do with all the HTML I get from AI — Notes · htmlcapsule</title>
+
+<script id="capsule-manifest" type="application/json">
+{
+  "spec_version": "0.3.0",
+  "uuid": "c5f6a890-2b1d-4e3c-9f7a-8b6c5d4e3f2a",
+  "capsule_version": "1.0.0",
+  "title": "What I do with all the HTML I get from AI",
+  "description": "Standalone journey essay sibling to the htmlcapsule landing page (UUID 7d1a1ac8). Content originated in landing v10.0 (the essay-as-landing experiment) and was extracted to its own capsule when the landing reverted to a scan-able format in v10.1. parents[] records the lineage. First-person account of the path from copy-pasting between AI tools through to writing down a contract for HTML artifacts.",
+  "type": "essay",
+  "created_at": "2026-05-20T00:00:00Z",
+  "generator": {
+    "name": "human + Claude",
+    "version": "Opus 4.7 (1M context)",
+    "kind": "hybrid"
+  },
+  "source": {
+    "origin": "project_authorship",
+    "snapshot_type": "essay",
+    "snapshot_id": "snapshot:htmlcapsule_notes_essay_v1_2026_05_20",
+    "spec_received": "v0.3.0 · 2026-05-19",
+    "included_records": 1
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json",
+    "copy_as_markdown",
+    "download_json",
+    "download_capsule",
+    "print_to_pdf"
+  ],
+  "parents": [
+    {
+      "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
+      "title": "Capsule — an approach for working with HTML artifacts"
+    }
+  ],
+  "synthesis": {
+    "kind": "human_authored_with_ai_assistance",
+    "model": "Claude Opus 4.7",
+    "human_reviewed": true
+  }
+}
+</script>
+
+<script id="capsule-data" type="application/json">
+{
+  "title": "What I do with all the HTML I get from AI",
+  "subtitle": "Notes on starting an open spec for sealed HTML artifacts",
+  "byline": "B. F. Garden · 2026-05-20",
+  "essay": [
+    "Just want to give you my journey here with AI tools. I've been using all the chat systems, chatgpt, claude web, gemini web.. and then more recently using more claude code CLI and codex CLI.. and now been using the Claude Harness/App and the Codex Harness/App.. but in any case, for the longest time, I was doing work in each, and then copying and pasting data in/out.. pasting it into other chats, pasting it into Google Docs or notes or obsidian.. trying to reliably get my info \"out\" of the AI systems and into a format that I can either archive or easily share with friends.",
+    "I know there's been the share button for these chats for a long time but something doesn't sit right with it for me. The chats either get lost for me, or I'm not confident or sure what version they're displaying, or if they're displaying the conversation all the way, or only at a certain point, or if they're still updating after the fact. I'm sure I could dig into the documentation on this and get a sense for it, but will it change? Will it ever be intuitive to me? I'm not sure it will. I'm also not sure that it will stay the same once I look into it, and I'm not sure that it's the same between all these systems. I'm also not sure that I can paste these links into other AI's or LLM's and have them evaluate it or work off it or build it. It's a mess.",
+    "Now, also, around the same time, they put out artifacts, and those were quite neat, but again.. didn't really know how to use them or put them into my workflow. When Claude Design came out, though, I knew something was different.. because it could give these beautiful and editable interfaces, and it could be downloaded as html or \"handed off\" to claude code for implementation. That was huge, because up until that point I was getting designs and throwing it into my claude code projects to try and get it to implement into my react-based apps and systems. But throughout here it's been a fight. It's been a fight between making and doing \"work\" inside of one system, and then getting it into a format that AI can natively talk to and work on and iterate on with me.",
+    "Putting things into HTML has been a huge shift for me. Even just with the chat conversations, I was always trying to get the data \"out\" by asking Claude or ChatGPT for a summary in markdown or to make me a PDF version. Or copying and pasting stuff into notes or word or Google Docs.. it never looked good. The only way I could get pixel perfect looking stuff is if I asked to do a react/html render and then use something like playwright to \"print\" to a jpeg or pdf.",
+    "For example, one thing I always do is make maps in QGIS that are jpegs or PDFs. I would constantly be going back and forth between the app and chat agents. I'm sure there is a way that I could have wired something up so that the codex or claude code CLI could have talked to QGIS and made edits, maybe through a database, but this is still so clunky. So I decided to try to create a sort of GIS system inside react (with Postgres on the backend and tools like GDAL) so I could get the exact interface I wanted.. but this started to get clunky too. Furthermore since I was trying to share content with other users.. stuff like maps, and tables, often related.. I was trying to bring a portal that connected up to my working react GIS system so I could share content with my end users (which would have usually been maps or excel tables, with no real provenance or unique identifiers other than file names and \"v1, v2, v3\" type stuff).",
+    "I was also really interested in Claude Design's ability to work with maps. Cartography. Like, it was a way of iterating through things so much faster than I could have previously done it with either illustrator or qgis.. So then it hit me.. why not embrace HTML for this? If Claude Design is using HTML as its substrate, then why don't I setup my work to be more friendly to that?",
+    "So I started doing that. Instead of trying to convert what Claude Design or Claude Code or any chat LLM was giving me into something else, I just kept it as HTML. But raw HTML by itself has its own problems. I still couldn't reliably tell what I was looking at — where it came from, whether it was complete, what version it was, whether the page would even render the same next month. The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.",
+    "So I started writing down what HTML would need to be to be trustworthy as an artifact — the same way a PDF is trustworthy as \"this is what was sent, that's the file.\" First version of the rules was rough. Just: save it as one HTML file, put a small JSON manifest at the top naming what the file is and where it came from, don't reach out to the network so it works the same on disk as on a server, put the content into the HTML body so it still renders when JavaScript isn't running.",
+    "Then I started using it for real work — capsules of QGIS-style maps, capsules of chat conversations I wanted to keep, capsules of decision matrices, capsules of design systems Claude Design gave me — and stuff broke. A photo capsule rendered blank on iPhone because Claude had put the photo inside a <script> block and iOS didn't run inline scripts. A markdown export silently crashed because of a JavaScript newline bug. An LLM lied about where the data came from because the manifest field was too easy to make up.",
+    "Each failure became a numbered rule. Twelve so far, over about five weeks. The most important one is rule 12: render the content into the HTML at build time, don't make JavaScript do it at runtime. Capsules are archives, not apps. The whole point is that the file still works when nothing else does.",
+    "Today the format is a one-page spec (CAPSULE_CORE.md), a small Python compiler and validator with 26 conformance checks, and a working corpus across the kinds of stuff I actually do. The LLMs I use all produce conformant capsules when I paste the one-page spec into a system prompt — Claude, ChatGPT, Gemini, Codex. And it works in compilers I build too: Mintel, the mining-intel app I work on, is the first independent producer that validates clean at 26/26.",
+    "What I want for it: not much. It stays a research project. The spec rule for itself is \"no addition without empirical pressure\" — change it when real producers and recipients push on it, not when something sounds like a good idea on a Tuesday. If you have HTML artifacts piling up — from any AI tool that defaults to \"save as HTML\" — this might be useful. The spec (CAPSULE_CORE.md) is one page. The examples (spec/examples/) show what conformant capsules look like. The research log (RESEARCH.md) is where the iterations live."
+  ],
+  "about_format": {
+    "description": "A Capsule is a single sealed .html file with five inline blocks (manifest, data, style, root, runtime) and twelve rules. No network, no platform. Works in any browser today, or years from now."
+  },
+  "spec": { "core": "v0.3.0", "full": "v0.3.2", "released": "2026-05-19" },
+  "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
+  "not_this": "What this isn't: a new file format (it's HTML), a SaaS, a new editing surface, a competitor to MCP, a knowledge graph, or anti-platform. It's anti-context-loss."
+}
+</script>
+
+<style id="capsule-style">
+  :root {
+    --paper:       #f4f5f7;
+    --paper-soft:  #eceef2;
+    --paper-deep:  #e1e4ea;
+    --ink:         #0e1116;
+    --ink-soft:    #262a33;
+    --ink-mute:    #5a606c;
+    --ink-faint:   #8a909c;
+    --rule:        #d5d9e0;
+    --rule-soft:   #e3e6ec;
+    --accent:      #1652f0;
+    --accent-soft: #3d70f5;
+    --accent-deep: #0c3bb8;
+    --sans:  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", "Menlo", "Cascadia Code", Consolas, "DejaVu Sans Mono", monospace;
+    --measure: 68ch;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { background: var(--paper); }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .skip-link {
+    position: absolute; top: -200px; left: 8px;
+    background: var(--ink); color: var(--paper);
+    padding: 8px 14px; font: 500 13px/1 var(--sans);
+    text-decoration: none; z-index: 100; border-radius: 2px;
+  }
+  .skip-link:focus { top: 8px; }
+
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); }
+  a:hover, a:focus { color: var(--accent-deep); border-bottom-color: var(--accent-deep); outline: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  code, kbd, samp { font-family: var(--mono); font-size: 0.92em; }
+  ::selection { background: color-mix(in oklab, var(--accent) 22%, transparent); color: var(--ink); }
+
+  #capsule-root {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 36px clamp(24px, 5vw, 64px) 64px;
+  }
+
+  /* Top bar */
+  .cb-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cb-mark {
+    display: flex; align-items: center; gap: 12px;
+    font: 500 14px/1 var(--sans);
+    color: var(--ink-soft);
+  }
+  .cb-mark a { color: var(--ink-soft); border-bottom: none; display: flex; align-items: center; gap: 12px; }
+  .cb-mark a:hover, .cb-mark a:focus { color: var(--accent); }
+  .cb-mark .glyph {
+    display: inline-grid; place-items: center;
+    width: 26px; height: 26px;
+    background: var(--ink); color: var(--paper);
+    border-radius: 2px;
+    font: 700 13px/1 var(--sans);
+    letter-spacing: 0.02em;
+  }
+  .cb-mark a:hover .glyph, .cb-mark a:focus .glyph { background: var(--accent); }
+  .cb-mark strong { color: var(--ink); font-weight: 600; }
+  .cb-mark .sep { color: var(--ink-faint); margin: 0 4px; }
+  .cb-mark .crumb { color: var(--ink-mute); }
+
+  .cb-topnav {
+    display: flex; gap: 22px; flex-wrap: wrap;
+    font: 500 13.5px/1 var(--sans);
+  }
+  .cb-topnav a { color: var(--ink-soft); border-bottom: none; padding: 4px 0; }
+  .cb-topnav a:hover, .cb-topnav a:focus { color: var(--accent); }
+
+  /* Essay */
+  .cb-essay { max-width: var(--measure); margin: clamp(48px, 8vw, 96px) auto 0; }
+  .cb-essay-head {
+    margin: 0 0 clamp(36px, 5vw, 56px);
+    padding-bottom: clamp(24px, 3vw, 32px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .cb-essay-eyebrow {
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 18px;
+  }
+  .cb-essay-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(32px, 4.8vw, 50px);
+    line-height: 1.1;
+    letter-spacing: -0.028em;
+    color: var(--ink);
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .cb-essay-subtitle {
+    font: 400 18px/1.4 var(--sans);
+    color: var(--ink-mute);
+    margin: 0 0 24px;
+    max-width: 50ch;
+    text-wrap: pretty;
+  }
+  .cb-essay-byline {
+    font: 500 12.5px/1 var(--mono);
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+    margin: 0;
+  }
+  .cb-essay-body p {
+    font: 400 17.5px/1.65 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 1.4em;
+    text-wrap: pretty;
+  }
+  .cb-essay-body p:last-child { margin-bottom: 0; }
+  .cb-essay-body a {
+    color: var(--accent);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+  .cb-essay-body a:hover, .cb-essay-body a:focus {
+    color: var(--accent-deep);
+    border-bottom-color: var(--accent-deep);
+  }
+  .cb-essay-body code {
+    background: var(--paper-soft);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.88em;
+    color: var(--ink);
+  }
+
+  /* About format */
+  .cb-about-format {
+    max-width: var(--measure);
+    margin: clamp(64px, 9vw, 96px) auto 0;
+    padding: 28px 32px;
+    background: var(--paper-soft);
+    border-radius: 4px;
+  }
+  .cb-about-format h2 {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 16px;
+    font-weight: 500;
+  }
+  .cb-about-format p {
+    font: 400 15.5px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  .cb-about-format .stats {
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    margin: 0 0 16px;
+  }
+  .cb-about-format .stats span { margin-right: 14px; }
+  .cb-about-format .stats em { color: var(--accent); font-style: normal; font-weight: 700; margin-right: 4px; }
+  .cb-about-format .links { font: 400 14.5px/1.6 var(--sans); margin: 0; }
+  .cb-about-format .links a { margin-right: 14px; }
+
+  /* About / exports */
+  .cb-about {
+    max-width: var(--measure);
+    margin: clamp(56px, 8vw, 80px) auto 0;
+    background: var(--paper-soft);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cb-about > summary {
+    list-style: none; cursor: pointer;
+    padding: 20px 28px;
+    font: 500 13px/1 var(--mono);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink); user-select: none;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cb-about > summary::-webkit-details-marker { display: none; }
+  .cb-about > summary::after {
+    content: ""; flex: 1; height: 1px; background: var(--rule); margin: 0 0 0 8px;
+  }
+  .cb-about > summary::before {
+    content: "+"; display: inline-grid; place-items: center;
+    width: 22px; height: 22px;
+    border: 1px solid var(--rule); border-radius: 50%;
+    font: 500 14px/1 var(--sans); color: var(--ink-mute);
+    background: var(--paper);
+  }
+  .cb-about[open] > summary::before { content: "−"; }
+  .cb-about-body { padding: 4px 28px 28px; }
+  .cb-about-body p {
+    font: 400 15px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 22px; max-width: 60ch;
+  }
+  .cb-export {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .cb-export button {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    font: 500 12.5px/1 var(--sans);
+    padding: 10px 16px;
+    cursor: pointer; border-radius: 999px;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .cb-export button:hover, .cb-export button:focus {
+    border-color: var(--accent); color: var(--accent); outline: none;
+  }
+  .cb-about h4 {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-mute); margin: 0 0 8px;
+  }
+  .cb-about pre {
+    margin: 0; background: var(--paper);
+    border: 1px solid var(--rule); border-radius: 4px;
+    padding: 16px 18px;
+    font: 400 12.5px/1.6 var(--mono); color: var(--ink-soft);
+    max-height: 360px; overflow: auto;
+  }
+
+  /* Footer */
+  .cb-foot {
+    max-width: var(--measure);
+    margin: clamp(56px, 8vw, 80px) auto 0;
+    padding-top: 36px;
+    border-top: 1px solid var(--rule);
+  }
+  .cb-foot-isnt {
+    font: 400 14px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 24px; max-width: 56ch;
+  }
+  .cb-foot-isnt strong { color: var(--ink); font-weight: 500; }
+  .cb-colophon {
+    padding-top: 16px;
+    border-top: 1px solid var(--rule-soft);
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.06em; color: var(--ink-mute);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+
+  /* Toast */
+  .cb-toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: var(--ink); color: var(--paper);
+    padding: 11px 18px;
+    font: 500 13px/1 var(--sans);
+    border-radius: 999px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .18s, transform .18s;
+    z-index: 200;
+    box-shadow: 0 12px 36px -14px rgba(28,26,22,0.4);
+  }
+  .cb-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .cb-toast { transition: opacity 0.001s; } }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    #capsule-root { padding: 24px 18px 48px; }
+    .cb-essay { margin-top: clamp(32px, 6vw, 56px); }
+    .cb-essay-body p { font-size: 16.5px; }
+    .cb-about-format { padding: 24px; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 16px; }
+    .cb-essay-body p { font-size: 16px; line-height: 1.6; }
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; color: black; font-size: 11pt; }
+    .cb-topbar, .cb-export, .cb-toast, .skip-link { display: none !important; }
+    a { color: black; border-bottom: none; }
+    .cb-essay { max-width: 100%; margin-top: 0; }
+    .cb-about-format, .cb-about { background: white; border: 1px solid #ccc; }
+    .cb-essay-body p { color: black; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#capsule-root">Skip to content</a>
+
+<main id="capsule-root">
+
+  <header class="cb-topbar" role="banner">
+    <div class="cb-mark">
+      <a href="index.html" aria-label="Back to Capsule landing">
+        <span class="glyph" aria-hidden="true">C</span>
+        <span><strong>Capsule</strong><span class="sep">·</span><span class="crumb">notes</span></span>
+      </a>
+    </div>
+    <nav class="cb-topnav" aria-label="Primary">
+      <a href="index.html">Landing</a>
+      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="RESEARCH.md">Research log</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </nav>
+  </header>
+
+  <article class="cb-essay">
+    <header class="cb-essay-head">
+      <p class="cb-essay-eyebrow">Notes · 2026-05-20</p>
+      <h1 class="cb-essay-title">What I do with all the HTML I get from AI</h1>
+      <p class="cb-essay-subtitle">Notes on starting an open spec for sealed HTML artifacts.</p>
+      <p class="cb-essay-byline">B. F. Garden · htmlcapsule.org</p>
+    </header>
+
+    <div class="cb-essay-body">
+      <p>Just want to give you my journey here with AI tools. I've been using all the chat systems, chatgpt, claude web, gemini web.. and then more recently using more claude code CLI and codex CLI.. and now been using the Claude Harness/App and the Codex Harness/App.. but in any case, for the longest time, I was doing work in each, and then copying and pasting data in/out.. pasting it into other chats, pasting it into Google Docs or notes or obsidian.. trying to reliably get my info "out" of the AI systems and into a format that I can either archive or easily share with friends.</p>
+
+      <p>I know there's been the share button for these chats for a long time but something doesn't sit right with it for me. The chats either get lost for me, or I'm not confident or sure what version they're displaying, or if they're displaying the conversation all the way, or only at a certain point, or if they're still updating after the fact. I'm sure I could dig into the documentation on this and get a sense for it, but will it change? Will it ever be intuitive to me? I'm not sure it will. I'm also not sure that it will stay the same once I look into it, and I'm not sure that it's the same between all these systems. I'm also not sure that I can paste these links into other AI's or LLM's and have them evaluate it or work off it or build it. It's a mess.</p>
+
+      <p>Now, also, around the same time, they put out artifacts, and those were quite neat, but again.. didn't really know how to use them or put them into my workflow. When Claude Design came out, though, I knew something was different.. because it could give these beautiful and editable interfaces, and it could be downloaded as html or "handed off" to claude code for implementation. That was huge, because up until that point I was getting designs and throwing it into my claude code projects to try and get it to implement into my react-based apps and systems. But throughout here it's been a fight. It's been a fight between making and doing "work" inside of one system, and then getting it into a format that AI can natively talk to and work on and iterate on with me.</p>
+
+      <p>Putting things into HTML has been a huge shift for me. Even just with the chat conversations, I was always trying to get the data "out" by asking Claude or ChatGPT for a summary in markdown or to make me a PDF version. Or copying and pasting stuff into notes or word or Google Docs.. it never looked good. The only way I could get pixel perfect looking stuff is if I asked to do a react/html render and then use something like playwright to "print" to a jpeg or pdf.</p>
+
+      <p>For example, one thing I always do is make maps in QGIS that are jpegs or PDFs. I would constantly be going back and forth between the app and chat agents. I'm sure there is a way that I could have wired something up so that the codex or claude code CLI could have talked to QGIS and made edits, maybe through a database, but this is still so clunky. So I decided to try to create a sort of GIS system inside react (with Postgres on the backend and tools like GDAL) so I could get the exact interface I wanted.. but this started to get clunky too. Furthermore since I was trying to share content with other users.. stuff like maps, and tables, often related.. I was trying to bring a portal that connected up to my working react GIS system so I could share content with my end users (which would have usually been maps or excel tables, with no real provenance or unique identifiers other than file names and "v1, v2, v3" type stuff).</p>
+
+      <p>I was also really interested in Claude Design's ability to work with maps. Cartography. Like, it was a way of iterating through things so much faster than I could have previously done it with either illustrator or qgis.. So then it hit me.. why not embrace HTML for this? If Claude Design is using HTML as its substrate, then why don't I setup my work to be more friendly to that?</p>
+
+      <p>So I started doing that. Instead of trying to convert what Claude Design or Claude Code or any chat LLM was giving me into something else, I just kept it as HTML. But raw HTML by itself has its own problems. I still couldn't reliably tell what I was looking at — where it came from, whether it was complete, what version it was, whether the page would even render the same next month. The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.</p>
+
+      <p>So I started writing down what HTML would need to be to be trustworthy as an artifact — the same way a PDF is trustworthy as "this is what was sent, that's the file." First version of the rules was rough. Just: save it as one HTML file, put a small JSON manifest at the top naming what the file is and where it came from, don't reach out to the network so it works the same on disk as on a server, put the content into the HTML body so it still renders when JavaScript isn't running.</p>
+
+      <p>Then I started using it for real work — capsules of QGIS-style maps, capsules of chat conversations I wanted to keep, capsules of decision matrices, capsules of design systems Claude Design gave me — and stuff broke. A photo capsule rendered blank on iPhone because Claude had put the photo inside a <code>&lt;script&gt;</code> block and iOS didn't run inline scripts. A markdown export silently crashed because of a JavaScript newline bug. An LLM lied about where the data came from because the manifest field was too easy to make up.</p>
+
+      <p>Each failure became a numbered rule. Twelve so far, over about five weeks. The most important one is rule 12: render the content into the HTML at build time, don't make JavaScript do it at runtime. Capsules are archives, not apps. The whole point is that the file still works when nothing else does.</p>
+
+      <p>Today the format is a one-page spec (<a href="CAPSULE_CORE.md">CAPSULE_CORE.md</a>), a small Python compiler and validator with 26 conformance checks, and a working corpus across the kinds of stuff I actually do. The LLMs I use all produce conformant capsules when I paste the one-page spec into a system prompt — Claude, ChatGPT, Gemini, Codex. And it works in compilers I build too: Mintel, the mining-intel app I work on, is the first independent producer that validates clean at 26/26.</p>
+
+      <p>What I want for it: not much. It stays a research project. The spec rule for itself is "no addition without empirical pressure" — change it when real producers and recipients push on it, not when something sounds like a good idea on a Tuesday. If you have HTML artifacts piling up — from any AI tool that defaults to "save as HTML" — this might be useful. The <a href="CAPSULE_CORE.md">spec</a> is one page. The <a href="spec/examples/">examples</a> show what conformant capsules look like. The <a href="RESEARCH.md">research log</a> is where the iterations live.</p>
+    </div>
+  </article>
+
+  <aside class="cb-about-format" aria-labelledby="about-format-h">
+    <h2 id="about-format-h">About this format</h2>
+    <p>A Capsule is a single sealed <code>.html</code> file with five inline blocks (manifest, data, style, root, runtime) and twelve rules. No network, no platform. Works in any browser today, or years from now.</p>
+    <p class="stats">
+      <span><em>12</em> rules</span>
+      <span><em>5</em> required blocks</span>
+      <span><em>0</em> network deps</span>
+    </p>
+    <p class="links">
+      <a href="index.html">← Back to Capsule landing</a>
+      <a href="CAPSULE_CORE.md">Read the spec</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </p>
+  </aside>
+
+  <details class="cb-about" id="about-capsule">
+    <summary>About this capsule · exports · manifest</summary>
+    <div class="cb-about-body">
+      <p>This page is itself a Capsule per Core v0.3.0 (full spec v0.3.2). Five required blocks, all inline. No network, no analytics. Validates against the reference validator. <code>parents[]</code> records lineage to the htmlcapsule landing capsule (UUID 7d1a1ac8), where this essay first lived as the v10.0 landing-as-essay experiment.</p>
+      <div class="cb-export" role="group" aria-label="Export actions">
+        <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
+        <button type="button" data-capsule-action="copy_as_markdown">Copy as Markdown</button>
+        <button type="button" data-capsule-action="download_json">Download JSON</button>
+        <button type="button" data-capsule-action="download_capsule">Download capsule (.html)</button>
+        <button type="button" data-capsule-action="print_to_pdf">Print · PDF</button>
+      </div>
+      <h4>Manifest</h4>
+      <pre id="manifest-pretty">Loading manifest…</pre>
+    </div>
+  </details>
+
+  <footer class="cb-foot" role="contentinfo">
+    <p class="cb-foot-isnt"><strong>What this isn't:</strong> a new file format (it's HTML), a SaaS, a new editing surface, a competitor to MCP, or a knowledge graph. It's anti-context-loss.</p>
+    <div class="cb-colophon">
+      <span>Set in system sans · Apache 2.0</span>
+      <span>capsule:notes/v1.0.0 · uuid c5f6a890 · sealed 2026-05-20</span>
+    </div>
+  </footer>
+</main>
+
+<div class="cb-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="capsule-runtime">
+(function () {
+  'use strict';
+
+  var manifest = JSON.parse(document.getElementById('capsule-manifest').textContent);
+  var data = JSON.parse(document.getElementById('capsule-data').textContent);
+
+  var manifestEl = document.getElementById('manifest-pretty');
+  if (manifestEl) {
+    manifestEl.textContent = JSON.stringify(manifest, null, 2);
+  }
+
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(
+        function () { return true; },
+        function () { return fallback(text); }
+      );
+    }
+    return Promise.resolve(fallback(text));
+  }
+  function fallback(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  function downloadBlob(filename, mime, content) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function buildMarkdown() {
+    var lines = [];
+    var push = function (s) { lines.push(s); };
+    push(`# ${data.title}`);
+    push(``);
+    push(`*${data.subtitle}*`);
+    push(``);
+    push(`${data.byline}`);
+    push(``);
+    push(`---`);
+    push(``);
+    data.essay.forEach(function (p) {
+      push(p);
+      push(``);
+    });
+    push(`---`);
+    push(``);
+    push(`## About this format`);
+    push(``);
+    push(data.about_format.description);
+    push(``);
+    push(`**${data.stats.rules}** rules · **${data.stats.blocks}** required blocks · **${data.stats.network_deps}** network deps`);
+    push(``);
+    push(`Landing: [htmlcapsule.org](index.html) · Spec: [CAPSULE_CORE.md](CAPSULE_CORE.md) · Source: [github.com/bigfancygarden/htmlcapsule](https://github.com/bigfancygarden/htmlcapsule)`);
+    push(``);
+    push(`---`);
+    push(``);
+    push(data.not_this);
+    push(``);
+    push(`_capsule:notes/v${manifest.capsule_version} · uuid ${manifest.uuid} · sealed ${manifest.created_at.slice(0, 10)} · parent ${manifest.parents[0].uuid.slice(0, 8)}_`);
+    return lines.join(`\n`);
+  }
+
+  function serializeCapsule() {
+    var doctype = `<!DOCTYPE html>`;
+    var html = document.documentElement.outerHTML;
+    return `${doctype}\n${html}`;
+  }
+
+  var actions = {
+    copy_as_json: function () {
+      return copyText(JSON.stringify(data, null, 2)).then(function () {
+        toast(`Copied data as JSON · ${Object.keys(data).length} keys`);
+      });
+    },
+    copy_as_markdown: function () {
+      var md = buildMarkdown();
+      return copyText(md).then(function () {
+        toast(`Copied as Markdown · ${md.length.toLocaleString()} chars`);
+      });
+    },
+    download_json: function () {
+      downloadBlob(`capsule-notes-${manifest.uuid.slice(0, 8)}.json`, `application/json`, JSON.stringify(data, null, 2));
+      toast(`Downloaded capsule-notes.json`);
+    },
+    download_capsule: function () {
+      var name = `htmlcapsule-notes-${manifest.uuid.slice(0, 8)}.html`;
+      downloadBlob(name, `text/html`, serializeCapsule());
+      toast(`Downloaded ${name}`);
+    },
+    print_to_pdf: function () {
+      toast(`Opening print dialog…`);
+      setTimeout(function () { window.print(); }, 200);
+    }
+  };
+
+  document.querySelectorAll('[data-capsule-action]').forEach(function (btn) {
+    var name = btn.getAttribute('data-capsule-action');
+    if (!actions[name]) return;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      try { actions[name](); } catch (err) { toast(`Error: ${err.message}`); }
+    });
+  });
+
+  manifest.capabilities.forEach(function (cap) {
+    if (cap === 'about') return;
+    if (!actions[cap]) console.warn(`[capsule] declared capability "${cap}" has no runtime handler — rule 7 violation`);
+  });
+})();
+</script>
+</body>
+</html>
