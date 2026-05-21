@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="Archived: Utkarsh Sengar's htmlbin.dev — an independent public hosting layer for agent-emitted HTML launched May 2026, the same week as htmlcapsule. The hosting-layer voice in the conversation Capsule is part of; complementary slot to Capsule's format discipline.">
+<meta name="color-scheme" content="light">
+<title>Utkarsh Sengar — htmlbin.dev — Voices · htmlcapsule</title>
+
+<script id="capsule-manifest" type="application/json">
+{
+  "spec_version": "0.3.0",
+  "uuid": "b3d8f2a1-7e94-4c5d-92a8-1f6b4d8e9c3a",
+  "capsule_version": "1.0.0",
+  "title": "Utkarsh Sengar — htmlbin.dev — agent-first HTML hosting",
+  "description": "First-class voice archive of Utkarsh Sengar's htmlbin.dev project — an independent public hosting layer for agent-emitted HTML, launched May 2026 (~same week as htmlcapsule). Captures the homepage positioning + the architectural choices (short URL, /raw endpoint, minimal chrome, OAuth-gated first publish, Cloudflare D1+KV stack) that converged with MinDev's hosting pattern without coordination. Archived because the convergence is empirical evidence for the host-contract pattern described in spec/HOSTING.md and F21 — and because hosting-layer voices belong on the record alongside format-layer voices (Thariq, Karpathy, Blake, Steph). Second entry in /voices/ after the Karpathy archive. parents[] points to the htmlcapsule landing.",
+  "type": "quote_archive",
+  "created_at": "2026-05-21T00:00:00Z",
+  "generator": {
+    "name": "human + Claude",
+    "version": "Opus 4.7 (1M context)",
+    "kind": "hybrid"
+  },
+  "source": {
+    "origin": "external_quote",
+    "snapshot_type": "homepage_archive",
+    "snapshot_id": "snapshot:utsengar_htmlbin_homepage_2026_05_21",
+    "spec_received": "v0.3.0 · 2026-05-19",
+    "included_records": 1
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json",
+    "copy_as_markdown",
+    "download_json",
+    "download_capsule",
+    "print_to_pdf"
+  ],
+  "parents": [
+    {
+      "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
+      "title": "Capsule — an approach for working with HTML artifacts"
+    }
+  ],
+  "synthesis": {
+    "kind": "human_authored_with_ai_assistance",
+    "model": "Claude Opus 4.7",
+    "human_reviewed": true
+  }
+}
+</script>
+
+<script id="capsule-data" type="application/json">
+{
+  "title": "htmlbin.dev — agent-first HTML hosting",
+  "subtitle": "An independent public hosting layer for agent-emitted HTML, launched May 2026 the same week as htmlcapsule.",
+  "attribution": {
+    "author": "Utkarsh Sengar",
+    "handle": "@utsengar",
+    "personal_site": "https://utsengar.com/",
+    "venue": "htmlbin.dev",
+    "url": "https://htmlbin.dev/",
+    "original_launch_date": "approximately 2026-05-17, listed as the most recent project on his personal site as of 2026-05-21",
+    "professional_context": "Engineering at Webflow; prior Upwork, OpenTable, eBay. Side projects at thearea42.com."
+  },
+  "archive": {
+    "archivist": "B. F. Garden (htmlcapsule)",
+    "archived_at": "2026-05-21",
+    "method": "homepage statements + architecture page transcribed from public-facing site; no authentication or private content accessed"
+  },
+  "quote_paragraphs": [
+    "API for agents to share HTML. One human auth step, then your agent publishes over HTTP.",
+    "Agent-native, end to end. Agent-first HTML hosting.",
+    "Make a delightful HTML page to explain a concept or a problem — show me what HTML can do that markdown or a flat file can't.",
+    "Paste the prompt into your agent, then publish to htmlbin.dev. First publish needs one human click; after that, the agent owns it.",
+    "Drop HTML. Get a public URL."
+  ],
+  "architecture_observed": {
+    "stack": "Cloudflare D1 (SQLite) + Cloudflare KV",
+    "identity_url_shape": "/p/{slug} (short random slug)",
+    "raw_endpoint": "/p/{slug}/raw (byte-identical fetch)",
+    "host_chrome": "Small [htmlbin] header + footer attribution (\"hosted by htmlbin — content authored by the agent that uploaded it\"). Minimal; the capsule body is the foreground.",
+    "format_discipline": "None imposed. Accepts any self-contained HTML; the host's job is publishing, not validating.",
+    "auth_model": "OAuth device-code flow for first publish; agent owns subsequent uploads under the human-anchored identity."
+  },
+  "commentary": {
+    "heading": "Why this is in the archive",
+    "body_paragraphs": [
+      "Two independent hosting layers have now converged on the same shape for serving Capsule-style HTML artifacts without coordinating with each other: MinDev (private, Mintel-tied, see F20) and htmlbin.dev (public, agent-first, this archive). Short URL identity, /raw byte-identical endpoint, minimal host chrome, honest authorship attribution, no content mutation. The convergence is empirical evidence that the host-contract pattern previously sketched in spec Appendix E.7 (\"the MinDev pattern: hosting-platform auth gates control delivery; the capsule itself doesn't gate its internal contents\") is a real shape that independent producers reach on their own. Documented as F21 in RESEARCH.md and codified descriptively in spec/HOSTING.md.",
+      "Why this matters for the htmlcapsule project specifically: format-layer voices (Thariq, Karpathy, Blake, Steph) and hosting-layer voices belong on the same record. Capsule's contribution is the format discipline (manifest, integrity, no network, pre-rendered content, capabilities, twelve rules); htmlbin's contribution is the hosting infrastructure (short URL, /raw, minimal chrome, OAuth-gated publish). These compose. A valid Capsule can be hosted on htmlbin, on MinDev, or self-hosted — the format is hosting-agnostic; hosts adopt the format optionally; both layers stay distinct and independently useful.",
+      "Worth flagging honestly: the htmlcapsule project's maintainer has indicated they are not personally going to use htmlbin.dev — they have MinDev for industry/mining use and are planning a separate private host for personal/social sharing with friends and family. htmlbin's role here is external validation of the hosting pattern, not a substitute for the maintainer's own infrastructure. Three independent instances of \"private host + open Capsule format\" (MinDev built, personal/social planned, htmlbin built and public) is stronger empirical support for the format/host split than two instances would be."
+    ]
+  },
+  "related_links": [
+    { "label": "htmlbin.dev — the project homepage", "url": "https://htmlbin.dev/" },
+    { "label": "utsengar.com — Utkarsh Sengar's personal site", "url": "https://utsengar.com/" },
+    { "label": "@utsengar on X", "url": "https://x.com/utsengar" },
+    { "label": "Sample htmlbin-hosted page (\"How htmlbin works\")", "url": "https://htmlbin.dev/p/gDMy7Vb" },
+    { "label": "F21 in RESEARCH.md — the host-pattern convergence writeup", "url": "../RESEARCH.md" },
+    { "label": "spec/HOSTING.md — the descriptive host-pattern documentation this archive supports", "url": "../spec/HOSTING.md" },
+    { "label": "PRECEDENTS.md — Utkarsh / htmlbin entry in Current voices in HTML-for-AI", "url": "../PRECEDENTS.md" },
+    { "label": "Capsule landing — Adjacent voices panel includes htmlbin", "url": "../index.html#voices-h" }
+  ],
+  "not_this": "This page is not an endorsement and not a co-sign. Utkarsh Sengar and htmlbin.dev are not affiliated with the htmlcapsule project. This is an archive of public-facing positioning statements with commentary, preserved because the convergence between two independent hosting layers (MinDev and htmlbin) on the same shape is load-bearing empirical evidence for the host-contract pattern documented in spec/HOSTING.md."
+}
+</script>
+
+<style id="capsule-style">
+  :root {
+    --paper:       #f4f5f7;
+    --paper-soft:  #eceef2;
+    --paper-deep:  #e1e4ea;
+    --ink:         #0e1116;
+    --ink-soft:    #262a33;
+    --ink-mute:    #5a606c;
+    --ink-faint:   #8a909c;
+    --rule:        #d5d9e0;
+    --rule-soft:   #e3e6ec;
+    --accent:      #1652f0;
+    --accent-soft: #3d70f5;
+    --accent-deep: #0c3bb8;
+    --sans:  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", "Menlo", "Cascadia Code", Consolas, "DejaVu Sans Mono", monospace;
+    --measure: 68ch;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { background: var(--paper); }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .skip-link {
+    position: absolute; top: -200px; left: 8px;
+    background: var(--ink); color: var(--paper);
+    padding: 8px 14px; font: 500 13px/1 var(--sans);
+    text-decoration: none; z-index: 100; border-radius: 2px;
+  }
+  .skip-link:focus { top: 8px; }
+
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); }
+  a:hover, a:focus { color: var(--accent-deep); border-bottom-color: var(--accent-deep); outline: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  code, kbd, samp { font-family: var(--mono); font-size: 0.92em; }
+  ::selection { background: color-mix(in oklab, var(--accent) 22%, transparent); color: var(--ink); }
+
+  #capsule-root {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 36px clamp(24px, 5vw, 64px) 64px;
+  }
+
+  /* Top bar */
+  .cb-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cb-mark {
+    display: flex; align-items: center; gap: 12px;
+    font: 500 14px/1 var(--sans);
+    color: var(--ink-soft);
+  }
+  .cb-mark a { color: var(--ink-soft); border-bottom: none; display: flex; align-items: center; gap: 12px; }
+  .cb-mark a:hover, .cb-mark a:focus { color: var(--accent); }
+  .cb-mark .glyph {
+    display: inline-grid; place-items: center;
+    width: 26px; height: 26px;
+    background: var(--ink); color: var(--paper);
+    border-radius: 2px;
+    font: 700 13px/1 var(--sans);
+    letter-spacing: 0.02em;
+  }
+  .cb-mark a:hover .glyph, .cb-mark a:focus .glyph { background: var(--accent); }
+  .cb-mark strong { color: var(--ink); font-weight: 600; }
+  .cb-mark .sep { color: var(--ink-faint); margin: 0 4px; }
+  .cb-mark .crumb { color: var(--ink-mute); }
+  .cb-topnav { display: flex; gap: 22px; flex-wrap: wrap; font: 500 13.5px/1 var(--sans); }
+  .cb-topnav a { color: var(--ink-soft); border-bottom: none; padding: 4px 0; }
+  .cb-topnav a:hover, .cb-topnav a:focus { color: var(--accent); }
+
+  /* Archive layout (shared shape with karpathy archive) */
+  .cb-archive { max-width: var(--measure); margin: clamp(40px, 6vw, 72px) auto 0; }
+  .cb-archive-head {
+    margin: 0 0 clamp(32px, 4vw, 48px);
+    padding-bottom: clamp(20px, 3vw, 28px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .cb-eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 16px; }
+  .cb-eyebrow .accent { color: var(--accent); }
+  .cb-archive-title {
+    font-family: var(--sans); font-weight: 700;
+    font-size: clamp(28px, 4.2vw, 44px);
+    line-height: 1.1; letter-spacing: -0.025em;
+    color: var(--ink); margin: 0 0 12px; text-wrap: balance;
+  }
+  .cb-archive-subtitle {
+    font: 400 17px/1.45 var(--sans);
+    color: var(--ink-mute); margin: 0 0 24px;
+    max-width: 56ch; text-wrap: pretty;
+  }
+  .cb-attrib {
+    display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px;
+    font: 400 13.5px/1.4 var(--sans); color: var(--ink-soft);
+    padding: 16px 18px; background: var(--paper-soft); border-radius: 4px;
+  }
+  .cb-attrib dt { font: 500 11px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-mute); align-self: center; }
+  .cb-attrib dd { margin: 0; align-self: center; }
+
+  /* Quote block */
+  .cb-quote-block { margin: clamp(32px, 5vw, 56px) 0; padding: 0 0 0 28px; border-left: 3px solid var(--accent); }
+  .cb-quote-block .quote-meta { font: 500 11.5px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+  .cb-quote-block p { font: 400 17px/1.6 var(--sans); color: var(--ink); margin: 0 0 1.1em; text-wrap: pretty; }
+  .cb-quote-block p:last-child { margin-bottom: 0; }
+
+  /* Architecture-observed panel — distinct from quote block since it's our annotation */
+  .cb-arch {
+    margin: clamp(32px, 5vw, 56px) 0;
+    padding: 24px 28px;
+    background: var(--paper-soft);
+    border-radius: 4px;
+  }
+  .cb-arch h2 {
+    font: 500 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-mute); margin: 0 0 14px; font-weight: 500;
+  }
+  .cb-arch dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 0; }
+  .cb-arch dt { font: 500 12px/1.4 var(--mono); letter-spacing: 0.06em; color: var(--ink-mute); }
+  .cb-arch dd { margin: 0; font: 400 14px/1.5 var(--sans); color: var(--ink-soft); }
+
+  /* Commentary */
+  .cb-commentary { margin: clamp(48px, 7vw, 80px) 0 0; }
+  .cb-commentary h2 { font: 500 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 18px; font-weight: 500; }
+  .cb-commentary p { font: 400 16.5px/1.65 var(--sans); color: var(--ink-soft); margin: 0 0 1.3em; text-wrap: pretty; }
+  .cb-commentary p:last-child { margin-bottom: 0; }
+  .cb-commentary a { color: var(--accent); border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); }
+
+  /* Related links */
+  .cb-related { margin: clamp(40px, 6vw, 64px) 0 0; padding: 24px 28px; background: var(--paper-soft); border-radius: 4px; }
+  .cb-related h2 { font: 500 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 14px; font-weight: 500; }
+  .cb-related ul { list-style: none; padding: 0; margin: 0; }
+  .cb-related li { margin-bottom: 8px; }
+  .cb-related li:last-child { margin-bottom: 0; }
+  .cb-related a { color: var(--ink); font: 400 14.5px/1.4 var(--sans); border-bottom: 1px dotted var(--ink-faint); }
+  .cb-related a:hover, .cb-related a:focus { color: var(--accent); border-bottom-color: var(--accent); }
+  .cb-related a.external::after { content: " ↗"; color: var(--ink-faint); font-size: 0.85em; }
+
+  /* About / exports */
+  .cb-about { max-width: var(--measure); margin: clamp(56px, 8vw, 80px) auto 0; background: var(--paper-soft); border-radius: 4px; overflow: hidden; }
+  .cb-about > summary { list-style: none; cursor: pointer; padding: 20px 28px; font: 500 13px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); user-select: none; display: flex; align-items: center; gap: 12px; }
+  .cb-about > summary::-webkit-details-marker { display: none; }
+  .cb-about > summary::after { content: ""; flex: 1; height: 1px; background: var(--rule); margin: 0 0 0 8px; }
+  .cb-about > summary::before { content: "+"; display: inline-grid; place-items: center; width: 22px; height: 22px; border: 1px solid var(--rule); border-radius: 50%; font: 500 14px/1 var(--sans); color: var(--ink-mute); background: var(--paper); }
+  .cb-about[open] > summary::before { content: "−"; }
+  .cb-about-body { padding: 4px 28px 28px; }
+  .cb-about-body p { font: 400 15px/1.55 var(--sans); color: var(--ink-soft); margin: 0 0 22px; max-width: 60ch; }
+  .cb-export { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .cb-export button { background: var(--paper); border: 1px solid var(--rule); color: var(--ink); font: 500 12.5px/1 var(--sans); padding: 10px 16px; cursor: pointer; border-radius: 999px; transition: border-color .15s, color .15s, background .15s; }
+  .cb-export button:hover, .cb-export button:focus { border-color: var(--accent); color: var(--accent); outline: none; }
+  .cb-about h4 { font: 500 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); margin: 0 0 8px; }
+  .cb-about pre { margin: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 16px 18px; font: 400 12.5px/1.6 var(--mono); color: var(--ink-soft); max-height: 360px; overflow: auto; }
+
+  /* Footer */
+  .cb-foot { max-width: var(--measure); margin: clamp(56px, 8vw, 80px) auto 0; padding-top: 36px; border-top: 1px solid var(--rule); }
+  .cb-foot-isnt { font: 400 14px/1.55 var(--sans); color: var(--ink-soft); margin: 0 0 24px; max-width: 60ch; }
+  .cb-foot-isnt strong { color: var(--ink); font-weight: 500; }
+  .cb-colophon { padding-top: 16px; border-top: 1px solid var(--rule-soft); font: 500 11.5px/1 var(--mono); letter-spacing: 0.06em; color: var(--ink-mute); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  /* Toast */
+  .cb-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px); background: var(--ink); color: var(--paper); padding: 11px 18px; font: 500 13px/1 var(--sans); border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; z-index: 200; box-shadow: 0 12px 36px -14px rgba(28,26,22,0.4); }
+  .cb-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .cb-toast { transition: opacity 0.001s; } }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    #capsule-root { padding: 24px 18px 48px; }
+    .cb-archive { margin-top: clamp(28px, 5vw, 48px); }
+    .cb-attrib { grid-template-columns: 1fr; gap: 12px; }
+    .cb-attrib dt { margin-bottom: -8px; }
+    .cb-arch dl { grid-template-columns: 1fr; gap: 6px; }
+    .cb-arch dt { margin-bottom: -6px; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 16px; }
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; color: black; font-size: 11pt; }
+    .cb-topbar, .cb-export, .cb-toast, .skip-link { display: none !important; }
+    a { color: black; border-bottom: none; }
+    .cb-archive { max-width: 100%; margin-top: 0; }
+    .cb-attrib, .cb-arch, .cb-related, .cb-about { background: white; border: 1px solid #ccc; }
+    .cb-quote-block { border-left-color: #999; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#capsule-root">Skip to content</a>
+
+<main id="capsule-root">
+
+  <header class="cb-topbar" role="banner">
+    <div class="cb-mark">
+      <a href="../index.html" aria-label="Back to Capsule landing">
+        <span class="glyph" aria-hidden="true">C</span>
+        <span><strong>Capsule</strong><span class="sep">·</span><span class="crumb">voices · utsengar</span></span>
+      </a>
+    </div>
+    <nav class="cb-topnav" aria-label="Primary">
+      <a href="../index.html">Landing</a>
+      <a href="../notes.html">Notes</a>
+      <a href="../CAPSULE_CORE.md">Spec</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </nav>
+  </header>
+
+  <article class="cb-archive">
+    <header class="cb-archive-head">
+      <p class="cb-eyebrow"><span class="accent">Voices</span> · Archived 2026-05-21 · Utkarsh Sengar — htmlbin.dev</p>
+      <h1 class="cb-archive-title">htmlbin.dev — agent-first HTML hosting</h1>
+      <p class="cb-archive-subtitle">An independent public hosting layer for agent-emitted HTML, launched May 2026 the same week as htmlcapsule. The hosting-layer voice in the conversation Capsule is part of; complementary slot to Capsule's format discipline.</p>
+
+      <dl class="cb-attrib">
+        <dt>Author</dt>
+        <dd>Utkarsh Sengar (<a href="https://x.com/utsengar" rel="noopener">@utsengar</a>)</dd>
+        <dt>Project</dt>
+        <dd><a href="https://htmlbin.dev/" rel="noopener">htmlbin.dev</a></dd>
+        <dt>Personal site</dt>
+        <dd><a href="https://utsengar.com/" rel="noopener">utsengar.com</a></dd>
+        <dt>Launch date</dt>
+        <dd>approximately 2026-05-17 (listed as most recent project as of 2026-05-21)</dd>
+        <dt>Professional context</dt>
+        <dd>Engineering at Webflow; prior Upwork, OpenTable, eBay. Side projects at thearea42.com.</dd>
+        <dt>Archived by</dt>
+        <dd>B. F. Garden (htmlcapsule)</dd>
+        <dt>Method</dt>
+        <dd>homepage statements + architecture page transcribed from public-facing site</dd>
+      </dl>
+    </header>
+
+    <section class="cb-quote-block" aria-label="Verbatim positioning statements">
+      <p class="quote-meta">— positioning, in his words —</p>
+      <p>API for agents to share HTML. One human auth step, then your agent publishes over HTTP.</p>
+      <p>Agent-native, end to end. Agent-first HTML hosting.</p>
+      <p>Make a delightful HTML page to explain a concept or a problem — show me what HTML can do that markdown or a flat file can't.</p>
+      <p>Paste the prompt into your agent, then publish to htmlbin.dev. First publish needs one human click; after that, the agent owns it.</p>
+      <p>Drop HTML. Get a public URL.</p>
+    </section>
+
+    <aside class="cb-arch" aria-labelledby="arch-h">
+      <h2 id="arch-h">Architecture observed (2026-05-21)</h2>
+      <dl>
+        <dt>Stack</dt>
+        <dd>Cloudflare D1 (SQLite) + Cloudflare KV</dd>
+        <dt>URL identity</dt>
+        <dd><code>/p/{slug}</code> — short random slug</dd>
+        <dt>Raw endpoint</dt>
+        <dd><code>/p/{slug}/raw</code> — byte-identical fetch path</dd>
+        <dt>Host chrome</dt>
+        <dd>Small <code>[htmlbin]</code> header + footer attribution ("hosted by htmlbin — content authored by the agent that uploaded it"). Minimal; the capsule body is the foreground.</dd>
+        <dt>Format discipline</dt>
+        <dd>None imposed. Accepts any self-contained HTML; the host's job is publishing, not validating.</dd>
+        <dt>Auth model</dt>
+        <dd>OAuth device-code flow for first publish; agent owns subsequent uploads under the human-anchored identity.</dd>
+        <dt>Convergence with MinDev</dt>
+        <dd>Short URL identity ✓ · /raw byte-identical endpoint ✓ · Minimal host chrome ✓ · Honest authorship attribution ✓ · No content mutation ✓ · Integrity-attestation response headers (MinDev has them; htmlbin doesn't yet).</dd>
+      </dl>
+    </aside>
+
+    <section class="cb-commentary" aria-labelledby="commentary-h">
+      <h2 id="commentary-h">Why this is in the archive</h2>
+      <p>Two independent hosting layers have now converged on the same shape for serving Capsule-style HTML artifacts without coordinating with each other: <a href="https://mindev.ca">MinDev</a> (private, Mintel-tied, see <a href="../RESEARCH.md">F20</a>) and htmlbin.dev (public, agent-first, this archive). Short URL identity, <code>/raw</code> byte-identical endpoint, minimal host chrome, honest authorship attribution, no content mutation. The convergence is empirical evidence that the host-contract pattern previously sketched in spec <a href="../spec/CAPSULE_SPEC.md">Appendix E.7</a> ("the MinDev pattern: hosting-platform auth gates control delivery; the capsule itself doesn't gate its internal contents") is a real shape that independent producers reach on their own. Documented as <a href="../RESEARCH.md">F21</a> in RESEARCH.md and codified descriptively in <a href="../spec/HOSTING.md">spec/HOSTING.md</a>.</p>
+      <p>Why this matters for the htmlcapsule project specifically: format-layer voices (Thariq, Karpathy, Blake, Steph) and hosting-layer voices belong on the same record. Capsule's contribution is the <em>format discipline</em> (manifest, integrity, no network, pre-rendered content, capabilities, twelve rules); htmlbin's contribution is the <em>hosting infrastructure</em> (short URL, <code>/raw</code>, minimal chrome, OAuth-gated publish). These compose. A valid Capsule can be hosted on htmlbin, on MinDev, or self-hosted — the format is hosting-agnostic; hosts adopt the format optionally; both layers stay distinct and independently useful.</p>
+      <p>Worth flagging honestly: the htmlcapsule project's maintainer has indicated they are not personally going to use htmlbin.dev — they have MinDev for industry/mining use and are planning a separate private host for personal/social sharing with friends and family. htmlbin's role here is external validation of the hosting pattern, not a substitute for the maintainer's own infrastructure. Three independent instances of "private host + open Capsule format" (MinDev built, personal/social planned, htmlbin built and public) is stronger empirical support for the format/host split than two instances would be.</p>
+    </section>
+
+    <aside class="cb-related" aria-labelledby="related-h">
+      <h2 id="related-h">Related</h2>
+      <ul>
+        <li><a href="https://htmlbin.dev/" class="external" rel="noopener">htmlbin.dev — the project homepage</a></li>
+        <li><a href="https://utsengar.com/" class="external" rel="noopener">utsengar.com — Utkarsh Sengar's personal site</a></li>
+        <li><a href="https://x.com/utsengar" class="external" rel="noopener">@utsengar on X</a></li>
+        <li><a href="https://htmlbin.dev/p/gDMy7Vb" class="external" rel="noopener">Sample htmlbin-hosted page ("How htmlbin works")</a></li>
+        <li><a href="../RESEARCH.md">F21 in RESEARCH.md — the host-pattern convergence writeup</a></li>
+        <li><a href="../spec/HOSTING.md">spec/HOSTING.md — the descriptive host-pattern documentation this archive supports</a></li>
+        <li><a href="../PRECEDENTS.md">PRECEDENTS.md — Utkarsh / htmlbin entry in Current voices in HTML-for-AI</a></li>
+        <li><a href="../index.html#voices-h">Capsule landing — Adjacent voices panel includes htmlbin</a></li>
+        <li><a href="./karpathy-html-progression-2026.html">/voices/ first entry — Karpathy on HTML</a></li>
+      </ul>
+    </aside>
+  </article>
+
+  <details class="cb-about" id="about-capsule">
+    <summary>About this capsule · exports · manifest</summary>
+    <div class="cb-about-body">
+      <p>This page is itself a Capsule per Core v0.3.0 (full spec v0.3.4). Five required blocks, all inline. No network, no analytics. Validates against the reference validator. <code>parents[]</code> records lineage to the htmlcapsule landing capsule (UUID 7d1a1ac8). Second entry in <code>/voices/</code> after the Karpathy archive.</p>
+      <div class="cb-export" role="group" aria-label="Export actions">
+        <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
+        <button type="button" data-capsule-action="copy_as_markdown">Copy as Markdown</button>
+        <button type="button" data-capsule-action="download_json">Download JSON</button>
+        <button type="button" data-capsule-action="download_capsule">Download capsule (.html)</button>
+        <button type="button" data-capsule-action="print_to_pdf">Print · PDF</button>
+      </div>
+      <h4>Manifest</h4>
+      <pre id="manifest-pretty">Loading manifest…</pre>
+    </div>
+  </details>
+
+  <footer class="cb-foot" role="contentinfo">
+    <p class="cb-foot-isnt"><strong>What this isn't:</strong> an endorsement and not a co-sign. Utkarsh Sengar and htmlbin.dev are not affiliated with the htmlcapsule project. This is an archive of public-facing positioning statements with commentary, preserved because the convergence between two independent hosting layers (MinDev and htmlbin) on the same shape is load-bearing empirical evidence for the host-contract pattern documented in <code>spec/HOSTING.md</code>.</p>
+    <div class="cb-colophon">
+      <span>Set in system sans · Apache 2.0</span>
+      <span>capsule:voices/utsengar-htmlbin-2026 v1.0.0 · uuid b3d8f2a1 · sealed 2026-05-21</span>
+    </div>
+  </footer>
+</main>
+
+<div class="cb-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="capsule-runtime">
+(function () {
+  'use strict';
+
+  var manifest = JSON.parse(document.getElementById('capsule-manifest').textContent);
+  var data = JSON.parse(document.getElementById('capsule-data').textContent);
+
+  var manifestEl = document.getElementById('manifest-pretty');
+  if (manifestEl) {
+    manifestEl.textContent = JSON.stringify(manifest, null, 2);
+  }
+
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(
+        function () { return true; },
+        function () { return fallback(text); }
+      );
+    }
+    return Promise.resolve(fallback(text));
+  }
+  function fallback(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  function downloadBlob(filename, mime, content) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function buildMarkdown() {
+    var lines = [];
+    var push = function (s) { lines.push(s); };
+    push(`# ${data.title}`);
+    push(``);
+    push(`*${data.subtitle}*`);
+    push(``);
+    push(`---`);
+    push(``);
+    push(`**Author:** ${data.attribution.author} ([${data.attribution.handle}](https://x.com/${data.attribution.handle.replace('@','')}))`);
+    push(`**Project:** ${data.attribution.url}`);
+    push(`**Personal site:** ${data.attribution.personal_site}`);
+    push(`**Launch date:** ${data.attribution.original_launch_date}`);
+    push(`**Archived by:** ${data.archive.archivist}`);
+    push(`**Archived at:** ${data.archive.archived_at}`);
+    push(``);
+    push(`---`);
+    push(``);
+    push(`## Positioning (verbatim)`);
+    push(``);
+    data.quote_paragraphs.forEach(function (p) {
+      push(`> ${p}`);
+      push(`>`);
+    });
+    push(``);
+    push(`## Architecture observed`);
+    push(``);
+    Object.keys(data.architecture_observed).forEach(function (k) {
+      push(`- **${k.replace(/_/g, ' ')}:** ${data.architecture_observed[k]}`);
+    });
+    push(``);
+    push(`## ${data.commentary.heading}`);
+    push(``);
+    data.commentary.body_paragraphs.forEach(function (p) {
+      push(p);
+      push(``);
+    });
+    push(`## Related`);
+    push(``);
+    data.related_links.forEach(function (link) {
+      push(`- [${link.label}](${link.url})`);
+    });
+    push(``);
+    push(`---`);
+    push(``);
+    push(data.not_this);
+    push(``);
+    push(`_capsule:voices/utsengar-htmlbin-2026 v${manifest.capsule_version} · uuid ${manifest.uuid} · sealed ${manifest.created_at.slice(0, 10)} · parent ${manifest.parents[0].uuid.slice(0, 8)}_`);
+    return lines.join(`\n`);
+  }
+
+  function serializeCapsule() {
+    var doctype = `<!DOCTYPE html>`;
+    var html = document.documentElement.outerHTML;
+    return `${doctype}\n${html}`;
+  }
+
+  var actions = {
+    copy_as_json: function () {
+      return copyText(JSON.stringify(data, null, 2)).then(function () {
+        toast(`Copied data as JSON · ${Object.keys(data).length} keys`);
+      });
+    },
+    copy_as_markdown: function () {
+      var md = buildMarkdown();
+      return copyText(md).then(function () {
+        toast(`Copied as Markdown · ${md.length.toLocaleString()} chars`);
+      });
+    },
+    download_json: function () {
+      downloadBlob(`utsengar-htmlbin-${manifest.uuid.slice(0, 8)}.json`, `application/json`, JSON.stringify(data, null, 2));
+      toast(`Downloaded JSON`);
+    },
+    download_capsule: function () {
+      var name = `utsengar-htmlbin-${manifest.uuid.slice(0, 8)}.html`;
+      downloadBlob(name, `text/html`, serializeCapsule());
+      toast(`Downloaded ${name}`);
+    },
+    print_to_pdf: function () {
+      toast(`Opening print dialog…`);
+      setTimeout(function () { window.print(); }, 200);
+    }
+  };
+
+  document.querySelectorAll('[data-capsule-action]').forEach(function (btn) {
+    var name = btn.getAttribute('data-capsule-action');
+    if (!actions[name]) return;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      try { actions[name](); } catch (err) { toast(`Error: ${err.message}`); }
+    });
+  });
+
+  manifest.capabilities.forEach(function (cap) {
+    if (cap === 'about') return;
+    if (!actions[cap]) console.warn(`[capsule] declared capability "${cap}" has no runtime handler — rule 7 violation`);
+  });
+})();
+</script>
+</body>
+</html>

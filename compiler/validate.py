@@ -19,6 +19,9 @@ import hashlib
 import json
 import re
 import sys
+import tempfile
+import urllib.request
+import urllib.error
 from pathlib import Path
 
 SPEC_VERSION_KNOWN = {"0.1.0", "0.1.1", "0.1.2", "0.1.3", "0.1.4", "0.1.5", "0.1.6", "0.1.7", "0.1.8", "0.2.0", "0.3.0"}
@@ -740,25 +743,157 @@ def validate(path: Path, strict: bool = False) -> ValidationResult:
     return result
 
 
+def _is_url(s: str) -> bool:
+    return s.startswith(("http://", "https://"))
+
+
+def _fetch_url_to_temp(url: str, timeout: int = 30):
+    """Fetch a URL to a temp file. Returns (Path, response_headers_dict).
+
+    Used by URL-mode validation to support: `validate.py <https://host/path>` —
+    fetches the body, captures response headers, lets the rest of the validator
+    operate on the local file. Captured headers are inspected for the host-
+    attestation pattern documented in spec/HOSTING.md (x-capsule-content-hash,
+    x-capsule-uuid).
+    """
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "htmlcapsule-validator/0.3.4 (+https://htmlcapsule.org)"},
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        body = resp.read()
+        # Lowercase header keys for case-insensitive access (HTTP headers are case-insensitive)
+        headers = {k.lower(): v for k, v in resp.headers.items()}
+        status = resp.status
+    tmp = tempfile.NamedTemporaryFile(prefix="htmlcapsule-fetched-", suffix=".html", delete=False)
+    tmp.write(body)
+    tmp.close()
+    return Path(tmp.name), headers, status
+
+
+def _print_host_attestation(url, headers, status, local_path, content_length):
+    """Print the URL preamble + host attestation cross-check (informational; not a
+    pass/fail validator check, so the 26-check count stays stable for local files)."""
+    print(f"Fetched: {url}")
+    print(f"  HTTP {status} · {headers.get('content-type', 'unknown')} · {content_length:,} bytes")
+    print(f"  Saved: {local_path}")
+    print()
+
+    print("Host attestation (from response headers, per spec/HOSTING.md):")
+
+    # Try to extract the manifest from the body for cross-checking.
+    html = Path(local_path).read_text(encoding="utf-8")
+    manifest_text = extract_section(html, "capsule-manifest", "script")
+    manifest = None
+    if manifest_text:
+        try:
+            manifest = json.loads(manifest_text)
+        except Exception:
+            manifest = None
+
+    found_any = False
+
+    # x-capsule-content-hash: host's independent computation of the integrity hash
+    header_hash = headers.get("x-capsule-content-hash")
+    if header_hash:
+        found_any = True
+        manifest_hash = (manifest or {}).get("integrity", {}).get("content_hash") if manifest else None
+        if manifest_hash and manifest_hash == header_hash:
+            print(f"  x-capsule-content-hash: {header_hash}")
+            print(f"                          ✓ matches manifest integrity.content_hash")
+            print(f"                            (transitively verified against body by integrity check below)")
+        elif manifest_hash:
+            print(f"  x-capsule-content-hash: {header_hash}")
+            print(f"                          ✗ MISMATCH (manifest integrity.content_hash = {manifest_hash})")
+        else:
+            print(f"  x-capsule-content-hash: {header_hash}")
+            print(f"                          ⚠ capsule has no manifest integrity block; cannot cross-check directly")
+            print(f"                            (host's hash is informational only without a body integrity claim)")
+
+    # x-capsule-uuid: host's parsing of the canonical identifier
+    header_uuid = headers.get("x-capsule-uuid")
+    if header_uuid:
+        found_any = True
+        manifest_uuid = (manifest or {}).get("uuid") if manifest else None
+        if manifest_uuid == header_uuid:
+            print(f"  x-capsule-uuid:         {header_uuid}")
+            print(f"                          ✓ matches manifest uuid")
+        elif manifest_uuid:
+            print(f"  x-capsule-uuid:         {header_uuid}")
+            print(f"                          ✗ MISMATCH (manifest uuid = {manifest_uuid})")
+        else:
+            print(f"  x-capsule-uuid:         {header_uuid}")
+            print(f"                          ⚠ no manifest uuid available to cross-check")
+
+    if not found_any:
+        print("  (none — host did not include x-capsule-* attestation headers)")
+        print("  (the host is still a valid Capsule host; it just provides one less independent verification)")
+
+    print()
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Validate a Capsule against the spec.")
-    parser.add_argument("capsule", type=Path, help="Path to compiled capsule HTML file")
+    parser = argparse.ArgumentParser(
+        description=(
+            "Validate a Capsule against the spec. Accepts a local file path "
+            "OR an http(s):// URL — in URL mode, the validator fetches the body, "
+            "captures any x-capsule-* host-attestation headers, and cross-checks "
+            "them against the manifest before running the standard checks."
+        )
+    )
+    parser.add_argument(
+        "capsule",
+        type=str,
+        help="Path to a local capsule HTML file, OR an http(s):// URL (typically a host's /raw endpoint)",
+    )
     parser.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
     parser.add_argument("--quiet", action="store_true", help="Only print summary line and failures")
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=30,
+        help="HTTP fetch timeout in seconds (URL mode only; default 30)",
+    )
     args = parser.parse_args()
 
-    if not args.capsule.exists():
-        print(f"ERROR: File not found: {args.capsule}", file=sys.stderr)
-        sys.exit(2)
+    url_mode = _is_url(args.capsule)
+    headers = None
+    status = None
+    fetched_temp = None
+
+    if url_mode:
+        try:
+            local_path, headers, status = _fetch_url_to_temp(args.capsule, timeout=args.timeout)
+            fetched_temp = local_path
+        except urllib.error.HTTPError as e:
+            print(f"ERROR: HTTP {e.code} fetching {args.capsule}: {e.reason}", file=sys.stderr)
+            sys.exit(2)
+        except urllib.error.URLError as e:
+            print(f"ERROR: Failed to fetch {args.capsule}: {e.reason}", file=sys.stderr)
+            sys.exit(2)
+        except Exception as e:
+            print(f"ERROR: Failed to fetch {args.capsule}: {e}", file=sys.stderr)
+            sys.exit(2)
+    else:
+        local_path = Path(args.capsule)
+        if not local_path.exists():
+            print(f"ERROR: File not found: {local_path}", file=sys.stderr)
+            sys.exit(2)
 
     try:
-        result = validate(args.capsule, strict=args.strict)
+        result = validate(local_path, strict=args.strict)
     except Exception as e:
         print(f"ERROR: Validation crashed: {e}", file=sys.stderr)
         sys.exit(2)
 
     # Output report
-    print(f"Validating: {args.capsule}")
+    if url_mode:
+        _print_host_attestation(
+            args.capsule, headers, status, local_path, local_path.stat().st_size
+        )
+        print(f"Validating fetched body: {local_path}")
+    else:
+        print(f"Validating: {args.capsule}")
     print(f"  Spec version recognized: {sorted(SPEC_VERSION_KNOWN)}")
     print()
     markers = {"pass": "✓", "warn": "⚠", "fail": "✗"}
@@ -776,6 +911,15 @@ def main():
     print()
     total = len(result.checks)
     print(f"Result: {result.passed_count}/{total} pass, {result.warn_count} warn, {result.failed_count} fail")
+
+    # Clean up the temp file from URL mode (the report is already printed; the
+    # temp file isn't needed after validation completes)
+    if fetched_temp is not None:
+        try:
+            fetched_temp.unlink()
+        except Exception:
+            pass
+
     if args.strict and result.warn_count > 0:
         sys.exit(1)
     sys.exit(0 if result.all_passed else 1)
