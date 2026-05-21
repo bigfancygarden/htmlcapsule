@@ -12,7 +12,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 
-**Current state:** Core spec at **v0.3.0**, full spec at **v0.3.2**, reference validator at 26 checks.
+**Current state:** Core spec at **v0.3.0**, full spec at **v0.3.4**, reference validator at 26 checks.
 
 ## Start here
 
@@ -104,6 +104,10 @@ This is a research/spec project. The principles:
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE). The patent grant matters for a format spec — it protects independent implementers.
+
+## How to cite
+
+See [`CITATION.cff`](CITATION.cff). GitHub auto-detects this file and renders a "Cite this repository" button on the repo page; citation tools (Zotero, citation managers) consume it directly. The citation form will gain a Zenodo DOI at the next milestone release for resolvable permanence beyond GitHub.
 
 ## Status
 

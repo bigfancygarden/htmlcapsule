@@ -1,0 +1,49 @@
+# Citation File Format (CFF) v1.2.0 — https://citation-file-format.github.io
+#
+# GitHub auto-detects this file and renders a "Cite this repository" button
+# on the repository's main page. The button generates a citation string
+# (BibTeX, APA, etc.) that anyone can paste into a paper, blog post, or
+# bibliography. Citation tools (Zotero, Papers With Code, citation managers)
+# also consume this format directly.
+#
+# When this project ships its first Zenodo-archived release (parked for the
+# v0.4 milestone or first external citation request, whichever comes first),
+# an `identifiers:` block will be added below with the concept DOI and the
+# version-specific DOI, so citations resolve to a permanent archive even if
+# GitHub disappears.
+
+cff-version: 1.2.0
+message: "If you reference this project, please cite it as below."
+title: "HTML Capsule: An Open Specification for Sealed, Self-Contained AI-Generated HTML Artifacts"
+abstract: >-
+  An open specification, reference implementation, and example corpus for
+  HTML Capsule — a profile of HTML for sealed, self-contained,
+  provenance-bearing snapshots of work worth preserving. Addresses the gap
+  between AI tools producing HTML artifacts by default (LLM canvases, agent
+  outputs, design-tool exports) and the lack of discipline around making
+  those artifacts durable, inspectable, and shareable beyond the platform
+  that produced them. A capsule is a single HTML file with five required
+  inline blocks (manifest, data, style, root, runtime), twelve normative
+  rules, and no network dependencies. The project is research-led with an
+  empirical-pressure-driven spec discipline: rules emerge from observed
+  production failures across multiple producer kinds (LLM, deterministic
+  compiler, hybrid). Multi-producer interop is the load-bearing claim.
+authors:
+  - family-names: "Garden"
+    given-names: "B. F."
+type: "software"
+version: "0.3.4"
+date-released: "2026-05-20"
+url: "https://htmlcapsule.org"
+repository-code: "https://github.com/bigfancygarden/htmlcapsule"
+license: "Apache-2.0"
+keywords:
+  - "HTML"
+  - "AI artifacts"
+  - "knowledge preservation"
+  - "single-file format"
+  - "provenance"
+  - "LLM outputs"
+  - "digital preservation"
+  - "self-describing files"
+  - "spec design"
