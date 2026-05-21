@@ -55,9 +55,9 @@ Interactive-archive category named; lifecycle decomposition (live-editing / form
 - **Landing-page colophon** — adds "maintained by Luke Schuss · Vancouver" line; also fixes a stale static colophon version string (`v10.11.0` → `v10.13.0`) carried over from v10.11→v10.12 ship. Landing bumped to v10.13.0.
 - **GitHub repo description** updated to lead with "HTML Capsule" and include "Maintained by Luke Schuss" (visible on the repo's main page).
 
-### Changed — landing page (v10.2 through v10.14)
+### Changed — landing page (v10.2 through v10.15)
 
-Eleven landing iterations during this version window. Highlights:
+Twelve landing iterations during this version window. Highlights:
 
 - **v10.2** — "File over app, taken further" aside citing Steph Ango's principle (`5457f5b`).
 - **v10.3** — Hero pivoted from narrow single-column stack to horizontal two-column split (title left, sub/CTA/stats right) (`5457f5b`).
@@ -72,6 +72,7 @@ Eleven landing iterations during this version window. Highlights:
 - **v10.12** — Top bar tightened: brand reads "HTML Capsule" (full project name) instead of "Capsule"; small linked version badge (`v0.3.4`) replaces the inline "open spec v0.3.0" subtitle; multi-link primary nav collapses to a single GitHub icon-link with accessible label. Page `<title>` and meta description updated to match. New mobile breakpoint at 600px hides the "GitHub" label (icon-only on phones), tightens topbar/stat spacing, and shrinks the badge; a 380px breakpoint stacks hero CTAs full-width. Stale `data.spec.full` value in the landing's data block bumped from v0.3.2 → v0.3.4 to match the current full-spec version. Same logical landing capsule (UUID `7d1a1ac8` preserved).
 - **v10.13** — Maintainer attribution: footer colophon now reads "maintained by Luke Schuss · Vancouver" (linked to `lukeschuss.com`); also fixes a stale static colophon version string (`v10.11.0` → `v10.13.0`) per Rule 12 pre-rendered-content discipline.
 - **v10.14** — First real brand mark: the placeholder "C" glyph in the top bar is replaced with an inline-SVG horizontal capsule outline containing the `</>` code symbol — a literal rendering of "HTML in a capsule" (concept from ChatGPT image generation; redrawn as SVG for crisp scaling and `currentColor` integration). Monochrome, picks up `--ink` automatically. 36×20 on desktop, 30×17 on phones via the 600px breakpoint.
+- **v10.15** — Brand-mark geometry locked in: capsule outline expanded to fill the full viewBox (rect `30×16`, `rx 8`), stroke weight tightened `2.2 → 1.8` for more refined linework matching the source design more closely, brackets pushed further out (`<` apex at x=6, `>` apex at x=26) so the code symbol breathes inside the capsule. Same SVG shape, same `currentColor` integration, dialed-in proportions.
 
 ### Changed — PRECEDENTS.md
 
