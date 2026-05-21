@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.4.0",
+  "capsule_version": "10.5.0",
   "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v10.4.0 adds an 'Adjacent voices' panel after the file-over-app aside — a 2x2 grid of named precedents and adjacent thinkers, each with a one-line claim and a short blurb naming the connection to Capsule. Entries: Thariq Shihipar (HTML is the new markdown — substrate observation), Andrej Karpathy (LLM wiki gist + prompting tip about HTML output), Blake Crosley (HTML is the format AI agents want — control surface framing), Simon Willison (tracker/amplifier + Datasette adjacent). The point is to position Capsule explicitly in the conversation that already exists, not as a standalone manifesto. File-over-app aside kept standalone above the panel since it's doing structural work (the file+presentation>app argument). v10.3.0 pivoted the hero to horizontal. v10.2.0 added the file-over-app aside. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.4).",
+  "description": "Landing page for the Capsule project. v10.5.0 introduces /voices/ as a first-class archive: the Karpathy entry in the Adjacent voices panel now links to voices/karpathy-html-progression-2026.html (a full quote-archive capsule with the verbatim X post, attribution, archive metadata, commentary, and related links). The archive itself is a child capsule of the landing (parents[] records the lineage). Blurb expanded to name Karpathy's four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) explicitly. v10.4.0 added the Adjacent voices panel (Thariq, Karpathy, Blake, Simon). v10.3.0 pivoted the hero to horizontal. v10.2.0 added the file-over-app aside. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.5).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -115,9 +115,9 @@
       {
         "name": "Andrej Karpathy",
         "claim": "LLM wiki + \"structure your response as HTML.\"",
-        "blurb": "Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip: ask the LLM to structure output as HTML and view it in a browser. Capsule sits between — HTML as the substrate, with a contract on the file.",
-        "link_text": "Read the gist",
-        "link_url": "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f"
+        "blurb": "Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip lays out a four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) and names HTML as the current best default. Capsule sits between — HTML as the substrate, with a contract on the file.",
+        "link_text": "Read the archive",
+        "link_url": "voices/karpathy-html-progression-2026.html"
       },
       {
         "name": "Blake Crosley",
@@ -772,8 +772,8 @@
         <article class="cb-voice">
           <h4 class="cb-voice-name">Andrej Karpathy</h4>
           <p class="cb-voice-claim">LLM wiki + "structure your response as HTML."</p>
-          <p class="cb-voice-blurb">Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip: ask the LLM to structure output as HTML and view it in a browser. Capsule sits between — HTML as the substrate, with a contract on the file.</p>
-          <p class="cb-voice-link"><a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" rel="noopener">Read the gist</a></p>
+          <p class="cb-voice-blurb">Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip lays out a four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) and names HTML as the current best default. Capsule sits between — HTML as the substrate, with a contract on the file.</p>
+          <p class="cb-voice-link"><a href="voices/karpathy-html-progression-2026.html">Read the archive</a></p>
         </article>
         <article class="cb-voice">
           <h4 class="cb-voice-name">Blake Crosley</h4>
@@ -845,7 +845,7 @@
     </div>
     <div class="cb-colophon">
       <span>Set in system sans · Apache 2.0</span>
-      <span>capsule:landing/v10.4.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v10.5.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
