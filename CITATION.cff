@@ -29,8 +29,12 @@ abstract: >-
   production failures across multiple producer kinds (LLM, deterministic
   compiler, hybrid). Multi-producer interop is the load-bearing claim.
 authors:
-  - family-names: "Garden"
-    given-names: "B. F."
+  - family-names: "Schuss"
+    given-names: "Luke"
+    email: "info@lukeschuss.com"
+    website: "https://lukeschuss.com"
+    city: "Vancouver"
+    country: "CA"
 type: "software"
 version: "0.3.4"
 date-released: "2026-05-20"

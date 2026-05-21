@@ -126,3 +126,9 @@ See [`CITATION.cff`](CITATION.cff). GitHub auto-detects this file and renders a 
 | 2 | Compiler | Half-built — reference compiler + validator (local file mode + URL mode) + growing corpus across producer kinds. First independent compiler-kind producer (Mintel) shipped + validated (F20) |
 | 3 | Domain capsules | Partial — `domain.implementation_notes`, `domain.design_system`, `domain.exploration_map`, `domain.briefing` documented. `domain.music_stems` in the Idea queue |
 | 4 | Network layer | Not built; possibly never. Capsule registry, lineage graph, importers all deferred. Trust-log primitive sketched in Appendix E.6 but not built. |
+
+## Maintainer
+
+Luke Schuss · Vancouver · [lukeschuss.com](https://lukeschuss.com) · <info@lukeschuss.com>
+
+Feedback, independent implementations, and findings from real producer/consumer pressure are the things this project most wants. Open an issue, email, or drop the artifact you produced into a thread on the repo.
