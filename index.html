@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.3.0",
+  "capsule_version": "10.4.0",
   "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v10.3.0 pivots the hero from a narrow single-column stack to a horizontal two-column split: title (with eyebrow) on the left in a 1.15fr column, sub + CTA + stats stacked on the right in a 1fr column, aligned to the baseline. Title scales up to 78px since it has room horizontally. Stats numerals tighten to 26px. Whole hero now occupies a much shorter vertical band and uses page width properly; collapses to single column below 900px. v10.2.0 added the 'File over app, taken further' aside. v10.1.0 split the v10.0 essay-as-landing experiment: long-form journey essay moved to /notes.html. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.3).",
+  "description": "Landing page for the Capsule project. v10.4.0 adds an 'Adjacent voices' panel after the file-over-app aside — a 2x2 grid of named precedents and adjacent thinkers, each with a one-line claim and a short blurb naming the connection to Capsule. Entries: Thariq Shihipar (HTML is the new markdown — substrate observation), Andrej Karpathy (LLM wiki gist + prompting tip about HTML output), Blake Crosley (HTML is the format AI agents want — control surface framing), Simon Willison (tracker/amplifier + Datasette adjacent). The point is to position Capsule explicitly in the conversation that already exists, not as a standalone manifesto. File-over-app aside kept standalone above the panel since it's doing structural work (the file+presentation>app argument). v10.3.0 pivoted the hero to horizontal. v10.2.0 added the file-over-app aside. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.4).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -100,6 +100,40 @@
     "body": "Steph Ango's principle says your work should live in files you control, in formats that outlive any specific app. Capsule agrees — and pushes it one step further: not just the data, but the presentation. The HTML file carries its own styles and rendering. No app dependency, no plugin layer, no theme to install. The file is the experience.",
     "link_text": "Read the principle",
     "link_url": "https://stephango.com/file-over-app"
+  },
+  "adjacent_voices": {
+    "heading": "Adjacent voices",
+    "lead": "People thinking about this from related angles. Not endorsements either way — just the conversation Capsule is part of.",
+    "entries": [
+      {
+        "name": "Thariq Shihipar",
+        "claim": "HTML is the new markdown.",
+        "blurb": "Public observation that LLMs and agents are emitting single self-contained HTML files as their default artifact format. The substrate observation Capsule builds on.",
+        "link_text": "Read on X",
+        "link_url": "https://x.com/trq212"
+      },
+      {
+        "name": "Andrej Karpathy",
+        "claim": "LLM wiki + \"structure your response as HTML.\"",
+        "blurb": "Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip: ask the LLM to structure output as HTML and view it in a browser. Capsule sits between — HTML as the substrate, with a contract on the file.",
+        "link_text": "Read the gist",
+        "link_url": "https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f"
+      },
+      {
+        "name": "Blake Crosley",
+        "claim": "HTML is the format AI agents want.",
+        "blurb": "Argues HTML preserves spatial structure, interaction, and density in a way markdown linearizes away. The control-surface framing: HTML as what agents should produce, live and inspectable.",
+        "link_text": "Read the post",
+        "link_url": "https://blakecrosley.com/blog/html-is-the-format-agents-want"
+      },
+      {
+        "name": "Simon Willison",
+        "claim": "Tracking the HTML-from-LLM wave.",
+        "blurb": "Has written extensively about LLM-emitted HTML on his blog and amplified Thariq's substrate observation. Also runs Datasette — a different shape of single-file substrate (SQLite with a built-in HTML viewer).",
+        "link_text": "Read the blog",
+        "link_url": "https://simonwillison.net/"
+      }
+    ]
   },
   "journey": {
     "label": "Notes · 2026-05-20",
@@ -406,6 +440,71 @@
     border-bottom: none;
   }
 
+  /* Adjacent voices panel */
+  .cb-voices {
+    margin-top: clamp(40px, 6vw, 64px);
+    padding: 28px 32px;
+    background: var(--paper-soft);
+    border-radius: 4px;
+  }
+  .cb-voices-head {
+    margin: 0 0 22px;
+  }
+  .cb-voices-head h3 {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 10px;
+    font-weight: 500;
+  }
+  .cb-voices-head p {
+    font: 400 14px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 64ch;
+  }
+  .cb-voices-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px clamp(24px, 3vw, 40px);
+  }
+  .cb-voice { padding: 0; }
+  .cb-voice-name {
+    font: 700 15px/1.2 var(--sans);
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+  .cb-voice-claim {
+    font: 500 14.5px/1.35 var(--sans);
+    color: var(--accent);
+    font-style: italic;
+    margin: 0 0 8px;
+  }
+  .cb-voice-blurb {
+    font: 400 13.5px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 8px;
+  }
+  .cb-voice-link {
+    font: 500 12px/1 var(--mono);
+    margin: 0;
+  }
+  .cb-voice-link a {
+    color: var(--ink-mute);
+    border-bottom: 1px dotted var(--ink-faint);
+  }
+  .cb-voice-link a:hover, .cb-voice-link a:focus {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .cb-voice-link a::after {
+    content: " ↗";
+    color: var(--ink-faint);
+    font-size: 0.85em;
+  }
+
   /* Journey callout */
   .cb-journey {
     margin-top: clamp(48px, 7vw, 80px);
@@ -561,6 +660,7 @@
     .cb-hero { grid-template-columns: 1fr; row-gap: 28px; align-items: start; }
     .cb-hero-lead, .cb-hero-aside { grid-column: 1; }
     .cb-questions { grid-template-columns: 1fr; }
+    .cb-voices-list { grid-template-columns: 1fr; }
     .cb-journey { grid-template-columns: 1fr; }
     .cb-foot { grid-template-columns: 1fr 1fr; }
     .cb-foot-isnt { grid-column: 1 / -1; }
@@ -657,6 +757,39 @@
       <p><a href="https://stephango.com/file-over-app" class="external" rel="noopener">Read the principle</a></p>
     </aside>
 
+    <aside class="cb-voices" aria-labelledby="voices-h">
+      <div class="cb-voices-head">
+        <h3 id="voices-h">Adjacent voices</h3>
+        <p>People thinking about this from related angles. Not endorsements either way — just the conversation Capsule is part of.</p>
+      </div>
+      <div class="cb-voices-list">
+        <article class="cb-voice">
+          <h4 class="cb-voice-name">Thariq Shihipar</h4>
+          <p class="cb-voice-claim">"HTML is the new markdown."</p>
+          <p class="cb-voice-blurb">Public observation that LLMs and agents are emitting single self-contained HTML files as their default artifact format. The substrate observation Capsule builds on.</p>
+          <p class="cb-voice-link"><a href="https://x.com/trq212" rel="noopener">Read on X</a></p>
+        </article>
+        <article class="cb-voice">
+          <h4 class="cb-voice-name">Andrej Karpathy</h4>
+          <p class="cb-voice-claim">LLM wiki + "structure your response as HTML."</p>
+          <p class="cb-voice-blurb">Two adjacent angles. His LLM-wiki gist proposes a personal knowledge base of plain markdown files that an LLM authors and maintains. His prompting tip: ask the LLM to structure output as HTML and view it in a browser. Capsule sits between — HTML as the substrate, with a contract on the file.</p>
+          <p class="cb-voice-link"><a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" rel="noopener">Read the gist</a></p>
+        </article>
+        <article class="cb-voice">
+          <h4 class="cb-voice-name">Blake Crosley</h4>
+          <p class="cb-voice-claim">"HTML is the format AI agents want."</p>
+          <p class="cb-voice-blurb">Argues HTML preserves spatial structure, interaction, and density in a way markdown linearizes away. The control-surface framing: HTML as what agents should produce, live and inspectable.</p>
+          <p class="cb-voice-link"><a href="https://blakecrosley.com/blog/html-is-the-format-agents-want" rel="noopener">Read the post</a></p>
+        </article>
+        <article class="cb-voice">
+          <h4 class="cb-voice-name">Simon Willison</h4>
+          <p class="cb-voice-claim">Tracking the HTML-from-LLM wave.</p>
+          <p class="cb-voice-blurb">Has written extensively about LLM-emitted HTML on his blog and amplified Thariq's substrate observation. Also runs Datasette — a different shape of single-file substrate (SQLite with a built-in HTML viewer).</p>
+          <p class="cb-voice-link"><a href="https://simonwillison.net/" rel="noopener">Read the blog</a></p>
+        </article>
+      </div>
+    </aside>
+
     <aside class="cb-journey" aria-labelledby="journey-cta">
       <div>
         <p class="cb-journey-meta">Notes · 2026-05-20</p>
@@ -712,7 +845,7 @@
     </div>
     <div class="cb-colophon">
       <span>Set in system sans · Apache 2.0</span>
-      <span>capsule:landing/v10.3.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v10.4.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
@@ -814,6 +947,18 @@ Data to embed:
     push(``);
     push(`→ [${data.file_over_app.link_text}](${data.file_over_app.link_url})`);
     push(``);
+    push(`### ${data.adjacent_voices.heading}`);
+    push(``);
+    push(data.adjacent_voices.lead);
+    push(``);
+    data.adjacent_voices.entries.forEach(function (v) {
+      push(`**${v.name}** — *${v.claim}*`);
+      push(``);
+      push(v.blurb);
+      push(``);
+      push(`→ [${v.link_text}](${v.link_url})`);
+      push(``);
+    });
     push(`### ${data.journey.cta}`);
     push(``);
     push(`> ${data.journey.pull_quote}`);
