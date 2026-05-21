@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.4.0",
+  "capsule_version": "11.5.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in temporary hero framing exploration mode. v11.4.0 tightens the opening pair (00 + 00b) and the topbar. Specifically: drops the meta framing-tag rows that read 'Observation-led preamble · designed to sit above any hero' and 'Lived practice · maintainer's own use' (the corner labels '00 · preamble' / '00b · case study' carry that signal sufficiently); shrinks frame padding for the preamble pair so they're sized to their content rather than viewport-height-filling; reduces the variant 00 'Take it further' CTA from a heavy primary button to a quieter mono text link with arrow; tightens the topbar's top-and-bottom padding for less leading whitespace. Also fixes the voice quotes: Thariq's quote now uses proper Unicode ellipses (&hellip;) at the two elision points (after 'communicate with us' and after 'restricting format'); Karpathy's pull-quote uses curly typographic quotes (&ldquo;&rdquo;) around the inner 'structure your response as HTML' phrase and is bracketed with leading + trailing ellipses to signal it's a mid-sentence extract from the canonical archive at voices/karpathy-html-progression-2026.html. UUID 7d1a1ac8 preserved through v11.4.",
+  "description": "Landing page in hero framing exploration mode. v11.5.0 restructures the opening trio into a clearer narrative arc: Observation → Question → Case study, then heroes. (1) Variant 00 (Observation, white): drops the 'So the question becomes…' leadin and the 'Take it further ↓' jumplink — the section now ends after the second voice quote. (2) NEW variant 00b (Question, same white): titled 'Question: What do you do with all that HTML?' with two existing answers in the wild — Answer A is Thariq's FAQ quote (open it locally, or upload to S3) moved up from the prior case study; Answer B is Utkarsh Sengar's htmlbin.dev (short URLs + /raw endpoint for agent-emitted HTML; independent convergence with the MinDev hosting pattern). (3) Existing case study renumbered 00b → 00c (soft cream), reframed with kicker 'Or — the maintainer's answer:' so it reads as the third answer after the two above. Corner labels updated for parallel naming: '00 · observation' / '00b · question' / '00c · case study'. New .cb-answer / .cb-answer-tag / .cb-answer-h / .cb-answer-body classes for the answer-block treatment with thin rule between answers. UUID 7d1a1ac8 preserved through v11.5.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -71,8 +71,9 @@
     { "num": "07", "framing": "Visual-led · brand-first", "title": "HTML Capsule", "sub": "A profile of HTML for sealed, self-contained artifacts. One file. Twelve rules. Zero network." },
     { "num": "08", "framing": "Problem · why-this-exists", "title": "Where does AI's HTML go?", "sub": "Capsule is the discipline that makes AI-generated HTML durable, inspectable, and shareable beyond the platform that produced it." },
     { "num": "09", "framing": "Context-led · plain-English on-ramp", "title": "HTML you can keep.", "sub": "AI tools increasingly produce HTML: reports, maps, demos, dashboards, visual notes, and interactive documents. HTML Capsule is an open spec for saving that work as one self-contained .html file. A Capsule includes its own content, styles, metadata, provenance, and validation rules, with no required network access. It is not a new file format — it is a stricter way to package HTML so the work can be archived, shared, inspected, and continued later by humans, tools, and LLMs.", "tagline": "One file. No network. Built to last." },
-    { "num": "00", "framing": "Observation-led preamble · designed to sit above any hero", "title": "Observation: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Two leading voices, same direction: Thariq Shihipar on markdown becoming restricting as agents get more powerful, and Andrej Karpathy on telling LLMs to structure responses as HTML. So the question becomes: what do you do with all that HTML?", "kind": "preamble" },
-    { "num": "00b", "framing": "Lived practice · maintainer's own use", "title": "Maybe let's take it a step further.", "sub": "Pairs with 00. Opens with Thariq's FAQ answer (open the HTML locally, or upload to S3 for sharing), then the maintainer's own first-person account of building map-making tooling that emits HTML conforming to the Capsule spec — so clients get standalone, permanent, AI-friendly artifacts without a database to maintain. Acknowledges the file-size tradeoff explicitly.", "kind": "preamble" }
+    { "num": "00",  "framing": "Observation · two leading voices",                    "title": "HTML has emerged as a key substrate for AI-assisted work.", "sub": "Editorial opening: an observation about HTML as the de-facto AI substrate, with self-aware footnote on the word 'substrate', backed by two voice quotes (Thariq Shihipar on markdown becoming restricting under more-powerful agents; Andrej Karpathy on telling LLMs to 'structure your response as HTML'). White background.", "kind": "section" },
+    { "num": "00b", "framing": "Question + two answers in the wild (Thariq, htmlbin.dev)", "title": "Question: What do you do with all that HTML?",                 "sub": "Two existing answers: Thariq's FAQ recommendation (open the HTML locally, or upload to S3 for a shareable link), and Utkarsh Sengar's htmlbin.dev (agent-first HTML hosting — short URLs + /raw endpoint). Same white background as 00; reads as a continuation of the editorial opening.", "kind": "section" },
+    { "num": "00c", "framing": "Maintainer's answer — case study",                     "title": "Maybe let's take it a step further.",                              "sub": "Soft-cream background. Reads as a third answer (after Thariq + htmlbin.dev): the maintainer's first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues — so they get standalone, permanent, AI-friendly artifacts without a database to maintain. Acknowledges the file-size tradeoff explicitly. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.",                                                        "kind": "section" }
   ],
   "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
@@ -963,8 +964,52 @@
     font-weight: 600;
   }
 
-  /* Case-study preamble (variant 00b) — Thariq quote + maintainer narrative */
-  .cb-frame[data-num="00b"] { background: #fcfaf3; }
+  /* Question section (variant 00b) — same white as observation; two answers */
+  .cb-frame[data-num="00b"] { background: #ffffff; }
+  .cb-frame.is-question .cb-frame-inner { max-width: 780px; }
+  .cb-answer {
+    margin: 22px 0 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .cb-answer:first-of-type { border-top: none; padding-top: 0; }
+  .cb-answer-tag {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  .cb-answer-h {
+    font: 600 19px/1.3 var(--sans);
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 0 0 12px;
+    max-width: 30ch;
+  }
+  .cb-answer-h a {
+    color: var(--ink);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+  .cb-answer-h a:hover, .cb-answer-h a:focus {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .cb-answer-body {
+    font: 400 15.5px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .cb-answer-body code {
+    background: var(--paper-soft);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.86em;
+  }
+
+  /* Case-study preamble (variant 00c) — maintainer narrative on soft cream */
+  .cb-frame[data-num="00c"] { background: #fcfaf3; }
   .cb-frame.is-case-study .cb-frame-inner { max-width: 760px; }
   .cb-frame-kicker-line {
     font: 500 11.5px/1 var(--mono);
@@ -1124,9 +1169,9 @@
 
   <section class="cb-frames" id="frames" aria-label="Hero variants">
 
-    <!-- 00 — Observation-led preamble (with proof voices; designed to sit above any chosen hero) -->
+    <!-- 00 — Observation (with proof voices) -->
     <article class="cb-frame is-observation" data-num="00" aria-labelledby="frame-00-title">
-      <span class="cb-frame-num">00 · preamble</span>
+      <span class="cb-frame-num">00 · observation</span>
       <div class="cb-frame-inner">
         <h2 class="cb-frame-title is-observation-h" id="frame-00-title"><span class="cb-kicker">Observation:</span> HTML has emerged as a key substrate<sup class="cb-aster">*</sup> for AI-assisted work.</h2>
         <p class="cb-frame-footnote"><sup>*</sup> I know, I know — "substrate" is overused.</p>
@@ -1142,25 +1187,41 @@
           <blockquote>&hellip; at the end of your query ask your LLM to &ldquo;structure your response as HTML&rdquo;&hellip;</blockquote>
           <figcaption>— Andrej Karpathy · <a href="voices/karpathy-html-progression-2026.html">archive</a></figcaption>
         </figure>
-
-        <p class="cb-frame-leadin">So the question becomes: <em>what do you do with all that HTML?</em></p>
-
-        <p class="cb-frame-jumplink"><a href="#frame-00b-title">Take it further <span class="arrow">↓</span></a></p>
       </div>
     </article>
 
-    <!-- 00b — Case study preamble (Thariq FAQ + maintainer's own use; pairs with 00) -->
-    <article class="cb-frame is-observation is-case-study" data-num="00b" aria-labelledby="frame-00b-title">
-      <span class="cb-frame-num">00b · case study</span>
+    <!-- 00b — Question + two answers in the wild (Thariq, htmlbin.dev) -->
+    <article class="cb-frame is-observation is-question" data-num="00b" aria-labelledby="frame-00b-title">
+      <span class="cb-frame-num">00b · question</span>
       <div class="cb-frame-inner">
-        <p class="cb-frame-kicker-line">From Thariq's FAQ:</p>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00b-title"><span class="cb-kicker">Question:</span> What do you do with all that HTML?</h2>
 
-        <figure class="cb-quote">
-          <blockquote><strong>How do I view the HTML file?</strong> I tend just open it in a browser locally (you can ask Claude to open it), or upload to S3 if you want a shareable link.</blockquote>
-          <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a></figcaption>
-        </figure>
+        <p class="cb-frame-lead">A couple of answers in the wild:</p>
 
-        <h2 class="cb-frame-bridge" id="frame-00b-title">Maybe let's take it a step further.</h2>
+        <div class="cb-answer">
+          <p class="cb-answer-tag">Answer A</p>
+          <h3 class="cb-answer-h">Open it in a browser. Or upload to S3.</h3>
+          <figure class="cb-quote">
+            <blockquote><strong>How do I view the HTML file?</strong> I tend just open it in a browser locally (you can ask Claude to open it), or upload to S3 if you want a shareable link.</blockquote>
+            <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> · FAQ</figcaption>
+          </figure>
+        </div>
+
+        <div class="cb-answer">
+          <p class="cb-answer-tag">Answer B</p>
+          <h3 class="cb-answer-h">Host it on <a href="https://htmlbin.dev/" rel="noopener">htmlbin.dev</a>.</h3>
+          <p class="cb-answer-body">Utkarsh Sengar's hosting layer, purpose-built for agent-emitted HTML: short URLs, a <code>/raw</code> endpoint for fetching the bytes, no chrome around the artifact. Launched May 2026; independent convergence with the MinDev hosting pattern (the format itself stays hosting-agnostic). <a href="voices/utsengar-htmlbin-2026.html">Archive →</a></p>
+        </div>
+      </div>
+    </article>
+
+    <!-- 00c — Case study: maintainer's own answer (third answer; cream bg picks up the visual shift) -->
+    <article class="cb-frame is-observation is-case-study" data-num="00c" aria-labelledby="frame-00c-title">
+      <span class="cb-frame-num">00c · case study</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-kicker-line">Or — the maintainer's answer:</p>
+
+        <h2 class="cb-frame-bridge" id="frame-00c-title">Maybe let's take it a step further.</h2>
 
         <p class="cb-frame-prose">When I'm doing my work — for example, creating JPEG/geospatial maps and reports for clients or colleagues — I've designed my map-making tool to emit HTML according to domain-specific logic that conforms to my HTML Capsule spec. That way they get exactly the thing they want and need: it's standalone (doesn't require maintaining a database or datasets), and it's permanent. And it's also HTML, so it's AI/LLM friendly.</p>
 
@@ -1342,7 +1403,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.4.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.5.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
