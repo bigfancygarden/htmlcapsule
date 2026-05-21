@@ -652,6 +652,81 @@ A valid Capsule can be hosted on MinDev, on htmlbin, or self-hosted, with no for
 - [PRECEDENTS.md "Current voices in HTML-for-AI"](PRECEDENTS.md) — Utkarsh / htmlbin added as a hosting-layer voice; the three-position picture extended to acknowledge format-layer vs. hosting-layer slots.
 - Appendix E.7 in [spec/CAPSULE_SPEC.md](spec/CAPSULE_SPEC.md) — the "MinDev pattern" reference that hinted at this convention; F21 is the empirical validation.
 
+### F22: Independent convergence on the live-editing layer pattern (html-docs + workplane)
+
+**Date:** 2026-05-21
+
+Two independent live-editing tools shipped in approximately the same window (mid-May 2026) with substantially the same workflow shape, without coordinating. This is the parallel finding to F21 (host-pattern convergence): *two* layer-level patterns have now been observed converging independently within this project's first two weeks of running. The pattern of convergence is itself becoming a recurring methodological observation.
+
+**The two tools:**
+
+| | html-docs.com | workplane.co |
+|---|---|---|
+| Creator | Raunaq Bhutoria (Meta engineer; [@raunaqbn](https://x.com/raunaqbn)) | Matan (GitHub: [matanrak](https://github.com/matanrak); based in Israel) |
+| Repo | Not public | `work-plane/workplane-skills` (MIT); `/workplane` repo linked but 404s |
+| Org created | (n/a — closed SaaS) | `work-plane` GitHub org created 2026-03-29 |
+| Most recent push | (closed) | 2026-05-20 (`workplane-skills`) |
+| Tagline | "Create beautiful docs and webpages with your Agents." | "Turn AI outputs into live pages." / "The working plane between AI and humans." (README) |
+| Open source | No (SaaS, closed) | Partial — agent skill is open MIT; main service may be closed |
+| Agent integration | Claude Code skill + MCP server + HTTP API; 6 named tools (publish, publish_file, update, read, comment, list_comments) | MCP-first; works with Claude Code, Codex, Cursor, Devin, Claude Desktop |
+| Account gates | Required for some imports | Free for individuals; no account required for commenters |
+| Endorsements on homepage | Karpathy, Thariq, Ryan Carson | None visible |
+
+**Shared workflow shape (the actual convergence):**
+
+1. Agent generates HTML/markdown
+2. Publish to the tool → live URL with stable identity
+3. Humans review with inline comments
+4. Agent reads the comments and revises
+5. Iteration loop continues until "if good, go build" (Raunaq's framing)
+
+Both tools implement steps 1-5 with MCP as a primary integration path and inline comments as the review surface.
+
+**Differences (mostly orthogonal to the workflow):**
+- html-docs is closed/SaaS; workplane is partially open
+- html-docs has high-profile endorsements; workplane has none visible
+- html-docs requires accounts for some imports; workplane is free without account
+- html-docs is HTML-first; workplane lists markdown, HTML, and screenshots
+- Creator visibility differs sharply: Raunaq is named and uses html-docs.com publicly in his Meta workflow; Matan is anonymous on the workplane.co homepage and only surfaces via GitHub commit history
+
+**Why this matters:**
+
+The pattern (agent ↔ human review loop with publish-and-comment as the primitive) is now empirically observable as something multiple independent producers reach for. Just like F21 named the hosting-layer convergence (short URL + `/raw` + minimal chrome + honest attribution), F22 names the live-editing-layer convergence:
+
+- Publish endpoint that accepts agent-generated content
+- Stable URL identity per published doc
+- Inline comments as the review surface
+- Agent integration via MCP (in both implementations)
+- Version history of the iteration
+
+The MCP common denominator is itself notable — both tools lead with MCP integration, which suggests MCP adoption is the *enabling substrate* for this layer's convergence. Without a standard agent-to-service protocol, each tool would have to ship bespoke integrations; with MCP, the same skill works against any host.
+
+This is the "canvas step" Capsule explicitly doesn't compete with. F22 names that the canvas step is a real, reproducible layer in the lifecycle — not a one-off product idea.
+
+**The composition story is now empirically backed at every layer:**
+
+- **Live editing**: html-docs + workplane converge on the pattern (F22)
+- **Format / seal**: Capsule (this project; multi-producer interop already validated across LLMs + Mintel)
+- **Hosting**: MinDev + htmlbin converge on the pattern (F21)
+- **Discovery**: llms.txt (one major implementation; adoption signal via Chrome Lighthouse rather than convergence)
+
+Four lifecycle layers; convergence-pattern findings at three of them. The format-and-host split + the editing-and-format split + the host-and-discovery split are all real.
+
+**Spec implications:** None directly. Capsule occupies the seal step downstream of the live-editing layer; the live-editing layer doesn't need Capsule's discipline because the artifact is still mutating. The composition is what matters, not Capsule mandating anything in the upstream layer.
+
+**Open questions:**
+
+- What happens when a Workplane or html-docs doc graduates to a sealed Capsule? Neither tool currently has Capsule export. Would there be value in proposing a "freeze to Capsule" capability? Not yet — empirical pressure not there.
+- Will the live URLs themselves become canonical (no need to seal)? Or will users still want a sealed downstream artifact for archival? Depends on durability of the live-editing tools over years.
+- The MCP-as-enabling-substrate observation deserves its own follow-up — is MCP the common denominator across multiple converging patterns? Worth checking against F21 (do MinDev/htmlbin both use MCP-style standardization for upload?).
+- Workplane's "the working plane between AI and humans" framing is sharper than html-docs.com's positioning; worth borrowing the *layer name itself* — possibly rename "live editing layer" to "working plane" in the project's terminology going forward. Defer until the term is stress-tested.
+- Will a third live-editing implementation appear, validating this as a proper pattern (per F21's "three or more is a pattern that probably deserves formal documentation" framing)? Track.
+
+**Cross-references:**
+- [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin) — the parallel hosting-layer convergence; same shape of finding
+- [PRECEDENTS.md](PRECEDENTS.md) — Raunaq / html-docs.com + Matan / Workplane entries added to "Current voices in HTML-for-AI"; position table grew to 9 rows
+- [voices/README.md](voices/README.md) — queue tracking and graduation rule
+
 ## Open questions
 
 In rough priority:

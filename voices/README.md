@@ -16,6 +16,7 @@ Two lists below: voices that have been archived, and voices that have been flagg
 | Source | Flagged by | Flagged date | Notes |
 |---|---|---|---|
 | [Ryan Carson tweet 2052857429373673482](https://x.com/ryancarson/status/2052857429373673482) | user | 2026-05-21 | Ryan Carson is one of three named endorsers on the html-docs.com homepage (alongside Karpathy and Thariq, both already archived). 4× founder, prior Treehouse / Carsonified / etc. Worth reading the actual tweet to see whether his angle on the html-docs / agent-workflow space adds something to the position picture beyond what html-docs.com's homepage already says. If yes — likely candidate for an archive entry. If no — note the dismissal reason and leave in the queue. |
+| Workplane (Matan / matanrak) deeper attribution | system | 2026-05-21 | Workplane was added to landing voices + PRECEDENTS + F22 with attribution via GitHub commit history (Matan, handle `matanrak`, based in Israel, no Twitter linked on profile). No personal site, no Twitter, no LinkedIn surfaced. The workplane.co homepage carries no creator info. If Matan ever publishes a launch post or LinkedIn surface attribution, update the PRECEDENTS entry. Also flagged: the homepage links to `github.com/work-plane/workplane` which 404s; only `/workplane-skills` exists. Either a footer typo or the main repo is private. Worth re-checking quarterly. |
 
 ## How a voice graduates from the queue to the archive
 

@@ -83,6 +83,19 @@ Live-collaboration-layer articulation. Built [html-docs.com](https://html-docs.c
 
 **Relevance to capsules:** Different lifecycle layer. html-docs.com is the *live editing / collaboration layer* (between agent generation and sealed handoff). Capsule is the *seal step* after the live work stops being actively edited. Same lifecycle distinction the project has already named in the working-vs-publishing-format synthesis (after the Karpathy and Steph Ango discussions). html-docs.com is a concrete example of the canvas-step Capsule explicitly doesn't compete with; Capsule is what a live doc would become when it graduates from active iteration to sealed preservation. SaaS (not open spec), closed-source — which is reasonable for the lifecycle slot it fills (real-time collaboration is hard to do over a sealed file by design).
 
+### Matan (matanrak) — Workplane
+
+Live-editing-layer convergence. [Workplane.co](https://workplane.co/) launched in approximately the same window as html-docs.com (the `work-plane` GitHub org was created 2026-03-29; the public `work-plane/workplane-skills` repo was last pushed 2026-05-20). Tagline: *"Turn AI outputs into live pages."* The repo's README phrases the positioning more sharply: *"the working plane between AI and humans."* MCP-first integration with multiple agents (Claude Code, Codex, Cursor, Devin, Claude Desktop). Free for individuals; no recipient account required to comment. Open-source agent skill at [`work-plane/workplane-skills`](https://github.com/work-plane/workplane-skills) (MIT licensed; main `workplane` repo at the linked URL appears private or aspirational — only the skills repo is public). Maintainer: Matan (GitHub: [matanrak](https://github.com/matanrak)), based in Israel. The site itself carries no explicit creator attribution as of 2026-05-21 — attribution surfaced via the GitHub commit history.
+
+**Position:** Same as html-docs.com — the agent ↔ human review loop as a workflow primitive — but with a more open implementation than html-docs.com on every visible axis (open-source skill, broader agent support, no account gates on commenting, MIT license).
+
+**Memorable lines worth knowing:**
+- "Turn AI outputs into live pages." (homepage)
+- "The working plane between AI and humans." (workplane-skills README)
+- "Works with the agents you already use: Claude Code, Codex, Cursor, Devin, Claude Desktop, MCP." (homepage)
+
+**Relevance to capsules:** Second independent implementation of the live-editing layer (alongside html-docs.com). The convergence is the load-bearing empirical finding — documented in [F22](RESEARCH.md): the same workflow pattern (agent publishes → human comments inline → agent reads + revises) is emerging independently across multiple tools within the same window, validating that "live editing" is a real and durable layer in the lifecycle. Same lifecycle position relative to Capsule as html-docs.com — a Workplane-iterated doc would become a capsule when it graduates from active editing to sealed preservation. Worth noting structurally: Workplane's openness (MIT skill, MCP-first, no account gates) is closer in spirit to Capsule's "format-not-platform" ethos than html-docs.com's commercial-flavored closed-source approach — but both occupy the same lifecycle slot.
+
 ### The position picture
 
 Multiple positions across the lifecycle and across the layer stack:
@@ -95,6 +108,7 @@ Multiple positions across the lifecycle and across the layer stack:
 | Steph Ango | Format — preservation principle | "File over app" — work should live in files you control |
 | This project | Format — sealed handoff | The portable archive — manifest, sources, sealed convention, twelve rules |
 | Raunaq / html-docs.com | Live editing | Agent ↔ human review loop — create with Claude Code, review with comments, iterate |
+| Matan / Workplane | Live editing | Same shape as html-docs.com — second implementation; MCP-first, multi-agent, open-source skill. Convergence is F22 |
 | Utkarsh / htmlbin | Hosting | Agent-first HTML hosting — short URL, /raw endpoint, format-agnostic |
 | Jeremy Howard / llms.txt | Site discovery | Markdown index at /llms.txt — what's on this site, optimized for LLM consumption |
 

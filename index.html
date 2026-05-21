@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.10.0",
+  "capsule_version": "10.11.0",
   "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v10.10.0 restructures the Adjacent voices panel into two layer-organized sub-sections — 'Format & substrate observers' (Thariq, Karpathy, Blake, Simon) and 'Layers Capsule composes with' (Raunaq / html-docs.com live editing; Utkarsh / htmlbin hosting; Jeremy Howard / llms.txt discovery). Each layer-tagged voice in the second group carries a small accent-colored layer label inline with the name. Makes the project's lifecycle-decomposition stance visible in the panel itself, matching the way PRECEDENTS.md now organizes the position table. Steph Ango's file-over-app aside still stands separately above the panel as the structural argument. v10.9.0 added Raunaq / html-docs.com (live editing layer). v10.8.0 added Jeremy Howard / llms.txt (discovery layer). v10.7.0 added Utkarsh / htmlbin (hosting layer). Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.10).",
+  "description": "Landing page for the Capsule project. v10.11.0 adds Matan (matanrak) / Workplane as the second voice in the live-editing layer alongside Raunaq / html-docs.com — independent convergence on the same workflow pattern (agent publishes → human comments inline → agent reads + revises) shipping in the same window without coordination. Workplane is MCP-first, multi-agent (Claude Code, Codex, Cursor, Devin, Claude Desktop), open-source agent skill at work-plane/workplane-skills (MIT). The convergence is documented as F22 in RESEARCH.md (same shape as the F21 hosting-layer convergence between MinDev + htmlbin). The 'Layers Capsule composes with' panel group now has 4 voices (2 live-editing + 1 hosting + 1 discovery), making the empirical reality that multiple slots have multiple independent implementations visible directly on the landing. v10.10.0 restructured the panel into layer groups. v10.9.0 added Raunaq / html-docs.com (live editing layer's first voice). Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.11).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -164,7 +164,16 @@
         "claim": "\"Create beautiful docs and webpages with your Agents.\"",
         "blurb": "Engineer at Meta. Built html-docs.com as a live collaboration layer for agent-generated HTML — agents publish via Claude Code skill / MCP / HTTP API, humans review with comments, agents read the comments and revise. The agent ↔ human review loop named as a workflow primitive. Endorsed by Karpathy + Thariq on the homepage. Complementary lifecycle layer to Capsule's seal step — html-docs is where the work is iterated; Capsule is what it becomes when sealed.",
         "link_text": "Read on html-docs.com",
-        "link_url": "https://html-docs.com/"
+        "link_url": "https://html-docs.com/",
+        "layer": "live editing"
+      },
+      {
+        "name": "Matan (matanrak) — Workplane",
+        "claim": "\"Turn AI outputs into live pages.\" / \"The working plane between AI and humans.\"",
+        "blurb": "Independent live-editing layer, second implementation of the same pattern as html-docs.com. MCP-first, multi-agent (Claude Code, Codex, Cursor, Devin, Claude Desktop). Free for individuals, no account required for commenters. Open-source agent skill at work-plane/workplane-skills (MIT). Maintainer is Matan (GitHub: matanrak), based in Israel. The convergence with html-docs.com on the same workflow shape (publish → comment → agent revises) is the empirical signal — documented as F22.",
+        "link_text": "Read on workplane.co",
+        "link_url": "https://workplane.co/",
+        "layer": "live editing"
       }
     ]
   },
@@ -885,6 +894,12 @@
             <p class="cb-voice-link"><a href="https://html-docs.com/" rel="noopener">Read on html-docs.com</a></p>
           </article>
           <article class="cb-voice">
+            <h5 class="cb-voice-name">Matan (matanrak) — Workplane <span class="cb-voice-layer">live editing</span></h5>
+            <p class="cb-voice-claim">"Turn AI outputs into live pages." / "The working plane between AI and humans."</p>
+            <p class="cb-voice-blurb">Independent live-editing layer, second implementation of the same pattern as html-docs.com. MCP-first, multi-agent (Claude Code, Codex, Cursor, Devin, Claude Desktop). Free for individuals, no account required for commenters. Open-source agent skill at <code>work-plane/workplane-skills</code> (MIT). Maintainer is Matan (GitHub: matanrak), based in Israel. The convergence with html-docs.com on the same workflow shape (publish → comment → agent revises) is the empirical signal — documented as F22.</p>
+            <p class="cb-voice-link"><a href="https://workplane.co/" rel="noopener">Read on workplane.co</a></p>
+          </article>
+          <article class="cb-voice">
             <h5 class="cb-voice-name">Utkarsh Sengar — htmlbin.dev <span class="cb-voice-layer">hosting</span></h5>
             <p class="cb-voice-claim">"Agent-first HTML hosting."</p>
             <p class="cb-voice-blurb">Launched htmlbin.dev in May 2026 (about the same week as htmlcapsule) — public hosting infrastructure for agent-emitted HTML, short URLs, /raw endpoint. Independent convergence with the MinDev hosting pattern — complementary layer to Capsule's format discipline (the format is hosting-agnostic).</p>
@@ -955,7 +970,7 @@
     </div>
     <div class="cb-colophon">
       <span>Set in system sans · Apache 2.0</span>
-      <span>capsule:landing/v10.10.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v10.11.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
