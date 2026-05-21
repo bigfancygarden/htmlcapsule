@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "10.5.0",
+  "capsule_version": "10.6.0",
   "title": "Capsule — an approach for working with HTML artifacts",
-  "description": "Landing page for the Capsule project. v10.5.0 introduces /voices/ as a first-class archive: the Karpathy entry in the Adjacent voices panel now links to voices/karpathy-html-progression-2026.html (a full quote-archive capsule with the verbatim X post, attribution, archive metadata, commentary, and related links). The archive itself is a child capsule of the landing (parents[] records the lineage). Blurb expanded to name Karpathy's four-step progression (raw text → markdown → HTML → eventually interactive neural simulations) explicitly. v10.4.0 added the Adjacent voices panel (Thariq, Karpathy, Blake, Simon). v10.3.0 pivoted the hero to horizontal. v10.2.0 added the file-over-app aside. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.5).",
+  "description": "Landing page for the Capsule project. v10.6.0 lands two interlocking framings: (1) the bridge becomes a two-beat block — premise ('The durable unit of knowledge is shifting from the note to the artifact.') then consequence ('So HTML is the substrate. Now what?') — putting the project's foundational position on the most-visible surface; (2) a new 'Tools, not apps.' aside between §I and the file-over-app aside names the 'interactive archive' category and the JavaScript-off litmus test (Mintel's measure-distance + find-coordinates tools as the worked example). Both are documented at spec scale in v0.3.4 (§2.3 Interactive archive subsection + GLOSSARY entry). v10.5.0 introduced /voices/ as a first-class archive (Karpathy). v10.4.0 added the Adjacent voices panel. v10.3.0 pivoted the hero to horizontal. v10.2.0 added the file-over-app aside. Same logical landing capsule across redesigns (UUID 7d1a1ac8 preserved from v7 through v10.6).",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -62,7 +62,19 @@
     "title": "An approach for working with HTML artifacts.",
     "sub": "LLMs emit them by default. Agents return them. Chats render them. The format your tools already speak is the format your work should land in."
   },
-  "bridge": "So HTML is the substrate. Now what?",
+  "bridge": {
+    "premise": "The durable unit of knowledge is shifting from the note to the artifact.",
+    "consequence": "So HTML is the substrate. Now what?"
+  },
+  "tools_not_apps": {
+    "heading": "Tools, not apps.",
+    "paragraphs": [
+      "Capsules can have rich runtime tools — measure, filter, annotate, search, export — without becoming applications. The line is the JavaScript-off test: does the substance of the content depend on JS to exist? If no, it's an interactive archive — tools query the content but don't generate it. If yes, it's an app, and the spec says no.",
+      "Mintel's exploration-map capsules ship click-to-measure and click-to-find-coordinates. With JS off, the map still renders (via the static image fallback), the legend and attribution are still there. The tools are gone; the substance isn't."
+    ],
+    "link_text": "Read the spec — §2.3 Rendering Model",
+    "link_url": "spec/CAPSULE_SPEC.md"
+  },
   "spec": { "core": "v0.3.0", "full": "v0.3.2", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
   "questions": [
@@ -323,20 +335,34 @@
     color: var(--ink-mute);
   }
 
-  /* Bridge — standalone line between hero and questions */
+  /* Bridge — two-beat block between hero and questions: premise + consequence */
   .cb-bridge {
-    max-width: 22ch;
+    max-width: 36ch;
     margin: clamp(64px, 10vw, 128px) auto clamp(64px, 10vw, 128px);
     text-align: left;
+  }
+  .cb-bridge-premise {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: clamp(19px, 2.7vw, 28px);
+    line-height: 1.3;
+    letter-spacing: -0.016em;
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  .cb-bridge-consequence {
     font-family: var(--sans);
     font-weight: 700;
     font-size: clamp(28px, 4.6vw, 44px);
     line-height: 1.08;
     letter-spacing: -0.025em;
     color: var(--ink);
+    margin: 0;
+    max-width: 22ch;
     text-wrap: balance;
   }
-  .cb-bridge em {
+  .cb-bridge-consequence em {
     color: var(--accent);
     font-style: normal;
     font-weight: 700;
@@ -717,7 +743,10 @@
     </div>
   </section>
 
-  <p class="cb-bridge">So HTML is the substrate. <em>Now what?</em></p>
+  <div class="cb-bridge">
+    <p class="cb-bridge-premise">The durable unit of knowledge is shifting from the note to the artifact.</p>
+    <p class="cb-bridge-consequence">So HTML is the substrate. <em>Now what?</em></p>
+  </div>
 
   <section class="cb-section" id="questions" aria-labelledby="questions-title">
     <p class="cb-sec-num"><span class="accent">§ I.</span> Four questions</p>
@@ -750,6 +779,13 @@
         <p class="cb-question-ref">produce prompt · CAPSULE_CORE.md</p>
       </article>
     </div>
+
+    <aside class="cb-aside" aria-labelledby="tools-h">
+      <h3 id="tools-h">Tools, <em>not apps.</em></h3>
+      <p>Capsules can have rich runtime tools — measure, filter, annotate, search, export — without becoming applications. The line is the JavaScript-off test: does the substance of the content depend on JS to exist? If no, it's an interactive archive — tools query the content but don't generate it. If yes, it's an app, and the spec says no.</p>
+      <p>Mintel's exploration-map capsules ship click-to-measure and click-to-find-coordinates. With JS off, the map still renders (via the static image fallback), the legend and attribution are still there. The tools are gone; the substance isn't.</p>
+      <p><a href="spec/CAPSULE_SPEC.md" class="external" rel="noopener">Read the spec — §2.3 Rendering Model</a></p>
+    </aside>
 
     <aside class="cb-aside" aria-labelledby="aside-h">
       <h3 id="aside-h">File over app, <em>taken further.</em></h3>
@@ -845,7 +881,7 @@
     </div>
     <div class="cb-colophon">
       <span>Set in system sans · Apache 2.0</span>
-      <span>capsule:landing/v10.5.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
+      <span>capsule:landing/v10.6.0 · uuid 7d1a1ac8 · sealed 2026-05-20</span>
     </div>
   </footer>
 </main>
@@ -929,7 +965,9 @@ Data to embed:
     push(``);
     push(`**${data.stats.rules}** rules · **${data.stats.blocks}** required blocks · **${data.stats.network_deps}** network deps`);
     push(``);
-    push(`## ${data.bridge}`);
+    push(`## ${data.bridge.consequence}`);
+    push(``);
+    push(`> ${data.bridge.premise}`);
     push(``);
     push(`### Four questions`);
     push(``);
@@ -941,6 +979,14 @@ Data to embed:
       push(`_${q.ref}_`);
       push(``);
     });
+    push(`### ${data.tools_not_apps.heading}`);
+    push(``);
+    data.tools_not_apps.paragraphs.forEach(function (p) {
+      push(p);
+      push(``);
+    });
+    push(`→ [${data.tools_not_apps.link_text}](${data.tools_not_apps.link_url})`);
+    push(``);
     push(`### ${data.file_over_app.heading}`);
     push(``);
     push(data.file_over_app.body);

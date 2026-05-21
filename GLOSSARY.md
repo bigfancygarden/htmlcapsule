@@ -67,6 +67,10 @@ The project's positioning. Capsules exist so useful AI work survives across tool
 
 An AI platform that can read many file types and connect to many sources directly (Claude, ChatGPT with connectors, Gemini, etc.). Complementary to capsules — a smart reader still needs explicit packaging, provenance, intent, and usage rules to reason responsibly.
 
+### Interactive archive
+
+A capsule with runtime tools — measure, filter, search, annotate, sort, export, print, domain-specific affordances like `map.measure` — layered on top of pre-rendered content. The operational litmus is the **JavaScript-off test**: if JS doesn't run, the substance of the artifact is still there (the tools are just gone). Tools query the content; tools never produce it. Contrast with an "app," where the substance itself depends on JS to exist — forbidden by Core rule 12. Named in spec v0.3.4 (§2.3) to head off the recurring misreading that "archives, not apps" means "no interactive features at all." Mintel's `domain.exploration_map` capsules are the canonical example: click-to-measure and click-to-find-coordinates on top of static map content (rendered chrome plus image fallback for geometry).
+
 ---
 
 ## The four layers
