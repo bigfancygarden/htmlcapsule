@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.3.0",
+  "capsule_version": "11.4.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in temporary hero framing exploration mode. v11.3.0 removes the meta 'Hero framing exploration · Picking the right framing' explainer section that used to sit above the gallery — the page now opens directly with variant 00 (Observation preamble). Adds variant 00b ('Lived practice · maintainer's own use'), a paired case-study preamble that opens with Thariq's FAQ answer about viewing HTML files and then has the maintainer's own first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues — explicitly acknowledging the file-size tradeoff. Sits on a soft-cream background (#fcfaf3) immediately below variant 00's editorial white. v11.2.0 added variant 00 (observation-led preamble at top of gallery). v11.1.0 added variant 09 (plain-English context-led on-ramp) and swapped variant 06's 'but alive' → 'but inspectable'. v11.0.0 replaced the conventional v10.x structure with the candidate gallery. v10.15 preserved at commit 94c3802. UUID 7d1a1ac8 preserved through v11.3.",
+  "description": "Landing page in temporary hero framing exploration mode. v11.4.0 tightens the opening pair (00 + 00b) and the topbar. Specifically: drops the meta framing-tag rows that read 'Observation-led preamble · designed to sit above any hero' and 'Lived practice · maintainer's own use' (the corner labels '00 · preamble' / '00b · case study' carry that signal sufficiently); shrinks frame padding for the preamble pair so they're sized to their content rather than viewport-height-filling; reduces the variant 00 'Take it further' CTA from a heavy primary button to a quieter mono text link with arrow; tightens the topbar's top-and-bottom padding for less leading whitespace. Also fixes the voice quotes: Thariq's quote now uses proper Unicode ellipses (&hellip;) at the two elision points (after 'communicate with us' and after 'restricting format'); Karpathy's pull-quote uses curly typographic quotes (&ldquo;&rdquo;) around the inner 'structure your response as HTML' phrase and is bracketed with leading + trailing ellipses to signal it's a mid-sentence extract from the canonical archive at voices/karpathy-html-progression-2026.html. UUID 7d1a1ac8 preserved through v11.4.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -147,14 +147,14 @@
     margin: 0 auto;
     padding: 0 clamp(24px, 5vw, 64px);
   }
-  .cb-shell.cb-shell-top { padding-top: 36px; }
+  .cb-shell.cb-shell-top { padding-top: 20px; }
   .cb-shell.cb-shell-foot { padding-bottom: 64px; }
 
   /* Top bar */
   .cb-topbar {
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px; flex-wrap: wrap;
-    padding-bottom: 24px;
+    padding-bottom: 14px;
     border-bottom: 1px solid var(--rule);
   }
   .cb-mark {
@@ -871,14 +871,20 @@
   .cb-frame[data-num="09"] { background: #fbfaf5; }   /* near-white warm */
 
   /* Observation-led preamble (variant 00) — editorial composition */
+  /* Tighter vertical rhythm than the hero frames; not viewport-height-filling */
+  .cb-frame.is-observation {
+    padding-top: clamp(40px, 5vh, 64px);
+    padding-bottom: clamp(40px, 5vh, 64px);
+    min-height: 0;
+  }
   .cb-frame.is-observation .cb-frame-inner { max-width: 780px; }
   .cb-frame.is-observation .cb-frame-title.is-observation-h {
-    font-size: clamp(28px, 3.6vw, 42px);
+    font-size: clamp(24px, 3vw, 36px);
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.18;
     max-width: 28ch;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
   .cb-frame.is-observation .cb-kicker {
     color: var(--accent);
@@ -893,9 +899,9 @@
     margin-left: 1px;
   }
   .cb-frame-footnote {
-    font: 400 14px/1.5 var(--sans);
+    font: 400 13.5px/1.5 var(--sans);
     color: var(--ink-mute);
-    margin: 0 0 36px;
+    margin: 0 0 26px;
     max-width: 56ch;
     font-style: italic;
   }
@@ -906,24 +912,24 @@
     font-style: normal;
   }
   .cb-frame-lead {
-    font: 500 16px/1.5 var(--sans);
+    font: 500 15px/1.5 var(--sans);
     color: var(--ink-soft);
-    margin: 0 0 18px;
+    margin: 0 0 14px;
   }
   .cb-quote {
-    margin: 0 0 22px;
-    padding: 18px 24px;
+    margin: 0 0 16px;
+    padding: 14px 20px;
     background: var(--paper);
     border-left: 3px solid var(--accent);
     border-radius: 0 4px 4px 0;
   }
   .cb-quote blockquote {
-    margin: 0 0 10px;
-    font: 400 16.5px/1.55 var(--sans);
+    margin: 0 0 8px;
+    font: 400 15.5px/1.5 var(--sans);
     color: var(--ink);
   }
   .cb-quote figcaption {
-    font: 500 12.5px/1 var(--mono);
+    font: 500 12px/1 var(--mono);
     letter-spacing: 0.04em;
     color: var(--ink-mute);
   }
@@ -932,11 +938,25 @@
     border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
   }
   .cb-frame-leadin {
-    font: 500 17px/1.45 var(--sans);
+    font: 500 16px/1.45 var(--sans);
     color: var(--ink-soft);
-    margin: 28px 0 28px;
+    margin: 22px 0 18px;
     max-width: 56ch;
   }
+  .cb-frame-jumplink {
+    font: 500 13px/1 var(--mono);
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+  .cb-frame-jumplink a {
+    color: var(--accent);
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+  .cb-frame-jumplink a:hover, .cb-frame-jumplink a:focus {
+    color: var(--accent-deep);
+    border-bottom-color: var(--accent-deep);
+  }
+  .cb-frame-jumplink .arrow { margin-left: 4px; }
   .cb-frame-leadin em {
     font-style: normal;
     color: var(--ink);
@@ -947,34 +967,34 @@
   .cb-frame[data-num="00b"] { background: #fcfaf3; }
   .cb-frame.is-case-study .cb-frame-inner { max-width: 760px; }
   .cb-frame-kicker-line {
-    font: 500 12px/1 var(--mono);
+    font: 500 11.5px/1 var(--mono);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    margin: 0 0 14px;
+    margin: 0 0 12px;
   }
   .cb-frame.is-case-study .cb-frame-bridge {
     font-family: var(--sans);
     font-weight: 600;
-    font-size: clamp(26px, 3.4vw, 38px);
-    line-height: 1.18;
-    letter-spacing: -0.022em;
+    font-size: clamp(22px, 2.8vw, 30px);
+    line-height: 1.2;
+    letter-spacing: -0.018em;
     color: var(--ink);
     font-style: italic;
-    margin: 32px 0 22px;
-    max-width: 22ch;
+    margin: 22px 0 16px;
+    max-width: 24ch;
   }
   .cb-frame-prose {
-    font: 400 16.5px/1.6 var(--sans);
+    font: 400 15.5px/1.6 var(--sans);
     color: var(--ink-soft);
-    margin: 0 0 18px;
+    margin: 0 0 14px;
     max-width: 60ch;
   }
   .cb-frame-signoff {
-    font: 500 13px/1.4 var(--mono);
+    font: 500 12.5px/1.4 var(--mono);
     letter-spacing: 0.04em;
     color: var(--ink-mute);
-    margin: 28px 0 28px;
+    margin: 18px 0 22px;
   }
   .cb-frame-signoff a {
     color: var(--ink-mute);
@@ -1108,27 +1128,24 @@
     <article class="cb-frame is-observation" data-num="00" aria-labelledby="frame-00-title">
       <span class="cb-frame-num">00 · preamble</span>
       <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Observation-led preamble · designed to sit above any hero</p>
         <h2 class="cb-frame-title is-observation-h" id="frame-00-title"><span class="cb-kicker">Observation:</span> HTML has emerged as a key substrate<sup class="cb-aster">*</sup> for AI-assisted work.</h2>
         <p class="cb-frame-footnote"><sup>*</sup> I know, I know — "substrate" is overused.</p>
 
         <p class="cb-frame-lead">Two leading voices, same direction:</p>
 
         <figure class="cb-quote">
-          <blockquote>Markdown has become the dominant file format used by agents to communicate with us. But as agents have become more and more powerful, I have felt that markdown has become a restricting format. I've started preferring HTML as an output format instead of Markdown — and increasingly see this being used by others on the Claude Code team.</blockquote>
+          <blockquote>Markdown has become the dominant file format used by agents to communicate with us&hellip; But as agents have become more and more powerful, I have felt that markdown has become a restricting format&hellip; I've started preferring HTML as an output format instead of Markdown and increasingly see this being used by others on the Claude Code team.</blockquote>
           <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a></figcaption>
         </figure>
 
         <figure class="cb-quote">
-          <blockquote>at the end of your query ask your LLM to "structure your response as HTML".</blockquote>
+          <blockquote>&hellip; at the end of your query ask your LLM to &ldquo;structure your response as HTML&rdquo;&hellip;</blockquote>
           <figcaption>— Andrej Karpathy · <a href="voices/karpathy-html-progression-2026.html">archive</a></figcaption>
         </figure>
 
         <p class="cb-frame-leadin">So the question becomes: <em>what do you do with all that HTML?</em></p>
 
-        <div class="cb-frame-cta">
-          <a href="#frame-00b-title" class="cb-btn primary">Take it further <span class="arrow">↓</span></a>
-        </div>
+        <p class="cb-frame-jumplink"><a href="#frame-00b-title">Take it further <span class="arrow">↓</span></a></p>
       </div>
     </article>
 
@@ -1136,8 +1153,6 @@
     <article class="cb-frame is-observation is-case-study" data-num="00b" aria-labelledby="frame-00b-title">
       <span class="cb-frame-num">00b · case study</span>
       <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Lived practice · maintainer's own use</p>
-
         <p class="cb-frame-kicker-line">From Thariq's FAQ:</p>
 
         <figure class="cb-quote">
@@ -1327,7 +1342,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.3.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.4.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
