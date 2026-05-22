@@ -1,0 +1,105 @@
+/*
+ * HTML Capsule design system — tokens
+ * ────────────────────────────────────
+ * Origin: Claude Design proposal (proposal.html in this folder),
+ *         received 2026-05-22.
+ *
+ * For use: copy the :root block verbatim into a Capsule's
+ *          <style id="capsule-style"> block. Then apply the semantic
+ *          hues to .is-observation / .is-question / .is-answer.
+ *
+ * Capsule compliance: this file uses a system-font fallback stack
+ *          (no Google Fonts link), so the :root block can be inlined
+ *          into any Capsule without violating Core rule 2 (no network).
+ *
+ * Mapping: see README.md in this folder for the full design system,
+ *          the five-hue taxonomy, and the page-by-page application table.
+ */
+
+:root {
+  /* ── Paper system — cool fog ─────────────────────────── */
+  --paper:        #f5f6f8;
+  --paper-soft:   #ebedf1;
+  --paper-deep:   #dee1e7;
+  --paper-page:   #ffffff;
+
+  /* ── Ink ─────────────────────────────────────────────── */
+  --ink:          #0c0e13;
+  --ink-soft:     #2a2e38;
+  --ink-mute:     #5d6470;
+  --ink-faint:    #8a909c;
+  --ink-quiet:    #b0b5be;
+
+  /* ── Rule ────────────────────────────────────────────── */
+  --rule:         #dde0e6;
+  --rule-soft:    #e8eaef;
+  --rule-strong:  #c8ccd4;
+
+  /* ── Five semantic hues — taxonomy ───────────────────── */
+  /* Indigo  → brand · primary CTA · headline emphasis · spec material */
+  --indigo:       #4f46e5;
+  --indigo-soft:  #eef0fe;
+  --indigo-edge:  #c7cbf6;
+  --indigo-deep:  #3730a3;
+
+  /* Violet  → Questions · open work · research-flagged */
+  --violet:       #7c3aed;
+  --violet-soft:  #f3edff;
+  --violet-edge:  #d6c5fa;
+  --violet-deep:  #5b21b6;
+
+  /* Teal    → Observations · evidence · quotes */
+  --teal:         #0d9488;
+  --teal-soft:    #e0f5f1;
+  --teal-edge:    #a8dcd1;
+  --teal-deep:    #115e59;
+
+  /* Amber   → Answers · maintainer voice · essay */
+  --amber:        #b45309;
+  --amber-soft:   #fbeed5;
+  --amber-edge:   #ecd09b;
+  --amber-deep:   #7c2d12;
+
+  /* Rose    → Pain · negation · "shouldn't die" framing */
+  --rose:         #be123c;
+  --rose-soft:    #fce4ea;
+  --rose-edge:    #efb7c2;
+  --rose-deep:    #831843;
+
+  /* ── Typography — system-font fallback discipline ────── */
+  /* Geist if locally installed; otherwise the project's existing
+     system-ui stack. No Google Fonts link required. */
+  --sans:   "Geist", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono:   "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ── Layout ──────────────────────────────────────────── */
+  --shell-w: 1240px;
+
+  /* ── Radii ───────────────────────────────────────────── */
+  --radius:      14px;  /* cards, panels */
+  --radius-sm:    8px;  /* controls, buttons, inputs */
+  --radius-pill: 999px; /* eyebrows, tags, status chips */
+}
+
+/* ── Utility — weight-contrast headline emphasis ───────── */
+/* Use inside headlines to mix the "light" connective phrasing
+   (weight 300) with the "punch" word (weight 800). The punch
+   class inherits its color from a contextual modifier — set
+   it on the parent element by adding e.g. .punch-indigo,
+   .punch-teal, .punch-amber, .punch-violet, or .punch-rose. */
+
+.is-light  { font-weight: 300; color: var(--ink-soft); }
+.is-punch  { font-weight: 800; }
+.is-punch.is-indigo { color: var(--indigo); }
+.is-punch.is-teal   { color: var(--teal); }
+.is-punch.is-amber  { color: var(--amber); }
+.is-punch.is-violet { color: var(--violet); }
+.is-punch.is-rose   { color: var(--rose); }
+
+/* ── Utility — section-kind background tints ───────────── */
+/* Apply on .is-observation / .is-question / .is-answer cards
+   for the taxonomy color treatment. */
+
+.is-observation.is-tinted { background: var(--teal-soft);   border-color: var(--teal-edge); }
+.is-question.is-tinted    { background: var(--violet-soft); border-color: var(--violet-edge); }
+.is-answer.is-tinted      { background: var(--amber-soft);  border-color: var(--amber-edge); }

@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual enhancements for HTML Capsule — proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Paper system — warm archival */
+    --paper:       #f4f0e6;
+    --paper-soft:  #ebe6d8;
+    --paper-deep:  #e0d9c6;
+    --paper-page:  #faf8f1;
+
+    /* Cool counterpart (for the research/spec register) */
+    --fog:         #eef1f4;
+    --fog-soft:    #e4e8ee;
+    --fog-deep:    #d5dae3;
+
+    /* Ink */
+    --ink:         #15140f;
+    --ink-soft:    #2b2820;
+    --ink-mute:    #6b6453;
+    --ink-faint:   #9e9682;
+    --ink-cool:    #4a5260;
+
+    /* Rule */
+    --rule:        #d8d2c1;
+    --rule-soft:   #e6e1d0;
+    --rule-cool:   #cfd5dd;
+
+    /* Accent — oxide / sealed wax */
+    --accent:      #b44518;
+    --accent-deep: #8a3210;
+    --accent-soft: #f1d8c8;
+    --accent-tint: rgba(180,69,24,0.07);
+
+    --serif:  "Newsreader", "Iowan Old Style", "Charter", Georgia, "Times New Roman", serif;
+    --sans:   "Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, sans-serif;
+    --mono:   "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --shell-w: 1180px;
+    --measure: 64ch;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { background: var(--paper); }
+  body {
+    background:
+      radial-gradient(1200px 800px at 80% -10%, #efe9d8 0%, transparent 60%),
+      radial-gradient(900px 600px at -10% 30%, #eee7d2 0%, transparent 55%),
+      var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "ss02", "cv11";
+  }
+
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, transparent); transition: color .15s, border-color .15s; }
+  a:hover { color: var(--accent-deep); border-bottom-color: var(--accent-deep); }
+  code, kbd, samp { font-family: var(--mono); font-size: 0.9em; font-feature-settings: "ss02"; }
+  ::selection { background: color-mix(in oklab, var(--accent) 28%, transparent); }
+
+  /* ─── Shell ─────────────────────────────────────────── */
+
+  .shell { max-width: var(--shell-w); margin: 0 auto; padding: 0 clamp(28px, 5vw, 72px); }
+  .shell-narrow { max-width: 880px; margin: 0 auto; padding: 0 clamp(28px, 5vw, 56px); }
+
+  /* ─── Masthead ──────────────────────────────────────── */
+
+  .masthead {
+    padding: 56px 0 18px;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: end;
+  }
+  .masthead-mark {
+    display: inline-flex; align-items: center; gap: 10px;
+    font: 500 13px/1 var(--mono);
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .masthead-mark .glyph { color: var(--accent); }
+  .masthead-title {
+    text-align: center;
+    font: 500 13px/1 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .masthead-meta {
+    text-align: right;
+    font: 500 12px/1.4 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+  .masthead-meta strong { color: var(--accent); font-weight: 600; }
+
+  /* ─── Title plate ───────────────────────────────────── */
+
+  .plate {
+    padding: clamp(72px, 12vw, 144px) 0 clamp(48px, 8vw, 96px);
+    position: relative;
+  }
+  .plate-eyebrow {
+    font: 500 12.5px/1 var(--mono);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 32px;
+  }
+  .plate-eyebrow::before {
+    content: ""; display: inline-block;
+    width: 28px; height: 1px; background: currentColor;
+    vertical-align: 0.3em; margin-right: 14px;
+  }
+  .plate h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(48px, 9.5vw, 128px);
+    line-height: 0.94;
+    letter-spacing: -0.028em;
+    color: var(--ink);
+    margin: 0 0 28px;
+    max-width: 14ch;
+    text-wrap: balance;
+    font-feature-settings: "ss01";
+  }
+  .plate h1 .roman { font-style: normal; }
+  .plate h1 .swash { color: var(--accent); }
+  .plate-sub {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 50ch;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .plate-byline {
+    margin-top: 56px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    font: 500 12px/1.4 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .plate-byline span strong { color: var(--ink); font-weight: 600; }
+
+  /* Corner brackets that frame the page like a seal */
+  .plate::before, .plate::after,
+  .plate-corners::before, .plate-corners::after {
+    content: "";
+    position: absolute;
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--accent);
+    pointer-events: none;
+  }
+  .plate::before  { top: 24px; left: 0;   border-right: 0; border-bottom: 0; }
+  .plate::after   { top: 24px; right: 0;  border-left: 0;  border-bottom: 0; }
+  .plate-corners { position: absolute; inset: 0; pointer-events: none; }
+  .plate-corners::before { bottom: 24px; left: 0;  border-right: 0; border-top: 0; }
+  .plate-corners::after  { bottom: 24px; right: 0; border-left: 0;  border-top: 0; }
+
+  /* ─── Section spec — universal numbered section header ── */
+
+  .section { padding: clamp(56px, 8vw, 96px) 0; border-top: 1px solid var(--rule); position: relative; }
+  .section-head {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: clamp(24px, 4vw, 48px);
+    margin-bottom: clamp(40px, 5vw, 64px);
+    align-items: start;
+  }
+  .section-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--accent);
+    margin: 0;
+    padding-top: 6px;
+  }
+  .section-num .ampersand { color: var(--ink-mute); margin: 0 4px; font-style: normal; }
+  .section-title-block h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(34px, 4.6vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+  .section-title-block h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .section-title-block p {
+    font: 400 17px/1.55 var(--sans);
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ─── Memo: diagnosis + moves ───────────────────────── */
+
+  .diagnosis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    margin-bottom: clamp(40px, 5vw, 72px);
+  }
+  .diag-col h3 {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .diag-col ul { list-style: none; padding: 0; margin: 0; }
+  .diag-col li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    font: 400 15.5px/1.5 var(--sans);
+    color: var(--ink-soft);
+  }
+  .diag-col li:last-child { border-bottom: none; }
+  .diag-col li::before {
+    content: "";
+    width: 8px; height: 8px;
+    margin-top: 8px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+  .diag-col.cool li::before { background: var(--ink); }
+  .diag-col li strong { color: var(--ink); font-weight: 600; }
+
+  .moves {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .move {
+    padding: 28px 28px 28px 0;
+    border-right: 1px solid var(--rule-soft);
+    position: relative;
+  }
+  .move:last-child { border-right: none; }
+  .move:not(:first-child) { padding-left: 28px; }
+  .move-num {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+  .move h4 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.18;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 0 0 12px;
+    max-width: 22ch;
+  }
+  .move h4 em { color: var(--accent); font-style: italic; font-weight: 500; }
+  .move p {
+    font: 400 14.5px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 32ch;
+  }
+
+  /* ─── Tokens section ────────────────────────────────── */
+
+  .tokens-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    gap: clamp(20px, 3vw, 36px);
+  }
+  .token-card {
+    background: var(--paper-page);
+    border: 1px solid var(--rule);
+    padding: 28px;
+    position: relative;
+  }
+  .token-card::before, .token-card::after {
+    content: ""; position: absolute;
+    width: 12px; height: 12px;
+    border: 1px solid var(--accent);
+  }
+  .token-card::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+  .token-card::after  { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+  .token-card h4 {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 20px;
+  }
+
+  /* Type specimen card */
+  .specimen-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .specimen-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .specimen-row .label {
+    font: 500 10.5px/1.3 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .specimen-serif {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+  .specimen-sans {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .specimen-mono {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+  }
+
+  /* Color swatches */
+  .swatch-row {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 14px;
+    padding: 11px 0;
+    align-items: center;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .swatch-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .swatch {
+    width: 36px; height: 36px;
+    border: 1px solid var(--rule);
+    position: relative;
+  }
+  .swatch.has-stripe::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, transparent 0 4px, rgba(0,0,0,0.05) 4px 5px);
+  }
+  .swatch-label {
+    font: 500 13px/1.3 var(--sans);
+    color: var(--ink);
+  }
+  .swatch-label span {
+    display: block;
+    font: 400 11px/1.3 var(--mono);
+    color: var(--ink-mute);
+    margin-top: 2px;
+    letter-spacing: 0;
+  }
+  .swatch-hex {
+    font: 500 11px/1 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+
+  /* Motifs */
+  .motif {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: center;
+  }
+  .motif:last-child { border-bottom: none; padding-bottom: 0; }
+  .motif-art {
+    width: 80px; height: 56px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .motif-text {
+    font: 500 13px/1.35 var(--sans);
+    color: var(--ink);
+  }
+  .motif-text span {
+    display: block;
+    font: 400 11.5px/1.4 var(--mono);
+    color: var(--ink-mute);
+    margin-top: 3px;
+  }
+
+  /* Motif: corner brackets */
+  .motif-brackets::before, .motif-brackets::after,
+  .motif-brackets > i::before, .motif-brackets > i::after {
+    content: ""; position: absolute;
+    width: 9px; height: 9px;
+    border: 1.5px solid var(--accent);
+  }
+  .motif-brackets::before { top: 4px; left: 4px; border-right: 0; border-bottom: 0; }
+  .motif-brackets::after  { top: 4px; right: 4px; border-left: 0; border-bottom: 0; }
+  .motif-brackets > i { position: absolute; inset: 0; }
+  .motif-brackets > i::before { bottom: 4px; left: 4px; border-right: 0; border-top: 0; }
+  .motif-brackets > i::after  { bottom: 4px; right: 4px; border-left: 0; border-top: 0; }
+
+  /* Motif: 5 stacked blocks */
+  .motif-blocks {
+    display: flex; flex-direction: column;
+    padding: 6px; gap: 2px;
+  }
+  .motif-blocks > i {
+    flex: 1;
+    background: var(--paper-deep);
+    border-left: 2px solid var(--accent);
+  }
+  .motif-blocks > i:nth-child(3) { background: color-mix(in oklab, var(--accent) 18%, var(--paper-deep)); }
+
+  /* Motif: number ligature */
+  .motif-num {
+    display: grid; place-items: center;
+    font-family: var(--serif); font-style: italic;
+    font-size: 28px; font-weight: 500;
+    color: var(--accent);
+  }
+
+  /* Motif: rule with marginalia */
+  .motif-rule {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 8px;
+  }
+  .motif-rule > i:first-child { flex: 1; height: 1px; background: var(--ink); }
+  .motif-rule > b {
+    font: 500 9px/1 var(--mono); color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── Specimens (worked examples) ───────────────────── */
+
+  .examples { padding: clamp(40px, 6vw, 80px) 0; }
+  .example {
+    margin-bottom: clamp(60px, 8vw, 120px);
+  }
+  .example-meta {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    gap: 24px;
+    margin-bottom: 24px;
+    align-items: end;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .example-tag {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .example-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(24px, 3vw, 32px);
+    line-height: 1.05;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .example-title em { font-style: italic; color: var(--accent); font-weight: 500; }
+  .example-files {
+    font: 400 12px/1.4 var(--mono);
+    color: var(--ink-mute);
+    text-align: right;
+  }
+  .example-notes {
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 24px;
+  }
+  .example-notes-label {
+    font: 500 11px/1.3 var(--mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .example-notes ul {
+    margin: 0; padding: 0; list-style: none;
+    columns: 2;
+    column-gap: 36px;
+  }
+  .example-notes li {
+    font: 400 14.5px/1.5 var(--sans);
+    color: var(--ink-soft);
+    padding: 4px 0;
+    break-inside: avoid;
+  }
+  .example-notes li::before {
+    content: "→ ";
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .example-notes li strong { color: var(--ink); font-weight: 600; }
+
+  /* The mockup frame — looks like a page on a desk */
+  .mock {
+    border: 1px solid var(--rule);
+    background: var(--paper-page);
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 1px 0 rgba(21,20,15,0.03),
+      0 20px 40px -20px rgba(21,20,15,0.12),
+      0 40px 80px -30px rgba(21,20,15,0.08);
+  }
+  .mock-chrome {
+    padding: 14px 20px;
+    background: var(--paper-soft);
+    border-bottom: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+    font: 500 11.5px/1 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+  }
+  .mock-chrome .dots { display: flex; gap: 6px; }
+  .mock-chrome .dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--paper-deep);
+    border: 1px solid var(--rule);
+  }
+  .mock-body {
+    padding: clamp(40px, 6vw, 72px);
+    position: relative;
+  }
+
+  /* Variant: cool fog background for spec/research */
+  .mock.is-cool { background: #fbfaf8; }
+  .mock.is-cool .mock-chrome { background: var(--fog-soft); border-bottom-color: var(--rule-cool); }
+  .mock.is-cool .mock-chrome .dots span { background: var(--fog-deep); border-color: var(--rule-cool); }
+
+  /* ─── Mockup 1: Landing ─────────────────────────────── */
+
+  .mock-landing .top-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 64px;
+  }
+  .mock-landing .wordmark {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  .mock-landing .wordmark .glyph {
+    width: 28px; height: 16px;
+    border: 1.5px solid var(--ink);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 9px; font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+  .mock-landing .wordmark .ver {
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 8px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+  }
+  .mock-landing .topnav {
+    display: flex; gap: 22px;
+    font: 500 12.5px/1 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .mock-landing .topnav span:hover { color: var(--accent); cursor: default; }
+
+  .mock-landing .hero-eyebrow {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 28px;
+  }
+  .mock-landing .hero-eyebrow::before {
+    content: ""; display: inline-block;
+    width: 24px; height: 1px; background: currentColor;
+    vertical-align: 0.3em; margin-right: 12px;
+  }
+  .mock-landing .hero-h {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(56px, 8vw, 104px);
+    line-height: 0.94;
+    letter-spacing: -0.028em;
+    color: var(--ink);
+    margin: 0 0 24px;
+    max-width: 13ch;
+    text-wrap: balance;
+  }
+  .mock-landing .hero-h em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .mock-landing .hero-sub {
+    font: 400 19px/1.5 var(--sans);
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: 0 0 36px;
+  }
+
+  .mock-landing .hero-cta {
+    display: flex; gap: 14px; margin-bottom: 56px; flex-wrap: wrap;
+  }
+  .mock-landing .btn {
+    font: 600 13.5px/1 var(--sans);
+    padding: 14px 22px;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    background: transparent;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    letter-spacing: 0.01em;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .mock-landing .btn.primary { background: var(--ink); color: var(--paper-page); }
+  .mock-landing .btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+  .mock-landing .btn:hover { background: var(--ink); color: var(--paper-page); }
+  .mock-landing .btn .arrow { color: var(--accent); }
+  .mock-landing .btn.primary .arrow { color: var(--paper-page); }
+
+  .mock-landing .anatomy {
+    margin-top: 24px;
+    padding: 32px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    position: relative;
+  }
+  .mock-landing .anatomy::before, .mock-landing .anatomy::after {
+    content: ""; position: absolute;
+    width: 14px; height: 14px;
+    border: 1px solid var(--accent);
+  }
+  .mock-landing .anatomy::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+  .mock-landing .anatomy::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+  .mock-landing .anatomy-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .mock-landing .anatomy-head h3 {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+  .mock-landing .anatomy-head .file {
+    font: 500 11.5px/1 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+  }
+  .mock-landing .anatomy-blocks {
+    display: grid; gap: 8px;
+  }
+  .mock-landing .block {
+    display: grid;
+    grid-template-columns: 24px 200px 1fr auto;
+    gap: 18px;
+    padding: 12px 14px;
+    background: var(--paper-page);
+    border-left: 3px solid var(--accent);
+    align-items: center;
+  }
+  .mock-landing .block.is-emphasis {
+    background: var(--accent-tint);
+    border-left-width: 6px;
+  }
+  .mock-landing .block .n {
+    font: 500 11px/1 var(--mono);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .mock-landing .block .k {
+    font: 500 13.5px/1 var(--mono);
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+  .mock-landing .block .d {
+    font: 400 13.5px/1.4 var(--sans);
+    color: var(--ink-soft);
+  }
+  .mock-landing .block .opt {
+    font: 500 10px/1 var(--mono);
+    color: var(--ink-faint);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ─── Mockup 2: Research ────────────────────────────── */
+
+  .mock-research { font-feature-settings: "ss01"; }
+  .mock-research .paper-top {
+    text-align: center;
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+    border-bottom: 1px double var(--rule-cool);
+  }
+  .mock-research .paper-eyebrow {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 22px;
+  }
+  .mock-research .paper-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(40px, 5.5vw, 68px);
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .mock-research .paper-title em { font-style: italic; color: var(--accent); font-weight: 500; }
+  .mock-research .paper-tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin: 0 auto;
+  }
+  .mock-research .paper-byline {
+    margin-top: 26px;
+    font: 500 12px/1.4 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+  }
+  .mock-research .paper-byline a { color: var(--accent); border-bottom: none; }
+
+  .mock-research .abstract {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 28px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule-cool);
+    margin-bottom: 48px;
+  }
+  .mock-research .abstract-label {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .mock-research .abstract p {
+    font: 400 15.5px/1.6 var(--sans);
+    color: var(--ink);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .mock-research .abstract p strong { color: var(--accent); font-weight: 600; }
+
+  .mock-research .findings { margin-bottom: 48px; }
+  .mock-research .findings-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule-cool);
+  }
+  .mock-research .findings-head h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 26px;
+    color: var(--ink);
+    margin: 0;
+  }
+  .mock-research .findings-head .count {
+    font: 500 11px/1 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.12em;
+  }
+  .mock-research .finding {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .mock-research .finding:last-child { border-bottom: none; }
+  .mock-research .finding-id {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 24px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .mock-research .finding-id .o { color: var(--ink-mute); font-style: normal; }
+  .mock-research .finding-claim {
+    font: 400 17px/1.45 var(--sans);
+    color: var(--ink);
+    margin: 0;
+    text-wrap: pretty;
+    max-width: 60ch;
+  }
+  .mock-research .finding-claim strong { color: var(--accent); font-weight: 600; }
+
+  .mock-research .lifecycle {
+    margin-top: 48px;
+    padding: 28px 0;
+    border-top: 1px solid var(--rule-cool);
+  }
+  .mock-research .lifecycle-h {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ink);
+    margin: 0 0 24px;
+  }
+  .mock-research .lifecycle-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    align-items: stretch;
+  }
+  .mock-research .stage {
+    padding: 18px 14px 16px;
+    background: #fbfaf6;
+    border: 1px solid var(--rule-soft);
+    position: relative;
+  }
+  .mock-research .stage.is-ours {
+    background: var(--accent-tint);
+    border-color: var(--accent);
+    border-width: 1.5px;
+  }
+  .mock-research .stage .step {
+    font: 500 10px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 8px;
+  }
+  .mock-research .stage.is-ours .step { color: var(--accent); }
+  .mock-research .stage .name {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 21px;
+    color: var(--ink);
+    line-height: 1;
+    margin: 0 0 8px;
+  }
+  .mock-research .stage.is-ours .name { color: var(--accent); }
+  .mock-research .stage .who {
+    font: 400 11.5px/1.35 var(--mono);
+    color: var(--ink-mute);
+    margin: 0;
+  }
+
+  /* ─── Mockup 3: Positioning ─────────────────────────── */
+
+  .mock-positioning {
+    background:
+      linear-gradient(180deg, transparent 0, transparent 60%, color-mix(in oklab, var(--accent) 3%, transparent) 100%),
+      var(--paper-page);
+  }
+  .mock-positioning .pos-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(40px, 6vw, 72px);
+    margin-bottom: 64px;
+    align-items: end;
+  }
+  .mock-positioning .pos-lead {}
+  .mock-positioning .pos-eyebrow {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+  }
+  .mock-positioning .pos-claim {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(40px, 6vw, 78px);
+    line-height: 0.98;
+    letter-spacing: -0.028em;
+    color: var(--ink);
+    margin: 0 0 22px;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+  .mock-positioning .pos-claim em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .mock-positioning .pos-claim s {
+    text-decoration: line-through;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    color: var(--ink-mute);
+  }
+  .mock-positioning .pos-aside {
+    border-left: 2px solid var(--accent);
+    padding: 8px 0 8px 22px;
+    font: 400 15px/1.5 var(--sans);
+    color: var(--ink-soft);
+    max-width: 32ch;
+  }
+  .mock-positioning .pos-aside .label {
+    font: 500 10px/1 var(--mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .mock-positioning .pos-sub {
+    font: 400 18px/1.5 var(--sans);
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0 0 56px;
+  }
+
+  /* Lifecycle wide diagram */
+  .lifecycle-wide {
+    margin-top: 8px;
+    padding: 40px 36px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    position: relative;
+  }
+  .lifecycle-wide::before, .lifecycle-wide::after {
+    content: ""; position: absolute;
+    width: 16px; height: 16px;
+    border: 1.5px solid var(--accent);
+  }
+  .lifecycle-wide::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+  .lifecycle-wide::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+  .lifecycle-wide-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .lifecycle-wide-head h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 26px;
+    color: var(--ink);
+    margin: 0;
+  }
+  .lifecycle-wide-head .seal-tag {
+    font: 500 11px/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .lifecycle-flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) ;
+    gap: 0;
+    position: relative;
+    align-items: stretch;
+  }
+  .lifecycle-flow::before {
+    content: "";
+    position: absolute;
+    left: 10%; right: 10%;
+    top: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--rule) 0, var(--accent) 35%, var(--accent) 65%, var(--rule) 100%);
+    pointer-events: none;
+  }
+  .stage-node {
+    text-align: center;
+    padding: 0 8px;
+    position: relative;
+  }
+  .stage-node .pin {
+    width: 18px; height: 18px;
+    margin: 24px auto 14px;
+    border: 1.5px solid var(--ink-mute);
+    background: var(--paper);
+    transform: rotate(45deg);
+    position: relative;
+    z-index: 1;
+  }
+  .stage-node.is-ours .pin {
+    width: 26px; height: 26px;
+    margin-top: 20px;
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .stage-node.is-ours .pin::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1.5px solid var(--paper);
+  }
+  .stage-node .stage-name {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ink);
+    margin: 0 0 6px;
+    line-height: 1;
+  }
+  .stage-node.is-ours .stage-name { color: var(--accent); }
+  .stage-node .stage-who {
+    font: 400 11.5px/1.4 var(--mono);
+    color: var(--ink-mute);
+    margin: 0;
+  }
+  .stage-node.is-ours .stage-who { color: var(--accent-deep); }
+
+  /* ─── Mockup 4: Notes (essay) ───────────────────────── */
+
+  .mock-notes {
+    background:
+      repeating-linear-gradient(0deg, transparent 0, transparent 31px, color-mix(in oklab, var(--rule-soft) 60%, transparent) 31px, color-mix(in oklab, var(--rule-soft) 60%, transparent) 32px),
+      var(--paper-page);
+  }
+  .mock-notes .notes-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 28px;
+    align-items: end;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 56px;
+  }
+  .mock-notes .notes-mark {
+    font: 500 12px/1 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+  }
+  .mock-notes .notes-mark a { color: var(--accent); border-bottom: none; }
+  .mock-notes .notes-meta {
+    font: 500 11.5px/1.4 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+    text-align: right;
+  }
+
+  .mock-notes .notes-title-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 56px;
+  }
+  .mock-notes .notes-cat {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+  }
+  .mock-notes .notes-cat::before {
+    content: ""; display: inline-block;
+    width: 24px; height: 1px; background: currentColor;
+    vertical-align: 0.3em; margin-right: 12px;
+  }
+  .mock-notes .notes-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(40px, 6vw, 76px);
+    line-height: 0.98;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+    margin: 0 0 22px;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+  .mock-notes .notes-title em { font-style: italic; color: var(--accent); font-weight: 500; }
+  .mock-notes .notes-deck {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    max-width: 48ch;
+    margin: 0 0 26px;
+  }
+  .mock-notes .notes-byline {
+    font: 500 12px/1.4 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+  .mock-notes .notes-byline strong { color: var(--accent); font-weight: 600; }
+
+  /* essay body */
+  .mock-notes .essay {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 32px;
+    margin-bottom: 36px;
+  }
+  .mock-notes .essay-marg {
+    font: 500 11px/1.5 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: right;
+    padding-top: 6px;
+  }
+  .mock-notes .essay-marg b {
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--accent);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-bottom: 4px;
+  }
+  .mock-notes .essay-body p {
+    font: 400 17.5px/1.6 var(--sans);
+    color: var(--ink);
+    margin: 0 0 18px;
+    text-wrap: pretty;
+  }
+  .mock-notes .essay-body p:first-of-type::first-letter {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 64px;
+    float: left;
+    line-height: 0.85;
+    padding: 6px 12px 0 0;
+    color: var(--accent);
+  }
+  .mock-notes .essay-body em { font-family: var(--serif); font-style: italic; font-weight: 500; }
+  .mock-notes .pullquote {
+    margin: 36px 0;
+    padding: 24px 28px;
+    border-top: 1px solid var(--accent);
+    border-bottom: 1px solid var(--accent);
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(22px, 2.8vw, 30px);
+    line-height: 1.25;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .mock-notes .pullquote::before { content: "\201C"; color: var(--accent); }
+  .mock-notes .pullquote::after { content: "\201D"; color: var(--accent); }
+
+  /* ─── Closing ───────────────────────────────────────── */
+
+  .closing {
+    padding: clamp(56px, 8vw, 96px) 0 clamp(72px, 10vw, 128px);
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+  .closing-tag {
+    font: 500 11.5px/1 var(--mono);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 24px;
+  }
+  .closing h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(32px, 4.5vw, 52px);
+    line-height: 1.1;
+    color: var(--ink);
+    margin: 0 0 28px;
+    max-width: 28ch;
+    margin-left: auto; margin-right: auto;
+    text-wrap: balance;
+  }
+  .closing h2 em { color: var(--accent); font-style: italic; }
+  .closing p {
+    font: 400 16px/1.55 var(--sans);
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0 auto 32px;
+  }
+  .closing-files {
+    display: flex; justify-content: center; gap: 4px 22px; flex-wrap: wrap;
+    font: 500 12px/1.4 var(--mono);
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+  .closing-files span { padding: 6px 0; }
+  .closing-files .sep { color: var(--ink-faint); }
+
+  /* ─── Responsive ────────────────────────────────────── */
+
+  @media (max-width: 900px) {
+    .diagnosis { grid-template-columns: 1fr; }
+    .moves { grid-template-columns: 1fr; }
+    .move { border-right: none; border-bottom: 1px solid var(--rule-soft); padding-left: 0 !important; }
+    .move:last-child { border-bottom: none; }
+    .tokens-grid { grid-template-columns: 1fr; }
+    .section-head { grid-template-columns: 1fr; gap: 16px; }
+    .example-meta { grid-template-columns: 1fr; gap: 8px; }
+    .example-files { text-align: left; }
+    .example-notes { grid-template-columns: 1fr; gap: 12px; }
+    .example-notes ul { columns: 1; }
+    .mock-positioning .pos-row { grid-template-columns: 1fr; }
+    .lifecycle-flow { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .lifecycle-flow::before { display: none; }
+    .mock-research .lifecycle-row { grid-template-columns: repeat(2, 1fr); }
+    .mock-notes .essay { grid-template-columns: 1fr; gap: 12px; }
+    .mock-notes .essay-marg { text-align: left; }
+    .mock-landing .block { grid-template-columns: 24px 1fr; }
+    .mock-landing .block .d, .mock-landing .block .opt { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="shell">
+  <div class="masthead">
+    <div class="masthead-mark">
+      <span class="glyph">◆</span>
+      <span>Capsule · Design memo 01</span>
+    </div>
+    <div class="masthead-title">Visual enhancements · proposal</div>
+    <div class="masthead-meta">
+      <div>2026 — 05 — 22</div>
+      <div><strong>Direction:</strong> editorial-archival</div>
+    </div>
+  </div>
+</header>
+
+<section class="shell plate">
+  <div class="plate-corners"></div>
+  <p class="plate-eyebrow">For your review, in seven parts</p>
+  <h1>A quieter, <span class="swash">heavier</span> <span class="roman">way to set</span> the page.</h1>
+  <p class="plate-sub">
+    The seven sketches you've been iterating on share an honest, documentary character — and a slightly anonymous one. This memo proposes a single visual vocabulary that keeps the documentary ethos and lends it weight: a literary serif for display, a neutral grotesk for body, and a small set of motifs (corner brackets, five-block anatomy, oxide accent) that show up consistently across the landing, the research page, the positioning page, and the notes essay. Four worked examples follow.
+  </p>
+  <div class="plate-byline">
+    <span><strong>Files in scope</strong> · index · landing-sketch · landing-sketch-v2 · research-sketch · research-sketch-v2 · positioning-sketch · notes</span>
+    <span><strong>Working title</strong> · HTML Capsule</span>
+  </div>
+</section>
+
+<!-- ─── §I Diagnosis + Moves ─────────────────────────── -->
+
+<section class="shell section">
+  <div class="section-head">
+    <div class="section-num"><em>§</em> I.</div>
+    <div class="section-title-block">
+      <h2>What's <em>working</em>, what isn't, three moves.</h2>
+      <p>The current set is restrained in a good way — no unnecessary product chrome, no AI tropes, no decorative gradients. But restraint isn't yet doing identity work. Two columns of diagnosis below, then the three moves that follow from them.</p>
+    </div>
+  </div>
+
+  <div class="diagnosis">
+    <div class="diag-col">
+      <h3>Working</h3>
+      <ul>
+        <li><strong>Tone is honest.</strong> No 'AI-powered' bombast, no SaaS gloss. Reads like a real research project.</li>
+        <li><strong>Hierarchy is sound.</strong> Mono + sans pairing reads as 'spec' without trying too hard.</li>
+        <li><strong>Each sketch has a clear job.</strong> Landing, research, positioning, notes are correctly differentiated by register.</li>
+        <li><strong>The 5-block anatomy is a real visual asset.</strong> Manifest, data, style, root, runtime — that's a logo waiting to happen.</li>
+      </ul>
+    </div>
+    <div class="diag-col cool">
+      <h3>Not yet working</h3>
+      <ul>
+        <li><strong>Type is anonymous.</strong> System sans does the lifting alone; no display face means no voice.</li>
+        <li><strong>Two palettes drift apart.</strong> Warm cream + orange in some, cool fog + blue in others — pages don't feel like siblings.</li>
+        <li><strong>The "capsule" metaphor is named but invisible.</strong> Nothing on the page reads as sealed, archival, or contained.</li>
+        <li><strong>The essay reads as a long div.</strong> The notes file deserves real editorial setting — drop cap, marginalia, pull quotes.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="moves">
+    <div class="move">
+      <p class="move-num">Move 01</p>
+      <h4>Adopt a <em>literary serif</em> for display.</h4>
+      <p>Newsreader (Google Fonts) — has italic, has optical sizes, has scholarly character. Pair with Geist + Geist Mono so body stays clean. The serif is the voice; everything else stays a whisper.</p>
+    </div>
+    <div class="move">
+      <p class="move-num">Move 02</p>
+      <h4>Unify on <em>warm paper + oxide</em>.</h4>
+      <p>One paper (#f4f0e6, warm cream) and one accent (#b44518, oxide). The accent reads as wax seal, archival ink, or weathered stamp — not 'product brand color'. Cool fog stays available for the spec/code register but uses the same accent.</p>
+    </div>
+    <div class="move">
+      <p class="move-num">Move 03</p>
+      <h4>Promote the <em>capsule motifs</em>.</h4>
+      <p>Corner brackets framing key plates. Five-block anatomy as a recurring panel. Italic ordinals (§I, §II) instead of numerals. Page reads, at a glance, as a sealed document — not a website about sealed documents.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §II Tokens ──────────────────────────────────── -->
+
+<section class="shell section">
+  <div class="section-head">
+    <div class="section-num"><em>§</em> II.</div>
+    <div class="section-title-block">
+      <h2>The <em>kit</em> — type, paper, motif.</h2>
+      <p>Small enough to fit on one sheet. Everything else inherits from these three columns.</p>
+    </div>
+  </div>
+
+  <div class="tokens-grid">
+    <!-- Type -->
+    <div class="token-card">
+      <h4>Type</h4>
+      <div class="specimen-row">
+        <div class="label">Display<br>Newsreader</div>
+        <div class="specimen-serif">An open spec, <em>sealed</em>.</div>
+      </div>
+      <div class="specimen-row">
+        <div class="label">Body<br>Geist</div>
+        <div class="specimen-sans">One file. Twelve rules. Zero network.</div>
+      </div>
+      <div class="specimen-row">
+        <div class="label">Code<br>Geist Mono</div>
+        <div class="specimen-mono">capsule_version: 0.3.5</div>
+      </div>
+      <div class="specimen-row">
+        <div class="label">Marginal<br>Mono · UC</div>
+        <div class="specimen-mono" style="letter-spacing:0.18em;text-transform:uppercase;font-weight:500;">§ I  ·  Diagnosis</div>
+      </div>
+    </div>
+
+    <!-- Color -->
+    <div class="token-card">
+      <h4>Paper &amp; Ink</h4>
+      <div class="swatch-row">
+        <div class="swatch" style="background:#f4f0e6"></div>
+        <div class="swatch-label">Paper<span>warm cream · default surface</span></div>
+        <div class="swatch-hex">f4f0e6</div>
+      </div>
+      <div class="swatch-row">
+        <div class="swatch" style="background:#eef1f4"></div>
+        <div class="swatch-label">Fog<span>cool counterpart · spec / code surfaces</span></div>
+        <div class="swatch-hex">eef1f4</div>
+      </div>
+      <div class="swatch-row">
+        <div class="swatch" style="background:#15140f"></div>
+        <div class="swatch-label">Ink<span>body · titles</span></div>
+        <div class="swatch-hex">15140f</div>
+      </div>
+      <div class="swatch-row">
+        <div class="swatch" style="background:#b44518"></div>
+        <div class="swatch-label">Oxide<span>accent · wax / stamp / italic emphasis</span></div>
+        <div class="swatch-hex">b44518</div>
+      </div>
+      <div class="swatch-row">
+        <div class="swatch has-stripe" style="background:#6b6453"></div>
+        <div class="swatch-label">Mute<span>marginalia · captions · meta</span></div>
+        <div class="swatch-hex">6b6453</div>
+      </div>
+    </div>
+
+    <!-- Motifs -->
+    <div class="token-card">
+      <h4>Motifs</h4>
+      <div class="motif">
+        <div class="motif-art motif-brackets"><i></i></div>
+        <div class="motif-text">Corner brackets<span>frames plates, manifest, anatomy</span></div>
+      </div>
+      <div class="motif">
+        <div class="motif-art motif-blocks"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="motif-text">Five-block anatomy<span>capsule structure as visible diagram</span></div>
+      </div>
+      <div class="motif">
+        <div class="motif-art motif-num">§ I.</div>
+        <div class="motif-text">Italic ordinals<span>section markers, not numerals</span></div>
+      </div>
+      <div class="motif">
+        <div class="motif-art motif-rule"><i></i><b>O3</b><i></i></div>
+        <div class="motif-text">Marginal rule<span>numbered findings, footnote refs</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §III Examples — Landing ─────────────────────── -->
+
+<section class="shell section">
+  <div class="section-head">
+    <div class="section-num"><em>§</em> III.</div>
+    <div class="section-title-block">
+      <h2>Worked example: <em>Landing.</em></h2>
+      <p>The canonical front-door. Hero claim stays "HTML you can keep." but is now set in italic Newsreader at editorial scale. The 5-block anatomy gets promoted from a footnote to the central visual.</p>
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-meta">
+      <span class="example-tag">III · a</span>
+      <h3 class="example-title">"HTML you can keep." — <em>set as a book jacket.</em></h3>
+      <div class="example-files">replaces<br>landing-sketch.html<br>landing-sketch-v2.html</div>
+    </div>
+    <div class="example-notes">
+      <div class="example-notes-label">Design moves</div>
+      <ul>
+        <li><strong>Headline</strong> in Newsreader italic at 7rem+ — italic carries the "kept" verb visually.</li>
+        <li><strong>Anatomy panel</strong> replaces the buried primitives list — corner-bracketed, with the manifest row emphasized.</li>
+        <li><strong>Version badge</strong> redrawn as an oxide pill against the bracketed wordmark.</li>
+        <li><strong>Two CTAs only</strong>, ink + ghost. No gradient buttons, no shadows.</li>
+        <li><strong>Topnav</strong> in mono caps — reads as masthead, not nav bar.</li>
+        <li><strong>Eyebrow</strong> with a leading rule — the page picks up a quiet editorial pulse.</li>
+      </ul>
+    </div>
+
+    <div class="mock mock-landing">
+      <div class="mock-chrome">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div>htmlcapsule.dev / landing</div>
+      </div>
+      <div class="mock-body">
+        <div class="top-row">
+          <div class="wordmark">
+            <span class="glyph">[ ⟨/⟩ ]</span>
+            <strong>HTML&nbsp;Capsule</strong>
+            <span class="ver">v0.3.5</span>
+          </div>
+          <div class="topnav">
+            <span>Spec</span>
+            <span>Research</span>
+            <span>Examples</span>
+            <span>GitHub ↗</span>
+          </div>
+        </div>
+
+        <p class="hero-eyebrow">An open spec · since may 2026</p>
+        <h1 class="hero-h">HTML <em>you can keep.</em></h1>
+        <p class="hero-sub">
+          A discipline for sealed, self-contained HTML artifacts. One file. Twelve rules. Zero network — so the work survives the chat that produced it, the platform that hosted it, and the year it was made.
+        </p>
+        <div class="hero-cta">
+          <button class="btn primary">Read the spec <span class="arrow">→</span></button>
+          <button class="btn">See an example <span class="arrow">↗</span></button>
+        </div>
+
+        <div class="anatomy">
+          <div class="anatomy-head">
+            <h3>§ Anatomy of a capsule</h3>
+            <span class="file">one .html file, five inline blocks</span>
+          </div>
+          <div class="anatomy-blocks">
+            <div class="block is-emphasis">
+              <span class="n">01</span>
+              <span class="k">capsule-manifest</span>
+              <span class="d">identity, provenance, integrity</span>
+              <span class="opt">required</span>
+            </div>
+            <div class="block">
+              <span class="n">02</span>
+              <span class="k">capsule-data</span>
+              <span class="d">the snapshot, as JSON</span>
+              <span class="opt">required</span>
+            </div>
+            <div class="block">
+              <span class="n">03</span>
+              <span class="k">capsule-style</span>
+              <span class="d">all CSS, inlined</span>
+              <span class="opt">required</span>
+            </div>
+            <div class="block">
+              <span class="n">04</span>
+              <span class="k">capsule-root</span>
+              <span class="d">the pre-rendered artifact</span>
+              <span class="opt">required</span>
+            </div>
+            <div class="block">
+              <span class="n">05</span>
+              <span class="k">capsule-runtime</span>
+              <span class="d">optional enhancement</span>
+              <span class="opt">optional</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §IV Examples — Research ─────────────────────── -->
+
+<section class="shell section">
+  <div class="section-head">
+    <div class="section-num"><em>§</em> IV.</div>
+    <div class="section-title-block">
+      <h2>Worked example: <em>Research.</em></h2>
+      <p>The academic register. Treats the page as a single-column research note: centered masthead, italic tagline, indexed findings O1–O5 set with display-italic ordinals, lifecycle row reading as a small figure.</p>
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-meta">
+      <span class="example-tag">IV · a</span>
+      <h3 class="example-title">Set <em>as a paper</em>, not a product page.</h3>
+      <div class="example-files">replaces<br>research-sketch.html<br>research-sketch-v2.html</div>
+    </div>
+    <div class="example-notes">
+      <div class="example-notes-label">Design moves</div>
+      <ul>
+        <li><strong>Masthead centered</strong>, double rule below — reads as a journal opening, not a homepage hero.</li>
+        <li><strong>Abstract</strong> as a labelled two-column block; first run of body type carries weight, not the title.</li>
+        <li><strong>Findings indexed</strong> O1–O5 with italic display ordinals; oxide ink draws the eye to the claim.</li>
+        <li><strong>Lifecycle row</strong> sized as a small figure, not a hero — five stages, the seal stage marked.</li>
+        <li><strong>Cool fog paper</strong> replaces cream here — same kit, technical register.</li>
+      </ul>
+    </div>
+
+    <div class="mock mock-research is-cool">
+      <div class="mock-chrome">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div>htmlcapsule.dev / research</div>
+      </div>
+      <div class="mock-body">
+        <div class="paper-top">
+          <p class="paper-eyebrow">Research note · v0.3.5 · 2026 — 05 — 19</p>
+          <h1 class="paper-title">HTML <em>Capsule</em></h1>
+          <p class="paper-tagline">An open spec for sealed, self-contained HTML artifacts — and the empirical evidence that the contract holds across producers.</p>
+          <p class="paper-byline">Luke Schuss · Maintainer · Vancouver, BC · <a href="#">lukeschuss.com</a> · <a href="#">github</a></p>
+        </div>
+
+        <div class="abstract">
+          <div class="abstract-label">Abstract</div>
+          <p>
+            <strong>Five required inline blocks, twelve numbered rules, no network dependencies.</strong> The central claim is multi-producer interop across LLMs, deterministic compilers, and human authors. Backed by 30+ LLM-emitted capsules, a third-party compiler validating 26/26 conformance from spec prose alone, and a reactive evolution path from v0.1.0 to v0.3.5.
+          </p>
+        </div>
+
+        <div class="findings">
+          <div class="findings-head">
+            <h3>Findings <em>·</em> observations across producers</h3>
+            <span class="count">O1 — O5  ·  five</span>
+          </div>
+          <div class="finding">
+            <div class="finding-id"><span class="o">O</span>1</div>
+            <p class="finding-claim">HTML is becoming the <strong>default output format</strong> for AI-assisted work.</p>
+          </div>
+          <div class="finding">
+            <div class="finding-id"><span class="o">O</span>2</div>
+            <p class="finding-claim"><strong>File over app</strong> remains the durable preservation primitive.</p>
+          </div>
+          <div class="finding">
+            <div class="finding-id"><span class="o">O</span>3</div>
+            <p class="finding-claim">Lineage is a <strong>more tractable</strong> problem than HTML diffs.</p>
+          </div>
+          <div class="finding">
+            <div class="finding-id"><span class="o">O</span>4</div>
+            <p class="finding-claim">A live-editing and collaboration layer is emerging <strong>upstream of the seal step</strong>.</p>
+          </div>
+          <div class="finding">
+            <div class="finding-id"><span class="o">O</span>5</div>
+            <p class="finding-claim">Share links inside LLM platforms do <strong>not compose</strong> across platforms.</p>
+          </div>
+        </div>
+
+        <div class="lifecycle">
+          <h3 class="lifecycle-h">Figure 1 · the five-layer lifecycle.</h3>
+          <div class="lifecycle-row">
+            <div class="stage"><p class="step">01</p><p class="name">Substrate</p><p class="who">Karpathy · Thariq</p></div>
+            <div class="stage"><p class="step">02</p><p class="name">Live edit</p><p class="who">Canvas · Artifacts<br>html-docs · Workplane</p></div>
+            <div class="stage is-ours"><p class="step">03 · ours</p><p class="name">Seal</p><p class="who">HTML Capsule</p></div>
+            <div class="stage"><p class="step">04</p><p class="name">Host</p><p class="who">htmlbin · MinDev<br>self-host</p></div>
+            <div class="stage"><p class="step">05</p><p class="name">Discover</p><p class="who">llms.txt</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §V Examples — Positioning ───────────────────── -->
+
+<section class="shell section">
+  <div class="section-head">
+    <div class="section-num"><em>§</em> V.</div>
+    <div class="section-title-block">
+      <h2>Worked example: <em>Positioning.</em></h2>
+      <p>The lifecycle-led page. The claim leads with a strikethrough — what your work <em>shouldn't</em> do — and the lifecycle diagram occupies the foot of the page as the real argument, with the seal stage promoted.</p>
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-meta">
+      <span class="example-tag">V · a</span>
+      <h3 class="example-title">Lead with the <em>pain</em>, follow with the <em>map</em>.</h3>
+      <div class="example-files">replaces<br>positioning-sketch.html</div>
+    </div>
+    <div class="example-notes">
+      <div class="example-notes-label">Design moves</div>
+      <ul>
+        <li><strong>Strikethrough headline</strong> — "your AI work shouldn't <s>die</s> when the chat closes" lands the pain as a typographic move, not a paragraph.</li>
+        <li><strong>Aside block</strong> beside the claim names the position: anti-context-loss, sealed handoff format.</li>
+        <li><strong>Wide lifecycle diagram</strong> with pin-marker nodes; seal stage filled, others outlined.</li>
+        <li><strong>Connecting rule</strong> through the stages reads as a timeline, not a list.</li>
+        <li><strong>One subhead</strong> over the diagram instead of three competing headers.</li>
+      </ul>
+    </div>
+
+    <div class="mock mock-positioning">
+      <div class="mock-chrome">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div>htmlcapsule.dev / positioning</div>
+      </div>
+      <div class="mock-body">
+        <div class="pos-row">
+          <div class="pos-lead">
+            <p class="pos-eyebrow">Position · the seal step</p>
+            <h1 class="pos-claim">Your AI work shouldn't <s>die</s> when the chat <em>closes.</em></h1>
+          </div>
+          <div class="pos-aside">
+            <span class="label">What this is</span>
+            HTML Capsule is the seal step for AI work — the missing layer between live editing and durable archive.
+          </div>
+        </div>
+
+        <p class="pos-sub">
+          Capsule sits between the live-editing surfaces you already use and the host / discovery layer that comes after. It's not a SaaS, not a new file format, not anti-platform. It's the contract that lets a useful artifact travel.
+        </p>
+
+        <div class="lifecycle-wide">
+          <div class="lifecycle-wide-head">
+            <h3>Figure · where Capsule fits</h3>
+            <span class="seal-tag">· seal ·</span>
+          </div>
+          <div class="lifecycle-flow">
+            <div class="stage-node">
+              <div class="pin"></div>
+              <p class="stage-name">Substrate</p>
+              <p class="stage-who">Karpathy · Thariq</p>
+            </div>
+            <div class="stage-node">
+              <div class="pin"></div>
+              <p class="stage-name">Live edit</p>
+              <p class="stage-who">Canvas · Artifacts<br>html-docs · Workplane</p>
+            </div>
+            <div class="stage-node is-ours">
+              <div class="pin"></div>
+              <p class="stage-name">Seal</p>
+              <p class="stage-who">HTML Capsule</p>
+            </div>
+            <div class="stage-node">
+              <div class="pin"></div>
+              <p class="stage-name">Host</p>
+              <p class="stage-who">htmlbin · MinDev</p>
+            </div>
+            <div class="stage-node">
+              <div class="pin"></div>
+              <p class="stage-name">Discover</p>
+              <p class="stage-who">llms.txt</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── §VI Examples — Notes ────────────────────────── -->
+
+<section class="shell section">
+  <div class="section-head">
+    <div class="section-num"><em>§</em> VI.</div>
+    <div class="section-title-block">
+      <h2>Worked example: <em>Notes.</em></h2>
+      <p>The first-person essay. Currently reads as one long block of body text; deserves real editorial setting. Drop cap, marginalia, pull quote — and a deck that earns its place above the byline.</p>
+    </div>
+  </div>
+
+  <div class="example">
+    <div class="example-meta">
+      <span class="example-tag">VI · a</span>
+      <h3 class="example-title">An essay that <em>reads like one.</em></h3>
+      <div class="example-files">replaces<br>notes.html</div>
+    </div>
+    <div class="example-notes">
+      <div class="example-notes-label">Design moves</div>
+      <ul>
+        <li><strong>Italic deck</strong> below the title — explains the piece in one literary sentence.</li>
+        <li><strong>Drop cap</strong> in oxide italic Newsreader — the opening "J" carries the personal register.</li>
+        <li><strong>Marginalia</strong> in mono — section anchors visible at a glance, scannable.</li>
+        <li><strong>Pull quote</strong> framed by horizontal accent rules, set in italic display — slows the reader at the pivot.</li>
+        <li><strong>Subtle baseline grid</strong> in the paper itself — the page reads as ruled stationery.</li>
+        <li><strong>Byline</strong> set as a mono colophon — date, place, attribution.</li>
+      </ul>
+    </div>
+
+    <div class="mock mock-notes">
+      <div class="mock-chrome">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div>htmlcapsule.dev / notes</div>
+      </div>
+      <div class="mock-body">
+        <div class="notes-top">
+          <div class="notes-mark">
+            ◆ <a href="#">HTML Capsule</a> · notes
+          </div>
+          <div class="notes-meta">
+            Vol. 1 · No. 1<br>
+            2026 — 05 — 20
+          </div>
+        </div>
+
+        <div class="notes-title-row">
+          <div>
+            <p class="notes-cat">Field notes · spec authorship</p>
+            <h1 class="notes-title">What I do with all the HTML <em>I get from AI.</em></h1>
+            <p class="notes-deck">A first-person account of writing down a contract for HTML artifacts — and the year of copy-paste between AI tools that made one feel necessary.</p>
+            <p class="notes-byline"><strong>By Luke Schuss</strong> · Vancouver, BC · capsule_version 1.2.0 · 4 200 words</p>
+          </div>
+        </div>
+
+        <div class="essay">
+          <div class="essay-marg">
+            <b>§ I</b>
+            Copy-paste<br>era
+          </div>
+          <div class="essay-body">
+            <p>Just want to give you my journey here with AI tools. I've been using all the chat systems — ChatGPT, Claude, Gemini — and more recently the CLI and harness forms. For the longest time I was doing work in each, then copying and pasting in and out, trying to reliably get my info out of these systems into a format I could archive or share. <em>It was a mess.</em></p>
+            <p>The share buttons exist, but something doesn't sit right. The chats get lost, or I'm not confident what version they show. Are they still updating? Will the link still work next month? I could dig into the documentation — but will the documentation be the same next month either?</p>
+          </div>
+        </div>
+
+        <div class="pullquote">
+          The .md files were portable. The experience wasn't. The themes, the plugins, the rendered output all lived in the app, not the file.
+        </div>
+
+        <div class="essay">
+          <div class="essay-marg">
+            <b>§ II</b>
+            The HTML<br>pivot
+          </div>
+          <div class="essay-body">
+            <p>Around then I came across Steph Ango's <em>File over App.</em> The principle is right — your work should live in files you control, in formats that outlive any specific app. But my struggle with Obsidian was the same principle taken one step further than the essay intends. The file was portable; the experience wasn't.</p>
+            <p>Putting things into HTML has been a huge shift. Even with chat conversations I was always trying to get the data out — asking for a markdown summary, a PDF, copying into Docs. Nothing ever looked right. So I stopped converting. I started keeping what the LLM gave me as HTML, then writing down what HTML would need to be to be <em>trustworthy as an artifact.</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Closing ────────────────────────────────────── -->
+
+<section class="closing shell">
+  <p class="closing-tag">End of memo</p>
+  <h2>One vocabulary, four registers — <em>seven pages</em> that read as siblings.</h2>
+  <p>
+    The same kit (Newsreader display, Geist body, oxide accent, corner brackets, five-block anatomy) applied across the front-door, the research note, the position paper, and the essay. The remaining three files — <code>index.html</code> (the exploration page), <code>landing-sketch.html</code>, and <code>research-sketch.html</code> — collapse naturally into the v2 mockups above. Happy to go deeper on any of these, or take the kit somewhere different.
+  </p>
+  <div class="closing-files">
+    <span>landing-sketch-v2</span><span class="sep">·</span>
+    <span>research-sketch-v2</span><span class="sep">·</span>
+    <span>positioning-sketch</span><span class="sep">·</span>
+    <span>notes</span><span class="sep">·</span>
+    <span>index.html</span>
+  </div>
+</section>
+
+</body>
+</html>
