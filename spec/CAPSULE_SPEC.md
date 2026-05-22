@@ -58,6 +58,35 @@ Everything needed by the recipient lives inside the capsule. Everything not need
 - Not a substitute for access control on sensitive data
 - Not a live connection to the source system
 
+### 1.5 The capsule boundary (added v0.3.8)
+
+> **The seal is not a restriction on what capsules can do — it's what makes capsules possible. Without the seal, there's no floor, no archive, no durability, no "open this in ten years and it still works." Rule 2 isn't a limitation; it's the definition.**
+
+Rule 2 (`CAPSULE_CORE.md` rule 2) reads as a technical constraint — *no network requests, everything inlined* — but the constraint exists to enforce a definitional boundary. This section names the boundary explicitly so producers, consumers, and external commenters share the same line.
+
+**What's inside the capsule boundary:**
+
+- The five required inline blocks (manifest, data, style, root, runtime — see §2.1)
+- Embedded media as `data:` URIs (images, audio, video, fonts — see §2.2)
+- Runtime JavaScript operating on the inline data block (the substance the runtime queries lives in `<script id="capsule-data">`, not on a remote endpoint)
+- User-provided files dropped into the runtime at use time. A capsule may accept a CSV, an image, a MIDI file, etc. via `<input type="file">` and process it entirely in-runtime. No network egress occurs; the user-provided file lives in the user's browser session. This does NOT cross the boundary.
+- Computed-at-runtime derived data — sorts, filters, mixes, projections of the inline data. The substance is in the file; the computation is local.
+
+**What's outside the capsule boundary:**
+
+- Network fetches: `fetch()`, `XMLHttpRequest`, dynamic `import()`, `WebSocket`, `EventSource`, `<script src=...>`, `<link rel=stylesheet href=...>` to remote CSS, `<img src=http(s)://...>`, `@import url(http(s)://...)` in CSS, `@font-face` referencing remote `url(...)`
+- Live data from external sources — REST APIs, databases, RSS feeds, LLM endpoints, RPC services
+- Runtime authentication, OAuth flows, session state held on remote servers
+- Anything whose availability depends on external services existing in working order at the moment of read
+
+**An artifact that crosses the boundary is a different category, not a degraded capsule.** A document that fetches live data — a dashboard backed by a database, a feed pulling from an API, a chat UI calling an LLM endpoint, a viewer reading from cloud storage — is something else: a *connected document*, a *live dashboard*, a *web app*, a *hosted artifact*. All useful. None are capsules. The spec doesn't coin a term for what isn't a capsule; the category on the other side already has names. It just names where the line is.
+
+**Why this matters in practice.** A capsule promises a *floor* — its substance survives across tools, time, sessions, and platform churn. A network-dependent artifact can't promise that floor: the API might go away, the auth might expire, the network might not be available (iOS QuickLook, archival viewer, airplane mode, ten-years-from-now). The graceful-degradation principle (§2.3.1), the 5-tier interactivity framework (§2.3.2), and the technique inventory (§2.3.3) all rely on the boundary: each lower tier carries substance *because the substance is in the file*. Take away the seal and the entire stack collapses — there is no tier 0, because there's nothing guaranteed to render.
+
+**Different problems, different formats.** External-data artifacts solve a real problem (anti-staleness, always-current data, live collaboration). Capsules solve a different one (anti-context-loss, durable preservation, sealed handoff). Both legitimate. Trying to be both at once would mean being neither well. The boundary is honest, not exclusionary — it's what lets the format make a coherent promise.
+
+**Validator note.** The reference validator enforces Rule 2 by scanning `<script>` and `<style>` blocks for the forbidden APIs and external URL patterns. A capsule that contains documentation *about* these APIs in prose (e.g., this very section) is not in violation — the scope-aware scan added in v0.3.6 (validator commit f61e504) examines only script/style content, not body prose.
+
 ---
 
 ## 2. File Structure
@@ -313,6 +342,7 @@ The "preview" mode in §2.3.1 is not "static document." Native HTML controls (ti
 | `<details>` / `<summary>` | Collapsible drawer — reveal/hide bounded content | Manifest panel; per-stem metadata; provenance/source notes; export panel; license; how-to-open-full-version |
 | `<audio controls>` / `<video controls>` with `data:` source | Native media playback — play/pause/scrub/volume owned by the browser | Bundled rendered mix; pre-rendered alt mixes; spoken-narration podcast version; video preview |
 | SVG `<title>` / `<a>` / hover | Static-but-rich diagrams — tooltips, links, clickable regions | Geology cross-sections; clickable map targets; legend callouts |
+| `<noscript>` reader notice | Floor declaration — tells the reader in a no-JS preview surface what tier they're seeing and what the full version adds | Tier-4 capsules only (DAW transport, live mix, search, in-capsule LLM). See "Tier-4 capsules: declare the floor" sub-section below |
 
 **Tier 2 primitives — CSS-state machines** (form-control state + CSS selectors; no JS, no computation, just state):
 
@@ -416,6 +446,25 @@ For static images / SVGs / HTML the budget is much friendlier; multi-layer maps 
 **(2) Information-architecture cost.** Radio-button tabs and `:target` navigation require **the full content of every view in the static HTML**. A capsule with 5 views via radio-tabs has 5× the static body content. Fine for short views (overview / track list / sources / manifest); cost gets real for substantial views. The producer decides per-capsule whether the no-JS UX gain is worth the static-content cost.
 
 **Forward reference.** A future spec revision may extend the `fallbacks` manifest section (§3.2.1) with optional sub-fields declaring what no-JS interactivity the capsule provides — see Appendix E.12 for the parked candidate. For now, producers can use these techniques without declaring them in the manifest; consumers can detect them by inspecting the rendered HTML.
+
+**Tier-4 capsules: declare the floor (added v0.3.8).** For capsules that lean on tier 4 (live mixing, real search/filter, in-capsule LLM interaction, continuous-control DSP, vector pan/zoom), the reader in a no-JS preview surface sees the lower-tier substance but doesn't know *what they're missing* — they might think the capsule is broken or incomplete. A short `<noscript>` notice, itself a tier-1 native HTML primitive, closes the loop. It's not an apology for missing features; it's a **floor declaration** that names what the reader sees and what the runtime tier adds.
+
+```html
+<noscript>
+  <aside class="floor-notice" role="status">
+    <p><strong>You're viewing the document layer of this capsule.</strong>
+    The runtime layer (live mixing, search, export) needs JavaScript.</p>
+    <p>The static content (text, embedded media, alt mixes, manifest)
+    is intact at this layer — open in a full browser to use the runtime tools.</p>
+  </aside>
+</noscript>
+```
+
+**When to include it.** Tier 4 capsules: yes — the substance gap between document and runtime tiers is meaningful, and the notice prevents the reader from misreading the floor as a broken capsule. Tier 0–3 capsules: no — there's nothing meaningful to miss, and the notice would be misleading (CSS-state interactions like radio-tabs and checkbox-layers DO work without JS; saying "JavaScript is disabled" would suggest otherwise).
+
+**Tone — lean on the layer vocabulary.** The notice should *name what the reader sees*, not apologize for what they don't. The reader didn't disable anything; they're in a preview surface that doesn't run scripts. Frames like *"You're viewing the document layer of this capsule"* (vocabulary-continuous with §2.3.2's tier framework) work better than *"JavaScript is disabled — open in a real browser"* (command-tone, no vocabulary continuity, slightly accusatory). The slogan from §2.3 — *"Apps when alive. Documents when dormant."* — can itself anchor the notice if the producer wants a single-line version.
+
+**What survives even without the notice.** The boundary (§1.5) guarantees that *something* will render: the document is in the file, embedded media is in the file, the tier-1/2/3 interactions are in the file. The notice is a courtesy to the reader, not a structural requirement. A tier-4 capsule that omits the notice still has its floor; the reader just has to figure out what tier they're on. Producers who want to be unmistakably honest with their readers add the notice; producers who don't can rely on the substance speaking for itself.
 
 ---
 

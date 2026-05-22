@@ -14,7 +14,7 @@ A **Capsule** is a sealed, self-contained HTML *memory object* for work worth pr
 
 1. **One file.** The capsule is a single `.html` document. No companion folders, no sidecar files, no external assets.
 
-2. **No network.** Zero `fetch`, `XHR`, CDN references, ES-module imports, or external CSS. Everything inlined. The capsule must work identically opened via `file://` and over `http://`.
+2. **No network — the capsule boundary is definitional.** Zero `fetch`, `XHR`, CDN references, ES-module imports, or external CSS. Everything inlined. The capsule must work identically opened via `file://` and over `http://`. *The seal is not a restriction on what capsules can do — it's what makes capsules possible.* An artifact that fetches live data, calls an external service, or depends on network availability at runtime is a different category of artifact (web app, live dashboard, connected document) — not a degraded capsule. Without the seal, there's no floor, no archive, no durability, no "open this in ten years and it still works." See `spec/CAPSULE_SPEC.md` §1.5 for the conceptual treatment.
 
 3. **Five required blocks**, with these exact IDs:
    - `<script id="capsule-manifest" type="application/json">` — the manifest
