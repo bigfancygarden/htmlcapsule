@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.11.1",
+  "capsule_version": "11.12.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.11.0 extends the analysis with two new arcs: (a) the HTML-version-control arc — Observation 3 (Thariq's note that HTML diffs are noisy + maintainer reframe on the related v1/v2/final filename problem of artifact identity), Question 2 (how do you track which version?), Answer 2a (filename versioning — what people actually do), Answer 2b (the spec's uuid + parents[] + capsule_version identity/lineage answer; acknowledges HTML-diffs-proper are still hard but identity is addressable); and (b) the editor-layer observation — Observation 4 names Claude Design (Anthropic Labs, April 2026), html-docs.com (Raunaq), and Workplane (Matan) as three different shapes of live-editing layer emerging around AI-emitted HTML, with maintainer commentary positioning Capsule as the seal step downstream (editor-agnostic format; MinDev registry could plausibly grow lightweight read-only commenting as a registry concern, not a format concern). All six new entries use the KIND-class color system from v11.10 (.is-observation white, .is-question grey, .is-answer cream). UUID 7d1a1ac8 preserved through v11.11.",
+  "description": "Landing page in hero framing exploration mode. v11.12.0 restructures the question numbering and adds two new sections. New Question 1: 'How do I get HTML out of my LLM?' inserted upstream of the existing Question 1 (which becomes Question 2). New Question 1 has two answers: Answer 1a (vague approach — Karpathy + Thariq both 'just ask the LLM for HTML' — what you get is unstructured, no manifest, no identity), Answer 1b (contract-based approach — paste the Capsule Core spec into your prompt, the LLM returns a sealed .html with manifest + integrity + UUID + parents[] + declared capabilities + pre-rendered content + no network deps; the artifact carries its own context). Renumbering: existing Q1 → Q2 (what do you do with HTML), existing A1a/1b/1c → A2a/2b/2c, existing Q2 → Q3 (how do you track versions), existing A2a/2b → A3a/3b. New Answer 3c added (spec-evolution path for semantic Capsule diffs) — explains how a capsule-diff tool layered on the spec could semantically diff manifest + data + content blocks separately, sketches example output, parks the implementation in spec Appendix E pending empirical pressure. data-num values unchanged for stable sections (00, 00b, 00b1, 00b2, 00c, 00f, 00f1, 00f2); new data-num values 00a/00a1/00a2 for new Q1 + A1a + A1b, 00f3 for new A3c. UUID 7d1a1ac8 preserved through v11.12.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -71,16 +71,20 @@
     { "num": "07", "framing": "Visual-led · brand-first", "title": "HTML Capsule", "sub": "A profile of HTML for sealed, self-contained artifacts. One file. Twelve rules. Zero network." },
     { "num": "08", "framing": "Problem · why-this-exists", "title": "Where does AI's HTML go?", "sub": "Capsule is the discipline that makes AI-generated HTML durable, inspectable, and shareable beyond the platform that produced it." },
     { "num": "09", "framing": "Context-led · plain-English on-ramp", "title": "HTML you can keep.", "sub": "AI tools increasingly produce HTML: reports, maps, demos, dashboards, visual notes, and interactive documents. HTML Capsule is an open spec for saving that work as one self-contained .html file. A Capsule includes its own content, styles, metadata, provenance, and validation rules, with no required network access. It is not a new file format — it is a stricter way to package HTML so the work can be archived, shared, inspected, and continued later by humans, tools, and LLMs.", "tagline": "One file. No network. Built to last." },
-    { "num": "00",  "id": "Observation 1", "framing": "Observation 1 · two leading voices",                    "title": "Observation 1: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Editorial opening: an observation about HTML as the de-facto AI substrate, with self-aware footnote on the word 'substrate', backed by two voice quotes (Thariq Shihipar on markdown becoming restricting under more-powerful agents; Andrej Karpathy on telling LLMs to 'structure your response as HTML'). White background.", "kind": "section" },
-    { "num": "00b",  "id": "Question 1", "framing": "Question 1 · three answers (1a Thariq, 1b htmlbin.dev, 1c maintainer)", "title": "Question 1: What do you do with all that HTML?", "sub": "Lean section: just the question + a TOC line linking to the three sibling Answer sections below (1a viewing, 1b hosting, 1c custom producer + registry). Grey background (var(--paper-soft)) shared across all Questions.", "kind": "section" },
-    { "num": "00b1", "id": "Answer 1a", "framing": "Answer 1a · viewing strategy · Thariq",                                  "title": "Answer 1a: Open it in a browser. Or upload to S3.", "sub": "Own section. Thariq's FAQ recommendation blockquote + commentary on what the minimum-viable answer offers (portable substrate) and what it leaves open (no default shareable URL). Cream background shared across all Answers.", "kind": "section" },
-    { "num": "00b2", "id": "Answer 1b", "framing": "Answer 1b · hosting layer · htmlbin.dev",                                "title": "Answer 1b: Host it on htmlbin.dev.", "sub": "Own section. htmlbin.dev positioning blockquote + two paragraphs analyzing what htmlbin does (purpose-built hosting, OAuth device-code flow, /p/{slug} URLs + /raw endpoint, format-agnostic) and what htmlbin's existence demonstrates about the landscape — namely that hosting and format-discipline are independent layers (multiple independent hosting layers have converged on the same minimal shape; F21). Doesn't name MinDev here; MinDev is the topic of Answer 1c.", "kind": "section" },
-    { "num": "00c",  "id": "Answer 1c", "framing": "Answer 1c · custom producer + MinDev registry · maintainer's own",      "title": "Answer 1c: Maybe let's take it a step further.", "sub": "Own section (same cream as 1a/1b; gains is-case-study sub-modifier for italic emphasis on the title phrase). Maintainer's first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues, with the MinDev registry catching those artifacts. Acknowledges file-size tradeoff. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.", "kind": "section" },
+    { "num": "00",   "id": "Observation 1", "framing": "Observation 1 · two leading voices",                                 "title": "Observation 1: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Editorial opening: an observation about HTML as the de-facto AI substrate, backed by two voice quotes (Thariq Shihipar; Andrej Karpathy). White background.", "kind": "section" },
+    { "num": "00a",  "id": "Question 1",    "framing": "Question 1 · how to get HTML out of an LLM (two answers)",             "title": "Question 1: How do I get HTML out of my LLM?", "sub": "Lean section + TOC linking to two sibling Answer sections: 1a (vague approach — Karpathy + Thariq), 1b (contract-based approach — paste the Core spec, get back a Capsule).", "kind": "section" },
+    { "num": "00a1", "id": "Answer 1a",     "framing": "Answer 1a · vague approach · just ask the LLM (Karpathy + Thariq)",   "title": "Answer 1a: Just ask the LLM for HTML.", "sub": "Two voices in the wild, both pointing at 'tell the LLM you want HTML and you'll get HTML': Karpathy's prompting tip and Thariq's stated preference. Works for one-off viewing; what you get is unstructured HTML — no manifest, no identity, no integrity, no contract. The file can't speak for itself. Fine for show-me-what-you-mean; lossy for everything else (which is what Answer 1b addresses).", "kind": "section" },
+    { "num": "00a2", "id": "Answer 1b",     "framing": "Answer 1b · contract-based approach · paste the Core spec",            "title": "Answer 1b: Paste the Capsule Core spec into your prompt.", "sub": "The contract-based approach. Instead of asking for HTML, ask for a Capsule — the Core spec is one page (twelve numbered rules) designed to paste into an LLM prompt. The LLM returns a sealed .html with manifest, integrity hash, UUID + parents[], declared capabilities (Rule 7), pre-rendered content (Rule 12), and no network deps (Rule 2). The artifact carries its own context; the producer (LLM) becomes a first-class spec-aware participant. Pointers to CAPSULE_CORE.md, full spec, worked examples.", "kind": "section" },
+    { "num": "00b",  "id": "Question 2",    "framing": "Question 2 · what do you do with HTML (three answers)",                "title": "Question 2: What do you do with all that HTML?", "sub": "(Was Question 1; renumbered to make room for the new Question 1 about getting HTML out of an LLM.) Lean section + TOC linking to three sibling Answer sections below (2a viewing, 2b hosting, 2c custom producer + MinDev registry).", "kind": "section" },
+    { "num": "00b1", "id": "Answer 2a",     "framing": "Answer 2a · viewing strategy · Thariq",                                "title": "Answer 2a: Open it in a browser. Or upload to S3.", "sub": "(Was Answer 1a.) Thariq's FAQ recommendation blockquote + commentary on what the minimum-viable answer offers (portable substrate) and what it leaves open (no default shareable URL — addressed by 2b).", "kind": "section" },
+    { "num": "00b2", "id": "Answer 2b",     "framing": "Answer 2b · hosting layer · htmlbin.dev",                              "title": "Answer 2b: Host it on htmlbin.dev.", "sub": "(Was Answer 1b.) htmlbin.dev positioning blockquote + analysis of what htmlbin does (purpose-built hosting, OAuth device-code flow, /p/{slug} + /raw, format-agnostic) and the format/host split it demonstrates. Doesn't name MinDev here (that belongs to 2c).", "kind": "section" },
+    { "num": "00c",  "id": "Answer 2c",     "framing": "Answer 2c · custom producer + MinDev registry · maintainer's own",    "title": "Answer 2c: Maybe let's take it a step further.", "sub": "(Was Answer 1c.) Maintainer's first-person case study: map-making tool emitting Capsule-spec-conforming HTML for clients, with MinDev as the registry catching those artifacts. File-size tradeoff acknowledged. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.", "kind": "section" },
     { "num": "00d",  "id": "Observation 2", "framing": "Observation 2 · file over app + the Obsidian-plugin critique",            "title": "Observation 2: File over app is as relevant today as it ever was.", "sub": "Quotes Steph Ango (Kepano)'s 'File over app' essay, then carries maintainer reflection on Obsidian's plugin route undermining the principle.", "kind": "section" },
     { "num": "00e",  "id": "Observation 3", "framing": "Observation 3 · HTML diffs are hard + version-tracking problem",         "title": "Observation 3: HTML diffs are noisy; version tracking is its own problem.", "sub": "Quotes Thariq's FAQ on HTML diffs being noisy vs. Markdown; maintainer reframes that the related-but-distinct problem is artifact identity ('which version am I looking at?'), using the PDF v1/v2/final/real-final analogy. Argues identity is addressable even if diffs aren't.", "kind": "section" },
-    { "num": "00f",  "id": "Question 2",    "framing": "Question 2 · two answers (2a filenames, 2b spec identity/lineage)",       "title": "Question 2: How do you keep track of which version of an artifact you're working with?", "sub": "Lean question section + TOC linking to the two sibling Answer sections below.", "kind": "section" },
-    { "num": "00f1", "id": "Answer 2a",     "framing": "Answer 2a · filename versioning",                                          "title": "Answer 2a: v1.html, v2.html, v3-final.html, v3-real-final.html.", "sub": "What people actually do: rename the file with a version suffix. Works because the version lives outside the file (filename, email subject, folder). The cost: nothing inside the file knows about its own version, so renames/forwards/cleanups break the lineage.", "kind": "section" },
-    { "num": "00f2", "id": "Answer 2b",     "framing": "Answer 2b · UUID + parents[] + capsule_version (inside the file)",         "title": "Answer 2b: uuid, capsule_version, parents[] — in the manifest.", "sub": "Each Capsule carries three identity fields in its inline JSON manifest: uuid (stable, immutable), capsule_version (semver-friendly producer-maintained string), parents[] (UUIDs + titles of capsules this one derives from). Identity + lineage live in the bytes, not the filename. Doesn't solve HTML diffs proper; a semantic diff over manifests + data sections would be tractable but isn't built.", "kind": "section" },
+    { "num": "00f",  "id": "Question 3",    "framing": "Question 3 · three answers (3a filenames, 3b spec identity, 3c spec evolution for diffs)", "title": "Question 3: How do you keep track of which version of an artifact you're working with?", "sub": "(Was Question 2; renumbered after the new Q1 inserted upstream.) Lean question + TOC linking to three sibling Answer sections.", "kind": "section" },
+    { "num": "00f1", "id": "Answer 3a",     "framing": "Answer 3a · filename versioning",                                          "title": "Answer 3a: v1.html, v2.html, v3-final.html, v3-real-final.html.", "sub": "(Was Answer 2a.) What people actually do: filename suffixes; the version lives outside the file. Cost: filename can be dropped, lineage breaks.", "kind": "section" },
+    { "num": "00f2", "id": "Answer 3b",     "framing": "Answer 3b · UUID + parents[] + capsule_version (identity inside the file)", "title": "Answer 3b: uuid, capsule_version, parents[] — in the manifest.", "sub": "(Was Answer 2b.) Each Capsule carries three identity fields in its inline JSON manifest; identity + lineage live in the bytes, not the filename. Forward-points to Answer 3c on the diffs question.", "kind": "section" },
+    { "num": "00f3", "id": "Answer 3c",     "framing": "Answer 3c · spec-evolution path for semantic Capsule diffs (open work)",   "title": "Answer 3c: A Capsule-aware diff over manifest + data + content, layered on the spec.", "sub": "New. Addresses the HTML-diffs-are-noisy problem by sketching what a capsule-diff tool could do: semantic structural diff over each required block (manifest JSON delta, data JSON delta, visible-content text delta, bounded style/runtime). Includes an example output. Not built yet; parked in spec Appendix E pending empirical pressure. Framed as a layer on the spec (like git log --oneline on git's commit graph), not a spec change — the spec's structural discipline is exactly what makes a semantic diff tractable.", "kind": "section" },
     { "num": "00g",  "id": "Observation 4", "framing": "Observation 4 · live-editing/collab layer emerging (Claude Design, html-docs, Workplane)", "title": "Observation 4: A live-editing and collaboration layer is emerging around AI-emitted HTML.", "sub": "Names three players in different shapes: Claude Design (Anthropic Labs, April 2026 — chat-and-preview HTML/CSS/JS generation, exportable as standalone HTML); html-docs.com (Raunaq Bhutoria — agents publish, humans comment, agents revise); Workplane (Matan/matanrak — MCP-first, multi-agent, same shape as html-docs). Maintainer commentary: Capsule sits downstream as the seal step; format is editor-agnostic; whether the project grows a collab layer is open — MinDev registry could plausibly host lightweight commenting (registry concern, not format concern).", "kind": "section" }
   ],
   "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
@@ -1166,41 +1170,93 @@
       </div>
     </article>
 
-    <!-- 00b — Question 1 (lean: just the question + TOC line; answers extracted to their own sibling sections) -->
-    <article class="cb-frame is-observation is-question" data-num="00b" aria-labelledby="frame-00b-title">
+    <!-- 00a — Question 1 (NEW: How do I get HTML out of my LLM?) -->
+    <article class="cb-frame is-observation is-question" data-num="00a" aria-labelledby="frame-00a-title">
       <span class="cb-frame-num">Question 1</span>
       <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00b-title"><span class="cb-kicker">Question 1:</span> What do you do with all that HTML?</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00a-title"><span class="cb-kicker">Question 1:</span> How do I get HTML out of my LLM?</h2>
 
-        <p class="cb-frame-lead">Three answers, in their own sections below:<br>
-          <a href="#frame-00b1-title">Answer 1a — viewing strategy</a>,
-          <a href="#frame-00b2-title">Answer 1b — hosting layer</a>,
-          <a href="#frame-00c-title">Answer 1c — custom producer + registry (maintainer's own)</a>.</p>
+        <p class="cb-frame-lead">Two approaches, in their own sections below:<br>
+          <a href="#frame-00a1-title">Answer 1a — just ask it (the vague approach)</a>,
+          <a href="#frame-00a2-title">Answer 1b — paste the Core spec (the contract-based approach)</a>.</p>
       </div>
     </article>
 
-    <!-- 00b1 — Answer 1a · viewing strategy (Thariq's FAQ) -->
-    <article class="cb-frame is-observation is-answer" data-num="00b1" aria-labelledby="frame-00b1-title">
+    <!-- 00a1 — Answer 1a · the vague approach (Karpathy + Thariq) -->
+    <article class="cb-frame is-observation is-answer" data-num="00a1" aria-labelledby="frame-00a1-title">
       <span class="cb-frame-num">Answer 1a</span>
       <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Vague approach · just ask the LLM</p>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00a1-title"><span class="cb-kicker">Answer 1a:</span> Just ask the LLM for HTML.</h2>
+
+        <p class="cb-frame-prose">Two voices in the wild, same shape — both pointing at the same vague-but-functional default of telling the LLM you want HTML:</p>
+
+        <figure class="cb-quote">
+          <blockquote>&hellip; at the end of your query ask your LLM to &ldquo;structure your response as HTML&rdquo;&hellip;</blockquote>
+          <figcaption>— Andrej Karpathy · <a href="voices/karpathy-html-progression-2026.html">archive</a> (also cited in <a href="#frame-00-title">Observation 1</a>)</figcaption>
+        </figure>
+
+        <figure class="cb-quote">
+          <blockquote>I've started preferring HTML as an output format instead of Markdown&hellip;</blockquote>
+          <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> (also cited in <a href="#frame-00-title">Observation 1</a>)</figcaption>
+        </figure>
+
+        <p class="cb-frame-prose">This works for one-off viewing. The LLM produces some HTML, the bytes render in a browser, you can read what's there. But what you actually get is <em>unstructured</em> HTML: no manifest, no identity, no integrity guarantees, no contract on what's inside. The file can't say what it is, where it came from, what tool made it, what version it represents, or whether it's been modified. Fine for "show me what you mean" — lossy for everything else (which is what <a href="#frame-00a2-title">Answer 1b</a> addresses).</p>
+      </div>
+    </article>
+
+    <!-- 00a2 — Answer 1b · the contract-based approach (paste Core spec, get back a Capsule) -->
+    <article class="cb-frame is-observation is-answer" data-num="00a2" aria-labelledby="frame-00a2-title">
+      <span class="cb-frame-num">Answer 1b</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Contract-based approach · paste the Core spec</p>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00a2-title"><span class="cb-kicker">Answer 1b:</span> Paste the Capsule <a href="CAPSULE_CORE.md">Core spec</a> into your prompt.</h2>
+
+        <p class="cb-frame-prose">Instead of asking for HTML, ask for a <em>Capsule</em>. The Core spec is one page — twelve numbered rules, designed to paste directly into an LLM prompt. The LLM returns a sealed <code>.html</code> file with:</p>
+
+        <p class="cb-frame-prose">A <strong>manifest</strong> (inline JSON) declaring what the artifact is, who produced it, when, and what it claims to be · An <strong>integrity hash</strong> over the data + manifest so tampering is detectable · A <strong>UUID</strong> stamped into the file plus a <strong>parents[]</strong> array recording what the artifact descended from · Declared <strong>capabilities</strong> (export, copy, download) that are guaranteed to be implemented (Rule 7: declared = implemented) · <strong>Pre-rendered content</strong> in the HTML body so the artifact still works with JavaScript disabled (Rule 12) · <strong>No network dependencies</strong>: every byte the file needs is inline (Rule 2).</p>
+
+        <p class="cb-frame-prose">Why this matters: the artifact carries its own context. It knows what it is, what it came from, what tools made it, what it can do, and whether anyone has changed its bytes. That's the difference between "here's some HTML, you figure out what to do with it" (the vague approach in 1a) and "here's a self-describing artifact you can archive, fork, share, or hand to another LLM with full context preserved." The producer (LLM) becomes a first-class spec-aware participant — not just "make some HTML" but "produce a Capsule per Core v0.3.0," which is a much sharper instruction.</p>
+
+        <p class="cb-frame-prose">Pointers: the Core spec is <a href="CAPSULE_CORE.md">one page of twelve rules</a> · the implementer-grade <a href="spec/CAPSULE_SPEC.md">full spec</a> covers the contract in detail · <a href="spec/examples/">worked examples</a> show what a conforming Capsule looks like.</p>
+      </div>
+    </article>
+
+    <!-- 00b — Question 2 (was Question 1): What do you do with all that HTML? -->
+    <article class="cb-frame is-observation is-question" data-num="00b" aria-labelledby="frame-00b-title">
+      <span class="cb-frame-num">Question 2</span>
+      <div class="cb-frame-inner">
+        <h2 class="cb-frame-title is-observation-h" id="frame-00b-title"><span class="cb-kicker">Question 2:</span> What do you do with all that HTML?</h2>
+
+        <p class="cb-frame-lead">Three answers, in their own sections below:<br>
+          <a href="#frame-00b1-title">Answer 2a — viewing strategy</a>,
+          <a href="#frame-00b2-title">Answer 2b — hosting layer</a>,
+          <a href="#frame-00c-title">Answer 2c — custom producer + MinDev registry (maintainer's own)</a>.</p>
+      </div>
+    </article>
+
+    <!-- 00b1 — Answer 2a · viewing strategy (Thariq's FAQ) -->
+    <article class="cb-frame is-observation is-answer" data-num="00b1" aria-labelledby="frame-00b1-title">
+      <span class="cb-frame-num">Answer 2a</span>
+      <div class="cb-frame-inner">
         <p class="cb-frame-tag">Viewing strategy</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00b1-title"><span class="cb-kicker">Answer 1a:</span> Open it in a browser. Or upload to S3.</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00b1-title"><span class="cb-kicker">Answer 2a:</span> Open it in a browser. Or upload to S3.</h2>
 
         <figure class="cb-quote">
           <blockquote><strong>How do I view the HTML file?</strong> I tend just open it in a browser locally (you can ask Claude to open it), or upload to S3 if you want a shareable link.</blockquote>
           <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> · FAQ</figcaption>
         </figure>
 
-        <p class="cb-frame-prose">Minimum-viable. The substrate is portable enough that this works for anyone technical — the bytes open in any browser, locally or hosted. The gap it leaves: there's no shareable URL <em>by default</em>. You have to bring your own bucket. Which is the friction <a href="#frame-00b2-title">Answer 1b</a> is designed for.</p>
+        <p class="cb-frame-prose">Minimum-viable. The substrate is portable enough that this works for anyone technical — the bytes open in any browser, locally or hosted. The gap it leaves: there's no shareable URL <em>by default</em>. You have to bring your own bucket. Which is the friction <a href="#frame-00b2-title">Answer 2b</a> is designed for.</p>
       </div>
     </article>
 
-    <!-- 00b2 — Answer 1b · hosting layer (htmlbin.dev) -->
+    <!-- 00b2 — Answer 2b · hosting layer (htmlbin.dev) -->
     <article class="cb-frame is-observation is-answer" data-num="00b2" aria-labelledby="frame-00b2-title">
-      <span class="cb-frame-num">Answer 1b</span>
+      <span class="cb-frame-num">Answer 2b</span>
       <div class="cb-frame-inner">
         <p class="cb-frame-tag">Hosting layer</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00b2-title"><span class="cb-kicker">Answer 1b:</span> Host it on <a href="https://htmlbin.dev/" rel="noopener">htmlbin.dev</a>.</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00b2-title"><span class="cb-kicker">Answer 2b:</span> Host it on <a href="https://htmlbin.dev/" rel="noopener">htmlbin.dev</a>.</h2>
 
         <figure class="cb-quote">
           <blockquote>API for agents to share HTML. Agent-native, end to end. Drop HTML — get a public URL.</blockquote>
@@ -1213,12 +1269,12 @@
       </div>
     </article>
 
-    <!-- 00c — Answer 1c · custom producer + registry · maintainer's own answer -->
+    <!-- 00c — Answer 2c · custom producer + MinDev registry · maintainer's own answer -->
     <article class="cb-frame is-observation is-answer is-case-study" data-num="00c" aria-labelledby="frame-00c-title">
-      <span class="cb-frame-num">Answer 1c</span>
+      <span class="cb-frame-num">Answer 2c</span>
       <div class="cb-frame-inner">
         <p class="cb-frame-tag">Custom producer + MinDev registry · maintainer's own</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00c-title"><span class="cb-kicker">Answer 1c:</span> <em>Maybe let's take it a step further.</em></h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00c-title"><span class="cb-kicker">Answer 2c:</span> <em>Maybe let's take it a step further.</em></h2>
 
         <p class="cb-frame-prose">When I'm doing my work — for example, creating JPEG/geospatial maps and reports for clients or colleagues — I've designed my map-making tool to emit HTML according to domain-specific logic that conforms to my HTML Capsule spec. That way they get exactly the thing they want and need: it's standalone (doesn't require maintaining a database or datasets), and it's permanent. And it's also HTML, so it's AI/LLM friendly.</p>
 
@@ -1269,24 +1325,25 @@
       </div>
     </article>
 
-    <!-- 00f — Question 2 (How do you keep track of which version?) -->
+    <!-- 00f — Question 3 (was Question 2): How do you keep track of which version? -->
     <article class="cb-frame is-observation is-question" data-num="00f" aria-labelledby="frame-00f-title">
-      <span class="cb-frame-num">Question 2</span>
+      <span class="cb-frame-num">Question 3</span>
       <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00f-title"><span class="cb-kicker">Question 2:</span> How do you keep track of which version of an artifact you're working with?</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00f-title"><span class="cb-kicker">Question 3:</span> How do you keep track of which version of an artifact you're working with?</h2>
 
-        <p class="cb-frame-lead">Two answers, in their own sections below:<br>
-          <a href="#frame-00f1-title">Answer 2a — filename versioning (what people actually do)</a>,
-          <a href="#frame-00f2-title">Answer 2b — identity + lineage inside the file (what the spec offers)</a>.</p>
+        <p class="cb-frame-lead">Three answers, in their own sections below:<br>
+          <a href="#frame-00f1-title">Answer 3a — filename versioning (what people actually do)</a>,
+          <a href="#frame-00f2-title">Answer 3b — identity + lineage inside the file (what the spec offers today)</a>,
+          <a href="#frame-00f3-title">Answer 3c — evolving the spec for semantic diffs (open work)</a>.</p>
       </div>
     </article>
 
-    <!-- 00f1 — Answer 2a · filename versioning -->
+    <!-- 00f1 — Answer 3a · filename versioning -->
     <article class="cb-frame is-observation is-answer" data-num="00f1" aria-labelledby="frame-00f1-title">
-      <span class="cb-frame-num">Answer 2a</span>
+      <span class="cb-frame-num">Answer 3a</span>
       <div class="cb-frame-inner">
         <p class="cb-frame-tag">Filename versioning</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00f1-title"><span class="cb-kicker">Answer 2a:</span> <code>v1.html</code>, <code>v2.html</code>, <code>v3-final.html</code>, <code>v3-real-final.html</code>.</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00f1-title"><span class="cb-kicker">Answer 3a:</span> <code>v1.html</code>, <code>v2.html</code>, <code>v3-final.html</code>, <code>v3-real-final.html</code>.</h2>
 
         <p class="cb-frame-prose">The default. People rename the file with a version suffix — <code>_v2</code>, <code>_final</code>, <code>_final-final</code>, <code>_real-final-USE-THIS</code>. Almost a joke, but it works because the version lives <em>outside</em> the file: in the filename, in the email subject, in the folder name. People intuit it.</p>
 
@@ -1294,12 +1351,12 @@
       </div>
     </article>
 
-    <!-- 00f2 — Answer 2b · UUID + parents[] + capsule_version (identity inside the file) -->
+    <!-- 00f2 — Answer 3b · UUID + parents[] + capsule_version (identity inside the file) -->
     <article class="cb-frame is-observation is-answer" data-num="00f2" aria-labelledby="frame-00f2-title">
-      <span class="cb-frame-num">Answer 2b</span>
+      <span class="cb-frame-num">Answer 3b</span>
       <div class="cb-frame-inner">
         <p class="cb-frame-tag">Identity + lineage, recorded inside the file</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00f2-title"><span class="cb-kicker">Answer 2b:</span> <code>uuid</code>, <code>capsule_version</code>, <code>parents[]</code> — in the manifest.</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00f2-title"><span class="cb-kicker">Answer 3b:</span> <code>uuid</code>, <code>capsule_version</code>, <code>parents[]</code> — in the manifest.</h2>
 
         <p class="cb-frame-prose">Each Capsule carries three identity fields inside its own inline JSON manifest:</p>
 
@@ -1309,7 +1366,34 @@
 
         <p class="cb-frame-prose">So the artifact knows what it is and what it descended from, regardless of filename. Paste a Capsule into a new editing session; the next Capsule the producer emits records the parent UUID in its own <code>parents[]</code> array. The lineage chain stays intact across renames, forwards, and zip files — because identity lives in the bytes, not the filename.</p>
 
-        <p class="cb-frame-prose">This doesn't solve HTML diffs. It solves <em>which version is this</em> and <em>where did it come from</em>. A semantic structural diff that compared manifests + data sections (not raw HTML byte-by-byte) would be tractable on top of this foundation — but it isn't built yet. <a href="spec/CAPSULE_SPEC.md">Full spec</a> · <a href="CAPSULE_CORE.md">Core (one page)</a>.</p>
+        <p class="cb-frame-prose">This solves <em>which version is this</em> and <em>where did it come from</em>. It doesn't yet solve the HTML-diffs problem proper — for that, see <a href="#frame-00f3-title">Answer 3c</a> on how the spec could evolve to support Capsule-aware semantic diffs on top of this identity foundation. <a href="spec/CAPSULE_SPEC.md">Full spec</a> · <a href="CAPSULE_CORE.md">Core (one page)</a>.</p>
+      </div>
+    </article>
+
+    <!-- 00f3 — Answer 3c · spec-evolution path for semantic Capsule diffs (NEW) -->
+    <article class="cb-frame is-observation is-answer" data-num="00f3" aria-labelledby="frame-00f3-title">
+      <span class="cb-frame-num">Answer 3c</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Spec-evolution path · semantic Capsule diffs (open work)</p>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00f3-title"><span class="cb-kicker">Answer 3c:</span> A Capsule-aware diff over manifest + data + content, layered on the spec.</h2>
+
+        <p class="cb-frame-prose">HTML diffs are noisy because raw <code>diff a.html b.html</code> treats presentation churn (whitespace, attribute reordering, runtime-generated IDs) as substantive change. Capsules have structure the raw-diff approach throws away — and that structure is the path to a useful diff.</p>
+
+        <p class="cb-frame-prose">A <code>capsule-diff</code> tool, layered on the spec, could read each Capsule's five required blocks and diff them <em>semantically</em>:</p>
+
+        <p class="cb-frame-prose">The <strong>manifest</strong> is JSON — a structured diff over manifests gives a field-level delta: <code>capsule_version</code> bumped, <code>parents[]</code> appended, <code>capabilities</code> added or removed, <code>integrity.content_hash</code> changed (and whether the change was expected). The <strong>data section</strong> is JSON — diffing structured data (not its rendered HTML) gives the actual content delta. The <strong>visible content</strong> in <code>capsule-root</code> is HTML, but Rule 12 (pre-rendered) means most of it is static — a text-content diff that ignores presentation attributes would be informative on its own. The <strong>style</strong> and <strong>runtime</strong> blocks are bounded — diff each as "did the styling change?" or "did the behavior change?"</p>
+
+        <p class="cb-frame-prose">Output could look like:</p>
+
+        <p class="cb-frame-prose"><code>Capsule diff: a.html → b.html<br>
+          · Manifest: capsule_version 1.0.0 → 1.1.0; +1 parent<br>
+          · Data: 3 entries added, 1 modified<br>
+          · Content: +120 chars of visible text<br>
+          · Style: no change<br>
+          · Runtime: no change<br>
+          · Integrity: content_hash changed (expected; manifest re-stamped)</code></p>
+
+        <p class="cb-frame-prose">Not built yet. Parked in <a href="spec/CAPSULE_SPEC.md">spec Appendix E</a> candidates, pending empirical pressure — a real producer or reviewer hitting a real diff-review problem worth solving. When it materializes, the diff tool sits as a <em>layer on the spec</em>, not a spec change: the spec's existing structural discipline (manifest JSON, data JSON, pre-rendered content, bounded styles/runtime) is exactly the foundation that makes a semantic diff tractable. Same way <code>git log --oneline</code> is a tool layered on git's commit graph, not a change to the graph itself.</p>
       </div>
     </article>
 
@@ -1500,7 +1584,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.11.1 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.12.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
