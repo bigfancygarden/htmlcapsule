@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.6 (Core currently v0.3.0)
+# Capsule Spec v0.3.7 (Core currently v0.3.0)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -235,8 +235,10 @@ The distinction matters because external commentary on the project has periodica
 #### 2.3.1 Graceful degradation as a design principle (added v0.3.6)
 
 > **A capsule should never become useless when JavaScript is unavailable. It should degrade from app → document → preview.**
+>
+> **No-JS capsule interactivity is declarative, not computational. It should expose precomputed states through native HTML and CSS controls.** (added v0.3.7)
 
-Rule 12 and the interactive-archive framing above already imply this. v0.3.6 promotes it from implication to named design principle — the *upstream-feedback-discipline* (see [F29 in RESEARCH.md](../RESEARCH.md)) capture of producer-side adaptation that this spec section formalizes.
+Rule 12 and the interactive-archive framing above already imply this. v0.3.6 promotes it from implication to named design principle — the *upstream-feedback-discipline* (see [F29 in RESEARCH.md](../RESEARCH.md)) capture of producer-side adaptation that this spec section formalizes. v0.3.7 (this section + §2.3.2 below) extends with the second tagline above and a documented technique inventory: no-JS does not mean *no interaction*; it means *no logic*. Selection, navigation, expansion, layer toggles, view switching, and media playback all work without JS through native HTML controls and CSS state selectors.
 
 **Three modes** every capsule should support gracefully, in order of decreasing capability:
 
@@ -258,6 +260,111 @@ Rule 12 and the interactive-archive framing above already imply this. v0.3.6 pro
 - `domain.implementation_notes` / `domain.briefing` / `domain.design_system` → already document-shaped; no extra fallback needed (the content IS the static HTML)
 
 **The `fallbacks` manifest field.** Producers MAY declare what fallbacks they've bundled in an optional `fallbacks` manifest section — see §3.2 below for the shape. This is purely descriptive (a consumer reading the manifest can discover what fallbacks exist) and does not change the static HTML, which must contain the actual fallback content per Rule 12.
+
+#### 2.3.2 No-JS interactivity techniques (added v0.3.7)
+
+The "preview" mode in §2.3.1 is not "static document." Native HTML controls and CSS state selectors give a capsule a meaningful interaction surface without any JS — readers can reveal, choose, navigate, play, compare, expand, collapse, and switch between prebuilt states. **The interaction shape is *selection among precomputed possibilities*, not computation.** Producers cannot synthesize, parse, mix, or calculate new views without JS, but they can ship the views and let the user pick.
+
+Recommended primitives, all CSS-only / native-control:
+
+| Technique | What it gives | Recommended use |
+|---|---|---|
+| `<details>` / `<summary>` | Collapsible drawer — reveal/hide bounded content | Manifest panel; per-stem metadata; provenance/source notes; export panel; license; how-to-open-full-version |
+| `<audio controls>` / `<video controls>` with `data:` source | Native media playback — play/pause/scrub/volume owned by the browser | Bundled rendered mix; pre-rendered alt mixes; spoken-narration podcast version; video preview |
+| Radio buttons + CSS sibling selector | Tabs — one of N views visible at a time | Multi-view capsule UI: Overview / Listen / Tracks / Sources / Manifest |
+| Checkboxes + CSS sibling selector | Layer toggles — N independent on/off | Map layer overlay (base + claims + geology + ...); diagram annotation toggles |
+| `:target` pseudo-class + URL hash | Page-like navigation — current section from URL fragment | Slide decks; multi-step explainers; "choose your view" documents |
+| SVG `<title>` / `<a>` / hover CSS | Static-but-rich diagrams — tooltips, links, clickable regions | Geology cross-sections; clickable map targets; legend callouts |
+| Pre-rendered alternate states | Selection-driven alternatives — choose among N versions | Alt mixes (full / drums-only / piano-only); alt map layers; alt table groupings; alt slide views |
+
+**Radio-button tabs snippet** (the most useful one for multi-view capsules):
+
+```html
+<input type="radio" name="view" id="v-overview" checked>
+<input type="radio" name="view" id="v-tracks">
+<input type="radio" name="view" id="v-sources">
+
+<nav class="tabs">
+  <label for="v-overview">Overview</label>
+  <label for="v-tracks">Tracks</label>
+  <label for="v-sources">Sources</label>
+</nav>
+
+<section class="panel overview">…</section>
+<section class="panel tracks">…</section>
+<section class="panel sources">…</section>
+```
+
+```css
+.panel { display: none; }
+#v-overview:checked ~ .panel.overview,
+#v-tracks:checked   ~ .panel.tracks,
+#v-sources:checked  ~ .panel.sources { display: block; }
+```
+
+**Checkbox layer-toggles snippet** (the natural extension of `domain.exploration_map`'s image-fallback to multi-layer):
+
+```html
+<input type="checkbox" id="layer-geology" checked>
+<input type="checkbox" id="layer-claims" checked>
+<input type="checkbox" id="layer-samples">
+<label for="layer-geology">Geology</label>
+<label for="layer-claims">Claims</label>
+<label for="layer-samples">Samples</label>
+
+<figure class="map">
+  <img class="base" src="data:image/png;base64,…">
+  <img class="layer geology" src="data:image/png;base64,…">
+  <img class="layer claims"  src="data:image/png;base64,…">
+  <img class="layer samples" src="data:image/png;base64,…">
+</figure>
+```
+
+```css
+#layer-geology:not(:checked) ~ .map .geology,
+#layer-claims:not(:checked)  ~ .map .claims,
+#layer-samples:not(:checked) ~ .map .samples { display: none; }
+```
+
+**`:target` navigation snippet:**
+
+```html
+<nav><a href="#overview">Overview</a> <a href="#tracks">Tracks</a></nav>
+<section id="overview">…</section>
+<section id="tracks">…</section>
+```
+
+```css
+section { display: none; }
+section:target { display: block; }
+section:first-of-type:not(:target) ~ section:not(:target) { display: none; }
+section:first-of-type { display: block; }
+```
+
+**What still requires JS** (the honest "can't do this without JS" list):
+
+- Live MIDI synthesis or audio DSP
+- Stem mixing with continuous volume sliders that affect audio
+- Waveform scrubbing synced to custom UI
+- Parsing user-uploaded files into new views
+- Real search / filter / sort over data
+- Saving state across reloads
+- Map pan/zoom over vector tiles
+- AI interaction, network fetches, anything that needs runtime computation
+
+The preview mode should not pretend to be the full app. It should be honest: *"play, inspect, expand, switch views, open sources — for remixing, filtering, editing, dynamic playback, open in a full browser."*
+
+**Two real caveats producers should weigh.**
+
+**(1) Size budget.** Pre-rendered alternates ship inline; they count against the 20 MB hard cap. A 4-minute song at 192 kbps MP3 is ~5.5 MB; six alt mixes = ~33 MB and breaks the cap. The pattern works at:
+- Short loops / sketches (capsule-midi's `domain.music_stems` was scoped to "sketches and short songs at lossy quality" for this reason)
+- Lower bitrate (Opus 96 kbps brings six 4-min variants to ~16 MB)
+- A smaller meaningful set (full + 1-2 strategic alts, not 6)
+For static images / SVGs / HTML the budget is much friendlier; multi-layer maps with PNG overlays at 1-2 MB each easily fit.
+
+**(2) Information-architecture cost.** Radio-button tabs and `:target` navigation require **the full content of every view in the static HTML**. A capsule with 5 views via radio-tabs has 5× the static body content. Fine for short views (overview / track list / sources / manifest); cost gets real for substantial views. The producer decides per-capsule whether the no-JS UX gain is worth the static-content cost.
+
+**Forward reference.** A future spec revision may extend the `fallbacks` manifest section (§3.2.1) with optional sub-fields declaring what no-JS interactivity the capsule provides — see Appendix E.12 for the parked candidate. For now, producers can use these techniques without declaring them in the manifest; consumers can detect them by inspecting the rendered HTML.
 
 ---
 
@@ -1802,3 +1909,41 @@ The spec discipline (§1) is *no new schema fields without empirical pressure fr
 - **`change_summary`**: arguably already covered by the producer's own changelog (the landing page has one; CAPSULE_SPEC.md has version sections in CHANGELOG.md). A per-capsule `change_summary` would duplicate that for files that are part of a versioned series, but adds noise for one-shot artifacts. Defer until a tool that would *consume* it exists (e.g., the capsule-diff tool sketched in landing Answer 3c).
 
 **Empirical record.** This Appendix E entry is documentation that the ideas exist and have been considered, so that future Claude / future-maintainer doesn't re-derive them from scratch when the question comes up again. The review that produced them is referenced from the v11.15 landing CHANGELOG entry; the methodological observation is that *external-LLM review* is now a recurring source of spec-design candidates (in addition to producer pressure, consumer pressure, and maintainer reflection). Worth tracking as its own pattern in RESEARCH.md if it keeps happening.
+
+### E.12 No-JS interactivity declarations in the `fallbacks` manifest section (parked v0.3.7)
+
+**Source.** Cross-thread discussion during the v0.3.6 → v0.3.7 documentation pass surfaced a proposal to extend the `fallbacks` manifest section (§3.2.1, added v0.3.6) with optional sub-fields declaring *what no-JS interactivity the capsule provides*. The motivating shape (from the discussion):
+
+```json
+{
+  "fallbacks": {
+    "preview_audio_present": true,
+    "poster_image_present": false,
+    "static_summary_present": true,
+    "requires_js_for": ["stem mute/solo", "patch switching", "timeline editing"],
+    "preview_mode_description": "...",
+
+    "native_controls": ["audio", "details"],
+    "css_views": ["overview", "listen", "tracks", "sources", "manifest"],
+    "precomputed_assets": ["rendered_mix.mp3", "waveform.svg", "track_table.html"]
+  }
+}
+```
+
+Three candidate sub-fields:
+
+1. **`native_controls`** — array naming the no-JS-functional HTML primitives the capsule uses (e.g., `["audio", "details"]`). Lets a consumer discover the interaction primitives without scraping the rendered HTML.
+2. **`css_views`** — array of named CSS-state views accessible without JS (e.g., from radio-button-tab or `:target` patterns). Lets a consumer discover the multi-view UI without parsing the radio inputs.
+3. **`precomputed_assets`** — array of alternate-state assets bundled inline (e.g., `["rendered_mix.mp3", "mix_no_drums.mp3", "geology_layer.png"]`). Lets a consumer enumerate selection-mode alternatives without scraping `<source>` or `<img>` elements.
+
+**Why parked, not adopted.**
+
+The spec discipline (§1) is *no new schema fields without empirical pressure from a real producer or consumer hitting a real problem*. As of v0.3.7:
+
+- **Producer side:** the techniques themselves (radio-tabs, checkbox-layers, `:target` navigation, pre-rendered alts) are documented in §2.3.2 and producers can use them today without any manifest declaration. No producer currently *needs* the declaration to ship their capsule — the techniques are visible in the rendered HTML.
+- **Consumer side:** no registry viewer, validator, or downstream tool has yet asked the question "what no-JS interactivity does this capsule provide?" The current `fallbacks` field's coarser `requires_js_for` and `static_summary_present` give consumers enough signal for now.
+- **Risk of premature canonicalization:** the techniques are still evolving in producer practice. Locking in specific field names (`native_controls` / `css_views` / `precomputed_assets`) before the patterns settle could ossify the wrong shape.
+
+**Graduation trigger.** When a producer (or consumer) hits one of these cases — *"I shipped a capsule with 5 CSS-state views and a registry's index thumbnail wants to know which view is the 'preview' so it can deep-link"* or *"a downstream search tool wants to enumerate the bundled alt mixes without parsing `<audio>` elements"* — this entry graduates. Until then it's parked, same discipline that kept `derived_from[]` parked from 2026-05-21 (Appendix E.11 entry) to 2026-05-22 (graduation under capsule-midi's empirical pressure — the 24-hour cycle from "interesting idea" to "shipped" was clean evidence the discipline works).
+
+**Empirical record.** Same pattern as E.11: documenting the idea so it's recoverable when the question comes up again. The discussion that produced this candidate is referenced from the v0.3.7 CHANGELOG entry.

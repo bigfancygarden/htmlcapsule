@@ -36,7 +36,7 @@ authors:
     city: "Vancouver"
     country: "CA"
 type: "software"
-version: "0.3.6"
+version: "0.3.7"
 date-released: "2026-05-22"
 url: "https://htmlcapsule.org"
 repository-code: "https://github.com/bigfancygarden/htmlcapsule"

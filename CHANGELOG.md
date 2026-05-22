@@ -12,6 +12,48 @@ Nothing pending right now. v13 landing-cleanup queue from earlier was largely sa
 
 ---
 
+## [Spec v0.3.7] — 2026-05-22
+
+**Documentation patch on top of v0.3.6** — no normative schema changes, no validator changes, no compat surface added. Lands a documented inventory of no-JS interactivity techniques + parks one new candidate manifest extension.
+
+### Added — spec (documentation only; no normative changes)
+
+- **§2.3.1** gains a second tagline: *"No-JS capsule interactivity is declarative, not computational. It should expose precomputed states through native HTML and CSS controls."* Pairs with the existing v0.3.6 tagline ("degrade from app → document → preview"). One half of the principle (degrade), the other half (technique).
+- **§2.3.2** added — "No-JS interactivity techniques." Pattern inventory documenting that no-JS capsules can support real interaction through native HTML controls + CSS state selectors, not just static documents. Seven techniques tabulated with recommended use cases:
+  - `<details>` / `<summary>` — collapsible drawers (manifest panels, per-stem metadata, source notes, license, etc.)
+  - `<audio controls>` / `<video controls>` with `data:` source — native media playback
+  - Radio buttons + CSS sibling selector — tabs (one of N views visible at a time)
+  - Checkboxes + CSS sibling selector — layer toggles (N independent on/off)
+  - `:target` pseudo-class + URL hash — page-like navigation
+  - SVG `<title>` / `<a>` / hover CSS — static-but-rich diagrams
+  - Pre-rendered alternate states — selection-driven alternatives
+  
+  Three worked snippets: radio-button tabs, checkbox layer-toggles, `:target` navigation. Honest "what still requires JS" list (live MIDI synthesis, stem mixing with continuous volume control, file parsing, search/filter/sort, save state, map pan/zoom, AI interaction, network). Two real caveats for producers: **(1) size budget** — pre-rendered alternates count against the 20 MB cap; for media, plan ~3-4 MB per alt at reasonable quality; (2) **information-architecture cost** — radio-button tabs and `:target` navigation require the full content of every view in the static HTML, so 5 views = 5× the body content.
+- **`spec/DOMAIN_CAPSULES.md`** — per-domain notes added:
+  - `domain.music_stems` — recommends short-loop / sketch scope with a small set of pre-rendered alt mixes (full + 2-5 strategic alts at Opus 96 kbps fits comfortably under 20 MB at ~3-minute lengths), each selectable via radio-button tabs. Also: when this graduates, the `media.*` family (v0.3.6 §5.1.2) supersedes the ad-hoc `audio.*` capability names sketched in the original entry.
+  - `domain.photo` — noted as the cleanest fit in the four-producer family for demonstrating the v0.3.7 no-JS techniques in anger. Radio-button tabs for view-switching (Photo / Metadata / EXIF / Location / Provenance); checkbox layer toggles for face-region overlays on top of the static image. Suggested as the v0.3.7 reference demonstration of the techniques once capsule-photo ships.
+
+### Added — Appendix E (parked, not adopted)
+
+- **E.12** — "No-JS interactivity declarations in the `fallbacks` manifest section." Three candidate sub-fields for the existing `fallbacks` field (§3.2.1): `native_controls`, `css_views`, `precomputed_assets`. Parked because (a) producers can use the techniques today without manifest declaration (the patterns are visible in rendered HTML), (b) no consumer has yet asked the question "what no-JS interactivity does this capsule provide?", (c) risk of premature canonicalization while the patterns are still evolving in producer practice. Graduation trigger named: a registry viewer's index-thumbnail wanting to deep-link a specific CSS-state view, or a downstream search tool wanting to enumerate bundled alt mixes without parsing `<audio>` elements. Same parking discipline that worked for `derived_from[]` (parked 2026-05-21, graduated 2026-05-22 — 24-hour cycle when empirical pressure arrived).
+
+### Changed — infrastructure
+
+- `CITATION.cff` 0.3.6 → 0.3.7.
+- `README.md` v0.3.6 → v0.3.7 (state line + body references).
+- `llms.txt` v0.3.6 → v0.3.7 + full-spec description updated to summarize v0.3.6 and v0.3.7 separately + CHANGELOG version range bumped.
+- 8 markdown capsules rebuilt by `compiler/build_md_capsules.py` to pick up the spec + DOMAIN_CAPSULES + CHANGELOG content updates. All pass 26/26.
+
+### Why a same-day patch rather than rolling into v0.3.6
+
+v0.3.6 shipped earlier today as a normative spec release (graduated `derived_from[]`, formalized `media.*` family, added `export.fragment_provenance`, named graceful-degradation principle). v0.3.7 is a same-day documentation pass on top: no schema changes, no validator changes, just adds the technique inventory + parks one new candidate. Keeping them separate preserves the v0.3.6 release entry's clarity (normative changes there) while letting the v0.3.7 entry stay focused on the technique documentation. Future readers can see at a glance which release introduced normative changes vs which was a docs-only refinement.
+
+### Cross-project notes
+
+No FEEDBACK harvest required for v0.3.7 (no items in producer-side queues). The techniques in §2.3.2 are useful for **capsule-photo** (suggested as the first demonstration) and **capsule-midi** (whose Tier 2 work to bundle a rendered audio mix can adopt the radio-button-tabs alt-mix pattern). Neither producer is blocked by this release; both gain documented reference material.
+
+---
+
 ## [Spec v0.3.6] — 2026-05-22
 
 First spec release driven by the **upstream feedback discipline** (named in F28) — every change in v0.3.6 has empirical pressure from a downstream producer project, none are speculative. The producer family that surfaced the pressure: **capsule-midi** (MIDI / DAW capsules, v0.2.0), **Shasta** (audio songs, in progress), **capsule-photo** (single-image artifacts with metadata, new), alongside the existing **Mintel** (geospatial maps, production at v0.3.4 since F20/F21). MinDev remains the registry / delivery host (separate concern).
