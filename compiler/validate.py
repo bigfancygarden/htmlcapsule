@@ -122,27 +122,44 @@ CAPABILITY_MARKERS = {
     "play_audio":      [r'<audio\b', r'audio[-_]?(?:player|element|controls)', r'\.play\(\)'],
 }
 
-EXTERNAL_PATTERNS = [
-    # External resource references in markup (capsule assets must be inlined)
+# Patterns split by where they're meaningful — scope-aware to avoid false
+# positives on rendered documentation that mentions these APIs as text.
+#
+# MARKUP_PATTERNS: HTML element-level references — only meaningful when they
+#   appear as actual HTML markup in the document body. Scanned everywhere.
+# JS_PATTERNS: JavaScript network APIs — only meaningful inside <script>
+#   blocks. Scanned only there. Free-text mentions in prose (e.g., a paragraph
+#   that says "no fetch (rule 2 stays intact)" or a research log entry
+#   discussing the fetch API) are not violations.
+# CSS_PATTERNS: CSS @import — only meaningful inside <style> blocks. Scanned
+#   only there. Code-block content displaying example @import statements is
+#   not a violation.
+
+MARKUP_PATTERNS = [
     (r'<script[^>]+\bsrc=', 'External <script src> reference (capsule JS must be inlined)'),
     (r'<link[^>]+\bhref=["\']\s*(?!data:)[^"\']', 'External <link href> reference (capsule CSS must be inlined)'),
     (r'<img[^>]+\bsrc=["\']\s*https?://', 'External <img> reference'),
     (r'<iframe[^>]+\bsrc=', 'External <iframe src> reference'),
     (r'<video[^>]+\bsrc=["\']\s*https?://', 'External <video> reference'),
     (r'<audio[^>]+\bsrc=["\']\s*https?://', 'External <audio> reference'),
-    (r'@import\s+(?:url\s*\(\s*)?["\']?(?!data:)[a-zA-Z./]', 'External CSS @import'),
+]
 
-    # Network APIs — capsules must make zero network requests
+JS_PATTERNS = [
     (r'\bfetch\s*\(', 'fetch() call (capsules must not make network requests)'),
     (r'\bXMLHttpRequest\b', 'XMLHttpRequest usage'),
     (r'\bnew\s+EventSource\s*\(', 'EventSource (Server-Sent Events) usage'),
     (r'\bnew\s+WebSocket\s*\(', 'WebSocket usage'),
     (r'\bnavigator\.sendBeacon\s*\(', 'navigator.sendBeacon() usage'),
-
-    # ES module imports — require a server context, prohibited by spec
     (r'\bimport\s+[^.\s][^;\n]*?\s+from\s+["\']', 'ES module import (capsule scripts must be inlined)'),
     (r'(?<!\w)import\s*\(\s*["\']', 'Dynamic import() call (capsule scripts must be inlined)'),
 ]
+
+CSS_PATTERNS = [
+    (r'@import\s+(?:url\s*\(\s*)?["\']?(?!data:)[a-zA-Z./]', 'External CSS @import'),
+]
+
+# Back-compat: some tests / external tooling may reference EXTERNAL_PATTERNS.
+EXTERNAL_PATTERNS = MARKUP_PATTERNS + JS_PATTERNS + CSS_PATTERNS
 
 
 class ValidationResult:
@@ -370,23 +387,71 @@ def check_data(html: str, result: ValidationResult):
 
 
 def _strip_data_blocks(html: str) -> str:
-    """Remove the manifest and data script blocks before scanning for code-level
-    violations. The JSON blocks legitimately contain documentation strings
-    (e.g., 'fetch()' as text in an article about fetch APIs), and they're not
-    executable. Network-pattern checks should only apply to the runtime JS,
-    style CSS, and visible HTML — not to the embedded JSON data."""
-    pattern = r'<script\b[^>]*\bid\s*=\s*["\'](?:capsule-manifest|capsule-data)["\'][^>]*>[\s\S]*?</script>'
-    return re.sub(pattern, '', html, flags=re.IGNORECASE)
+    """Remove regions before scanning for code-level violations:
+
+    1. The manifest + data script blocks. JSON content can legitimately
+       contain documentation strings that match our network/external-resource
+       patterns (e.g., 'fetch()' as text in an article about fetch APIs), and
+       it's not executable.
+    2. <code> and <pre> blocks in the body. Same reason — they hold literal
+       text content for display (code examples, spec excerpts, rendered
+       markdown excerpts), not executable JS or CSS @import statements.
+       Without this, capsules that render documentation about fetch / @import
+       / WebSocket / etc. trigger false positives even though the page itself
+       makes no network requests.
+
+    Network-pattern checks should only apply to the runtime JS, style CSS,
+    and visible (non-code) HTML — not to embedded JSON data or rendered
+    code-block content."""
+    # Strip JSON blocks
+    json_pattern = r'<script\b[^>]*\bid\s*=\s*["\'](?:capsule-manifest|capsule-data)["\'][^>]*>[\s\S]*?</script>'
+    out = re.sub(json_pattern, '', html, flags=re.IGNORECASE)
+    # Strip <pre>...</pre> and <code>...</code> blocks (literal text content)
+    out = re.sub(r'<pre\b[^>]*>[\s\S]*?</pre>',  '', out, flags=re.IGNORECASE)
+    out = re.sub(r'<code\b[^>]*>[\s\S]*?</code>', '', out, flags=re.IGNORECASE)
+    return out
 
 
 def check_no_external_references(html: str, result: ValidationResult):
-    # Strip the data/manifest JSON blocks — they may contain documentation
-    # strings that match our patterns but aren't actually code.
-    scannable = _strip_data_blocks(html)
+    """Check capsule has no external resource references.
+
+    Scope-aware to avoid false positives:
+    - MARKUP patterns scan the whole document with JSON/code/pre stripped.
+    - JS patterns scan only inside <script> blocks (not capsule-manifest
+      or capsule-data, which are JSON content).
+    - CSS patterns scan only inside <style> blocks.
+
+    Rationale: a capsule that renders documentation containing the word
+    "fetch" or an @import code example is not making a network call. The
+    network/import APIs are only meaningful inside their respective
+    language scopes.
+    """
     found = []
-    for pattern, label in EXTERNAL_PATTERNS:
+
+    # Markup patterns — scan whole document, with data/code/pre stripped
+    scannable = _strip_data_blocks(html)
+    for pattern, label in MARKUP_PATTERNS:
         if re.search(pattern, scannable, re.IGNORECASE):
             found.append(label)
+
+    # JS patterns — scan only inside <script> blocks, excluding capsule-manifest
+    # and capsule-data (which are JSON, not JS)
+    script_pattern = r'<script\b(?![^>]*\bid\s*=\s*["\'](?:capsule-manifest|capsule-data)["\'])[^>]*>([\s\S]*?)</script>'
+    for m in re.finditer(script_pattern, html, re.IGNORECASE):
+        script_body = m.group(1)
+        for pattern, label in JS_PATTERNS:
+            if re.search(pattern, script_body, re.IGNORECASE):
+                found.append(label)
+
+    # CSS patterns — scan only inside <style> blocks
+    for m in re.finditer(r'<style\b[^>]*>([\s\S]*?)</style>', html, re.IGNORECASE):
+        style_body = m.group(1)
+        for pattern, label in CSS_PATTERNS:
+            if re.search(pattern, style_body, re.IGNORECASE):
+                found.append(label)
+
+    # De-dup labels (same finding may surface in multiple scripts)
+    found = list(dict.fromkeys(found))
     result.add("No external resource references", not found,
                "" if not found else "; ".join(found))
 
