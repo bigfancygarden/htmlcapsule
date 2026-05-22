@@ -12,7 +12,7 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.14.0",
+  "capsule_version": "11.14.1",
   "title": "HTML Capsule — hero framing exploration",
   "description": "Landing page in hero framing exploration mode. v11.14.0: (1) Question 3 title tightened to 'How do you keep track of which version of an HTML file you're working on?' (was '...of an artifact you're working with?'). (2) Observation 3 gains a middle paragraph about chat-hosted artifacts (Claude's artifacts, ChatGPT's canvas) having no natural versioning system — the artifact mutates in place; forking into a new conversation doesn't inherit a clean version label; the chat keeps going, the artifact loses its history. (3) NEW Observation 5 (00h, white) added at the end of the analysis arc, after Observation 4 and before the hero gallery: 'There's no easy way to get chat-hosted content out of an LLM platform.' Three prose paragraphs: share links exist on every platform but are platform-locked viewing artifacts; cross-platform interop is poor (a ChatGPT share link handed to Claude doesn't compose); the file-as-artifact discipline (Obs 1, Obs 2, Answer 1b) is the project's response — a Capsule opens in any browser, can be handed to any LLM, the host doesn't have to be in the loop. UUID 7d1a1ac8 preserved through v11.14.",
   "type": "landing_page",
@@ -74,7 +74,7 @@
     { "num": "00",   "id": "Observation 1", "framing": "Observation 1 · two leading voices",                                 "title": "Observation 1: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Editorial opening: an observation about HTML as the de-facto AI substrate, backed by two voice quotes (Thariq Shihipar; Andrej Karpathy). White background.", "kind": "section" },
     { "num": "00a",  "id": "Question 1",    "framing": "Question 1 · how to get HTML out of an LLM (two answers)",             "title": "Question 1: How do I get HTML out of my LLM?", "sub": "Lean section + TOC linking to two sibling Answer sections: 1a (vague approach — Karpathy + Thariq), 1b (contract-based approach — paste the Core spec, get back a Capsule).", "kind": "section" },
     { "num": "00a1", "id": "Answer 1a",     "framing": "Answer 1a · vague approach · just ask the LLM (Karpathy + Thariq)",   "title": "Answer 1a: Just ask the LLM for HTML.", "sub": "Two voices in the wild, both pointing at 'tell the LLM you want HTML and you'll get HTML': Karpathy's prompting tip and Thariq's stated preference. Works for one-off viewing; what you get is unstructured HTML — no manifest, no identity, no integrity, no contract. The file can't speak for itself. Fine for show-me-what-you-mean; lossy for everything else (which is what Answer 1b addresses).", "kind": "section" },
-    { "num": "00a2", "id": "Answer 1b",     "framing": "Answer 1b · contract-based approach · paste the Core spec",            "title": "Answer 1b: Paste the Capsule Core spec into your prompt.", "sub": "The contract-based approach. Instead of asking for HTML, ask for a Capsule — the Core spec is one page (twelve numbered rules) designed to paste into an LLM prompt. The LLM returns a sealed .html with manifest, integrity hash, UUID + parents[], declared capabilities (Rule 7), pre-rendered content (Rule 12), and no network deps (Rule 2). The artifact carries its own context; the producer (LLM) becomes a first-class spec-aware participant. Pointers to CAPSULE_CORE.md, full spec, worked examples.", "kind": "section" },
+    { "num": "00a2", "id": "Answer 1b",     "framing": "Answer 1b · contract-based approach · ask for a Capsule",             "title": "Answer 1b: Ask the LLM for a Capsule (according to the Spec).", "sub": "The contract-based approach. Instead of asking for HTML, ask for a Capsule — the Core spec is one page (twelve numbered rules) designed to paste into an LLM prompt; that's the contract behind 'according to the Spec'. The LLM returns a sealed .html with manifest, integrity hash, UUID + parents[], declared capabilities (Rule 7), pre-rendered content (Rule 12), and no network deps (Rule 2). The artifact carries its own context; the producer (LLM) becomes a first-class spec-aware participant. Pointers to CAPSULE_CORE.md, full spec, worked examples.", "kind": "section" },
     { "num": "00b",  "id": "Question 2",    "framing": "Question 2 · what do you do with HTML (three answers)",                "title": "Question 2: What do you do with all that HTML?", "sub": "(Was Question 1; renumbered to make room for the new Question 1 about getting HTML out of an LLM.) Lean section + TOC linking to three sibling Answer sections below (2a viewing, 2b hosting, 2c custom producer + MinDev registry).", "kind": "section" },
     { "num": "00b1", "id": "Answer 2a",     "framing": "Answer 2a · viewing strategy · Thariq",                                "title": "Answer 2a: Open it in a browser. Or upload to S3.", "sub": "(Was Answer 1a.) Thariq's FAQ recommendation blockquote + commentary on what the minimum-viable answer offers (portable substrate) and what it leaves open (no default shareable URL — addressed by 2b).", "kind": "section" },
     { "num": "00b2", "id": "Answer 2b",     "framing": "Answer 2b · hosting layer · htmlbin.dev",                              "title": "Answer 2b: Host it on htmlbin.dev.", "sub": "(Was Answer 1b.) htmlbin.dev positioning blockquote + analysis of what htmlbin does (purpose-built hosting, OAuth device-code flow, /p/{slug} + /raw, format-agnostic) and the format/host split it demonstrates. Doesn't name MinDev here (that belongs to 2c).", "kind": "section" },
@@ -1206,8 +1206,8 @@
     <article class="cb-frame is-observation is-answer" data-num="00a2" aria-labelledby="frame-00a2-title">
       <span class="cb-frame-num">Answer 1b</span>
       <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Contract-based approach · paste the Core spec</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00a2-title"><span class="cb-kicker">Answer 1b:</span> Paste the Capsule <a href="CAPSULE_CORE.md">Core spec</a> into your prompt.</h2>
+        <p class="cb-frame-tag">Contract-based approach · ask for a Capsule</p>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00a2-title"><span class="cb-kicker">Answer 1b:</span> Ask the LLM for a Capsule (according to the <a href="CAPSULE_CORE.md">Spec</a>).</h2>
 
         <p class="cb-frame-prose">Instead of asking for HTML, ask for a <em>Capsule</em>. The Core spec is one page — twelve numbered rules, designed to paste directly into an LLM prompt. The LLM returns a sealed <code>.html</code> file with:</p>
 
@@ -1587,7 +1587,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.14.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.14.1 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
