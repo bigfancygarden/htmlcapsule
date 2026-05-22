@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.14.1",
+  "capsule_version": "11.15.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.14.0: (1) Question 3 title tightened to 'How do you keep track of which version of an HTML file you're working on?' (was '...of an artifact you're working with?'). (2) Observation 3 gains a middle paragraph about chat-hosted artifacts (Claude's artifacts, ChatGPT's canvas) having no natural versioning system — the artifact mutates in place; forking into a new conversation doesn't inherit a clean version label; the chat keeps going, the artifact loses its history. (3) NEW Observation 5 (00h, white) added at the end of the analysis arc, after Observation 4 and before the hero gallery: 'There's no easy way to get chat-hosted content out of an LLM platform.' Three prose paragraphs: share links exist on every platform but are platform-locked viewing artifacts; cross-platform interop is poor (a ChatGPT share link handed to Claude doesn't compose); the file-as-artifact discipline (Obs 1, Obs 2, Answer 1b) is the project's response — a Capsule opens in any browser, can be handed to any LLM, the host doesn't have to be in the loop. UUID 7d1a1ac8 preserved through v11.14.",
+  "description": "Landing page in hero framing exploration mode. v11.15.0 sharpens the HTML-version-control arc per converging external-review feedback. (1) Observation 3 retitled 'HTML diffs are noisy. Lineage is the bigger problem.' and rewritten around the three-layer framing (raw diff / semantic diff / lineage) as an explicit ordered list; new opening explains why HTML diffs are noisy in the first place (HTML is closer to a runtime artifact than a writing format); closes on 'Capsule doesn't claim raw HTML diffs become pleasant; it claims artifacts need identity and lineage first.' (2) Answer 3b gains the closing punchline 'Git tracks files. Capsule tracks artifacts.' (3) Answer 3c retitled and rewritten around the punchline 'The HTML is the artifact. The manifest is the review surface.' followed by an 8-row review-surfaces table (Raw HTML / Manifest / Content / Data / Style / Asset / Render / Runtime diff) — adds Asset and Render surfaces that weren't in the prior treatment. Example-output block preserved. Three new utility CSS classes added: .cb-frame-list (ordered three-layer list), .cb-frame-punchline (the two slogan lines), .cb-diff-table (8-row review surfaces). Three new manifest field ideas (supersedes, derived_from, change_summary) raised by the same external review are NOT added to the spec; parked in spec Appendix E pending real-producer empirical pressure. UUID 7d1a1ac8 preserved through v11.15.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -1068,6 +1068,65 @@
   .cb-foot-slim-links a { color: var(--ink-soft); border-bottom: none; padding: 4px 0; }
   .cb-foot-slim-links a:hover, .cb-foot-slim-links a:focus { color: var(--accent); }
 
+  /* Numbered list inside analysis sections (used by Obs 3 three-layer breakdown) */
+  .cb-frame-list {
+    font: 400 16.5px/1.55 var(--sans);
+    color: var(--ink-soft);
+    margin: 14px 0 20px;
+    padding-left: 24px;
+    max-width: 62ch;
+  }
+  .cb-frame-list li { margin-bottom: 8px; }
+  .cb-frame-list strong { color: var(--ink); font-weight: 600; }
+
+  /* Punchline / pull-quote treatment for the two slogan lines
+     (Answer 3b closing "Git tracks files. Capsule tracks artifacts."
+      and Answer 3c opener "The HTML is the artifact. The manifest is the review surface.") */
+  .cb-frame-punchline {
+    font: 600 20px/1.35 var(--sans);
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 24px 0;
+    max-width: 44ch;
+  }
+  .cb-frame-punchline strong { color: var(--accent); font-weight: 700; }
+
+  /* Diff-surfaces table for Answer 3c — 8 review layers × (what it compares / why it helps) */
+  .cb-diff-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 18px 0 22px;
+    font: 400 14.5px/1.4 var(--sans);
+    color: var(--ink-soft);
+  }
+  .cb-diff-table thead th {
+    text-align: left;
+    font: 500 12px/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule);
+    background: transparent;
+    vertical-align: bottom;
+  }
+  .cb-diff-table tbody td {
+    padding: 10px 14px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .cb-diff-table tbody tr:last-child td { border-bottom: none; }
+  .cb-diff-table td:first-child {
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  @media (max-width: 700px) {
+    .cb-diff-table { font-size: 13.5px; }
+    .cb-diff-table thead th, .cb-diff-table tbody td { padding: 8px 10px; }
+    .cb-diff-table td:first-child { white-space: normal; }
+  }
+
   /* Frame responsive tweaks */
   @media (max-width: 600px) {
     .cb-frame { padding: clamp(56px, 9vh, 96px) clamp(20px, 5vw, 32px); min-height: auto; }
@@ -1298,11 +1357,11 @@
       </div>
     </article>
 
-    <!-- 00e — Observation 3 (HTML diffs are hard; version tracking is its own problem) -->
+    <!-- 00e — Observation 3 (HTML diffs are noisy; lineage is the bigger problem) -->
     <article class="cb-frame is-observation" data-num="00e" aria-labelledby="frame-00e-title">
       <span class="cb-frame-num">Observation 3</span>
       <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00e-title"><span class="cb-kicker">Observation 3:</span> HTML diffs are noisy; version tracking is its own problem.</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00e-title"><span class="cb-kicker">Observation 3:</span> HTML diffs are noisy. Lineage is the bigger problem.</h2>
 
         <p class="cb-frame-lead">The diff problem, from Thariq again:</p>
 
@@ -1311,11 +1370,21 @@
           <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> · FAQ</figcaption>
         </figure>
 
-        <p class="cb-frame-prose">Fair. HTML diffs <em>are</em> noisy. But there's a related, more general problem worth pulling apart: when you're iterating on an artifact across long chats and tweaks, you lose track of what you're actually looking at. People already know this problem from PDFs — the <code>v1.pdf</code> / <code>v2.pdf</code> / <code>v3-final.pdf</code> / <code>v3-real-final.pdf</code> / <code>v3-real-real-final-USE-THIS.pdf</code> sequence. Not a good system. But it represents something real: people need to know what version they're working with.</p>
+        <p class="cb-frame-prose">Fair. Raw HTML diffs are noisy because HTML is closer to a <em>runtime</em> artifact than a writing format. A small visual change can move wrappers, attribute orders, inline styles, scripts, or embedded assets in ways that make a normal Git diff look much larger than the real change.</p>
+
+        <p class="cb-frame-prose">But raw diffs are only one layer of the problem. There are really three separate questions:</p>
+
+        <ol class="cb-frame-list">
+          <li><strong>Raw diff:</strong> what changed in the HTML bytes?</li>
+          <li><strong>Semantic diff:</strong> what changed in the artifact's content, structure, style, data, assets, or runtime behavior?</li>
+          <li><strong>Lineage:</strong> what artifact is this, what version is it, where did it come from, and what does it replace?</li>
+        </ol>
+
+        <p class="cb-frame-prose">The lineage question is the most basic — and the one people most often lose track of. People already know this problem from PDFs: the <code>v1.pdf</code> / <code>v2.pdf</code> / <code>v3-final.pdf</code> / <code>v3-real-final.pdf</code> / <code>v3-real-real-final-USE-THIS.pdf</code> sequence. Not a good system. But it represents something real — people need to know what artifact they're looking at.</p>
 
         <p class="cb-frame-prose">Chat-hosted artifacts make this worse, not better. Claude's artifacts, ChatGPT's canvas — they don't have a natural versioning system. The artifact just keeps mutating in place as you iterate. You can fork into a new conversation, but the new one doesn't inherit a clean version label or any explicit "this is v3" anchor — it just starts fresh, often with no easy way to refer back to the previous state. The chat keeps going and going; the artifact loses its history.</p>
 
-        <p class="cb-frame-prose">HTML diffs proper are still hard. But artifact <em>identity</em> and <em>lineage</em> are different problems — and they're addressable.</p>
+        <p class="cb-frame-prose">Capsule doesn't claim raw HTML diffs become pleasant. It claims artifacts need identity and lineage first. Once an artifact has a manifest, UUID, version, parents, timestamps, and integrity hashes, tools can build cleaner review surfaces <em>around</em> the HTML instead of forcing humans to review the HTML directly. Identity and lineage are addressable — and they unlock the rest.</p>
       </div>
     </article>
 
@@ -1355,24 +1424,40 @@
 
         <p class="cb-frame-prose">So the artifact knows what it is and what it descended from, regardless of filename. Paste a Capsule into a new editing session; the next Capsule the producer emits records the parent UUID in its own <code>parents[]</code> array. The lineage chain stays intact across renames, forwards, and zip files — because identity lives in the bytes, not the filename.</p>
 
-        <p class="cb-frame-prose">This solves <em>which version is this</em> and <em>where did it come from</em>. It doesn't yet solve the HTML-diffs problem proper — for that, see <a href="#frame-00f3-title">Answer 3c</a> on how the spec could evolve to support Capsule-aware semantic diffs on top of this identity foundation. <a href="spec/CAPSULE_SPEC.md">Full spec</a> · <a href="CAPSULE_CORE.md">Core (one page)</a>.</p>
+        <p class="cb-frame-prose">This solves <em>which version is this</em> and <em>where did it come from</em>. It doesn't yet solve the HTML-diffs problem proper — for that, see <a href="#frame-00f3-title">Answer 3c</a> on the review surfaces that can be built on top of this identity foundation. <a href="spec/CAPSULE_SPEC.md">Full spec</a> · <a href="CAPSULE_CORE.md">Core (one page)</a>.</p>
+
+        <p class="cb-frame-punchline"><strong>Git</strong> tracks files. <strong>Capsule</strong> tracks artifacts.</p>
       </div>
     </article>
 
-    <!-- 00f3 — Answer 3c · spec-evolution path for semantic Capsule diffs (NEW) -->
+    <!-- 00f3 — Answer 3c · review surfaces layered on the spec -->
     <article class="cb-frame is-observation is-answer" data-num="00f3" aria-labelledby="frame-00f3-title">
       <span class="cb-frame-num">Answer 3c</span>
       <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Spec-evolution path · semantic Capsule diffs (open work)</p>
+        <p class="cb-frame-tag">Spec-evolution path · review surfaces layered on the spec (open work)</p>
         <h2 class="cb-frame-title is-observation-h" id="frame-00f3-title"><span class="cb-kicker">Answer 3c:</span> A Capsule-aware diff over manifest + data + content, layered on the spec.</h2>
 
-        <p class="cb-frame-prose">HTML diffs are noisy because raw <code>diff a.html b.html</code> treats presentation churn (whitespace, attribute reordering, runtime-generated IDs) as substantive change. Capsules have structure the raw-diff approach throws away — and that structure is the path to a useful diff.</p>
+        <p class="cb-frame-punchline">The HTML <strong>is the artifact</strong>. The manifest <strong>is the review surface</strong>.</p>
 
-        <p class="cb-frame-prose">A <code>capsule-diff</code> tool, layered on the spec, could read each Capsule's five required blocks and diff them <em>semantically</em>:</p>
+        <p class="cb-frame-prose">Raw HTML diffs are noisy because the file is dense with runtime detail. But a Capsule has five required blocks, each addressable on its own — and a <code>capsule-diff</code> tool layered on the spec doesn't need to make humans read raw HTML at all. It can compare each block separately and present the deltas at the right grain. There are several reasonable review surfaces, with very different signal-to-noise ratios:</p>
 
-        <p class="cb-frame-prose">The <strong>manifest</strong> is JSON — a structured diff over manifests gives a field-level delta: <code>capsule_version</code> bumped, <code>parents[]</code> appended, <code>capabilities</code> added or removed, <code>integrity.content_hash</code> changed (and whether the change was expected). The <strong>data section</strong> is JSON — diffing structured data (not its rendered HTML) gives the actual content delta. The <strong>visible content</strong> in <code>capsule-root</code> is HTML, but Rule 12 (pre-rendered) means most of it is static — a text-content diff that ignores presentation attributes would be informative on its own. The <strong>style</strong> and <strong>runtime</strong> blocks are bounded — diff each as "did the styling change?" or "did the behavior change?"</p>
+        <table class="cb-diff-table" aria-label="Review surfaces for Capsule diffs">
+          <thead>
+            <tr><th>Review layer</th><th>What it compares</th><th>Why it helps</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Raw HTML diff</td>    <td>Source bytes</td>                                          <td>Complete, but noisy</td></tr>
+            <tr><td>Manifest diff</td>    <td>UUIDs, versions, parents, integrity, declared metadata</td><td>High-signal artifact review</td></tr>
+            <tr><td>Content diff</td>     <td>Extracted text / content regions</td>                     <td>Human-readable editorial review</td></tr>
+            <tr><td>Data diff</td>        <td>Embedded JSON, tables, datasets, structured payloads</td> <td>Shows factual / data changes</td></tr>
+            <tr><td>Style diff</td>       <td>CSS blocks, tokens, layout declarations</td>              <td>Separates visual changes from content changes</td></tr>
+            <tr><td>Asset diff</td>       <td>Images, fonts, media, embedded files by hash</td>         <td>Shows whether bundled materials changed</td></tr>
+            <tr><td>Runtime diff</td>     <td>Scripts, permissions, interaction logic</td>              <td>Flags behavior changes</td></tr>
+            <tr><td>Render diff</td>      <td>Screenshot or DOM snapshot before/after</td>              <td>Shows actual visual impact</td></tr>
+          </tbody>
+        </table>
 
-        <p class="cb-frame-prose">Output could look like:</p>
+        <p class="cb-frame-prose">Output from such a tool might look like:</p>
 
         <p class="cb-frame-prose"><code>Capsule diff: a.html → b.html<br>
           · Manifest: capsule_version 1.0.0 → 1.1.0; +1 parent<br>
@@ -1587,7 +1672,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.14.1 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.15.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
