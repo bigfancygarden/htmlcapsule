@@ -16,7 +16,7 @@ This project is research-led with an empirical-pressure-driven spec discipline: 
 
 ## Research
 
-- [Research log — F1-F21 findings, methodology, recurring failures](https://htmlcapsule.org/RESEARCH.md): The running narrative of what's been investigated, what's been observed, what's been spec-changed in response. Includes the empirical-pressure-driven spec evolution principle and the corpus across multiple producer kinds.
+- [Research log — F1-F25 findings, methodology, recurring failures](https://htmlcapsule.org/RESEARCH.md): The running narrative of what's been investigated, what's been observed, what's been spec-changed in response. Includes the empirical-pressure-driven spec evolution principle and the corpus across multiple producer kinds. Recent findings extend the layer convergences to host-vs-registry (F24, the missing commitment layer) and the ChatGPT producer-population's reliable Core-supplementary-guidance reads (F25).
 - [Precedents and related work](https://htmlcapsule.org/PRECEDENTS.md): Positioning against RO-Crate, BagIt, WARC, EPUB, C2PA, TiddlyWiki, MHTML, Hugging Face Model Cards, plus current voices in the same family across the lifecycle layers (live editing: Raunaq Bhutoria / html-docs.com; format: Thariq, Karpathy, Blake, Steph Ango; hosting: Utkarsh Sengar / htmlbin; discovery: Jeremy Howard / llms.txt).
 - [Maintainer's journey essay (first-person)](https://htmlcapsule.org/notes.html): The personal account of why this project exists — from copy-pasting between AI tools and getting frustrated with share-links to landing on HTML as the substrate and writing the discipline down.
 
@@ -34,7 +34,7 @@ This project is research-led with an empirical-pressure-driven spec discipline: 
 
 ## Project trajectory
 
-- [CHANGELOG.md at repo root](https://github.com/bigfancygarden/htmlcapsule/blob/main/CHANGELOG.md): Curated narrative of what shipped at each spec version (v0.3.0 through v0.3.5), landing iterations, voices archive growth, research findings (F1–F22), and infrastructure additions. Reverse-chronological by version; commit IDs cross-referenced.
+- [CHANGELOG.md at repo root](https://github.com/bigfancygarden/htmlcapsule/blob/main/CHANGELOG.md): Curated narrative of what shipped at each spec version (v0.3.0 through v0.3.5), landing iterations, voices archive growth, research findings (F1–F25), and infrastructure additions. Reverse-chronological by version; commit IDs cross-referenced.
 
 ## How to cite
 

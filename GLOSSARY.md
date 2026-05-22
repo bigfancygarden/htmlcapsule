@@ -86,6 +86,8 @@ A useful frame for where capsules sit in the AI work lifecycle:
 
 Capsules occupy the seal layer — the one nobody had named, and the layer where useful chats currently die.
 
+A related **ecosystem-stack framing** in [`PRECEDENTS.md`](PRECEDENTS.md) maps the same lifecycle to the *tools that populate each slot* rather than the actions a knowledge worker takes: **substrate** (HTML itself, per Karpathy and Thariq) → **live editing** (Canvas, Artifacts, html-docs, Workplane) → **seal** (HTML Capsule) → **host** (htmlbin, MinDev, self-hosted) → **discover** (`llms.txt`, per Jeremy Howard). The four-layer model is verb-shaped (what a knowledge worker does); the ecosystem stack is noun-shaped (where tools sit in the landscape). Both are useful; both name "seal" as the slot Capsule occupies.
+
 ---
 
 ## Production paths
