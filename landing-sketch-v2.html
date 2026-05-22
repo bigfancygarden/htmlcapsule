@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>HTML Capsule — HTML you can keep</title>
+
+<script id="capsule-manifest" type="application/json">
+{
+  "spec_version": "0.3.0",
+  "uuid": "2860450e-1824-4067-8120-4a6c3456511c",
+  "capsule_version": "0.3.0",
+  "title": "HTML Capsule — landing sketch (v2)",
+  "description": "Iterated landing page. Same conversion shape as v1 — one hero, one CTA, one example — with the anti-context-loss pain named and Capsule's lifecycle slot located on the seal step. v0.3.0 applies the HTML Capsule design system (cool fog paper, five-hue taxonomy, indigo lead, weight-contrast hero, anatomy card with manifest row emphasized).",
+  "type": "landing_page",
+  "created_at": "2026-05-21T00:00:00Z",
+  "generator": { "name": "claude-code", "version": "claude-opus-4-7", "kind": "hybrid" },
+  "source": {
+    "origin": "private_database",
+    "snapshot_type": "portable_excerpt",
+    "snapshot_id": "snapshot:landing-sketch-v2-2026-05-21",
+    "included_records": 1,
+    "spec_received": "v0.3.0 · 2026-05-19"
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "parents": [
+    { "uuid": "9bde04e1-1699-47cf-b0b6-af471417e5c2", "title": "HTML Capsule — landing sketch" }
+  ],
+  "capabilities": ["about", "copy_as_json", "download_json", "download_capsule", "print_to_pdf"]
+}
+</script>
+
+<script id="capsule-data" type="application/json">
+{
+  "hero": {
+    "eyebrow": "Anti-context-loss",
+    "claim": "HTML you can keep.",
+    "lede": "After the chat closes, the canvas mutates, the share link rots — useful AI work shouldn't die there. A Capsule is one sealed HTML file that survives across tools, time, sessions, and platform churn."
+  },
+  "lifecycle": {
+    "note": "Capsule sits between the live-editing surfaces and the hosting / discovery layer.",
+    "stages": ["Substrate", "Live edit", "Seal", "Host", "Discover"],
+    "ours": "Seal"
+  },
+  "primitives": [
+    { "key": "capsule-manifest", "note": "identity, provenance, integrity" },
+    { "key": "capsule-data",     "note": "the snapshot, as JSON" },
+    { "key": "capsule-style",    "note": "all CSS, inlined" },
+    { "key": "capsule-root",     "note": "the rendered artifact" },
+    { "key": "capsule-runtime",  "note": "optional enhancement" }
+  ],
+  "not_this": [
+    "Not a standard you have to comply with. A loose discipline.",
+    "Not anti-platform. Anti-context-loss.",
+    "Not finished. Active research."
+  ],
+  "links": {
+    "spec_core":  "CAPSULE_CORE.md",
+    "spec_full":  "spec/CAPSULE_SPEC.md",
+    "github":     "https://github.com/bigfancygarden/htmlcapsule",
+    "examples":   "spec/examples/"
+  }
+}
+</script>
+
+<style id="capsule-style">
+:root {
+  /* ── Paper system — cool fog ─────────────────────────── */
+  --paper:        #f5f6f8;
+  --paper-soft:   #ebedf1;
+  --paper-deep:   #dee1e7;
+  --paper-page:   #ffffff;
+
+  /* ── Ink ─────────────────────────────────────────────── */
+  --ink:          #0c0e13;
+  --ink-soft:     #2a2e38;
+  --ink-mute:     #5d6470;
+  --ink-faint:    #8a909c;
+  --ink-quiet:    #b0b5be;
+
+  /* ── Rule ────────────────────────────────────────────── */
+  --rule:         #dde0e6;
+  --rule-soft:    #e8eaef;
+  --rule-strong:  #c8ccd4;
+
+  /* ── Five semantic hues — taxonomy ───────────────────── */
+  --indigo:       #4f46e5;
+  --indigo-soft:  #eef0fe;
+  --indigo-edge:  #c7cbf6;
+  --indigo-deep:  #3730a3;
+
+  --violet:       #7c3aed;
+  --violet-soft:  #f3edff;
+  --violet-edge:  #d6c5fa;
+  --violet-deep:  #5b21b6;
+
+  --teal:         #0d9488;
+  --teal-soft:    #e0f5f1;
+  --teal-edge:    #a8dcd1;
+  --teal-deep:    #115e59;
+
+  --amber:        #b45309;
+  --amber-soft:   #fbeed5;
+  --amber-edge:   #ecd09b;
+  --amber-deep:   #7c2d12;
+
+  --rose:         #be123c;
+  --rose-soft:    #fce4ea;
+  --rose-edge:    #efb7c2;
+  --rose-deep:    #831843;
+
+  /* ── Typography — system-font fallback (no network) ─── */
+  --sans:   "Geist", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono:   "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ── Layout ──────────────────────────────────────────── */
+  --shell-w: 1240px;
+
+  /* ── Radii ───────────────────────────────────────────── */
+  --radius:      14px;  /* cards, panels */
+  --radius-sm:    8px;  /* controls, buttons, inputs */
+  --radius-pill: 999px; /* eyebrows, tags, status chips */
+
+  /* ── Back-compat aliases for existing references ────── */
+  --ink-2:       var(--ink-soft);
+  --muted:       var(--ink-mute);
+  --line:        var(--rule);
+  --accent:      var(--indigo);
+  --accent-soft: var(--indigo-soft);
+  --max:         1040px;
+  --font-sans:   var(--sans);
+  --font-mono:   var(--mono);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+body { font-family: var(--sans); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color .15s, border-color .15s; }
+a:hover { color: var(--indigo); border-color: var(--indigo); }
+a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 2px; }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 1rem; top: 1rem; background: var(--ink); color: var(--paper-page); padding: .5rem .75rem; border-radius: var(--radius-sm); z-index: 99; }
+
+#capsule-root { max-width: var(--max); margin: 0 auto; padding: 1.5rem clamp(1.25rem, 4vw, 2.5rem) 4rem; }
+
+.nav { display: flex; align-items: center; justify-content: space-between; padding: .5rem 0 4rem; gap: 16px; flex-wrap: wrap; }
+.nav .mark { display: inline-flex; align-items: center; gap: .55rem; font-weight: 600; font-size: 15px; letter-spacing: -.005em; }
+.nav .mark svg { width: 26px; height: auto; color: var(--indigo); }
+.nav .mark a { border: 0; color: var(--ink); }
+.nav .links { display: flex; gap: .25rem; font-size: 13px; }
+.nav .links a { border: 0; color: var(--ink-soft); padding: .5rem .75rem; border-radius: var(--radius-sm); font-weight: 500; }
+.nav .links a:hover { color: var(--ink); background: var(--paper-soft); }
+
+.hero { padding: clamp(2rem, 8vh, 6rem) 0 clamp(2rem, 6vh, 4rem); max-width: 760px; }
+.hero .eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px; font-weight: 500; letter-spacing: 0;
+  color: var(--teal-deep);
+  background: var(--teal-soft);
+  padding: 7px 14px 7px 12px;
+  border-radius: var(--radius-pill);
+  margin: 0 0 24px;
+  text-transform: none;
+}
+.hero .eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal);
+  display: inline-block;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -.034em;
+  margin: 0 0 1.5rem;
+  color: var(--ink);
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.hero h1 .light { font-weight: 300; color: var(--ink-soft); }
+.hero h1 .keep  { font-weight: 800; color: var(--indigo); }
+.hero p.lede { font-size: clamp(1.05rem, 1.9vw, 1.2rem); line-height: 1.5; color: var(--ink-soft); margin: 0 0 2.25rem; max-width: 50ch; font-weight: 400; }
+.cta { display: inline-flex; gap: .8rem; align-items: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: 13px 22px;
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: 14px; font-weight: 600;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-page);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.btn:hover { background: var(--paper-soft); border-color: var(--rule-strong); color: var(--ink); }
+.btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn.primary:hover { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.btn .arrow { color: var(--indigo); transition: transform .15s; }
+.btn.primary .arrow { color: #fff; }
+.btn:hover .arrow { transform: translateX(2px); }
+
+.lifecycle { padding: clamp(2rem, 5vh, 4rem) 0 clamp(2.5rem, 6vh, 5rem); }
+.lifecycle .strip { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; margin: 0 0 1rem; }
+.lifecycle .pill {
+  display: inline-flex; align-items: center;
+  padding: .4rem .85rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  font-size: 13px; font-weight: 500;
+  color: var(--ink-soft); background: var(--paper-page);
+  white-space: nowrap;
+}
+.lifecycle .pill.is-substrate { color: var(--teal-deep); border-color: var(--teal-edge); background: var(--teal-soft); }
+.lifecycle .pill.is-liveedit  { color: var(--violet-deep); border-color: var(--violet-edge); background: var(--violet-soft); }
+.lifecycle .pill.is-host      { color: var(--amber-deep); border-color: var(--amber-edge); background: var(--amber-soft); }
+.lifecycle .pill.is-discover  { color: var(--ink-mute); border-color: var(--rule); background: var(--paper-page); }
+.lifecycle .pill.ours { color: #fff; background: var(--indigo); border-color: var(--indigo); font-weight: 600; }
+.lifecycle .sep { color: var(--ink-faint); font-size: 13px; user-select: none; }
+.lifecycle .note { font-size: 14px; color: var(--ink-mute); margin: 0; max-width: 38em; }
+
+section { padding: clamp(2.5rem, 6vh, 5rem) 0; border-top: 1px solid var(--rule); }
+section .eyebrow { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-mute); margin: 0 0 1rem; font-weight: 500; }
+section h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 1.25rem; max-width: 30em; color: var(--ink); }
+section h2 .light { font-weight: 300; color: var(--ink-soft); }
+section p { color: var(--ink-soft); max-width: 38em; margin: 0; }
+
+.demo { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; margin-top: 2rem; }
+@media (min-width: 720px) { .demo { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+.demo pre { margin: 0; background: var(--paper-page); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1rem 1.1rem; font-family: var(--mono); font-size: 13px; line-height: 1.6; color: var(--ink); overflow-x: auto; }
+.demo pre .c { color: var(--ink-faint); }
+.demo pre .k { color: var(--indigo); }
+
+/* Anatomy card — replaces the legend list per proposal pattern */
+.anatomy-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.anatomy-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule-soft);
+  flex-wrap: wrap; gap: 8px;
+}
+.anatomy-head h3 {
+  font: 600 14px/1.2 var(--sans);
+  color: var(--ink);
+  margin: 0;
+}
+.anatomy-head h3 .light { color: var(--ink-mute); font-weight: 400; }
+.anatomy-head .meta {
+  font: 500 11.5px/1.4 var(--mono);
+  color: var(--ink-mute);
+}
+.anatomy-grid { display: grid; gap: 8px; }
+.block-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 16px;
+  padding: 11px 14px;
+  background: var(--paper-page);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--radius-sm);
+  align-items: center;
+  transition: border-color .15s, background .15s;
+}
+@media (min-width: 720px) {
+  .block-row { grid-template-columns: 28px 180px 1fr auto; }
+}
+.block-row:hover { border-color: var(--rule-strong); }
+.block-row.is-emphasis {
+  background: var(--indigo-soft);
+  border-color: var(--indigo-edge);
+}
+.block-row .n {
+  font: 600 11px/1 var(--mono);
+  color: var(--ink-faint);
+}
+.block-row.is-emphasis .n { color: var(--indigo); }
+.block-row .k {
+  font: 500 13.5px/1 var(--mono);
+  color: var(--ink);
+}
+.block-row.is-emphasis .k { color: var(--indigo-deep); font-weight: 600; }
+.block-row .d {
+  font: 400 13.5px/1.4 var(--sans);
+  color: var(--ink-soft);
+  display: none;
+}
+@media (min-width: 720px) {
+  .block-row .d { display: block; }
+}
+.block-row .opt {
+  font: 600 10.5px/1 var(--mono);
+  padding: 5px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-soft);
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.block-row.is-emphasis .opt {
+  background: var(--indigo);
+  color: #fff;
+}
+.block-row.is-optional .opt {
+  background: transparent;
+  color: var(--ink-faint);
+  border: 1px solid var(--rule);
+}
+
+/* "What this is not" — rose styling (pain/negation hue) */
+.not-this { display: grid; gap: .65rem; margin-top: 1.75rem; max-width: 42em; }
+.not-this ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .65rem; }
+.not-this li {
+  list-style: none;
+  padding: .9rem 1.1rem;
+  border-left: 3px solid var(--rose);
+  background: var(--rose-soft);
+  border-top: 1px solid var(--rose-edge);
+  border-right: 1px solid var(--rose-edge);
+  border-bottom: 1px solid var(--rose-edge);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--rose-deep);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.about { font-size: 14.5px; color: var(--ink-soft); }
+.about summary { cursor: pointer; color: var(--ink-mute); padding: .4rem 0; list-style: none; font-size: 13px; letter-spacing: .02em; font-family: var(--mono); }
+.about summary::-webkit-details-marker { display: none; }
+.about summary::before { content: "›  "; display: inline-block; transition: transform .15s; }
+.about[open] summary::before { transform: rotate(90deg); }
+.about[open] summary { color: var(--ink); }
+.about-body { padding: 1rem 0 0; }
+.about-body .row { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.about-body .row button { font: inherit; padding: .45rem .8rem; font-size: 13px; font-weight: 500; border: 1px solid var(--rule-strong); border-radius: var(--radius-sm); background: var(--paper-page); color: var(--ink-soft); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.about-body .row button:hover { background: var(--paper-soft); color: var(--ink); border-color: var(--rule-strong); }
+.about-body pre { background: var(--indigo-soft); border: 1px solid var(--indigo-edge); border-radius: var(--radius-sm); padding: .85rem 1rem; font-family: var(--mono); font-size: 12px; line-height: 1.55; color: var(--ink); overflow-x: auto; max-height: 360px; }
+
+footer.site { margin-top: 4rem; padding-top: 1.75rem; border-top: 1px solid var(--rule); display: flex; gap: 1.5rem; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--ink-mute); }
+footer.site nav { display: flex; gap: 1.25rem; }
+footer.site nav a { color: var(--ink-mute); border: 0; }
+footer.site nav a:hover { color: var(--indigo); }
+footer.site .meta { font-family: var(--mono); font-size: 11.5px; letter-spacing: .01em; }
+
+.toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100%); background: var(--ink); color: var(--paper-page); padding: .6rem 1.1rem; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: transform .2s, opacity .2s; pointer-events: none; z-index: 100; }
+.toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+@media print {
+  .nav .links, .about, .toast, footer.site { display: none; }
+  body { font-size: 12pt; background: #fff; color: #000; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#capsule-root">Skip to content</a>
+
+<main id="capsule-root">
+  <nav class="nav" aria-label="Top">
+    <span class="mark">
+      <svg viewBox="0 0 32 18" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="2"/>
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
+          <path d="M 13.5 13 L 18.5 5"/>
+          <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
+        </g>
+      </svg>
+      <a href="#capsule-root">HTML Capsule</a>
+    </span>
+    <div class="links">
+      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="spec/examples/">Examples</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Anti-context-loss</p>
+    <h1><span class="light">HTML you can</span> <span class="keep">keep.</span></h1>
+    <p class="lede">After the chat closes, the canvas mutates, the share link rots — useful AI work shouldn't die there. A Capsule is one sealed HTML file that survives across tools, time, sessions, and platform churn.</p>
+    <div class="cta">
+      <a href="CAPSULE_CORE.md" class="btn primary">Read the spec <span class="arrow">→</span></a>
+      <a href="spec/examples/" class="btn">See examples <span class="arrow">↗</span></a>
+    </div>
+  </header>
+
+  <div class="lifecycle" aria-label="Where Capsule sits in the AI-work lifecycle">
+    <div class="strip">
+      <span class="pill is-substrate">Substrate</span><span class="sep" aria-hidden="true">·</span>
+      <span class="pill is-liveedit">Live edit</span><span class="sep" aria-hidden="true">·</span>
+      <span class="pill ours" aria-current="step">Seal</span><span class="sep" aria-hidden="true">·</span>
+      <span class="pill is-host">Host</span><span class="sep" aria-hidden="true">·</span>
+      <span class="pill is-discover">Discover</span>
+    </div>
+    <p class="note">Canvas, Artifacts, html-docs, Workplane do the live editing. htmlbin, MinDev, llms.txt do hosting and discovery. Capsule is the seal step in between — what an artifact becomes when the live work is done.</p>
+  </div>
+
+  <section aria-labelledby="what-title">
+    <p class="eyebrow">What it is</p>
+    <h2 id="what-title">One file. Manifest, data, style, root, runtime — all inlined.</h2>
+    <p>AI tools emit HTML by default: reports, dashboards, notes, demos. A Capsule is what that HTML becomes when it's sealed for keeping. The same envelope whether an LLM, a build script, or a human authored it — readable in five years, on any device, without a server.</p>
+  </section>
+
+  <section aria-labelledby="shape-title">
+    <p class="eyebrow">How it's shaped</p>
+    <h2 id="shape-title">Five required blocks. Twelve rules. Zero ambiguity.</h2>
+    <div class="demo">
+      <pre aria-label="Capsule structure"><span class="c">&lt;!-- A valid Capsule, in outline --&gt;</span>
+&lt;<span class="k">script</span> id="capsule-manifest" type="application/json"&gt;
+  { "uuid": "...", "title": "...", ... }
+&lt;/<span class="k">script</span>&gt;
+
+&lt;<span class="k">script</span> id="capsule-data" type="application/json"&gt;
+  { ... your snapshot, free-form ... }
+&lt;/<span class="k">script</span>&gt;
+
+&lt;<span class="k">style</span> id="capsule-style"&gt; ... &lt;/<span class="k">style</span>&gt;
+
+&lt;<span class="k">main</span> id="capsule-root"&gt;
+  <span class="c">&lt;!-- the readable artifact, pre-rendered --&gt;</span>
+&lt;/<span class="k">main</span>&gt;
+
+&lt;<span class="k">script</span> id="capsule-runtime"&gt; ... &lt;/<span class="k">script</span>&gt;</pre>
+      <div class="anatomy-card" aria-label="Capsule anatomy">
+        <div class="anatomy-head">
+          <h3>Anatomy <span class="light">· one file, five inline blocks</span></h3>
+          <span class="meta">CAPSULE_CORE.md · rule 01</span>
+        </div>
+        <div class="anatomy-grid">
+          <div class="block-row is-emphasis">
+            <span class="n">01</span>
+            <span class="k">capsule-manifest</span>
+            <span class="d">Identity, provenance, integrity</span>
+            <span class="opt">required</span>
+          </div>
+          <div class="block-row">
+            <span class="n">02</span>
+            <span class="k">capsule-data</span>
+            <span class="d">The snapshot, as JSON</span>
+            <span class="opt">required</span>
+          </div>
+          <div class="block-row">
+            <span class="n">03</span>
+            <span class="k">capsule-style</span>
+            <span class="d">All CSS, inlined</span>
+            <span class="opt">required</span>
+          </div>
+          <div class="block-row">
+            <span class="n">04</span>
+            <span class="k">capsule-root</span>
+            <span class="d">The rendered artifact</span>
+            <span class="opt">required</span>
+          </div>
+          <div class="block-row is-optional">
+            <span class="n">05</span>
+            <span class="k">capsule-runtime</span>
+            <span class="d">Optional enhancement</span>
+            <span class="opt">optional</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="not-title">
+    <p class="eyebrow">What this is not</p>
+    <h2 id="not-title">Three lines of fence-posting.</h2>
+    <div class="not-this">
+      <ul>
+        <li>Not a standard you have to comply with. A loose discipline.</li>
+        <li>Not anti-platform. Anti-context-loss.</li>
+        <li>Not finished. Active research.</li>
+      </ul>
+    </div>
+  </section>
+
+  <details class="about" id="about">
+    <summary>About this page</summary>
+    <div class="about-body">
+      <p>This page is itself a Capsule per Core v0.3.0. Five required blocks, all inline. No network, no analytics. v2 — forked from the original landing sketch; v0.3.0 applies the HTML Capsule design system.</p>
+      <div class="row" role="group" aria-label="Exports">
+        <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
+        <button type="button" data-capsule-action="download_json">Download JSON</button>
+        <button type="button" data-capsule-action="download_capsule">Download capsule</button>
+        <button type="button" data-capsule-action="print_to_pdf">Print to PDF</button>
+      </div>
+      <pre id="manifest-view" aria-label="Capsule manifest JSON">Loading manifest…</pre>
+    </div>
+  </details>
+
+  <footer class="site" role="contentinfo">
+    <nav aria-label="Footer">
+      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="spec/CAPSULE_SPEC.md">Full spec</a>
+      <a href="spec/examples/">Examples</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </nav>
+    <span class="meta">Capsule v0.3.0 · spec 0.3.0 · open source (MIT)</span>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="capsule-runtime">
+(function () {
+  'use strict';
+  var manifest = JSON.parse(document.getElementById('capsule-manifest').textContent);
+  var data = JSON.parse(document.getElementById('capsule-data').textContent);
+
+  var manifestView = document.getElementById('manifest-view');
+  if (manifestView) manifestView.textContent = JSON.stringify(manifest, null, 2);
+
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('visible'); }, 2200);
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function () {
+        if (!fallbackCopy(text)) throw new Error(`Copy failed`);
+      });
+    }
+    return new Promise(function (resolve, reject) {
+      if (fallbackCopy(text)) resolve(); else reject(new Error(`Copy failed`));
+    });
+  }
+
+  function downloadBlob(filename, mime, content) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 250);
+  }
+
+  function serializeCapsule() {
+    return `<!DOCTYPE html>\n` + document.documentElement.outerHTML;
+  }
+
+  var actions = {
+    copy_as_json: function () {
+      copyText(JSON.stringify(data, null, 2)).then(
+        function () { toast(`Copied data as JSON`); },
+        function (err) { toast(err.message); }
+      );
+    },
+    download_json: function () {
+      downloadBlob(`capsule-data-${manifest.uuid.slice(0, 8)}.json`, `application/json`, JSON.stringify(data, null, 2));
+      toast(`Downloaded JSON`);
+    },
+    download_capsule: function () {
+      var name = `htmlcapsule-landing-v2-${manifest.uuid.slice(0, 8)}.html`;
+      downloadBlob(name, `text/html`, serializeCapsule());
+      toast(`Downloaded ${name}`);
+    },
+    print_to_pdf: function () {
+      toast(`Opening print dialog…`);
+      setTimeout(function () { window.print(); }, 200);
+    }
+  };
+
+  document.querySelectorAll('[data-capsule-action]').forEach(function (btn) {
+    var name = btn.getAttribute('data-capsule-action');
+    if (!actions[name]) return;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      try { actions[name](); } catch (err) { toast(`Error: ${err.message}`); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

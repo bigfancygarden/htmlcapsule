@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="HTML Capsule — research sketch. An open spec for sealed, self-contained HTML artifacts. One file, twelve rules, no network dependencies. Five inline blocks define the envelope; the data block is free-form. Multi-producer interop validated empirically across LLMs, deterministic compilers, and human authors.">
+<meta name="color-scheme" content="light">
+<title>HTML Capsule — research sketch</title>
+
+<script id="capsule-manifest" type="application/json">
+{
+  "spec_version": "0.3.0",
+  "uuid": "766faed9-1e14-4532-8dda-5a63b2c32d15",
+  "capsule_version": "0.1.0",
+  "title": "HTML Capsule — research sketch",
+  "description": "Academic-style project page for HTML Capsule. An open spec for sealed, self-contained HTML artifacts: one file, twelve rules, five required inline blocks (capsule-manifest, capsule-data, capsule-style, capsule-root, capsule-runtime), no network dependencies. This page is itself a Capsule and is intentionally a separate genre from the project's landing page — restrained academic register, dense findings, paper-style author block. Findings are numbered O1-O5 to avoid colliding with the F1-F25 numbering in the research log.",
+  "type": "landing_page",
+  "created_at": "2026-05-21T00:00:00Z",
+  "generator": {
+    "name": "human + Claude",
+    "version": "Opus 4.7 (1M context)",
+    "kind": "hybrid"
+  },
+  "source": {
+    "origin": "project_authorship",
+    "snapshot_type": "research_page",
+    "snapshot_id": "snapshot:htmlcapsule_research_sketch_2026_05_21",
+    "spec_received": "v0.3.0 · 2026-05-19",
+    "included_records": 1
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json",
+    "download_json",
+    "download_capsule",
+    "print_to_pdf"
+  ]
+}
+</script>
+
+<script id="capsule-data" type="application/json">
+{
+  "title": "HTML Capsule",
+  "tagline": "An open spec for sealed, self-contained HTML artifacts.",
+  "author": {
+    "name": "Luke Schuss",
+    "role": "Maintainer",
+    "location": "Vancouver, BC",
+    "homepage": "https://lukeschuss.com",
+    "github": "https://github.com/bigfancygarden/htmlcapsule"
+  },
+  "version": { "core": "v0.3.0", "full": "v0.3.5", "released": "2026-05-19" },
+  "abstract_summary": "Open spec for sealed, self-contained HTML artifacts. One file, twelve rules, five required inline blocks, zero network dependencies. Central claim: multi-producer interop across LLMs, deterministic compilers, and human authors. Empirically backed by 30+ LLM capsules, a third-party compiler validating 26/26 from spec prose alone, and reactive spec evolution v0.1.0 to v0.3.5.",
+  "findings_index": [
+    { "id": "O1", "claim": "HTML is becoming the default output format for AI-assisted work." },
+    { "id": "O2", "claim": "File over app remains the durable preservation primitive." },
+    { "id": "O3", "claim": "Lineage is a more tractable problem than HTML diffs." },
+    { "id": "O4", "claim": "A live-editing and collaboration layer is emerging upstream of the seal step." },
+    { "id": "O5", "claim": "Share links inside LLM platforms do not compose across platforms." }
+  ],
+  "related_work_index": [
+    { "name": "htmlbin.dev", "by": "Utkarsh Sengar", "role": "hosting layer" },
+    { "name": "Claude Design", "by": "Anthropic Labs", "role": "independent LLM-kind producer" },
+    { "name": "html-docs.com", "by": "Raunaq Bhutoria", "role": "live-editing layer (closed)" },
+    { "name": "Workplane", "by": "Matan / matanrak", "role": "live-editing layer (MCP-first)" },
+    { "name": "File over App", "by": "Steph Ango (Kepano)", "role": "philosophical antecedent" },
+    { "name": "MinDev", "by": "Mintel-tied registry", "role": "compiler-kind production at scale" }
+  ],
+  "artifacts": [
+    { "label": "Core specification", "href": "CAPSULE_CORE.md" },
+    { "label": "Full specification", "href": "spec/CAPSULE_SPEC.md" },
+    { "label": "Research log",       "href": "RESEARCH.md" },
+    { "label": "Worked examples",    "href": "spec/examples/" },
+    { "label": "Reference validator","href": "compiler/validate.py" },
+    { "label": "Source repository",  "href": "https://github.com/bigfancygarden/htmlcapsule" }
+  ],
+  "citation": "Schuss, L. (2026). HTML Capsule: an open spec for sealed, self-contained HTML artifacts. v0.3.5. https://htmlcapsule.org",
+  "note": "This is a research-genre presentation of the project. Full prose lives in the rendered article (capsule-root). The companion landing page is index.html. The full research log with findings F1-F25 lives in RESEARCH.md."
+}
+</script>
+
+<style id="capsule-style">
+  :root {
+    --paper: #fbfaf6;
+    --paper-soft: #f3f1ea;
+    --ink: #1a1a1a;
+    --ink-mute: #4a4a4a;
+    --ink-faint: #7a7a7a;
+    --ink-vfaint: #a8a5a0;
+    --rule: #d8d4ca;
+    --rule-soft: #e8e4d8;
+    --accent: #8b3a1a;
+    --accent-soft: #b15c3a;
+    --serif: "Iowan Old Style", "Charter", "Sitka Text", "Cambria", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Menlo", "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--paper); }
+  body {
+    margin: 0; font-family: var(--serif); font-size: 17px; line-height: 1.62;
+    color: var(--ink); background: var(--paper);
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+  .skip-link {
+    position: absolute; left: -9999px; top: 0;
+    background: var(--ink); color: var(--paper);
+    padding: 0.5rem 0.75rem; font-family: var(--sans); font-size: 0.85rem;
+  }
+  .skip-link:focus { left: 0.5rem; top: 0.5rem; z-index: 100; }
+
+  main#capsule-root { max-width: 720px; margin: 0 auto; padding: 4.5rem 1.5rem 4rem; }
+
+  header.paper-head { border-bottom: 1px solid var(--rule); padding-bottom: 2rem; margin-bottom: 2.5rem; }
+  .eyebrow {
+    font-family: var(--sans); font-size: 0.74rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-faint); margin: 0 0 1.1rem;
+  }
+  h1.paper-title {
+    font-family: var(--serif); font-weight: 600; font-size: 2.45rem;
+    line-height: 1.15; letter-spacing: -0.012em; margin: 0 0 0.55rem; color: var(--ink);
+  }
+  p.tagline {
+    font-family: var(--serif); font-style: italic; font-size: 1.18rem;
+    line-height: 1.45; color: var(--ink-mute); margin: 0 0 1.6rem;
+  }
+  .author-block { font-family: var(--sans); font-size: 0.92rem; line-height: 1.55; color: var(--ink-mute); margin: 0; }
+  .author-block .author-name { color: var(--ink); font-weight: 500; }
+  .author-block .sep { color: var(--ink-vfaint); margin: 0 0.45rem; }
+  .author-block a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-soft); }
+  .author-block a:hover { border-bottom-color: var(--accent); }
+
+  h2.section-head {
+    font-family: var(--sans); font-size: 0.78rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink); font-weight: 600;
+    margin: 3rem 0 1.1rem; padding-bottom: 0.45rem; border-bottom: 1px solid var(--rule);
+  }
+  h2.section-head:first-of-type { margin-top: 1.5rem; }
+
+  .abstract { font-size: 1.04rem; line-height: 1.65; color: var(--ink); }
+  .abstract p { margin: 0; }
+
+  ol.findings { list-style: none; padding: 0; margin: 0; }
+  ol.findings > li { padding: 1.4rem 0; border-bottom: 1px solid var(--rule-soft); }
+  ol.findings > li:last-child { border-bottom: none; }
+  .finding-id {
+    display: inline-block; font-family: var(--mono); font-size: 0.78rem;
+    color: var(--ink-faint); margin-right: 0.6rem; vertical-align: 0.1em;
+  }
+  .finding-claim {
+    display: inline; font-family: var(--serif); font-weight: 600;
+    font-size: 1.06rem; color: var(--ink); line-height: 1.45;
+  }
+  .finding-support { margin: 0.55rem 0 0; font-size: 0.98rem; line-height: 1.6; color: var(--ink-mute); }
+  .finding-quote {
+    margin: 0.85rem 0 0; padding: 0 0 0 1.1rem; border-left: 2px solid var(--rule);
+    font-family: var(--serif); font-style: italic; font-size: 0.96rem;
+    line-height: 1.55; color: var(--ink-mute);
+  }
+  .finding-quote-attr {
+    display: block; margin-top: 0.4rem; font-style: normal;
+    font-family: var(--sans); font-size: 0.82rem; color: var(--ink-faint);
+  }
+
+  .prose p { margin: 0 0 1rem; font-size: 1rem; line-height: 1.7; color: var(--ink); }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose a, .finding-support a {
+    color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule-soft);
+  }
+  .prose a:hover, .finding-support a:hover { border-bottom-color: var(--accent); }
+
+  dl.related { margin: 0; padding: 0; }
+  dl.related > div { padding: 0.95rem 0; border-bottom: 1px solid var(--rule-soft); }
+  dl.related > div:last-child { border-bottom: none; }
+  dl.related dt {
+    font-family: var(--serif); font-weight: 600; font-size: 1rem;
+    color: var(--ink); margin: 0; display: inline;
+  }
+  dl.related .by { font-family: var(--sans); font-size: 0.83rem; color: var(--ink-faint); margin-left: 0.5rem; }
+  dl.related dd { margin: 0.35rem 0 0; font-size: 0.95rem; line-height: 1.6; color: var(--ink-mute); }
+
+  ul.artifacts { list-style: none; margin: 0; padding: 0; }
+  ul.artifacts > li {
+    padding: 0.7rem 0; border-bottom: 1px solid var(--rule-soft);
+    font-size: 0.95rem; line-height: 1.55;
+  }
+  ul.artifacts > li:last-child { border-bottom: none; }
+  ul.artifacts a {
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--rule); font-weight: 500;
+  }
+  ul.artifacts a:hover { border-bottom-color: var(--accent); color: var(--accent); }
+  ul.artifacts .note {
+    display: block; margin-top: 0.18rem; color: var(--ink-faint);
+    font-size: 0.88rem; font-family: var(--sans);
+  }
+
+  .citation {
+    font-family: var(--mono); font-size: 0.86rem; line-height: 1.6;
+    background: var(--paper-soft); border-left: 3px solid var(--accent-soft);
+    padding: 1rem 1.1rem; margin: 0; color: var(--ink); overflow-x: auto;
+  }
+
+  footer.paper-foot {
+    margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule);
+    font-family: var(--sans); font-size: 0.78rem; line-height: 1.55; color: var(--ink-faint);
+  }
+  footer.paper-foot .foot-row { margin: 0 0 0.35rem; }
+  footer.paper-foot code { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-mute); }
+  footer.paper-foot .actions { margin-top: 0.9rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  footer.paper-foot button {
+    font-family: var(--sans); font-size: 0.78rem; background: transparent;
+    color: var(--ink-mute); border: 1px solid var(--rule); border-radius: 2px;
+    padding: 0.35rem 0.7rem; cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  footer.paper-foot button:hover, footer.paper-foot button:focus {
+    border-color: var(--ink-mute); color: var(--ink); outline: none;
+  }
+  footer.paper-foot button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  details.about { margin-top: 1.2rem; border-top: 1px solid var(--rule-soft); padding-top: 0.8rem; }
+  details.about summary {
+    cursor: pointer; font-family: var(--sans); font-size: 0.82rem;
+    color: var(--ink-mute); list-style: revert;
+  }
+  details.about summary:hover { color: var(--ink); }
+  details.about pre {
+    margin: 0.85rem 0 0; padding: 0.9rem 1rem;
+    background: var(--paper-soft); border-radius: 2px;
+    font-family: var(--mono); font-size: 0.74rem; line-height: 1.5; color: var(--ink);
+    overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+    max-height: 32rem; overflow-y: auto;
+  }
+
+  @media (max-width: 640px) {
+    main#capsule-root { padding: 2.5rem 1.2rem 2.5rem; }
+    h1.paper-title { font-size: 1.95rem; }
+    p.tagline { font-size: 1.04rem; }
+    h2.section-head { font-size: 0.74rem; margin-top: 2.4rem; }
+    body { font-size: 16px; }
+  }
+  @media print {
+    html, body { background: white; color: black; }
+    main#capsule-root { max-width: none; padding: 0; }
+    a { color: black; border-bottom-color: black; }
+    footer.paper-foot .actions { display: none; }
+    h2.section-head { break-after: avoid; }
+    ol.findings > li, dl.related > div { break-inside: avoid; }
+  }
+</style>
+</head>
+
+<body>
+<a href="#capsule-root" class="skip-link">Skip to content</a>
+
+<main id="capsule-root">
+
+  <header class="paper-head">
+    <p class="eyebrow">Open specification · v0.3.5 · 2026-05-19</p>
+    <h1 class="paper-title">HTML Capsule</h1>
+    <p class="tagline">An open spec for sealed, self-contained HTML artifacts.</p>
+    <p class="author-block">
+      <span class="author-name">Luke Schuss</span>, maintainer
+      <span class="sep">·</span> Vancouver, BC
+      <span class="sep">·</span> <a href="https://lukeschuss.com" rel="noopener">lukeschuss.com</a>
+      <span class="sep">·</span> <a href="https://github.com/bigfancygarden/htmlcapsule" rel="noopener">github.com/bigfancygarden/htmlcapsule</a>
+    </p>
+  </header>
+
+  <h2 class="section-head">Abstract</h2>
+  <section class="abstract">
+    <p>HTML Capsule is an open specification for sealed, self-contained HTML artifacts: one file, twelve rules, five required inline blocks, zero network dependencies. The format treats HTML as a memory object &mdash; human-readable, machine-readable, and provenance-bearing in a single envelope. The central claim is multi-producer interop: large language models, deterministic compilers, and human authors all produce the same envelope shape. The claim is supported by 30+ LLM-produced capsules across Claude, ChatGPT, and Gemini; at least one third-party compiler whose output round-trips through the reference validator at 26/26 from spec prose alone; and the spec's own evolution from v0.1.0 through v0.3.5 in response to empirical findings rather than anticipatory design.</p>
+  </section>
+
+  <h2 class="section-head">Findings</h2>
+  <ol class="findings">
+
+    <li>
+      <span class="finding-id">O1</span>
+      <span class="finding-claim">HTML is becoming the default output format for AI-assisted work.</span>
+      <p class="finding-support">The substrate shift surfaces in prompting practice, not in document-format discussion. Independent voices treat HTML as the natural target for LLM output rather than a power-user trick.</p>
+      <blockquote class="finding-quote">
+        &ldquo;Markdown has become the dominant file format used by agents to communicate with us&hellip; But as agents have become more and more powerful, I have felt that markdown has become a restricting format&hellip; I&rsquo;ve started preferring HTML as an output format instead of Markdown.&rdquo;
+        <span class="finding-quote-attr">&mdash; Thariq Shihipar</span>
+      </blockquote>
+      <blockquote class="finding-quote">
+        &ldquo;structure your response as HTML&rdquo;
+        <span class="finding-quote-attr">&mdash; Andrej Karpathy, on prompting</span>
+      </blockquote>
+    </li>
+
+    <li>
+      <span class="finding-id">O2</span>
+      <span class="finding-claim">File over app remains the durable preservation primitive.</span>
+      <p class="finding-support">Artifacts that survive depend on file-level portability. Plugin-mediated app environments reintroduce the fragility they were meant to escape; the file is the unit that endures across software generations.</p>
+      <blockquote class="finding-quote">
+        &ldquo;If you want to create digital artifacts that last, they must be files you can control, in formats that are easy to retrieve and read.&rdquo;
+        <span class="finding-quote-attr">&mdash; Steph Ango (Kepano), <em>File over App</em></span>
+      </blockquote>
+    </li>
+
+    <li>
+      <span class="finding-id">O3</span>
+      <span class="finding-claim">Lineage is a more tractable problem than HTML diffs.</span>
+      <p class="finding-support">Raw HTML diffs are noisy because HTML is closer to a runtime than a writing format. Identity, version, and parents are addressable through the manifest. Once an artifact has a UUID, a <code>capsule_version</code>, and a <code>parents[]</code> chain, review tooling can be layered on the spec rather than forcing humans to read raw HTML; semantic diffs over the five named blocks become tractable.</p>
+    </li>
+
+    <li>
+      <span class="finding-id">O4</span>
+      <span class="finding-claim">A live-editing and collaboration layer is emerging upstream of the seal step.</span>
+      <p class="finding-support">Claude Design (Anthropic Labs), html-docs.com (Raunaq Bhutoria), and Workplane (Matan / matanrak) have converged on a publish-comment-revise loop with MCP as the common integration substrate. The Capsule format sits downstream as the seal step and remains editor-agnostic &mdash; any of these tools can produce a conforming envelope.</p>
+    </li>
+
+    <li>
+      <span class="finding-id">O5</span>
+      <span class="finding-claim">Share links inside LLM platforms do not compose across platforms.</span>
+      <p class="finding-support">Every major chat platform offers share links, but they function as platform-internal viewers rather than portable artifacts. A ChatGPT share link handed to Claude does not transfer structured conversation state. A sealed file does.</p>
+    </li>
+
+  </ol>
+
+  <h2 class="section-head">Methods</h2>
+  <section class="prose">
+    <p>The work proceeds as iterative spec evolution against real artifacts. Three production paths are exercised in parallel: deterministic compiler output (Python stdlib reference implementation), prompted LLM output (Claude, ChatGPT, Gemini via the Core spec as conversational context), and hand-authored or hybrid output (compiler-shaped Python generators authored by an LLM, then frozen). Each iteration produces fixtures; fixtures are validated; failures and honest deviations are recorded as findings in the research log.</p>
+    <p>The spec moves reactively rather than generatively. Honest deviations &mdash; LLMs reaching for values the spec did not anticipate &mdash; trigger loosening. Recurring mechanical failures trigger tightening, typically via a numbered rule with a paired WRONG/RIGHT code example. Emergent conventions that LLMs invent unprompted are documented as recommended patterns. Underexplored options that the format permits but producers are not choosing receive prompt-fragment guidance. Manual capsule construction has been tested across a range of content scales, from text-only landing pages to a 13.7 MB GeoJSON-backed exploration map. External review by independent agents and third-party producers occurs at each iteration. The spec advanced from v0.1.0 to v0.3.5 between 2026-05-15 and 2026-05-21.</p>
+  </section>
+
+  <h2 class="section-head">Related work</h2>
+  <dl class="related">
+    <div>
+      <dt>htmlbin.dev</dt><span class="by">Utkarsh Sengar</span>
+      <dd>Public hosting layer for agent-emitted HTML. Format-agnostic; short URL plus byte-identical <code>/raw</code> endpoint. Convergent with MinDev on the host-contract pattern.</dd>
+    </div>
+    <div>
+      <dt>Claude Design</dt><span class="by">Anthropic Labs</span>
+      <dd>Chat-and-preview tool producing HTML, CSS, and JavaScript from natural-language descriptions. Validated as an independent LLM-kind producer reaching Capsule conformance from <code>CAPSULE_CORE.md</code> alone.</dd>
+    </div>
+    <div>
+      <dt>html-docs.com</dt><span class="by">Raunaq Bhutoria</span>
+      <dd>Closed SaaS for agent-published documents with inline-comment review loops. Live-editing layer; sits upstream of the seal step.</dd>
+    </div>
+    <div>
+      <dt>Workplane</dt><span class="by">Matan / matanrak</span>
+      <dd>MCP-first live-editing tool with the same publish-comment-revise shape as html-docs. Independent convergence; partial-open (MIT-licensed agent skill).</dd>
+    </div>
+    <div>
+      <dt>File over App</dt><span class="by">Steph Ango (Kepano)</span>
+      <dd>Principle that durable artifacts must be files in retrievable formats. Capsule operationalizes the principle by giving HTML a contract.</dd>
+    </div>
+    <div>
+      <dt>MinDev</dt><span class="by">Mintel-tied registry</span>
+      <dd>First publicly-fetchable compiler-kind production capsule at 13.7 MB validates the spec end-to-end on real data; integrity hash re-derived from spec prose alone matches bit-identically.</dd>
+    </div>
+  </dl>
+
+  <h2 class="section-head">Specification and artifacts</h2>
+  <ul class="artifacts">
+    <li>
+      <a href="CAPSULE_CORE.md">Core specification</a>
+      <span class="note">One page, twelve rules. Pasteable into an LLM prompt.</span>
+    </li>
+    <li>
+      <a href="spec/CAPSULE_SPEC.md">Full specification</a>
+      <span class="note">Implementer-grade. Content-hash protocol, response schemas, security model.</span>
+    </li>
+    <li>
+      <a href="RESEARCH.md">Research log</a>
+      <span class="note">Findings F1 through F25, methodology, open questions, recurring failures.</span>
+    </li>
+    <li>
+      <a href="spec/examples/">Worked examples</a>
+      <span class="note">Briefing and implementation-notes capsules.</span>
+    </li>
+    <li>
+      <a href="compiler/validate.py">Reference validator</a>
+      <span class="note">Python stdlib, no install required.</span>
+    </li>
+    <li>
+      <a href="https://github.com/bigfancygarden/htmlcapsule" rel="noopener">Source repository</a>
+      <span class="note">Open source. Spec, validator, examples, research log.</span>
+    </li>
+  </ul>
+
+  <h2 class="section-head">Cite this work</h2>
+  <pre class="citation">Schuss, L. (2026). <em>HTML Capsule: an open spec for sealed,
+self-contained HTML artifacts.</em> v0.3.5.
+https://htmlcapsule.org</pre>
+
+  <footer class="paper-foot">
+    <p class="foot-row">This page is itself a Capsule.</p>
+    <p class="foot-row">
+      <code>uuid: 766faed9-1e14-4532-8dda-5a63b2c32d15</code>
+    </p>
+    <p class="foot-row">
+      <code>spec_version: 0.3.0 · capsule_version: 0.1.0 · sealed: 2026-05-21</code>
+    </p>
+
+    <div class="actions">
+      <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
+      <button type="button" data-capsule-action="download_json">Download data.json</button>
+      <button type="button" data-capsule-action="download_capsule">Download capsule</button>
+      <button type="button" data-capsule-action="print_to_pdf">Print to PDF</button>
+    </div>
+
+    <details class="about" id="about">
+      <summary>About this capsule (show manifest)</summary>
+      <pre id="manifest-view" aria-label="Capsule manifest JSON"></pre>
+    </details>
+  </footer>
+
+</main>
+
+<script id="capsule-runtime">
+(function () {
+  "use strict";
+  function readJsonBlock(id) {
+    var el = document.getElementById(id);
+    if (!el) return null;
+    try { return JSON.parse(el.textContent); } catch (e) { return null; }
+  }
+  var manifest = readJsonBlock("capsule-manifest");
+  var data = readJsonBlock("capsule-data");
+  var manifestView = document.getElementById("manifest-view");
+  if (manifestView && manifest) {
+    manifestView.textContent = JSON.stringify(manifest, null, 2);
+  }
+  function downloadBlob(text, filename, mime) {
+    var blob = new Blob([text], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 100);
+  }
+  function safeFilename(base, ext) {
+    var s = String(base || "capsule").toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
+    return (s || "capsule") + "." + ext;
+  }
+  var actions = {
+    copy_as_json: function () {
+      if (!data) return;
+      var text = JSON.stringify(data, null, 2);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(function () {});
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    },
+    download_json: function () {
+      if (!data) return;
+      var base = (manifest && manifest.title) || "capsule";
+      downloadBlob(JSON.stringify(data, null, 2), safeFilename(base, "json"), "application/json");
+    },
+    download_capsule: function () {
+      var html = `<!DOCTYPE html>\n` + document.documentElement.outerHTML;
+      var base = (manifest && manifest.title) || "capsule";
+      downloadBlob(html, safeFilename(base, "html"), "text/html");
+    },
+    print_to_pdf: function () { window.print(); }
+  };
+  var buttons = document.querySelectorAll("[data-capsule-action]");
+  for (var i = 0; i < buttons.length; i++) {
+    (function (btn) {
+      var action = btn.getAttribute("data-capsule-action");
+      btn.addEventListener("click", function () {
+        var fn = actions[action];
+        if (typeof fn === "function") fn();
+      });
+    })(buttons[i]);
+  }
+})();
+</script>
+
+</body>
+</html>

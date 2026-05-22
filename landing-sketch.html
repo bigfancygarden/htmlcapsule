@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>HTML Capsule — HTML you can keep</title>
+
+<script id="capsule-manifest" type="application/json">
+{
+  "spec_version": "0.3.0",
+  "uuid": "9bde04e1-1699-47cf-b0b6-af471417e5c2",
+  "capsule_version": "0.1.0",
+  "title": "HTML Capsule — landing sketch",
+  "description": "A stripped landing page for the HTML Capsule open spec — one hero, one CTA, one example. Itself a valid Capsule.",
+  "type": "landing_page",
+  "created_at": "2026-05-21T00:00:00Z",
+  "generator": { "name": "claude-code", "version": "claude-opus-4-7", "kind": "hybrid" },
+  "source": {
+    "origin": "private_database",
+    "snapshot_type": "portable_excerpt",
+    "snapshot_id": "snapshot:landing-sketch-2026-05-21",
+    "included_records": 1,
+    "spec_received": "v0.3.0 · 2026-05-19"
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "capabilities": ["about", "copy_as_json", "download_json", "download_capsule", "print_to_pdf"]
+}
+</script>
+
+<script id="capsule-data" type="application/json">
+{
+  "hero": {
+    "claim": "HTML you can keep.",
+    "lede": "An open spec for sealed, self-contained HTML artifacts. One file. Twelve rules. Zero network."
+  },
+  "what": {
+    "summary": "AI tools emit HTML by default — reports, dashboards, notes, demos. A Capsule is what that HTML becomes when it's sealed for keeping: one .html file, fully inlined, with a machine-readable manifest carrying identity, provenance, and integrity. Same envelope whether an LLM, a build script, or a human authored it."
+  },
+  "primitives": [
+    { "key": "capsule-manifest", "note": "identity, provenance, integrity" },
+    { "key": "capsule-data",     "note": "the snapshot, as JSON" },
+    { "key": "capsule-style",    "note": "all CSS, inlined" },
+    { "key": "capsule-root",     "note": "the rendered artifact" },
+    { "key": "capsule-runtime",  "note": "optional enhancement" }
+  ],
+  "links": {
+    "spec_core":  "CAPSULE_CORE.md",
+    "spec_full":  "spec/CAPSULE_SPEC.md",
+    "github":     "https://github.com/bigfancygarden/htmlcapsule",
+    "examples":   "spec/examples/"
+  }
+}
+</script>
+
+<style id="capsule-style">
+:root {
+  --paper: #fbfaf7;
+  --ink: #11131a;
+  --ink-2: #3b3f4a;
+  --muted: #6b6f7a;
+  --line: #e6e3da;
+  --accent: #d35400;
+  --accent-soft: #fff4eb;
+  --radius: 6px;
+  --max: 1040px;
+  --font-sans: ui-sans-serif, -apple-system, "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0e0f13;
+    --ink: #f3f1ea;
+    --ink-2: #cdcfd6;
+    --muted: #8a8e98;
+    --line: #232530;
+    --accent: #ff9347;
+    --accent-soft: #1f1611;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+body { font-family: var(--font-sans); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); transition: color .15s, border-color .15s; }
+a:hover { color: var(--accent); border-color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 1rem; top: 1rem; background: var(--ink); color: var(--paper); padding: .5rem .75rem; border-radius: var(--radius); z-index: 99; }
+
+#capsule-root { max-width: var(--max); margin: 0 auto; padding: 1.5rem clamp(1.25rem, 4vw, 2.5rem) 4rem; }
+
+.nav { display: flex; align-items: center; justify-content: space-between; padding: .5rem 0 4rem; }
+.nav .mark { display: inline-flex; align-items: center; gap: .55rem; font-weight: 600; font-size: 15px; letter-spacing: -.005em; }
+.nav .mark svg { width: 26px; height: auto; color: var(--accent); }
+.nav .mark a { border: 0; color: var(--ink); }
+.nav .links { display: flex; gap: 1.5rem; font-size: 14.5px; color: var(--muted); }
+.nav .links a { border: 0; color: var(--muted); }
+.nav .links a:hover { color: var(--accent); }
+
+.hero { padding: clamp(2rem, 8vh, 6rem) 0 clamp(3rem, 10vh, 7rem); max-width: 720px; }
+.hero h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); font-weight: 600; line-height: 1.02; letter-spacing: -.035em; margin: 0 0 1.5rem; color: var(--ink); }
+.hero p.lede { font-size: clamp(1.05rem, 1.9vw, 1.25rem); line-height: 1.5; color: var(--ink-2); margin: 0 0 2.25rem; max-width: 36em; }
+.cta { display: inline-flex; gap: .8rem; align-items: center; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: .45rem; padding: .65rem 1.1rem; border-radius: var(--radius); font-size: 15px; font-weight: 500; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn:hover { border-color: var(--ink); color: var(--ink); }
+.btn .arrow { transition: transform .15s; }
+.btn:hover .arrow { transform: translateX(2px); }
+
+section { padding: clamp(2.5rem, 6vh, 5rem) 0; border-top: 1px solid var(--line); }
+section .eyebrow { font-size: 12.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 1rem; font-weight: 500; }
+section h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 1.25rem; max-width: 30em; }
+section p { color: var(--ink-2); max-width: 38em; margin: 0; }
+
+.demo { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; margin-top: 2rem; }
+@media (min-width: 720px) { .demo { grid-template-columns: 1fr 1fr; gap: 3rem; } }
+.demo pre { margin: 0; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; font-family: var(--font-mono); font-size: 13px; line-height: 1.6; color: var(--ink); overflow-x: auto; }
+.demo pre .c { color: var(--muted); }
+.demo pre .k { color: var(--accent); }
+.demo .legend { list-style: none; margin: 0; padding: 0; display: grid; gap: .9rem; align-content: start; }
+.demo .legend li { display: grid; grid-template-columns: 1fr; gap: .15rem; padding: 0 0 .9rem; border-bottom: 1px dashed var(--line); }
+.demo .legend li:last-child { border-bottom: 0; }
+.demo .legend code { font-family: var(--font-mono); font-size: 13.5px; color: var(--accent); }
+.demo .legend span { color: var(--muted); font-size: 14px; }
+
+.about { font-size: 14.5px; color: var(--ink-2); }
+.about summary { cursor: pointer; color: var(--muted); padding: .4rem 0; list-style: none; font-size: 13.5px; letter-spacing: .02em; }
+.about summary::-webkit-details-marker { display: none; }
+.about summary::before { content: "›  "; display: inline-block; transition: transform .15s; }
+.about[open] summary::before { transform: rotate(90deg); }
+.about[open] summary { color: var(--ink); }
+.about-body { padding: 1rem 0 0; }
+.about-body .row { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.about-body .row button { font: inherit; padding: .35rem .7rem; font-size: 13px; border: 1px solid var(--line); border-radius: var(--radius); background: transparent; color: var(--ink-2); cursor: pointer; }
+.about-body .row button:hover { border-color: var(--ink); color: var(--ink); }
+.about-body pre { background: var(--accent-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: .85rem 1rem; font-family: var(--font-mono); font-size: 12px; line-height: 1.55; color: var(--ink); overflow-x: auto; max-height: 360px; }
+
+footer.site { margin-top: 4rem; padding-top: 1.75rem; border-top: 1px solid var(--line); display: flex; gap: 1.5rem; justify-content: space-between; flex-wrap: wrap; font-size: 13.5px; color: var(--muted); }
+footer.site nav { display: flex; gap: 1.25rem; }
+footer.site nav a { color: var(--muted); border: 0; }
+footer.site nav a:hover { color: var(--accent); }
+footer.site .meta { font-family: var(--font-mono); font-size: 12px; letter-spacing: .01em; }
+
+.toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100%); background: var(--ink); color: var(--paper); padding: .6rem 1.1rem; border-radius: var(--radius); font-size: 14px; opacity: 0; transition: transform .2s, opacity .2s; pointer-events: none; z-index: 100; }
+.toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+@media print {
+  .nav .links, .about, .toast, footer.site { display: none; }
+  body { font-size: 12pt; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#capsule-root">Skip to content</a>
+
+<main id="capsule-root">
+  <nav class="nav" aria-label="Top">
+    <span class="mark">
+      <svg viewBox="0 0 32 18" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="2"/>
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
+          <path d="M 13.5 13 L 18.5 5"/>
+          <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
+        </g>
+      </svg>
+      <a href="#capsule-root">HTML Capsule</a>
+    </span>
+    <div class="links">
+      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="spec/examples/">Examples</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <h1>HTML you can keep.</h1>
+    <p class="lede">An open spec for sealed, self-contained HTML artifacts. One file. Twelve rules. Zero network.</p>
+    <div class="cta">
+      <a href="CAPSULE_CORE.md" class="btn primary">Read the spec <span class="arrow">→</span></a>
+      <a href="spec/examples/" class="btn">See examples</a>
+    </div>
+  </header>
+
+  <section aria-labelledby="what-title">
+    <p class="eyebrow">What it is</p>
+    <h2 id="what-title">One file. Manifest, data, style, root, runtime — all inlined.</h2>
+    <p>AI tools emit HTML by default: reports, dashboards, notes, demos. A Capsule is what that HTML becomes when it's sealed for keeping. The same envelope whether an LLM, a build script, or a human authored it — readable in five years, on any device, without a server.</p>
+  </section>
+
+  <section aria-labelledby="shape-title">
+    <p class="eyebrow">How it's shaped</p>
+    <h2 id="shape-title">Five required blocks. Twelve rules. Zero ambiguity.</h2>
+    <div class="demo">
+      <pre aria-label="Capsule structure"><span class="c">&lt;!-- A valid Capsule, in outline --&gt;</span>
+&lt;<span class="k">script</span> id="capsule-manifest" type="application/json"&gt;
+  { "uuid": "...", "title": "...", ... }
+&lt;/<span class="k">script</span>&gt;
+
+&lt;<span class="k">script</span> id="capsule-data" type="application/json"&gt;
+  { ... your snapshot, free-form ... }
+&lt;/<span class="k">script</span>&gt;
+
+&lt;<span class="k">style</span> id="capsule-style"&gt; ... &lt;/<span class="k">style</span>&gt;
+
+&lt;<span class="k">main</span> id="capsule-root"&gt;
+  <span class="c">&lt;!-- the readable artifact, pre-rendered --&gt;</span>
+&lt;/<span class="k">main</span>&gt;
+
+&lt;<span class="k">script</span> id="capsule-runtime"&gt; ... &lt;/<span class="k">script</span>&gt;</pre>
+      <ul class="legend">
+        <li><code>capsule-manifest</code><span>Identity, provenance, integrity</span></li>
+        <li><code>capsule-data</code><span>The snapshot, as JSON</span></li>
+        <li><code>capsule-style</code><span>All CSS, inlined</span></li>
+        <li><code>capsule-root</code><span>The rendered artifact</span></li>
+        <li><code>capsule-runtime</code><span>Optional enhancement only</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <details class="about" id="about">
+    <summary>About this page</summary>
+    <div class="about-body">
+      <p>This page is itself a Capsule per Core v0.3.0. Five required blocks, all inline. No network, no analytics.</p>
+      <div class="row" role="group" aria-label="Exports">
+        <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
+        <button type="button" data-capsule-action="download_json">Download JSON</button>
+        <button type="button" data-capsule-action="download_capsule">Download capsule</button>
+        <button type="button" data-capsule-action="print_to_pdf">Print to PDF</button>
+      </div>
+      <pre id="manifest-view" aria-label="Capsule manifest JSON">Loading manifest…</pre>
+    </div>
+  </details>
+
+  <footer class="site" role="contentinfo">
+    <nav aria-label="Footer">
+      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="spec/CAPSULE_SPEC.md">Full spec</a>
+      <a href="spec/examples/">Examples</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </nav>
+    <span class="meta">Capsule v0.1.0 · spec 0.3.0 · open source (MIT)</span>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="capsule-runtime">
+(function () {
+  'use strict';
+  var manifest = JSON.parse(document.getElementById('capsule-manifest').textContent);
+  var data = JSON.parse(document.getElementById('capsule-data').textContent);
+
+  var manifestView = document.getElementById('manifest-view');
+  if (manifestView) manifestView.textContent = JSON.stringify(manifest, null, 2);
+
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('visible'); }, 2200);
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function () {
+        if (!fallbackCopy(text)) throw new Error(`Copy failed`);
+      });
+    }
+    return new Promise(function (resolve, reject) {
+      if (fallbackCopy(text)) resolve(); else reject(new Error(`Copy failed`));
+    });
+  }
+
+  function downloadBlob(filename, mime, content) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 250);
+  }
+
+  function serializeCapsule() {
+    return `<!DOCTYPE html>\n` + document.documentElement.outerHTML;
+  }
+
+  var actions = {
+    copy_as_json: function () {
+      copyText(JSON.stringify(data, null, 2)).then(
+        function () { toast(`Copied data as JSON`); },
+        function (err) { toast(err.message); }
+      );
+    },
+    download_json: function () {
+      downloadBlob(`capsule-data-${manifest.uuid.slice(0, 8)}.json`, `application/json`, JSON.stringify(data, null, 2));
+      toast(`Downloaded JSON`);
+    },
+    download_capsule: function () {
+      var name = `htmlcapsule-landing-${manifest.uuid.slice(0, 8)}.html`;
+      downloadBlob(name, `text/html`, serializeCapsule());
+      toast(`Downloaded ${name}`);
+    },
+    print_to_pdf: function () {
+      toast(`Opening print dialog…`);
+      setTimeout(function () { window.print(); }, 200);
+    }
+  };
+
+  document.querySelectorAll('[data-capsule-action]').forEach(function (btn) {
+    var name = btn.getAttribute('data-capsule-action');
+    if (!actions[name]) return;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      try { actions[name](); } catch (err) { toast(`Error: ${err.message}`); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
