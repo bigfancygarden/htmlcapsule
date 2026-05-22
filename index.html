@@ -10,9 +10,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "13.1.0",
+  "capsule_version": "13.1.1",
   "title": "HTML Capsule",
-  "description": "Production landing page for htmlcapsule.org. v13.1.0 recovers framing-content doorways that the v13.0.0 strip lost. The landing-direction commit at v13.0.0 (Linear/Stripe-style, Claude Design design-system pass, indigo brand) intentionally cut the long-form Observations / Questions / Answers spine — but with no visible link to where that content went (/exploration.html), readers had no doorway. v13.1.0 fixes that: (1) top nav expanded from 3 to 5 links — added Notes (notes.html essay) + Long-form (exploration.html research-narrative spine) + Research (RESEARCH.md F-finding log); (2) new 'Go deeper' body section between 'What this is not' and the About details panel — three cards surfacing the notes essay, the long-form exploration, and the research log with descriptions of each; (3) footer expanded from a single-row 4-link list to a 4-column site map (Spec / Read / Code / About) covering 17 destinations including Domain schemas, Hosting pattern, PRECEDENTS, GLOSSARY, Design system, Changelog, llms.txt, maintainer link, README. All linked resources verified to exist in the repo. Capsule_version 13.0.0 → 13.1.0 (minor — content additions, no structural restyle). UUID 7d1a1ac8 preserved.",
+  "description": "Production landing page for htmlcapsule.org. v13.1.1 fixes broken .md links: the htmlcapsule.org host (Cloudflare Pages by the response headers) serves .md files as raw text/markdown rather than rendering them, so clicking 'Research' / 'Spec' / etc. in v13.1.0 displayed wall-of-raw-markdown to the user instead of the expected reading view. Fix: all .md links in nav, hero CTA, Go-deeper section, and footer site-map now point at the GitHub blob/tree views (https://github.com/bigfancygarden/htmlcapsule/blob/main/<file>), which render markdown reliably and offer a comfortable reading experience. .html links (notes.html, exploration.html, design/proposal.html) kept as relative paths because the host's 308 redirect from /file.html → /file works fine. spec/examples/ directory link also switched to GitHub tree view since Cloudflare Pages doesn't do directory listings by default. v13.1.0 recovers framing-content doorways that the v13.0.0 strip lost. The landing-direction commit at v13.0.0 (Linear/Stripe-style, Claude Design design-system pass, indigo brand) intentionally cut the long-form Observations / Questions / Answers spine — but with no visible link to where that content went (/exploration.html), readers had no doorway. v13.1.0 fixes that: (1) top nav expanded from 3 to 5 links — added Notes (notes.html essay) + Long-form (exploration.html research-narrative spine) + Research (RESEARCH.md F-finding log); (2) new 'Go deeper' body section between 'What this is not' and the About details panel — three cards surfacing the notes essay, the long-form exploration, and the research log with descriptions of each; (3) footer expanded from a single-row 4-link list to a 4-column site map (Spec / Read / Code / About) covering 17 destinations including Domain schemas, Hosting pattern, PRECEDENTS, GLOSSARY, Design system, Changelog, llms.txt, maintainer link, README. All linked resources verified to exist in the repo. Capsule_version 13.0.0 → 13.1.0 (minor — content additions, no structural restyle). UUID 7d1a1ac8 preserved.",
   "type": "landing_page",
   "created_at": "2026-05-22T00:00:00Z",
   "generator": { "name": "human + Claude", "version": "Opus 4.7 (1M context)", "kind": "hybrid" },
@@ -471,10 +471,10 @@ footer.site .meta {
       <a href="#capsule-root">HTML Capsule</a>
     </span>
     <div class="links">
-      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/CAPSULE_CORE.md">Spec</a>
       <a href="notes.html">Notes</a>
       <a href="exploration.html">Long-form</a>
-      <a href="RESEARCH.md">Research</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/RESEARCH.md">Research</a>
       <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
     </div>
   </nav>
@@ -484,8 +484,8 @@ footer.site .meta {
     <h1><span class="light">HTML you can</span> <span class="keep">keep.</span></h1>
     <p class="lede">After the chat closes, the canvas mutates, the share link rots — useful AI work shouldn't die there. A Capsule is one sealed HTML file that survives across tools, time, sessions, and platform churn.</p>
     <div class="cta">
-      <a href="CAPSULE_CORE.md" class="btn primary">Read the spec <span class="arrow">→</span></a>
-      <a href="spec/examples/" class="btn">See examples <span class="arrow">↗</span></a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/CAPSULE_CORE.md" class="btn primary">Read the spec <span class="arrow">→</span></a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule/tree/main/spec/examples" class="btn">See examples <span class="arrow">↗</span></a>
     </div>
   </header>
 
@@ -595,10 +595,10 @@ footer.site .meta {
         <p>The full editorial walk-through with sourced quotes (Karpathy, Thariq, Kepano, htmlbin, html-docs, Workplane). Five observations, three questions, nine answers. Where the framing got worked out before this landing got stripped down.</p>
         <span class="deeper-arrow">Read the exploration →</span>
       </a>
-      <a class="deeper-card" href="RESEARCH.md">
+      <a class="deeper-card" href="https://github.com/bigfancygarden/htmlcapsule/blob/main/RESEARCH.md">
         <span class="deeper-eyebrow">Research log</span>
-        <h3>F1 — F27 · methodology and findings</h3>
-        <p>The empirical-pressure-driven spec evolution: what was investigated, what was observed, what was spec-changed in response. Includes producer-population reads, host-vs-registry distinction, and the genre-tension resolution.</p>
+        <h3>F1 — F28 · methodology and findings</h3>
+        <p>The empirical-pressure-driven spec evolution: what was investigated, what was observed, what was spec-changed in response. Includes producer-population reads, host-vs-registry distinction, the genre-tension resolution, and the upstream-feedback-discipline pattern.</p>
         <span class="deeper-arrow">Read the log →</span>
       </a>
     </div>
@@ -623,10 +623,10 @@ footer.site .meta {
       <div class="footer-col">
         <h4>Spec</h4>
         <ul>
-          <li><a href="CAPSULE_CORE.md">Core (one page)</a></li>
-          <li><a href="spec/CAPSULE_SPEC.md">Full spec</a></li>
-          <li><a href="spec/DOMAIN_CAPSULES.md">Domain schemas</a></li>
-          <li><a href="spec/HOSTING.md">Hosting pattern</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/CAPSULE_CORE.md">Core (one page)</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/spec/CAPSULE_SPEC.md">Full spec</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/spec/DOMAIN_CAPSULES.md">Domain schemas</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/spec/HOSTING.md">Hosting pattern</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -634,18 +634,18 @@ footer.site .meta {
         <ul>
           <li><a href="notes.html">Notes essay</a></li>
           <li><a href="exploration.html">Long-form exploration</a></li>
-          <li><a href="RESEARCH.md">Research log</a></li>
-          <li><a href="PRECEDENTS.md">Precedents</a></li>
-          <li><a href="GLOSSARY.md">Glossary</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/RESEARCH.md">Research log</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/PRECEDENTS.md">Precedents</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/GLOSSARY.md">Glossary</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Code</h4>
         <ul>
           <li><a href="https://github.com/bigfancygarden/htmlcapsule">GitHub repo</a></li>
-          <li><a href="spec/examples/">Worked examples</a></li>
-          <li><a href="CHANGELOG.md">Changelog</a></li>
-          <li><a href="llms.txt"><code>/llms.txt</code></a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/tree/main/spec/examples">Worked examples</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/CHANGELOG.md">Changelog</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/llms.txt"><code>/llms.txt</code></a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -654,7 +654,7 @@ footer.site .meta {
           <li><a href="#about">This page</a></li>
           <li><a href="design/proposal.html">Design system</a></li>
           <li><a href="https://lukeschuss.com" rel="noopener">Maintainer</a></li>
-          <li><a href="README.md">README</a></li>
+          <li><a href="https://github.com/bigfancygarden/htmlcapsule/blob/main/README.md">README</a></li>
         </ul>
       </div>
     </nav>
