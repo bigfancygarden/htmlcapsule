@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.10.0",
+  "capsule_version": "11.11.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.10.0 makes Observations, Questions, and Answers each their own KIND with a distinct background color and parallel section formatting. Backgrounds now driven by KIND class on the article element (rather than per-data-num CSS): .is-observation → white, .is-question → grey (var(--paper-soft)), .is-answer → cream (#fcfaf3). Restructure: Answer 1a (Thariq · viewing strategy) and Answer 1b (htmlbin.dev · hosting layer), which used to be white CARDS nested inside the Question 1 section on grey, are now extracted into their own sibling sections (data-num 00b1 and 00b2). Question 1 becomes lean — just the question + a TOC line linking to the three sibling Answer sections (1a, 1b, 1c). Answer 1c (the maintainer's case study) gains the .is-answer KIND class alongside its existing .is-case-study sub-modifier, so it sits on the same cream as 1a/1b but keeps its italic-bridge title treatment. All three Answer sections now share the same shape: corner label (e.g., 'Answer 1a'), slot-tag eyebrow (e.g., 'VIEWING STRATEGY'), H2 with kicker ('Answer 1a:' + title sentence), then content (quote and/or prose). The old .cb-answer card CSS is dropped; .cb-frame-bridge is deprecated. UUID 7d1a1ac8 preserved through v11.10.",
+  "description": "Landing page in hero framing exploration mode. v11.11.0 extends the analysis with two new arcs: (a) the HTML-version-control arc — Observation 3 (Thariq's note that HTML diffs are noisy + maintainer reframe on the related v1/v2/final filename problem of artifact identity), Question 2 (how do you track which version?), Answer 2a (filename versioning — what people actually do), Answer 2b (the spec's uuid + parents[] + capsule_version identity/lineage answer; acknowledges HTML-diffs-proper are still hard but identity is addressable); and (b) the editor-layer observation — Observation 4 names Claude Design (Anthropic Labs, April 2026), html-docs.com (Raunaq), and Workplane (Matan) as three different shapes of live-editing layer emerging around AI-emitted HTML, with maintainer commentary positioning Capsule as the seal step downstream (editor-agnostic format; MinDev registry could plausibly grow lightweight read-only commenting as a registry concern, not a format concern). All six new entries use the KIND-class color system from v11.10 (.is-observation white, .is-question grey, .is-answer cream). UUID 7d1a1ac8 preserved through v11.11.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -76,7 +76,12 @@
     { "num": "00b1", "id": "Answer 1a", "framing": "Answer 1a · viewing strategy · Thariq",                                  "title": "Answer 1a: Open it in a browser. Or upload to S3.", "sub": "Own section. Thariq's FAQ recommendation blockquote + commentary on what the minimum-viable answer offers (portable substrate) and what it leaves open (no default shareable URL). Cream background shared across all Answers.", "kind": "section" },
     { "num": "00b2", "id": "Answer 1b", "framing": "Answer 1b · hosting layer · htmlbin.dev",                                "title": "Answer 1b: Host it on htmlbin.dev.", "sub": "Own section. htmlbin.dev positioning blockquote + two paragraphs analyzing what htmlbin does (purpose-built hosting, OAuth device-code flow, /p/{slug} URLs + /raw endpoint, format-agnostic) and why it matters for the project's landscape analysis (htmlbin + MinDev independent convergence on the same hosting pattern — empirical evidence the format/host split is real, F21).", "kind": "section" },
     { "num": "00c",  "id": "Answer 1c", "framing": "Answer 1c · custom producer + registry · maintainer's own",              "title": "Answer 1c: Maybe let's take it a step further.", "sub": "Own section (same cream as 1a/1b; gains is-case-study sub-modifier for italic emphasis on the title phrase). Maintainer's first-person account of building map-making tooling that emits HTML conforming to the Capsule spec for clients/colleagues — so they get standalone, permanent, AI-friendly artifacts without a database to maintain. Acknowledges file-size tradeoff. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.", "kind": "section" },
-    { "num": "00d", "id": "Observation 2", "framing": "Observation 2 · file over app + the Obsidian-plugin critique",            "title": "Observation 2: File over app is as relevant today as it ever was.", "sub": "Second observation, parallel to Observation 1 but on a different axis: presentation lock-in. Quotes Steph Ango (Kepano)'s 'File over app' essay (the canonical thesis: 'If you want to create digital artifacts that last, they must be files you can control, in formats that are easy to retrieve and read'), then carries maintainer's reflection on how Obsidian's plugin route — well-intentioned — undermines the principle: when presentation requires plugin installs, you're back at app over file. White background, matching Observation 1.", "kind": "section" }
+    { "num": "00d",  "id": "Observation 2", "framing": "Observation 2 · file over app + the Obsidian-plugin critique",            "title": "Observation 2: File over app is as relevant today as it ever was.", "sub": "Quotes Steph Ango (Kepano)'s 'File over app' essay, then carries maintainer reflection on Obsidian's plugin route undermining the principle.", "kind": "section" },
+    { "num": "00e",  "id": "Observation 3", "framing": "Observation 3 · HTML diffs are hard + version-tracking problem",         "title": "Observation 3: HTML diffs are noisy; version tracking is its own problem.", "sub": "Quotes Thariq's FAQ on HTML diffs being noisy vs. Markdown; maintainer reframes that the related-but-distinct problem is artifact identity ('which version am I looking at?'), using the PDF v1/v2/final/real-final analogy. Argues identity is addressable even if diffs aren't.", "kind": "section" },
+    { "num": "00f",  "id": "Question 2",    "framing": "Question 2 · two answers (2a filenames, 2b spec identity/lineage)",       "title": "Question 2: How do you keep track of which version of an artifact you're working with?", "sub": "Lean question section + TOC linking to the two sibling Answer sections below.", "kind": "section" },
+    { "num": "00f1", "id": "Answer 2a",     "framing": "Answer 2a · filename versioning",                                          "title": "Answer 2a: v1.html, v2.html, v3-final.html, v3-real-final.html.", "sub": "What people actually do: rename the file with a version suffix. Works because the version lives outside the file (filename, email subject, folder). The cost: nothing inside the file knows about its own version, so renames/forwards/cleanups break the lineage.", "kind": "section" },
+    { "num": "00f2", "id": "Answer 2b",     "framing": "Answer 2b · UUID + parents[] + capsule_version (inside the file)",         "title": "Answer 2b: uuid, capsule_version, parents[] — in the manifest.", "sub": "Each Capsule carries three identity fields in its inline JSON manifest: uuid (stable, immutable), capsule_version (semver-friendly producer-maintained string), parents[] (UUIDs + titles of capsules this one derives from). Identity + lineage live in the bytes, not the filename. Doesn't solve HTML diffs proper; a semantic diff over manifests + data sections would be tractable but isn't built.", "kind": "section" },
+    { "num": "00g",  "id": "Observation 4", "framing": "Observation 4 · live-editing/collab layer emerging (Claude Design, html-docs, Workplane)", "title": "Observation 4: A live-editing and collaboration layer is emerging around AI-emitted HTML.", "sub": "Names three players in different shapes: Claude Design (Anthropic Labs, April 2026 — chat-and-preview HTML/CSS/JS generation, exportable as standalone HTML); html-docs.com (Raunaq Bhutoria — agents publish, humans comment, agents revise); Workplane (Matan/matanrak — MCP-first, multi-agent, same shape as html-docs). Maintainer commentary: Capsule sits downstream as the seal step; format is editor-agnostic; whether the project grows a collab layer is open — MinDev registry could plausibly host lightweight commenting (registry concern, not format concern).", "kind": "section" }
   ],
   "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
@@ -1245,6 +1250,89 @@
       </div>
     </article>
 
+    <!-- 00e — Observation 3 (HTML diffs are hard; version tracking is its own problem) -->
+    <article class="cb-frame is-observation" data-num="00e" aria-labelledby="frame-00e-title">
+      <span class="cb-frame-num">Observation 3</span>
+      <div class="cb-frame-inner">
+        <h2 class="cb-frame-title is-observation-h" id="frame-00e-title"><span class="cb-kicker">Observation 3:</span> HTML diffs are noisy; version tracking is its own problem.</h2>
+
+        <p class="cb-frame-lead">The diff problem, from Thariq again:</p>
+
+        <figure class="cb-quote">
+          <blockquote><strong>What about version control?</strong> This is honestly one of the biggest downsides of HTML — HTML diffs are noisy and hard to review compared to Markdown.</blockquote>
+          <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> · FAQ</figcaption>
+        </figure>
+
+        <p class="cb-frame-prose">Fair. HTML diffs <em>are</em> noisy. But there's a related, more general problem worth pulling apart: when you're iterating on an artifact across long chats and tweaks, you lose track of what you're actually looking at. People already know this problem from PDFs — the <code>v1.pdf</code> / <code>v2.pdf</code> / <code>v3-final.pdf</code> / <code>v3-real-final.pdf</code> / <code>v3-real-real-final-USE-THIS.pdf</code> sequence. Not a good system. But it represents something real: people need to know what version they're working with.</p>
+
+        <p class="cb-frame-prose">HTML diffs proper are still hard. But artifact <em>identity</em> and <em>lineage</em> are different problems — and they're addressable.</p>
+      </div>
+    </article>
+
+    <!-- 00f — Question 2 (How do you keep track of which version?) -->
+    <article class="cb-frame is-observation is-question" data-num="00f" aria-labelledby="frame-00f-title">
+      <span class="cb-frame-num">Question 2</span>
+      <div class="cb-frame-inner">
+        <h2 class="cb-frame-title is-observation-h" id="frame-00f-title"><span class="cb-kicker">Question 2:</span> How do you keep track of which version of an artifact you're working with?</h2>
+
+        <p class="cb-frame-lead">Two answers, in their own sections below:<br>
+          <a href="#frame-00f1-title">Answer 2a — filename versioning (what people actually do)</a>,
+          <a href="#frame-00f2-title">Answer 2b — identity + lineage inside the file (what the spec offers)</a>.</p>
+      </div>
+    </article>
+
+    <!-- 00f1 — Answer 2a · filename versioning -->
+    <article class="cb-frame is-observation is-answer" data-num="00f1" aria-labelledby="frame-00f1-title">
+      <span class="cb-frame-num">Answer 2a</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Filename versioning</p>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00f1-title"><span class="cb-kicker">Answer 2a:</span> <code>v1.html</code>, <code>v2.html</code>, <code>v3-final.html</code>, <code>v3-real-final.html</code>.</h2>
+
+        <p class="cb-frame-prose">The default. People rename the file with a version suffix — <code>_v2</code>, <code>_final</code>, <code>_final-final</code>, <code>_real-final-USE-THIS</code>. Almost a joke, but it works because the version lives <em>outside</em> the file: in the filename, in the email subject, in the folder name. People intuit it.</p>
+
+        <p class="cb-frame-prose">The cost is that nothing <em>inside</em> the file knows about its own version. When the file gets renamed, forwarded, copy-pasted into a chat, or unzipped from an archive, the version information goes with the filename — and if the filename gets dropped (or changed by someone trying to "clean up"), the lineage breaks. The artifact can't speak for itself.</p>
+      </div>
+    </article>
+
+    <!-- 00f2 — Answer 2b · UUID + parents[] + capsule_version (identity inside the file) -->
+    <article class="cb-frame is-observation is-answer" data-num="00f2" aria-labelledby="frame-00f2-title">
+      <span class="cb-frame-num">Answer 2b</span>
+      <div class="cb-frame-inner">
+        <p class="cb-frame-tag">Identity + lineage, recorded inside the file</p>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00f2-title"><span class="cb-kicker">Answer 2b:</span> <code>uuid</code>, <code>capsule_version</code>, <code>parents[]</code> — in the manifest.</h2>
+
+        <p class="cb-frame-prose">Each Capsule carries three identity fields inside its own inline JSON manifest:</p>
+
+        <p class="cb-frame-prose"><code>uuid</code> — a stable identifier for <em>this</em> file (immutable; mint once, never change).<br>
+          <code>capsule_version</code> — a version string the producer maintains (semver-friendly; bumped on each meaningful change).<br>
+          <code>parents[]</code> — the UUIDs and titles of capsules this one was forked or derived from.</p>
+
+        <p class="cb-frame-prose">So the artifact knows what it is and what it descended from, regardless of filename. Paste a Capsule into a new editing session; the next Capsule the producer emits records the parent UUID in its own <code>parents[]</code> array. The lineage chain stays intact across renames, forwards, and zip files — because identity lives in the bytes, not the filename.</p>
+
+        <p class="cb-frame-prose">This doesn't solve HTML diffs. It solves <em>which version is this</em> and <em>where did it come from</em>. A semantic structural diff that compared manifests + data sections (not raw HTML byte-by-byte) would be tractable on top of this foundation — but it isn't built yet. <a href="spec/CAPSULE_SPEC.md">Full spec</a> · <a href="CAPSULE_CORE.md">Core (one page)</a>.</p>
+      </div>
+    </article>
+
+    <!-- 00g — Observation 4 (live editing / collab layer is emerging) -->
+    <article class="cb-frame is-observation" data-num="00g" aria-labelledby="frame-00g-title">
+      <span class="cb-frame-num">Observation 4</span>
+      <div class="cb-frame-inner">
+        <h2 class="cb-frame-title is-observation-h" id="frame-00g-title"><span class="cb-kicker">Observation 4:</span> A live-editing and collaboration layer is emerging around AI-emitted HTML.</h2>
+
+        <p class="cb-frame-lead">Three projects, three different shapes of "editor":</p>
+
+        <p class="cb-frame-prose"><strong><a href="https://www.anthropic.com/news/claude-design-anthropic-labs" rel="noopener">Claude Design</a></strong> (Anthropic Labs, launched April 17, 2026) — Claude generates production-ready HTML / CSS / JS from natural-language descriptions inside a chat-and-preview interface. Renders in a preview pane alongside the conversation; standalone HTML is exportable. Single-user iteration loop (you + Claude).</p>
+
+        <p class="cb-frame-prose"><strong><a href="https://html-docs.com/" rel="noopener">html-docs.com</a></strong> (Raunaq Bhutoria) — agents publish HTML pages; humans review with inline comments; agents read the comments and revise. The async agent ↔ human review loop named as a workflow primitive.</p>
+
+        <p class="cb-frame-prose"><strong><a href="https://workplane.co/" rel="noopener">Workplane</a></strong> (Matan / <a href="https://github.com/matanrak" rel="noopener">matanrak</a>) — same shape as html-docs; MCP-first; multi-agent (Claude Code, Codex, Cursor, Devin, Claude Desktop). Open-source agent skill at <code>work-plane/workplane-skills</code> (MIT). Independent convergence with html-docs.com on the same publish → comment → revise loop — <a href="RESEARCH.md">F22 in the research log</a>.</p>
+
+        <p class="cb-frame-prose">Capsule sits <em>downstream</em> of all three. It's the seal step, not the edit step. The format is editor-agnostic: a Capsule can swallow output from Claude Design, from html-docs, from Workplane, from a hand-written compiler script — all the same envelope shape. The producer kind (<code>llm</code> / <code>compiler</code> / <code>hybrid</code> / <code>human</code>) is declared in the manifest; the editor that produced it is otherwise invisible.</p>
+
+        <p class="cb-frame-prose">Whether the project itself ever grows a collaboration layer is an open question. The maintainer's MinDev registry could plausibly host lightweight commenting on hosted Capsules — read-only annotations alongside the bytes, not co-editing of the bytes — and that would be a <em>registry</em> concern, not a format concern. The spec stays out of the editor business, same way it stays out of the host business.</p>
+      </div>
+    </article>
+
     <!-- 01 — Discipline (left, technical, default paper) -->
     <article class="cb-frame" data-num="01" aria-labelledby="frame-01-title">
       <span class="cb-frame-num">01 / 09</span>
@@ -1412,7 +1500,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.10.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.11.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
