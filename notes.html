@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "c5f6a890-2b1d-4e3c-9f7a-8b6c5d4e3f2a",
-  "capsule_version": "1.2.0",
+  "capsule_version": "1.3.0",
   "title": "What I do with all the HTML I get from AI",
-  "description": "Standalone journey essay sibling to the htmlcapsule landing page (UUID 7d1a1ac8). Content originated in landing v10.0 (the essay-as-landing experiment) and was extracted to its own capsule when the landing reverted to a scan-able format in v10.1. parents[] records the lineage. First-person account of the path from copy-pasting between AI tools through to writing down a contract for HTML artifacts. v1.2.0 attributes authorship — byline replaces the prior 'B. F. Garden' placeholder with the maintainer's actual name (Luke Schuss, Vancouver) linked to lukeschuss.com. v1.1.0 added two paragraphs in the pre-pivot section: lived experience with Obsidian (fighting markdown, plugin babysitting, brittleness) and the connection to Steph Ango's 'File over app' principle.",
+  "description": "Standalone journey essay sibling to the htmlcapsule landing page (UUID 7d1a1ac8). Content originated in landing v10.0 (the essay-as-landing experiment) and was extracted to its own capsule when the landing reverted to a scan-able format in v10.1. parents[] records the lineage. First-person account of the path from copy-pasting between AI tools through to writing down a contract for HTML artifacts. v1.3.0 applies the project design system (Claude Design handoff, 2026-05-22): full token block with the five-hue taxonomy, amber as the maintainer-voice lead, weight-contrast title (light 300 + amber 800 punch), amber category chip, mono colophon byline, and the essay restructured into amber-numbered margin blocks with a pull quote at the 'file over app' pivot. v1.2.0 attributes authorship — byline replaces the prior 'B. F. Garden' placeholder with the maintainer's actual name (Luke Schuss, Vancouver) linked to lukeschuss.com. v1.1.0 added two paragraphs in the pre-pivot section: lived experience with Obsidian (fighting markdown, plugin babysitting, brittleness) and the connection to Steph Ango's 'File over app' principle.",
   "type": "essay",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -89,21 +89,72 @@
 
 <style id="capsule-style">
   :root {
-    --paper:       #f4f5f7;
-    --paper-soft:  #eceef2;
-    --paper-deep:  #e1e4ea;
-    --ink:         #0e1116;
-    --ink-soft:    #262a33;
-    --ink-mute:    #5a606c;
-    --ink-faint:   #8a909c;
-    --rule:        #d5d9e0;
-    --rule-soft:   #e3e6ec;
-    --accent:      #1652f0;
-    --accent-soft: #3d70f5;
-    --accent-deep: #0c3bb8;
-    --sans:  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --mono:  ui-monospace, "SF Mono", "Menlo", "Cascadia Code", Consolas, "DejaVu Sans Mono", monospace;
+    /* ── Paper system — cool fog ─────────────────────────── */
+    --paper:        #f5f6f8;
+    --paper-soft:   #ebedf1;
+    --paper-deep:   #dee1e7;
+    --paper-page:   #ffffff;
+
+    /* ── Ink ─────────────────────────────────────────────── */
+    --ink:          #0c0e13;
+    --ink-soft:     #2a2e38;
+    --ink-mute:     #5d6470;
+    --ink-faint:    #8a909c;
+    --ink-quiet:    #b0b5be;
+
+    /* ── Rule ────────────────────────────────────────────── */
+    --rule:         #dde0e6;
+    --rule-soft:    #e8eaef;
+    --rule-strong:  #c8ccd4;
+
+    /* ── Five semantic hues — taxonomy ───────────────────── */
+    /* Indigo  → brand · primary CTA · headline emphasis · spec material */
+    --indigo:       #4f46e5;
+    --indigo-soft:  #eef0fe;
+    --indigo-edge:  #c7cbf6;
+    --indigo-deep:  #3730a3;
+
+    /* Violet  → Questions · open work · research-flagged */
+    --violet:       #7c3aed;
+    --violet-soft:  #f3edff;
+    --violet-edge:  #d6c5fa;
+    --violet-deep:  #5b21b6;
+
+    /* Teal    → Observations · evidence · quotes */
+    --teal:         #0d9488;
+    --teal-soft:    #e0f5f1;
+    --teal-edge:    #a8dcd1;
+    --teal-deep:    #115e59;
+
+    /* Amber   → Answers · maintainer voice · essay (lead colour for this page) */
+    --amber:        #b45309;
+    --amber-soft:   #fbeed5;
+    --amber-edge:   #ecd09b;
+    --amber-deep:   #7c2d12;
+
+    /* Rose    → Pain · negation · "shouldn't die" framing */
+    --rose:         #be123c;
+    --rose-soft:    #fce4ea;
+    --rose-edge:    #efb7c2;
+    --rose-deep:    #831843;
+
+    /* ── Typography — system-font fallback (Capsule rule 2) ─ */
+    --sans:   "Geist", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+    --mono:   "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    /* ── Layout ──────────────────────────────────────────── */
+    --shell-w: 1240px;
     --measure: 68ch;
+
+    /* ── Radii ───────────────────────────────────────────── */
+    --radius:      14px;  /* cards, panels */
+    --radius-sm:    8px;  /* controls, buttons, inputs */
+    --radius-pill: 999px; /* eyebrows, tags, status chips */
+
+    /* ── Back-compat aliases (pre-design-system) ─────────── */
+    --accent:      var(--indigo);
+    --accent-soft: var(--indigo-soft);
+    --accent-deep: var(--indigo-deep);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -139,91 +190,155 @@
     padding: 36px clamp(24px, 5vw, 64px) 64px;
   }
 
-  /* Top bar */
+  /* Top bar — .notes-top pattern from design proposal */
   .cb-topbar {
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px; flex-wrap: wrap;
-    padding-bottom: 24px;
+    padding-bottom: 22px;
+    margin-bottom: clamp(40px, 6vw, 56px);
     border-bottom: 1px solid var(--rule);
   }
   .cb-mark {
-    display: flex; align-items: center; gap: 12px;
-    font: 500 14px/1 var(--sans);
-    color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 12px;
+    font: 600 14px/1 var(--sans);
+    color: var(--ink);
   }
-  .cb-mark a { color: var(--ink-soft); border-bottom: none; display: flex; align-items: center; gap: 12px; }
-  .cb-mark a:hover, .cb-mark a:focus { color: var(--accent); }
-  .cb-mark .glyph {
-    display: inline-grid; place-items: center;
-    width: 26px; height: 26px;
-    background: var(--ink); color: var(--paper);
-    border-radius: 2px;
-    font: 700 13px/1 var(--sans);
+  .cb-mark a {
+    display: inline-flex; align-items: center; gap: 12px;
+    color: var(--ink); border-bottom: none;
+  }
+  .cb-mark a:hover, .cb-mark a:focus { color: var(--indigo); }
+  .cb-mark .crumb { color: var(--ink-mute); font-weight: 400; }
+  .cb-mark .leaf { color: var(--ink); font-weight: 600; }
+
+  .cb-topmeta {
+    font: 500 12px/1 var(--mono);
+    color: var(--ink-mute);
     letter-spacing: 0.02em;
   }
-  .cb-mark a:hover .glyph, .cb-mark a:focus .glyph { background: var(--accent); }
-  .cb-mark strong { color: var(--ink); font-weight: 600; }
-  .cb-mark .sep { color: var(--ink-faint); margin: 0 4px; }
-  .cb-mark .crumb { color: var(--ink-mute); }
 
   .cb-topnav {
     display: flex; gap: 22px; flex-wrap: wrap;
-    font: 500 13.5px/1 var(--sans);
+    font: 500 13px/1 var(--sans);
   }
-  .cb-topnav a { color: var(--ink-soft); border-bottom: none; padding: 4px 0; }
-  .cb-topnav a:hover, .cb-topnav a:focus { color: var(--accent); }
+  .cb-topnav a {
+    color: var(--ink-mute); border-bottom: none; padding: 4px 0;
+  }
+  .cb-topnav a:hover, .cb-topnav a:focus { color: var(--amber); }
 
-  /* Essay */
-  .cb-essay { max-width: var(--measure); margin: clamp(48px, 8vw, 96px) auto 0; }
+  /* Essay — amber-led, weight-contrast title, margin-numeral blocks */
+  .cb-essay { max-width: var(--measure); margin: 0 auto; }
   .cb-essay-head {
     margin: 0 0 clamp(36px, 5vw, 56px);
-    padding-bottom: clamp(24px, 3vw, 32px);
+    padding-bottom: clamp(20px, 2.4vw, 28px);
     border-bottom: 1px solid var(--rule);
   }
-  .cb-essay-eyebrow {
+
+  /* Amber category chip — maintainer / field-notes register */
+  .cb-essay-cat {
+    display: inline-flex; align-items: center; gap: 10px;
     font: 500 12px/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    margin: 0 0 18px;
+    letter-spacing: 0.02em;
+    color: var(--amber-deep);
+    background: var(--amber-soft);
+    padding: 7px 14px 7px 12px;
+    border-radius: var(--radius-pill);
+    margin: 0 0 24px;
   }
+  .cb-essay-cat .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--amber);
+  }
+
+  /* Weight-contrast title — light connective + amber punch */
   .cb-essay-title {
     font-family: var(--sans);
     font-weight: 700;
-    font-size: clamp(32px, 4.8vw, 50px);
-    line-height: 1.1;
+    font-size: clamp(34px, 5.2vw, 58px);
+    line-height: 1.04;
     letter-spacing: -0.028em;
     color: var(--ink);
-    margin: 0 0 12px;
+    margin: 0 0 22px;
+    max-width: 20ch;
     text-wrap: balance;
   }
-  .cb-essay-subtitle {
-    font: 400 18px/1.4 var(--sans);
-    color: var(--ink-mute);
-    margin: 0 0 24px;
-    max-width: 50ch;
+  .cb-essay-title .light { font-weight: 300; color: var(--ink-soft); }
+  .cb-essay-title .punch { font-weight: 800; color: var(--amber); }
+
+  /* Deck — 19px supporting subtitle */
+  .cb-essay-deck {
+    font: 400 19px/1.5 var(--sans);
+    color: var(--ink-soft);
+    margin: 0 0 26px;
+    max-width: 56ch;
     text-wrap: pretty;
   }
+
+  /* Byline — mono colophon row: author bold, location, read time indigo, words */
   .cb-essay-byline {
-    font: 500 12.5px/1 var(--mono);
-    letter-spacing: 0.04em;
+    display: flex; flex-wrap: wrap; gap: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    font: 500 12.5px/1.4 var(--mono);
+    letter-spacing: 0.02em;
     color: var(--ink-mute);
     margin: 0;
   }
+  .cb-essay-byline .author { color: var(--ink); font-weight: 600; }
+  .cb-essay-byline .read { color: var(--indigo); }
+  .cb-essay-byline a {
+    color: inherit;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cb-essay-byline a:hover, .cb-essay-byline a:focus {
+    color: var(--amber); border-bottom-color: var(--amber);
+  }
+
+  /* Essay blocks — margin numerals on the left, prose on the right */
+  .cb-essay-block {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 36px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .cb-essay-block:last-of-type { border-bottom: none; }
+  .cb-essay-marg { padding-top: 6px; }
+  .cb-essay-marg .num {
+    font: 700 28px/1 var(--sans);
+    letter-spacing: -0.02em;
+    color: var(--amber);
+    margin: 0 0 8px;
+    font-feature-settings: "tnum";
+  }
+  .cb-essay-marg .topic {
+    font: 500 11.5px/1.4 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
   .cb-essay-body p {
-    font: 400 17.5px/1.65 var(--sans);
+    font: 400 18px/1.65 var(--sans);
     color: var(--ink-soft);
-    margin: 0 0 1.4em;
+    margin: 0 0 18px;
+    max-width: 60ch;
     text-wrap: pretty;
   }
   .cb-essay-body p:last-child { margin-bottom: 0; }
+  .cb-essay-body strong { color: var(--ink); font-weight: 600; }
+  .cb-essay-body em {
+    font-style: normal;
+    color: var(--amber-deep);
+    font-weight: 600;
+  }
   .cb-essay-body a {
-    color: var(--accent);
-    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+    color: var(--indigo);
+    border-bottom: 1px solid color-mix(in oklab, var(--indigo) 35%, transparent);
   }
   .cb-essay-body a:hover, .cb-essay-body a:focus {
-    color: var(--accent-deep);
-    border-bottom-color: var(--accent-deep);
+    color: var(--indigo-deep);
+    border-bottom-color: var(--indigo-deep);
   }
   .cb-essay-body code {
     background: var(--paper-soft);
@@ -231,6 +346,35 @@
     border-radius: 3px;
     font-size: 0.88em;
     color: var(--ink);
+  }
+
+  /* Pull quote — amber-soft bg, amber-edge border, amber-deep text */
+  .cb-pullquote {
+    margin: 36px 0;
+    padding: 32px 36px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-edge);
+    border-radius: var(--radius);
+    font: 600 24px/1.35 var(--sans);
+    letter-spacing: -0.018em;
+    color: var(--amber-deep);
+    text-wrap: pretty;
+    position: relative;
+    max-width: 60ch;
+  }
+  .cb-pullquote::before {
+    content: "\201C";
+    position: absolute;
+    top: 14px; left: 18px;
+    font-size: 36px;
+    color: var(--amber);
+    line-height: 1;
+    opacity: 0.5;
+  }
+  .cb-pullquote em {
+    font-style: normal;
+    color: var(--amber);
+    font-weight: 700;
   }
 
   /* About format */
@@ -368,13 +512,17 @@
   /* Responsive */
   @media (max-width: 720px) {
     #capsule-root { padding: 24px 18px 48px; }
-    .cb-essay { margin-top: clamp(32px, 6vw, 56px); }
     .cb-essay-body p { font-size: 16.5px; }
+    .cb-essay-block { grid-template-columns: 1fr; gap: 12px; padding: 22px 0; }
+    .cb-essay-marg { padding-top: 0; }
+    .cb-essay-marg .num { font-size: 24px; }
+    .cb-pullquote { padding: 24px 26px; font-size: 20px; margin: 24px 0; }
     .cb-about-format { padding: 24px; }
   }
   @media (max-width: 480px) {
     body { font-size: 16px; }
     .cb-essay-body p { font-size: 16px; line-height: 1.6; }
+    .cb-essay-title { font-size: clamp(28px, 8vw, 38px); }
   }
 
   /* Print */
@@ -385,6 +533,11 @@
     .cb-essay { max-width: 100%; margin-top: 0; }
     .cb-about-format, .cb-about { background: white; border: 1px solid #ccc; }
     .cb-essay-body p { color: black; }
+    .cb-essay-title .punch { color: black; }
+    .cb-essay-cat { background: white; border: 1px solid #ccc; color: black; }
+    .cb-essay-marg .num { color: black; }
+    .cb-pullquote { background: white; border: 1px solid #ccc; color: black; }
+    .cb-essay-block { break-inside: avoid; }
   }
 </style>
 </head>
@@ -395,9 +548,9 @@
 
   <header class="cb-topbar" role="banner">
     <div class="cb-mark">
-      <a href="index.html" aria-label="Back to Capsule landing">
-        <span class="glyph" aria-hidden="true">C</span>
-        <span><strong>Capsule</strong><span class="sep">·</span><span class="crumb">notes</span></span>
+      <a href="index.html" aria-label="HTML Capsule — back to landing">
+        <span class="crumb">HTML Capsule /</span>
+        <span class="leaf">Notes</span>
       </a>
     </div>
     <nav class="cb-topnav" aria-label="Primary">
@@ -406,44 +559,113 @@
       <a href="RESEARCH.md">Research log</a>
       <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
     </nav>
+    <div class="cb-topmeta">2026 &mdash; 05 &mdash; 20 &middot; capsule v1.3.0</div>
   </header>
 
   <article class="cb-essay">
     <header class="cb-essay-head">
-      <p class="cb-essay-eyebrow">Notes · 2026-05-20</p>
-      <h1 class="cb-essay-title">What I do with all the HTML I get from AI</h1>
-      <p class="cb-essay-subtitle">Notes on starting an open spec for sealed HTML artifacts.</p>
-      <p class="cb-essay-byline">Luke Schuss · <a href="https://lukeschuss.com" rel="noopener">lukeschuss.com</a></p>
+      <p class="cb-essay-cat">
+        <span class="dot" aria-hidden="true"></span>
+        Field notes &middot; spec authorship &middot; journey
+      </p>
+      <h1 class="cb-essay-title"><span class="light">What I do with all the HTML</span> <span class="punch">I get from AI.</span></h1>
+      <p class="cb-essay-deck">Notes on starting an open spec for sealed HTML artifacts &mdash; the journey from copy-pasting between AI tools to treating HTML as the canonical work product.</p>
+      <div class="cb-essay-byline">
+        <span class="author">By Luke Schuss</span>
+        <span>Vancouver, BC</span>
+        <span class="read">8 min read</span>
+        <span><a href="https://lukeschuss.com" rel="noopener">lukeschuss.com</a></span>
+      </div>
     </header>
 
     <div class="cb-essay-body">
-      <p>Just want to give you my journey here with AI tools. I've been using all the chat systems, chatgpt, claude web, gemini web.. and then more recently using more claude code CLI and codex CLI.. and now been using the Claude Harness/App and the Codex Harness/App.. but in any case, for the longest time, I was doing work in each, and then copying and pasting data in/out.. pasting it into other chats, pasting it into Google Docs or notes or obsidian.. trying to reliably get my info "out" of the AI systems and into a format that I can either archive or easily share with friends.</p>
+      <div class="cb-essay-block">
+        <div class="cb-essay-marg">
+          <div class="num">01</div>
+          <div class="topic">Copy-paste<br>era</div>
+        </div>
+        <div>
+          <p>Just want to give you my journey here with AI tools. I've been using all the chat systems, chatgpt, claude web, gemini web.. and then more recently using more claude code CLI and codex CLI.. and now been using the Claude Harness/App and the Codex Harness/App.. but in any case, for the longest time, I was doing work in each, and then copying and pasting data in/out.. pasting it into other chats, pasting it into Google Docs or notes or obsidian.. trying to reliably get my info "out" of the AI systems and into a format that I can either archive or easily share with friends.</p>
 
-      <p>I know there's been the share button for these chats for a long time but something doesn't sit right with it for me. The chats either get lost for me, or I'm not confident or sure what version they're displaying, or if they're displaying the conversation all the way, or only at a certain point, or if they're still updating after the fact. I'm sure I could dig into the documentation on this and get a sense for it, but will it change? Will it ever be intuitive to me? I'm not sure it will. I'm also not sure that it will stay the same once I look into it, and I'm not sure that it's the same between all these systems. I'm also not sure that I can paste these links into other AI's or LLM's and have them evaluate it or work off it or build it. It's a mess.</p>
+          <p>I know there's been the share button for these chats for a long time but something doesn't sit right with it for me. The chats either get lost for me, or I'm not confident or sure what version they're displaying, or if they're displaying the conversation all the way, or only at a certain point, or if they're still updating after the fact. I'm sure I could dig into the documentation on this and get a sense for it, but will it change? Will it ever be intuitive to me? I'm not sure it will. I'm also not sure that it will stay the same once I look into it, and I'm not sure that it's the same between all these systems. I'm also not sure that I can paste these links into other AI's or LLM's and have them evaluate it or work off it or build it. It's a mess.</p>
+        </div>
+      </div>
 
-      <p>Obsidian was another one of those.. I'd been using it for notes for a while, and honestly it's a great app, but I kept feeling like I was fighting markdown more than working in it. To get any of the nicer features — the rendering, dataview queries, themes — I'd be installing and configuring plugins, then updating them, then debugging when one broke after an Obsidian update. It felt brittle. The <code>.md</code> files were portable, but the experience that made Obsidian useful in the first place lived in a stack of plugins I had to keep babysitting. I wasn't sure what I'd actually saved.</p>
+      <div class="cb-essay-block">
+        <div class="cb-essay-marg">
+          <div class="num">02</div>
+          <div class="topic">Obsidian<br>shelf</div>
+        </div>
+        <div>
+          <p>Obsidian was another one of those.. I'd been using it for notes for a while, and honestly it's a great app, but I kept feeling like I was fighting markdown more than working in it. To get any of the nicer features &mdash; the rendering, dataview queries, themes &mdash; I'd be installing and configuring plugins, then updating them, then debugging when one broke after an Obsidian update. It felt brittle. The <code>.md</code> files were portable, but the experience that made Obsidian useful in the first place lived in a stack of plugins I had to keep babysitting. I wasn't sure what I'd actually saved.</p>
+        </div>
+      </div>
 
-      <p>Around then I came across Steph Ango's essay <a href="https://stephango.com/file-over-app" rel="noopener">"File over app."</a> Steph runs Obsidian, and the essay's principle is right — your work should live in files you control, in formats that outlive any specific app. But my struggle with Obsidian was the same principle taken one step further than I think the essay intends. The <code>.md</code> files were portable. The experience wasn't. The themes, the plugins, the rendered output all lived in the app, not the file. If I wanted my notes to look and behave the same in five years, the open file format alone wasn't going to do it.</p>
+      <div class="cb-pullquote">
+        The <code>.md</code> files were portable. The <em>experience wasn't.</em> The themes, the plugins, the rendered output all lived in the app &mdash; not the file.
+      </div>
 
-      <p>Now, also, around the same time, they put out artifacts, and those were quite neat, but again.. didn't really know how to use them or put them into my workflow. When Claude Design came out, though, I knew something was different.. because it could give these beautiful and editable interfaces, and it could be downloaded as html or "handed off" to claude code for implementation. That was huge, because up until that point I was getting designs and throwing it into my claude code projects to try and get it to implement into my react-based apps and systems. But throughout here it's been a fight. It's been a fight between making and doing "work" inside of one system, and then getting it into a format that AI can natively talk to and work on and iterate on with me.</p>
+      <div class="cb-essay-block">
+        <div class="cb-essay-marg">
+          <div class="num">03</div>
+          <div class="topic">The HTML<br>pivot</div>
+        </div>
+        <div>
+          <p>Around then I came across Steph Ango's essay <a href="https://stephango.com/file-over-app" rel="noopener">"File over app."</a> Steph runs Obsidian, and the essay's principle is right &mdash; your work should live in files you control, in formats that outlive any specific app. But my struggle with Obsidian was the same principle taken one step further than I think the essay intends. The <code>.md</code> files were portable. The experience wasn't. The themes, the plugins, the rendered output all lived in the app, not the file. If I wanted my notes to look and behave the same in five years, the open file format alone wasn't going to do it.</p>
 
-      <p>Putting things into HTML has been a huge shift for me. Even just with the chat conversations, I was always trying to get the data "out" by asking Claude or ChatGPT for a summary in markdown or to make me a PDF version. Or copying and pasting stuff into notes or word or Google Docs.. it never looked good. The only way I could get pixel perfect looking stuff is if I asked to do a react/html render and then use something like playwright to "print" to a jpeg or pdf.</p>
+          <p>Now, also, around the same time, they put out artifacts, and those were quite neat, but again.. didn't really know how to use them or put them into my workflow. When Claude Design came out, though, I knew something was different.. because it could give these beautiful and editable interfaces, and it could be downloaded as html or "handed off" to claude code for implementation. That was huge, because up until that point I was getting designs and throwing it into my claude code projects to try and get it to implement into my react-based apps and systems. But throughout here it's been a fight. It's been a fight between making and doing "work" inside of one system, and then getting it into a format that AI can natively talk to and work on and iterate on with me.</p>
+        </div>
+      </div>
 
-      <p>For example, one thing I always do is make maps in QGIS that are jpegs or PDFs. I would constantly be going back and forth between the app and chat agents. I'm sure there is a way that I could have wired something up so that the codex or claude code CLI could have talked to QGIS and made edits, maybe through a database, but this is still so clunky. So I decided to try to create a sort of GIS system inside react (with Postgres on the backend and tools like GDAL) so I could get the exact interface I wanted.. but this started to get clunky too. Furthermore since I was trying to share content with other users.. stuff like maps, and tables, often related.. I was trying to bring a portal that connected up to my working react GIS system so I could share content with my end users (which would have usually been maps or excel tables, with no real provenance or unique identifiers other than file names and "v1, v2, v3" type stuff).</p>
+      <div class="cb-essay-block">
+        <div class="cb-essay-marg">
+          <div class="num">04</div>
+          <div class="topic">New<br>substrate</div>
+        </div>
+        <div>
+          <p>Putting things into HTML has been a huge shift for me. Even just with the chat conversations, I was always trying to get the data "out" by asking Claude or ChatGPT for a summary in markdown or to make me a PDF version. Or copying and pasting stuff into notes or word or Google Docs.. it never looked good. The only way I could get pixel perfect looking stuff is if I asked to do a react/html render and then use something like playwright to "print" to a jpeg or pdf.</p>
 
-      <p>I was also really interested in Claude Design's ability to work with maps. Cartography. Like, it was a way of iterating through things so much faster than I could have previously done it with either illustrator or qgis.. So then it hit me.. why not embrace HTML for this? If Claude Design is using HTML as its substrate, then why don't I setup my work to be more friendly to that?</p>
+          <p>For example, one thing I always do is make maps in QGIS that are jpegs or PDFs. I would constantly be going back and forth between the app and chat agents. I'm sure there is a way that I could have wired something up so that the codex or claude code CLI could have talked to QGIS and made edits, maybe through a database, but this is still so clunky. So I decided to try to create a sort of GIS system inside react (with Postgres on the backend and tools like GDAL) so I could get the exact interface I wanted.. but this started to get clunky too. Furthermore since I was trying to share content with other users.. stuff like maps, and tables, often related.. I was trying to bring a portal that connected up to my working react GIS system so I could share content with my end users (which would have usually been maps or excel tables, with no real provenance or unique identifiers other than file names and "v1, v2, v3" type stuff).</p>
 
-      <p>So I started doing that. Instead of trying to convert what Claude Design or Claude Code or any chat LLM was giving me into something else, I just kept it as HTML. But raw HTML by itself has its own problems. I still couldn't reliably tell what I was looking at — where it came from, whether it was complete, what version it was, whether the page would even render the same next month. The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.</p>
+          <p>I was also really interested in Claude Design's ability to work with maps. Cartography. Like, it was a way of iterating through things so much faster than I could have previously done it with either illustrator or qgis.. So then it hit me.. why not embrace HTML for this? If Claude Design is using HTML as its substrate, then why don't I setup my work to be more friendly to that?</p>
+        </div>
+      </div>
 
-      <p>So I started writing down what HTML would need to be to be trustworthy as an artifact — the same way a PDF is trustworthy as "this is what was sent, that's the file." First version of the rules was rough. Just: save it as one HTML file, put a small JSON manifest at the top naming what the file is and where it came from, don't reach out to the network so it works the same on disk as on a server, put the content into the HTML body so it still renders when JavaScript isn't running.</p>
+      <div class="cb-essay-block">
+        <div class="cb-essay-marg">
+          <div class="num">05</div>
+          <div class="topic">Raw HTML<br>breaks</div>
+        </div>
+        <div>
+          <p>So I started doing that. Instead of trying to convert what Claude Design or Claude Code or any chat LLM was giving me into something else, I just kept it as HTML. But raw HTML by itself has its own problems. I still couldn't reliably tell what I was looking at &mdash; where it came from, whether it was complete, what version it was, whether the page would even render the same next month. The same things that didn't sit right about chat share-links didn't sit right about loose HTML files either.</p>
 
-      <p>Then I started using it for real work — capsules of QGIS-style maps, capsules of chat conversations I wanted to keep, capsules of decision matrices, capsules of design systems Claude Design gave me — and stuff broke. A photo capsule rendered blank on iPhone because Claude had put the photo inside a <code>&lt;script&gt;</code> block and iOS didn't run inline scripts. A markdown export silently crashed because of a JavaScript newline bug. An LLM lied about where the data came from because the manifest field was too easy to make up.</p>
+          <p>So I started writing down what HTML would need to be to be trustworthy as an artifact &mdash; the same way a PDF is trustworthy as "this is what was sent, that's the file." First version of the rules was rough. Just: save it as one HTML file, put a small JSON manifest at the top naming what the file is and where it came from, don't reach out to the network so it works the same on disk as on a server, put the content into the HTML body so it still renders when JavaScript isn't running.</p>
+        </div>
+      </div>
 
-      <p>Each failure became a numbered rule. Twelve so far, over about five weeks. The most important one is rule 12: render the content into the HTML at build time, don't make JavaScript do it at runtime. Capsules are archives, not apps. The whole point is that the file still works when nothing else does.</p>
+      <div class="cb-essay-block">
+        <div class="cb-essay-marg">
+          <div class="num">06</div>
+          <div class="topic">Rules from<br>failure</div>
+        </div>
+        <div>
+          <p>Then I started using it for real work &mdash; capsules of QGIS-style maps, capsules of chat conversations I wanted to keep, capsules of decision matrices, capsules of design systems Claude Design gave me &mdash; and stuff broke. A photo capsule rendered blank on iPhone because Claude had put the photo inside a <code>&lt;script&gt;</code> block and iOS didn't run inline scripts. A markdown export silently crashed because of a JavaScript newline bug. An LLM lied about where the data came from because the manifest field was too easy to make up.</p>
 
-      <p>Today the format is a one-page spec (<a href="CAPSULE_CORE.md">CAPSULE_CORE.md</a>), a small Python compiler and validator with 26 conformance checks, and a working corpus across the kinds of stuff I actually do. The LLMs I use all produce conformant capsules when I paste the one-page spec into a system prompt — Claude, ChatGPT, Gemini, Codex. And it works in compilers I build too: Mintel, the mining-intel app I work on, is the first independent producer that validates clean at 26/26.</p>
+          <p>Each failure became a numbered rule. Twelve so far, over about five weeks. The most important one is rule 12: render the content into the HTML at build time, don't make JavaScript do it at runtime. Capsules are archives, not apps. The whole point is that the file still works when nothing else does.</p>
+        </div>
+      </div>
 
-      <p>What I want for it: not much. It stays a research project. The spec rule for itself is "no addition without empirical pressure" — change it when real producers and recipients push on it, not when something sounds like a good idea on a Tuesday. If you have HTML artifacts piling up — from any AI tool that defaults to "save as HTML" — this might be useful. The <a href="CAPSULE_CORE.md">spec</a> is one page. The <a href="spec/examples/">examples</a> show what conformant capsules look like. The <a href="RESEARCH.md">research log</a> is where the iterations live.</p>
+      <div class="cb-essay-block">
+        <div class="cb-essay-marg">
+          <div class="num">07</div>
+          <div class="topic">Where it<br>is now</div>
+        </div>
+        <div>
+          <p>Today the format is a one-page spec (<a href="CAPSULE_CORE.md">CAPSULE_CORE.md</a>), a small Python compiler and validator with 26 conformance checks, and a working corpus across the kinds of stuff I actually do. The LLMs I use all produce conformant capsules when I paste the one-page spec into a system prompt &mdash; Claude, ChatGPT, Gemini, Codex. And it works in compilers I build too: Mintel, the mining-intel app I work on, is the first independent producer that validates clean at 26/26.</p>
+
+          <p>What I want for it: not much. It stays a research project. The spec rule for itself is "no addition without empirical pressure" &mdash; change it when real producers and recipients push on it, not when something sounds like a good idea on a Tuesday. If you have HTML artifacts piling up &mdash; from any AI tool that defaults to "save as HTML" &mdash; this might be useful. The <a href="CAPSULE_CORE.md">spec</a> is one page. The <a href="spec/examples/">examples</a> show what conformant capsules look like. The <a href="RESEARCH.md">research log</a> is where the iterations live.</p>
+        </div>
+      </div>
     </div>
   </article>
 
@@ -482,7 +704,7 @@
     <p class="cb-foot-isnt"><strong>What this isn't:</strong> a new file format (it's HTML), a SaaS, a new editing surface, a competitor to MCP, or a knowledge graph. It's anti-context-loss.</p>
     <div class="cb-colophon">
       <span>Set in system sans · Apache 2.0</span>
-      <span>capsule:notes/v1.2.0 · uuid c5f6a890 · sealed 2026-05-20 · by Luke Schuss</span>
+      <span>capsule:notes/v1.3.0 · uuid c5f6a890 · sealed 2026-05-20 · by Luke Schuss</span>
     </div>
   </footer>
 </main>
