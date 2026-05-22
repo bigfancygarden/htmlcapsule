@@ -12,6 +12,30 @@ Nothing pending. Idea queue (`spec/DOMAIN_CAPSULES.md`) and voices queue (`voice
 
 ---
 
+## [Spec v0.3.5] — 2026-05-21
+
+Doc-only patch. No schema, validator, or behavior change. Records external-review-driven candidate manifest fields in spec Appendix E without adopting them, preserving the project's "no addition without empirical pressure" discipline while making the considered-but-not-adopted ideas discoverable to future readers (including future Claude / future-maintainer who might re-derive them from scratch otherwise).
+
+### Added — spec
+
+- **Appendix E.11 "Extended manifest fields raised by external review (parked)"** in `spec/CAPSULE_SPEC.md`. Records three candidate fields surfaced by two converging external-LLM reviews of the v11.x landing page's HTML-version-control narrative (Obs 3 → Q3 → Answers 3a/3b/3c):
+  - `supersedes[]` — UUIDs of capsules this one explicitly *replaces* (distinct from `parents[]` which records what this descended *from*). Semantic difference: "I came from X" vs. "use me instead of X."
+  - `derived_from[]` — non-Capsule sources this artifact was built from (chat sessions, screenshots, external documents, datasets). Different shape from `parents[]` (Capsule-to-Capsule lineage).
+  - `change_summary` — short human-readable note about what changed vs. the previous version; like a commit message scoped to the `capsule_version` bump. Would feed a future `capsule-diff` tool.
+  
+  Each is justified individually for why it's parked, not adopted (no real producer/consumer has hit the limitation yet for `supersedes[]` and `change_summary`; the Mintel producer has some real pressure for `derived_from[]` but no consumer has needed it programmatically yet).
+
+- **Methodological observation** in the same Appendix E entry: external-LLM review is now a recurring source of spec-design candidates, alongside producer pressure, consumer pressure, and maintainer reflection. Worth tracking as a pattern in `RESEARCH.md` if it keeps happening.
+
+### Changed — infrastructure
+
+- `CITATION.cff` version bumped `0.3.4 → 0.3.5`.
+- `README.md` updated in three places: intro state, full spec reference, status table.
+- `llms.txt` updated to reflect `v0.3.5` in the full-spec entry and the CHANGELOG range.
+- `index.html` landing badge updated to `v0.3.5`, About panel reference updated to "full spec v0.3.5", `data.spec.full` field updated to `v0.3.5`. Landing capsule_version bumped `11.15.0 → 11.15.1`.
+
+---
+
 ## [Spec v0.3.4] — 2026-05-20
 
 Interactive-archive category named; lifecycle decomposition (live-editing / format / hosting / discovery) made explicit across the project; voices archive grown from 0 to 2 archived + 2 queued; second convergence finding (F22) documented.

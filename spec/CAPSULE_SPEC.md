@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.4 (Core currently v0.3.0)
+# Capsule Spec v0.3.5 (Core currently v0.3.0)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -1608,3 +1608,25 @@ This conversion bridge is reusable for any design tool whose raw canvas export i
 **When this graduates to normative text.** If multiple independent tool integrations hit the same boundary and a common conversion-bridge pattern emerges, the spec could promote that pattern into an informative appendix in a future v0.x — describing the canonical "design-canvas-shape → capsule" mapping without endorsing any specific tool. Until then, the empirical finding lives in RESEARCH.md F19 and the convertor script lives alongside the reference compiler.
 
 **Empirical record.** This is also the first independently-confirmed reproduction of an LLM-kind producer reaching conformance directly from `CAPSULE_CORE.md` as a prompt input — strengthening the multi-producer interop claim in §1. The model produced a 24/25-passing, 0-fail file; the integration failure was downstream of the model, in the bundler step.
+
+### E.11 Extended manifest fields raised by external review (parked)
+
+**Source.** Two external LLM reviewers, reviewing the v11.x landing page's HTML-version-control narrative (Observation 3 → Question 3 → Answers 3a/3b/3c), independently surfaced three candidate manifest fields the spec doesn't currently carry. The proposals are recorded here as parked v0.4+ candidates pending real-producer empirical pressure — they're not added to the spec now.
+
+**The three candidates.**
+
+1. **`supersedes[]`** — UUIDs (and optionally titles) of capsules this one explicitly *replaces*. Semantically distinct from the existing `parents[]`, which records what this capsule descended *from*. Example case: a corrected v2 of a published report explicitly supersedes the v1 that went out with an error, while still listing v1 as a parent. `parents[]` says "I came from X"; `supersedes[]` says "use me instead of X."
+
+2. **`derived_from[]`** — non-Capsule sources this artifact was built from: chat conversations, screenshots, external documents, datasets. Different shape from `parents[]` (which is Capsule-to-Capsule lineage). Each entry would carry at least `type` (e.g., `chat`, `dataset`, `document`), `label`, and `date`; optionally a `url` or `hash` for sources that are addressable. Lets a Capsule honestly record "I was synthesized from these three ChatGPT sessions and this CSV" without lying that those inputs were themselves Capsules.
+
+3. **`change_summary`** — a short human-readable note about what changed vs. the previous version. Effectively a commit message scoped to the `capsule_version` bump. Would live alongside `capsule_version`. Example: `"Added §2.3 Interactive archive subsection; bumped to 0.3.4."` Consumed by a `capsule-diff` tool (see review surfaces in landing Answer 3c) and by any registry-side timeline UI.
+
+**Why parked, not adopted.**
+
+The spec discipline (§1) is *no new schema fields without empirical pressure from a real producer or consumer hitting a real problem*. As of writing:
+
+- **`supersedes[]`**: no observed case where a producer or consumer has hit the limitation. The existing `parents[]` carries most lineage; "replaces" is implicit in version-bump semantics for the common case. Worth recording so we don't forget it; not worth adding until someone is actually unable to express what they need.
+- **`derived_from[]`**: closer to real pressure — the Mintel producer (F20) actually has source content (geospatial datasets, agency briefings) that aren't Capsules but inform the output. Currently this is buried in prose `description` text. A structured field would be useful. But no consumer has yet needed to programmatically distinguish "real parent Capsule" from "external source"; until they do, `description` text suffices.
+- **`change_summary`**: arguably already covered by the producer's own changelog (the landing page has one; CAPSULE_SPEC.md has version sections in CHANGELOG.md). A per-capsule `change_summary` would duplicate that for files that are part of a versioned series, but adds noise for one-shot artifacts. Defer until a tool that would *consume* it exists (e.g., the capsule-diff tool sketched in landing Answer 3c).
+
+**Empirical record.** This Appendix E entry is documentation that the ideas exist and have been considered, so that future Claude / future-maintainer doesn't re-derive them from scratch when the question comes up again. The review that produced them is referenced from the v11.15 landing CHANGELOG entry; the methodological observation is that *external-LLM review* is now a recurring source of spec-design candidates (in addition to producer pressure, consumer pressure, and maintainer reflection). Worth tracking as its own pattern in RESEARCH.md if it keeps happening.

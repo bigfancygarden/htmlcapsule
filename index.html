@@ -12,7 +12,7 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.15.0",
+  "capsule_version": "11.15.1",
   "title": "HTML Capsule — hero framing exploration",
   "description": "Landing page in hero framing exploration mode. v11.15.0 sharpens the HTML-version-control arc per converging external-review feedback. (1) Observation 3 retitled 'HTML diffs are noisy. Lineage is the bigger problem.' and rewritten around the three-layer framing (raw diff / semantic diff / lineage) as an explicit ordered list; new opening explains why HTML diffs are noisy in the first place (HTML is closer to a runtime artifact than a writing format); closes on 'Capsule doesn't claim raw HTML diffs become pleasant; it claims artifacts need identity and lineage first.' (2) Answer 3b gains the closing punchline 'Git tracks files. Capsule tracks artifacts.' (3) Answer 3c retitled and rewritten around the punchline 'The HTML is the artifact. The manifest is the review surface.' followed by an 8-row review-surfaces table (Raw HTML / Manifest / Content / Data / Style / Asset / Render / Runtime diff) — adds Asset and Render surfaces that weren't in the prior treatment. Example-output block preserved. Three new utility CSS classes added: .cb-frame-list (ordered three-layer list), .cb-frame-punchline (the two slogan lines), .cb-diff-table (8-row review surfaces). Three new manifest field ideas (supersedes, derived_from, change_summary) raised by the same external review are NOT added to the spec; parked in spec Appendix E pending real-producer empirical pressure. UUID 7d1a1ac8 preserved through v11.15.",
   "type": "landing_page",
@@ -88,7 +88,7 @@
     { "num": "00g",  "id": "Observation 4", "framing": "Observation 4 · live-editing/collab layer emerging (Claude Design, html-docs, Workplane)", "title": "Observation 4: A live-editing and collaboration layer is emerging around AI-emitted HTML.", "sub": "Names three players in different shapes: Claude Design (Anthropic Labs, April 2026 — chat-and-preview HTML/CSS/JS generation, exportable as standalone HTML); html-docs.com (Raunaq Bhutoria — agents publish, humans comment, agents revise); Workplane (Matan/matanrak — MCP-first, multi-agent, same shape as html-docs). Maintainer commentary: Capsule sits downstream as the seal step; format is editor-agnostic; whether the project grows a collab layer is open — MinDev registry could plausibly host lightweight commenting (registry concern, not format concern).", "kind": "section" },
     { "num": "00h",  "id": "Observation 5", "framing": "Observation 5 · no easy export from LLM platforms; share links don't compose",                "title": "Observation 5: There's no easy way to get chat-hosted content out of an LLM platform.", "sub": "Share links exist on every platform (ChatGPT, Claude, Gemini) but they're platform-locked viewing artifacts, not portable. Cross-platform interop is poor: a ChatGPT share link handed to Claude doesn't compose — the receiving LLM might fetch the URL but doesn't get the structured conversation. Reframes the file-as-artifact discipline (Obs 1, Obs 2, A1b) as the project's response: a Capsule opens in any browser, can be handed to any LLM, the host doesn't have to be in the loop.", "kind": "section" }
   ],
-  "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
+  "spec": { "core": "v0.3.0", "full": "v0.3.5", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
   "footer_links": [
     ["Core spec", "CAPSULE_CORE.md"],
@@ -1194,7 +1194,7 @@
           </g>
         </svg>
         <strong>HTML Capsule</strong>
-        <a class="cb-badge" href="CAPSULE_CORE.md" aria-label="Specification version 0.3.4">v0.3.4</a>
+        <a class="cb-badge" href="CAPSULE_CORE.md" aria-label="Specification version 0.3.5">v0.3.5</a>
       </div>
       <nav class="cb-topnav" aria-label="Primary">
         <a class="cb-icon-link" href="https://github.com/bigfancygarden/htmlcapsule" aria-label="View source on GitHub" rel="noopener">
@@ -1647,7 +1647,7 @@
     <details class="cb-about" id="about-capsule">
       <summary>About this page · exports · manifest</summary>
       <div class="cb-about-body">
-        <p>This page is itself a Capsule per Core v0.3.0 (full spec v0.3.4). Five required blocks, all inline. No network, no analytics. Validates against the reference validator. Mode: <code>hero_framing_exploration</code> — the eight numbered sections above are candidate framings; this layout is temporary.</p>
+        <p>This page is itself a Capsule per Core v0.3.0 (full spec v0.3.5). Five required blocks, all inline. No network, no analytics. Validates against the reference validator. Mode: <code>hero_framing_exploration</code> — the eight numbered sections above are candidate framings; this layout is temporary.</p>
         <div class="cb-export" role="group" aria-label="Export actions">
           <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
           <button type="button" data-capsule-action="copy_as_markdown">Copy variants as Markdown</button>
@@ -1672,7 +1672,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.15.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.15.1 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>

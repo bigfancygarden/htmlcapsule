@@ -14,7 +14,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 
-**Current state:** Core spec at **v0.3.0**, full spec at **v0.3.4**, reference validator at 26 checks. Research log at **F22**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
+**Current state:** Core spec at **v0.3.0**, full spec at **v0.3.5**, reference validator at 26 checks. Research log at **F22**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
 
 ## Start here
 
@@ -86,7 +86,7 @@ All three pass the reference validator. All three carry the same manifest shape 
 Two versions move semi-independently:
 
 - **Core spec** (`CAPSULE_CORE.md`): the short, pasteable-into-an-LLM-prompt version. Currently **v0.3.0**.
-- **Full spec** (`spec/CAPSULE_SPEC.md`): the implementer-grade version. Currently **v0.3.4** (doc-and-validator patches on top of v0.3.0; see [CHANGELOG.md](CHANGELOG.md) for the per-patch trajectory).
+- **Full spec** (`spec/CAPSULE_SPEC.md`): the implementer-grade version. Currently **v0.3.5** (doc-and-validator patches on top of v0.3.0; see [CHANGELOG.md](CHANGELOG.md) for the per-patch trajectory).
 
 Core spec versions are tagged in git: `core-v0.1.0` … `core-v0.3.0`. Retrieve any historical version via `git show core-vX.Y.Z:CAPSULE_CORE.md`.
 
@@ -122,7 +122,7 @@ See [`CITATION.cff`](CITATION.cff). GitHub auto-detects this file and renders a 
 
 | Phase | Name | State |
 |---|---|---|
-| 1 | Format | Exists (Core v0.3.0, full spec v0.3.4) |
+| 1 | Format | Exists (Core v0.3.0, full spec v0.3.5) |
 | 2 | Compiler | Half-built — reference compiler + validator (local file mode + URL mode) + growing corpus across producer kinds. First independent compiler-kind producer (Mintel) shipped + validated (F20) |
 | 3 | Domain capsules | Partial — `domain.implementation_notes`, `domain.design_system`, `domain.exploration_map`, `domain.briefing` documented. `domain.music_stems` in the Idea queue |
 | 4 | Network layer | Not built; possibly never. Capsule registry, lineage graph, importers all deferred. Trust-log primitive sketched in Appendix E.6 but not built. |
