@@ -626,6 +626,7 @@ def check_field_formats(manifest: dict, result: ValidationResult):
             check_pattern(ref["hash"], HASH_FORMAT, f"source.references[{i}].hash")
 
     # Check parents[] entries (v0.3+): each must have a valid UUID and a title.
+    # parents[] is strict Capsule-to-Capsule lineage.
     parents = manifest.get("parents") or []
     for i, parent in enumerate(parents):
         if not isinstance(parent, dict):
@@ -633,10 +634,37 @@ def check_field_formats(manifest: dict, result: ValidationResult):
             continue
         check_pattern(parent.get("uuid"), UUID_FORMAT, f"parents[{i}].uuid")
         if "uuid" not in parent:
-            issues.append(f"parents[{i}].uuid is required")
+            issues.append(f"parents[{i}].uuid is required (parents[] is Capsule-to-Capsule lineage; for non-Capsule sources use derived_from[] — see spec §11.2)")
         title = parent.get("title")
         if not isinstance(title, str) or not title.strip():
             issues.append(f"parents[{i}].title is required and must be a non-empty string")
+
+    # Check derived_from[] entries (v0.3.6+): each must have a type and a title.
+    # derived_from[] holds non-Capsule provenance (compositions, datasets, chats,
+    # documents, ...) — anything addressable or describable but lacking a Capsule
+    # UUID. See spec §11.2 for the full shape.
+    derived = manifest.get("derived_from") or []
+    if not isinstance(derived, list):
+        issues.append(f"derived_from must be an array, got {type(derived).__name__}")
+    else:
+        for i, src in enumerate(derived):
+            if not isinstance(src, dict):
+                issues.append(f"derived_from[{i}] must be an object, got {type(src).__name__}")
+                continue
+            t = src.get("type")
+            if not isinstance(t, str) or not t.strip():
+                issues.append(f"derived_from[{i}].type is required and must be a non-empty string")
+            title = src.get("title")
+            if not isinstance(title, str) or not title.strip():
+                issues.append(f"derived_from[{i}].title is required and must be a non-empty string")
+            # reference may be a string OR null (honest "no addressable identifier")
+            if "reference" in src:
+                ref = src["reference"]
+                if ref is not None and not isinstance(ref, str):
+                    issues.append(f"derived_from[{i}].reference must be a string or null, got {type(ref).__name__}")
+            # hash is optional but if present must look like sha256:<hex>
+            if "hash" in src:
+                check_pattern(src.get("hash"), HASH_FORMAT, f"derived_from[{i}].hash")
 
     # Check record _content_hash format if present
     # (data is parsed separately; if records have invalid hashes, that's worth flagging)

@@ -984,6 +984,54 @@ This is the *cross-project memory pattern* the producer projects (capsule-midi, 
 - [F26](#f26-core-spec-accommodates-10-mb-domain-specific-media-capsules-without-rule-changes) — Core spec accommodates 10 MB domain-specific media capsules without rule changes (the song capsule experiment; same Lacrimosa POC seeded this line of research)
 - [`capsule-midi`](https://github.com/bigfancygarden/capsule-midi) — the producer project that surfaced this finding; raised in its `FEEDBACK.md` as item F-A before being filed here
 
+### F29: iOS QuickLook surfaces graceful degradation as a first-class spec principle, not just a Rule 12 implication
+
+**Date:** 2026-05-22
+
+**Source.** Two pieces of empirical pressure converging:
+- The capsule-midi v0.2.0 producer template added a `<noscript>` warning naming iOS Files-app QuickLook explicitly: *"Audio playback &amp; interactivity require JavaScript. On iOS: this file is currently in the Files-app preview. Tap the share icon and choose Open in Safari to enable playback."* That's a producer-side adaptation to a real distribution-environment constraint.
+- An external strategic-review discussion (preserved in the parent chat thread) argued at length that iOS QuickLook is the canonical hostile environment Capsules should design for, not against, and proposed promoting graceful degradation to a first-class design principle with manifest-level declarations and per-domain guidance.
+
+**The actual environment.** iOS Files / Mail / Messages / AirDrop / iCloud Drive / Notes preview surfaces route HTML attachments through Apple's [Quick Look](https://developer.apple.com/documentation/quicklook) framework. Quick Look is a passive preview system — it renders HTML/CSS but does not execute `<script>` tags. This is a defensible security posture (untrusted attachment HTML running JS from every preview surface would create real attack vectors) but it means a capsule whose substance lives in the runtime fails the iOS-preview first impression.
+
+**Finding.** The spec **already covers most of this** but doesn't surface it as the design discipline it's pointing at. What's already there:
+
+- **Rule 12** (`CAPSULE_CORE.md`) — pre-rendered content must exist in HTML before JS runs.
+- **`spec/CAPSULE_SPEC.md` §2.3 Rendering Model** — explicitly names "iOS Files / QuickLook preview" as a JS-restricted target environment; documents the image-fallback pattern with worked example; articulates "interactive archive (permitted) vs app (forbidden)" with the JS-off litmus test.
+- **`domain.exploration_map`** in `DOMAIN_CAPSULES.md` — image-fallback for visualization geometry is documented as a per-domain pattern.
+
+What's missing:
+1. **No machine-readable `fallbacks` manifest field.** Producers handle fallbacks ad-hoc in HTML; consumers (validators, registry viewers, downstream tooling) can't programmatically discover "this capsule has a preview-audio fallback at index X."
+2. **Per-domain fallback guidance only formalized for `domain.exploration_map`.** Other domains (`domain.midi_stem`, `domain.song`, `domain.photo`) need explicit guidance about what their JS-off representation should be.
+3. **The three-mode taxonomy is implicit.** §2.3 articulates the JS-off litmus but doesn't name the architectural framing the pasted discussion landed on: a capsule should degrade from **runtime (full JS app)** → **document (readable artifact)** → **preview (consumable media or static representation)**.
+4. **iOS QuickLook is mentioned but not centered** as the canonical hostile environment to design against.
+
+**Architectural alternatives evaluated and rejected** (so the rejection is on the record):
+
+- **Package format** (`.capsule` / `.dawcapsule` / `.zip` with `index.html`). Violates the load-bearing single-file promise. The whole point of the format is that the artifact passes through any document-passing surface (email, AirDrop, USB, Slack attachment, browser save) as one file. Splitting into a folder structure forfeits that.
+- **Native iOS Capsule Viewer app.** Out of scope. The project has stayed format-only by design; a canonical viewer app would compete with "open in any browser" and create platform lock-in.
+- **Hosted viewer as required runtime.** Reasonable as a downstream tool but breaks the offline / one-file promise if the capsule *requires* the viewer to be useful. Fine as an "open in browser → richer interaction" escape hatch; not fine as a precondition.
+
+**The principle worth promoting.** The pasted discussion's sharpest framing:
+
+> *A capsule should never become useless when JavaScript is unavailable. It should degrade from app → document → preview.*
+
+The spec says this in two paragraphs of §2.3; this single sentence is the version worth elevating to a section tagline.
+
+**Implication for v0.3.6.** Three concrete additions queued for the next spec release:
+
+1. **Generalize §2.3 image-fallback into a domain-agnostic JS-off fallback pattern.** Add the tagline above. Add iOS QuickLook as the named canonical environment.
+2. **Add a recommended (not required) `fallbacks` manifest field.** Shape: `{ preview_audio, poster_image, static_summary_present, requires_js_for, preview_mode_description }`. All optional. Lets producers declare what's there without forcing a structure on producers who don't have anything to fall back to.
+3. **Per-domain fallback guidance in `DOMAIN_CAPSULES.md`.** For each domain (existing + idea-queue): name the recommended JS-off representation. Examples: `domain.midi_stem` → bundled rendered audio mix as `<audio controls>`; `domain.song` → the embedded MP3 already IS the fallback (explicit note); `domain.photo` → the image itself is the fallback; `domain.exploration_map` → already documented (image-fallback for geometry).
+
+**Methodological observation.** The pattern that produced this finding is now recurring: the *capsule-midi producer-side adaptation* preceded the spec change. The `<noscript>` block in `templates/capsule.html.tpl` was the producer's response to a real environment constraint; the spec catches up by formalizing the principle. This is the **upstream feedback discipline** named in F28 working in the opposite direction: not "spec change first, producer follows" but "producer adapts to environment first, spec generalizes the pattern." Both directions are healthy and worth tracking.
+
+**Related findings:**
+- [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — the upstream feedback discipline named; this finding is its first deliberate application in the producer-adapts-first direction
+- [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) — the image-fallback carve-out in `domain.exploration_map` was the precursor pattern that this finding generalizes
+- [`capsule-midi/templates/capsule.html.tpl`](https://github.com/bigfancygarden/capsule-midi/blob/main/templates/capsule.html.tpl) — the producer template with the iOS-QuickLook `<noscript>` warning that surfaced the gap
+- [`spec/CAPSULE_SPEC.md` §2.3](spec/CAPSULE_SPEC.md) — the existing rendering-model section that the v0.3.6 generalization will extend
+
 ## Open questions
 
 In rough priority:

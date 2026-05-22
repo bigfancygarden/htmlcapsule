@@ -9,14 +9,14 @@ This project is research-led with an empirical-pressure-driven spec discipline: 
 ## Spec
 
 - [Core spec — twelve rules, one page, designed to paste into an LLM prompt](https://htmlcapsule.org/CAPSULE_CORE.md): The minimal contract producers actually use. Versioned at v0.3.0; tagged in git as `core-v0.3.0`.
-- [Full spec — implementer-grade definition](https://htmlcapsule.org/spec/CAPSULE_SPEC.md): Format definition, validation rules, security model, content-hash recipe (normative test vector), response protocol, parked v0.4+ candidates. Currently v0.3.5.
+- [Full spec — implementer-grade definition](https://htmlcapsule.org/spec/CAPSULE_SPEC.md): Format definition, validation rules, security model, content-hash recipe (normative test vector), response protocol, parked v0.4+ candidates. Currently v0.3.6. v0.3.6 graduates `derived_from[]` (non-Capsule provenance) from Appendix E.11, formalizes the `media.*` capability family + `export.fragment_provenance` universal envelope, and promotes graceful degradation to a named design principle (§2.3.1) with an optional `fallbacks` manifest section.
 - [Domain capsule schemas](https://htmlcapsule.org/spec/DOMAIN_CAPSULES.md): Per-domain extensions of the base contract — `domain.implementation_notes`, `domain.design_system`, `domain.exploration_map` (with image-fallback carve-out for visualization geometry, the F20-driven addition).
 - [Hosting pattern — descriptive convention](https://htmlcapsule.org/spec/HOSTING.md): The shape independent hosts (MinDev, htmlbin.dev) converged on without coordinating. Documents the host-contract pattern for future host implementers; descriptive, not normative.
 - [Glossary](https://htmlcapsule.org/GLOSSARY.md): Vocabulary including Capsule, Domain Capsule, Project Capsule, Interactive archive, Sealed handoff format, Universal AI reader, the four-layer table, phase status.
 
 ## Research
 
-- [Research log — F1-F25 findings, methodology, recurring failures](https://htmlcapsule.org/RESEARCH.md): The running narrative of what's been investigated, what's been observed, what's been spec-changed in response. Includes the empirical-pressure-driven spec evolution principle and the corpus across multiple producer kinds. Recent findings extend the layer convergences to host-vs-registry (F24, the missing commitment layer) and the ChatGPT producer-population's reliable Core-supplementary-guidance reads (F25).
+- [Research log — F1-F29 findings, methodology, recurring failures](https://htmlcapsule.org/RESEARCH.md): The running narrative of what's been investigated, what's been observed, what's been spec-changed in response. Includes the empirical-pressure-driven spec evolution principle and the corpus across multiple producer kinds. Recent findings extend the layer convergences to host-vs-registry (F24, the missing commitment layer) and the ChatGPT producer-population's reliable Core-supplementary-guidance reads (F25).
 - [Precedents and related work](https://htmlcapsule.org/PRECEDENTS.md): Positioning against RO-Crate, BagIt, WARC, EPUB, C2PA, TiddlyWiki, MHTML, Hugging Face Model Cards, plus current voices in the same family across the lifecycle layers (live editing: Raunaq Bhutoria / html-docs.com; format: Thariq, Karpathy, Blake, Steph Ango; hosting: Utkarsh Sengar / htmlbin; discovery: Jeremy Howard / llms.txt).
 - [Maintainer's journey essay (first-person)](https://htmlcapsule.org/notes.html): The personal account of why this project exists — from copy-pasting between AI tools and getting frustrated with share-links to landing on HTML as the substrate and writing the discipline down.
 
@@ -34,7 +34,7 @@ This project is research-led with an empirical-pressure-driven spec discipline: 
 
 ## Project trajectory
 
-- [CHANGELOG.md at repo root](https://github.com/bigfancygarden/htmlcapsule/blob/main/CHANGELOG.md): Curated narrative of what shipped at each spec version (v0.3.0 through v0.3.5), landing iterations, voices archive growth, research findings (F1–F25), and infrastructure additions. Reverse-chronological by version; commit IDs cross-referenced.
+- [CHANGELOG.md at repo root](https://github.com/bigfancygarden/htmlcapsule/blob/main/CHANGELOG.md): Curated narrative of what shipped at each spec version (v0.3.0 through v0.3.6), landing iterations, voices archive growth, research findings (F1–F29), and infrastructure additions. Reverse-chronological by version; commit IDs cross-referenced.
 
 ## How to cite
 

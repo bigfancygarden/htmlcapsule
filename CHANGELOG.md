@@ -8,15 +8,53 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
-Active pending — post-v13 landing-cleanup tasks (not blocking, not on critical path; paused 2026-05-22 pending maintainer decision):
+Nothing pending right now. v13 landing-cleanup queue from earlier was largely satisfied by the v13.1 framing recovery + v13.2 on-site rendering work. Idea queue (`spec/DOMAIN_CAPSULES.md`) and voices queue (`voices/README.md`) hold candidates that haven't met the empirical-pressure bar.
 
-- **Sketch cleanup decision.** `landing-sketch.html` (v1, pre-design-system) and `landing-sketch-v2.html` (v2, design-applied) are both now superseded by `index.html` at v13.0.0 (`landing-sketch-v2`'s content is what `index.html` v13 IS). Same for `research-sketch.html` v1 vs `research-sketch-v2.html`. Decision pending on whether to prune the v1 sketches (keep v2s as record-of-exploration), keep both for full lineage, or move all sketches to `sketches/` subfolder so they're catalogued but not at the repo root.
-- **Footer cross-link on `index.html`** pointing at `/exploration.html` for visitors who want the long-form research narrative. Not added in v13.0.0 because the integration brief was "make it the real landing" not "wire in cross-references." The existing top-nav has Spec / Examples / GitHub — could add an `Exploration` or `Long-form` link as a fourth.
-- **Archive banner URL verification on `exploration.html`.** The banner currently says "production landing is now at htmlcapsule.org" with a link target of `index.html` (relative). Verify both display correctly when deployed and the relative path resolves to the canonical landing in the live environment.
-- **Top-nav link verification on the new `index.html`.** The landing-sketch-v2 top-nav had `Spec / Examples / GitHub` links; verify each resolves to the right repo path (`CAPSULE_CORE.md` / `spec/examples/` / GitHub URL). The page may also benefit from a `Notes` link for the production essay at `notes.html`.
-- **Possible: feature the `design/` folder.** It's now in the repo but not linked from any of the production pages. Worth considering whether `design/proposal.html` deserves a discoverable surface (e.g., a footer link on `index.html` or an entry in `llms.txt`) so future readers can find the canonical design-system source-of-truth.
+---
 
-Idea queue (`spec/DOMAIN_CAPSULES.md`) and voices queue (`voices/README.md`) hold candidates that haven't met the empirical-pressure bar.
+## [Spec v0.3.6] — 2026-05-22
+
+First spec release driven by the **upstream feedback discipline** (named in F28) — every change in v0.3.6 has empirical pressure from a downstream producer project, none are speculative. The producer family that surfaced the pressure: **capsule-midi** (MIDI / DAW capsules, v0.2.0), **Shasta** (audio songs, in progress), **capsule-photo** (single-image artifacts with metadata, new), alongside the existing **Mintel** (geospatial maps, production at v0.3.4 since F20/F21). MinDev remains the registry / delivery host (separate concern).
+
+### Added — spec (normative)
+
+- **§11.2 Non-Capsule provenance (`derived_from`)** — graduated from Appendix E.11. Empirical pressure: capsule-midi's first non-synthetic build (Mozart Lacrimosa) had a composition reference that isn't itself a Capsule. Producers were stuck either burying composition lineage in prose `description` text (loses machine-readability) or minting a synthetic v5 UUID and putting it in `parents[]` to satisfy the validator's `parents[i].uuid is required` check (workaround, not a clean shape). Field is optional. Required per entry: `type` + `title`. Recommended: `reference` (URL/URN, may be `null`) + `role`. Optional: `hash`, `date`, plus domain-specific fields. Coexists cleanly with `parents[]`: `parents[]` is strict Capsule-to-Capsule (UUID required); `derived_from[]` is everything else. Section 11 renumbered: §11.2 (deprecated `related`) → §11.3, §11.3 Index Capsule → §11.4, §11.4 Registration → §11.5. Internal cross-reference at line 713 updated.
+- **§5.1.2 The `media.*` capability family** — multi-track media transport (`play` / `pause` / `stop` / `seek`), tempo/loop (`tempo_scale` / `loop_bar`), per-component (`stems.mute` / `stems.solo` / `stems.set_patch` / `stems.set_volume`), and per-media downloads (`midi.download` / `audio.download_mix` / `audio.download_stem`). 13 capabilities documented as a coherent namespace. Producer reference: capsule-midi v0.2.0 implements all 11 of the symbolic-side entries; Shasta is expected to use the audio-side entries.
+- **§5.1.3 The `export.fragment_provenance` capability** — universal envelope (`from_capsule` + `from_capsule_title` + `from_capsule_version` + `exported_at` + `fragment` + `note`) with domain-specific `fragment` shape. The load-bearing primitive of remix-style workflows across the producer family: capsule-midi exports component+bar-range; Shasta would export stem+time-range; capsule-photo would export rectangle/region/face; Mintel would export bounding-box/feature. One capability name unblocks all downstream lineage tooling.
+- **§2.3.1 Graceful degradation as a design principle** — promotes the implicit Rule 12 + JS-off-litmus framing in §2.3 to a named design principle. Tagline: *"A capsule should never become useless when JavaScript is unavailable. It should degrade from app → document → preview."* Names the three modes (runtime / document / preview) and identifies iOS Files-app QuickLook as the canonical hostile environment to design around. References the existing image-fallback worked example as one instance of the broader pattern.
+- **§3.2.1 The optional `fallbacks` manifest section** — declarative metadata about what JS-off fallbacks the capsule bundles: `preview_audio_present`, `poster_image_present`, `static_summary_present`, `requires_js_for` (string array), `preview_mode_description` (prose). All optional within the section; section itself optional. Lets consumers discover available fallback paths without scraping rendered HTML. The actual fallback content still lives in the static HTML per Rule 12; this section is metadata.
+- **JS-off fallback guidance per domain** (in `spec/DOMAIN_CAPSULES.md`, between "Initial domains" and "How to propose a new domain") — table covering all 8 domain entries (4 graduated + 4 idea-queue). For most domains the answer is "the static HTML IS the substance, no extra work needed" (made explicit). For the music / map / photo cases the recommended fallback is named: `domain.midi_stem` → bundled rendered audio mix; `domain.song` → embedded MP3 already serves as the fallback natively; `domain.photo` → image itself; `domain.exploration_map` → already-documented image-fallback.
+
+### Changed — Core (clarification, not a rule change — Core stays at v0.3.0)
+
+- **`CAPSULE_CORE.md` Rule 4** — added `derived_from` to the listed optional manifest fields with a one-line description and cross-reference to §11.2 of the full spec. Not a Core rule change (Core's discipline of allowing optional fields is unchanged); just brings the listed-fields enumeration in sync with the full spec's normative section. The "Deprecated fields" note for `related` updated to mention both `parents` and `derived_from` as the replacement homes for provenance.
+
+### Changed — validator
+
+- **`compiler/validate.py`** field-format check now distinguishes `parents[i].uuid is required` (Capsule-to-Capsule lineage) from `derived_from[i].type is required` + `derived_from[i].title is required` (non-Capsule sources). The `parents[i].uuid is required` error message now includes the hint *"for non-Capsule sources use derived_from[] — see spec §11.2"* so producers hitting the error get pointed at the right field.
+- **Scope-aware external-reference scan (already shipped at f61e504; documented here for completeness)** — `EXTERNAL_PATTERNS` split into `MARKUP_PATTERNS` (scanned everywhere), `JS_PATTERNS` (scanned only inside `<script>` blocks), and `CSS_PATTERNS` (scanned only inside `<style>` blocks). Code-block and `<pre>` content excluded from the scan via `_strip_data_blocks`. Eliminates false positives on capsules that render documentation about the forbidden APIs (e.g., a capsule with prose containing "no fetch (rule 2 stays intact)" no longer trips the `fetch(` regex). Not a Rule change; a heuristic refinement.
+
+### Added — research record
+
+- **F28** — *Producers reach for Capsule-shape independently when given the idiom but not the spec.* Companion to F25. Empirical case: ChatGPT-produced MIDI POC reached for the shape (5-block-ish, parents[], sha256, license_note) without Core attached, but missed the specifics (5-block-exact, integrity hash, capability convention). Validator: 5/10 against the reference. Names the **upstream feedback discipline** as a cross-project methodology: producer projects own the friction, spec project owns the response.
+- **F29** — *iOS QuickLook surfaces graceful degradation as a first-class spec principle, not just a Rule 12 implication.* Empirical case: capsule-midi v0.2.0's `<noscript>` warning naming iOS Files-app preview explicitly + external strategic-review discussion proposing three-mode taxonomy and `fallbacks` manifest field. Spec response landed in this v0.3.6 release as §2.3.1 + §3.2.1 + per-domain guidance. Also includes the architectural-alternatives rejection (package format / native viewer app / required hosted viewer) so the rejection is on the record.
+
+### Added — domain idea-queue entries
+
+- **`domain.midi_stem`** (capsule-midi) — symbolic-only multi-track music capsules. Already shipped v0.2.0 working implementation. Graduation pending first publicly-validated capsule.
+- **`domain.song`** (Shasta, in progress) — audio-primary song capsules. Pre-graduation; first capsule from the F26 song-capsule experiment.
+- **`domain.photo`** (capsule-photo, new) — single-image family-photo artifacts with metadata. Different namespace family from media.* (image.* sibling).
+- Cross-reference note on the existing `domain.music_stems` (parent multi-modal idea) naming midi_stem and song as specializations.
+
+### Changed — infrastructure
+
+- **`CITATION.cff`** version bumped `0.3.5 → 0.3.6`; date `2026-05-22`.
+- **`README.md`** state line: full spec `v0.3.5 → v0.3.6`; F-finding count `F25 → F29`.
+- **`llms.txt`** full-spec line updated with v0.3.6 + summary of changes; F-finding count updated everywhere `F25 → F29`; CHANGELOG version range `v0.3.0 through v0.3.5 → v0.3.0 through v0.3.6`.
+
+### Cross-project annotations (capsule-midi/FEEDBACK.md)
+
+Resolved upstream in this release: Q1 (`domain.midi_stem` parking), Q2 (`media.stems.*` namespace), Q3 (`export.fragment_provenance` capability), Q4 (`derived_from[]` graduation). The capsule-midi project's FEEDBACK.md should be updated in a coordinated commit to mark these as resolved and move them to its "Resolved" section. F-A was filed as F28 in this release.
 
 ---
 

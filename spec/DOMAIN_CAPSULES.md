@@ -383,6 +383,23 @@ The compiler should generate the PNG at the same projection and bounding box as 
 
 **Canonical example:** *In progress — first working example targeting a mintel project with `map_type: project_location`.*
 
+## JS-off fallback guidance per domain (added v0.3.6)
+
+Per `spec/CAPSULE_SPEC.md §2.3.1` (the graceful-degradation principle), every domain capsule SHOULD have a defined behavior in JS-off / iOS-QuickLook-preview environments. For most domains the answer is "the static HTML *is* the substance — no extra work needed." For a few (visualization-heavy, interactive-runtime, or media-playback domains) producers need to bundle a static or media-native representation alongside the runtime one.
+
+| Domain | JS-off fallback shape | Notes |
+|---|---|---|
+| `domain.implementation_notes` | None required — content is the static HTML | Already document-shaped (decisions, deviations, tradeoffs, open questions); the runtime adds no substance, only export buttons |
+| `domain.design_system` | None required — content is the static HTML | Tokens, components, patterns, AI usage constraints all render statically; live component preview rendering is enhancement, not substance |
+| `domain.briefing` | None required — content is the static HTML | One-page summary forks are inherently document-shaped |
+| `domain.exploration_map` | Image-fallback for geometry (per `CAPSULE_SPEC.md §2.3` worked example) | Static `<img>` rendering of the map's vector content, hidden by runtime when the interactive SVG hydrates; `<noscript>` block ensures the image stays visible if JS is off |
+| `domain.midi_stem` (idea queue) | **Recommended: bundled rendered audio mix as `<audio controls>`** + static stems list (one row per channel with instrument label + program + note count) + static manifest panel | A symbolic-only capsule has no native sound without JS; the rendered mix is the preview-mode substance. capsule-midi v0.2.0 currently does NOT bundle the mix (Tier 1 sound only); v0.3.0 Tier 2 / Tier 3 work will add it. Until then, capsule-midi capsules are *runtime-only* on iOS QuickLook (the `<noscript>` warning explains this and directs the user to open in Safari) |
+| `domain.song` (idea queue) | **The embedded MP3 already IS the fallback.** Native `<audio controls>` works without JS | No extra producer work — the audio element renders and plays natively in iOS QuickLook. Metadata (personnel, role on album, covers, critical reception, etc.) is in the static HTML. The interactive runtime adds export-provenance + capsule-management; substance is intact without it |
+| `domain.photo` (idea queue) | **The image itself is the fallback.** Static `<img>` renders without JS | No extra producer work. Metadata table (who/where/when/why, EXIF, source negative, etc.) is in the static HTML. The runtime adds region-highlight / copy-metadata / face-tag toggles — enhancement, not substance |
+| `domain.music_stems` (idea queue, parent) | Pre-rendered mix as `<audio controls>` + static stems list | Same shape as `domain.midi_stem` since this is the multi-modal parent. When this graduates (audio stems + MIDI tracks + effects combined), the producer ships both the per-stem audio AND a pre-rendered combined mix; the JS-off path uses the mix; the runtime adds per-stem mute/solo/effects |
+
+**Producer guidance.** When a domain has a non-trivial fallback shape (the music / map / photo / data-visualization cases), producers SHOULD also declare what they've bundled in the optional `manifest.fallbacks` section (see `CAPSULE_SPEC.md §3.2.1`). This is descriptive only — the actual fallback content must be in the static HTML per Rule 12 — but it lets consumers (registry viewers, downstream tools, validators) discover the available fallback paths without scraping the rendered HTML.
+
 ## How to propose a new domain
 
 A new domain earns a place in this document when:

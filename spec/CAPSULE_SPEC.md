@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.5 (Core currently v0.3.0)
+# Capsule Spec v0.3.6 (Core currently v0.3.0)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -232,6 +232,33 @@ The distinction matters because external commentary on the project has periodica
 
 **Why this matters historically:** the chat-LLM-produced capsules in the project's corpus prior to v0.1.3 follow the JS-render-everything pattern (training-data shape: build a tiny SPA). They fail rule 12. They remain valid as v0.1.2-era capsules but trigger the WARN under v0.1.3 — flagged as not-future-proof rather than broken.
 
+#### 2.3.1 Graceful degradation as a design principle (added v0.3.6)
+
+> **A capsule should never become useless when JavaScript is unavailable. It should degrade from app → document → preview.**
+
+Rule 12 and the interactive-archive framing above already imply this. v0.3.6 promotes it from implication to named design principle — the *upstream-feedback-discipline* (see [F29 in RESEARCH.md](../RESEARCH.md)) capture of producer-side adaptation that this spec section formalizes.
+
+**Three modes** every capsule should support gracefully, in order of decreasing capability:
+
+| Mode | Environment | What's available | What's required |
+|---|---|---|---|
+| **Runtime** | Real browser tab (Safari, Chrome, Firefox, Edge — desktop or mobile) | Full interactive runtime: tools, transport, controls, dynamic UI | The full JS app the producer built |
+| **Document** | Mobile browser with `<script>` blocked, screen readers, search indexers, text-only LLMs ingesting the HTML, archival crawlers | Pre-rendered content: title, prose, embedded media (`<audio>`, `<img>`, `<video>` with `data:` sources), tables, lists, metadata, manifest in the about panel | Rule 12 — content present in the static HTML |
+| **Preview** | iOS Files / QuickLook / Mail / Messages / AirDrop preview surfaces; macOS QuickLook; some email-client previews | What the surface chooses to render. For HTML capsules in QuickLook: typically the CSS-styled static HTML with no JS execution. Native media controls (`<audio>`, `<video>`) may or may not work depending on the preview engine. | Producers should bundle a *preview-friendly representation* of the artifact's substance — for a DAW capsule, a rendered audio mix; for a map, a static image; for a data table, a static rendering of the table |
+
+**The canonical hostile environment.** iOS Files-app QuickLook is the most-encountered no-JS preview surface in practice, especially for capsules distributed by sharing (AirDrop, iMessage, Mail attachment, iCloud Drive). Apple's [Quick Look framework](https://developer.apple.com/documentation/quicklook) is a passive preview system — it renders HTML/CSS but does not execute `<script>` tags. This is a defensible security posture (untrusted attachment HTML running JS from every system preview surface would create real attack vectors), so producers should not try to fight it — they should design *around* it. A capsule that opens in iOS QuickLook should still be useful: readable content, audible media where possible, manifest visible somewhere.
+
+**The `<noscript>` belt-and-suspenders.** When a capsule has both a static-fallback and an interactive-runtime representation of the same content (e.g., a static `<img>` fallback alongside an `<svg>` the runtime hydrates), the static path can include a `<noscript><style>...</style></noscript>` block that hides the runtime container when JS is disabled, ensuring the static fallback isn't hidden by transient runtime-side styling. The existing image-fallback worked example above demonstrates this pattern.
+
+**Per-domain guidance.** Each domain schema in `spec/DOMAIN_CAPSULES.md` SHOULD specify its recommended JS-off fallback shape under a "JS-off fallback" sub-section. Examples:
+- `domain.midi_stem` → bundled rendered audio mix as `<audio controls>` + static stems list
+- `domain.song` → the embedded MP3 already IS the fallback (no extra work needed)
+- `domain.photo` → the image itself is the fallback (no extra work needed)
+- `domain.exploration_map` → image-fallback for geometry (already documented above)
+- `domain.implementation_notes` / `domain.briefing` / `domain.design_system` → already document-shaped; no extra fallback needed (the content IS the static HTML)
+
+**The `fallbacks` manifest field.** Producers MAY declare what fallbacks they've bundled in an optional `fallbacks` manifest section — see §3.2 below for the shape. This is purely descriptive (a consumer reading the manifest can discover what fallbacks exist) and does not change the static HTML, which must contain the actual fallback content per Rule 12.
+
 ---
 
 ## 3. Manifest
@@ -385,6 +412,37 @@ Present when an LLM or other automated process *generated the data content* (e.g
 |----------------|----------|----------|----------------------------------------------------------|
 | `capabilities` | string[] | yes      | List of interaction features. See Section 5.              |
 | `expires_at`   | string   | no       | ISO 8601 timestamp. Null means no expiration.             |
+| `fallbacks`    | object   | no       | Declared JS-off fallbacks. Optional; see §3.2.1 below.    |
+
+#### 3.2.1 The optional `fallbacks` manifest section (added v0.3.6)
+
+Declarative metadata about what JS-off representations the capsule bundles. The fallback content itself lives in the static HTML per Rule 12 (the manifest section does not contain the bundled bytes — those are inline in `<audio>` / `<img>` / etc. with `data:` sources). This section exists so a consumer (validator, registry viewer, downstream tool) can discover *what kinds of fallback exist* without scraping the rendered HTML.
+
+```json
+{
+  "fallbacks": {
+    "preview_audio_present": true,
+    "poster_image_present": false,
+    "static_summary_present": true,
+    "requires_js_for": ["stem mixing", "patch switching", "loop-by-bar", "click-to-seek"],
+    "preview_mode_description": "Renders the bundled stereo mix as an <audio controls> element. Stems list and manifest are static. Interactive piano roll, per-stem mute/solo, patch dropdowns, tempo scaling, and loop-by-bar require a real browser tab (Safari, Chrome). On iOS, open in Safari rather than Files preview."
+  }
+}
+```
+
+**Field shapes (all optional within the section):**
+
+| Field | Type | Meaning |
+|---|---|---|
+| `preview_audio_present` | boolean | A rendered audio representation of the artifact (the "mix" for a music capsule, the spoken narration for a podcast, etc.) is bundled and reachable via native `<audio>` controls without JS |
+| `poster_image_present` | boolean | A static poster / hero image / static-rendering-of-the-thing is bundled and visible in the static HTML without JS |
+| `static_summary_present` | boolean | A static prose summary of the artifact's substance is present in the static HTML (versus the full content being JS-rendered) |
+| `requires_js_for` | string[] | Plain-English list of capsule features that genuinely need the runtime to work — surfaced to readers when they hit a JS-disabled environment so they understand what they're missing |
+| `preview_mode_description` | string | Free-form prose describing what the capsule looks like in a JS-off environment and how to reach the full version (typically: "open in a browser tab"). Useful for surfacing in iOS QuickLook's `<noscript>` warning region or in a help section |
+
+**Producers SHOULD include this section** when they've gone to the trouble of bundling a meaningful JS-off fallback. **Producers MAY omit this section** when the capsule is naturally document-shaped (the static HTML IS the substance — a notes essay, a briefing, an implementation-notes capsule) and there's nothing extra to declare. The validator does not require the section; absence is not a failure.
+
+**Why this is recommended, not required.** The principle that Rule 12 content exists in the HTML *is* required (per Rule 12 + the JS-off litmus in §2.3). The `fallbacks` section is metadata *about* the fallbacks for the convenience of consumers — it doesn't change the static HTML. A capsule that omits the section but still has a working `<audio controls>` fallback is fine; a capsule that declares `preview_audio_present: true` but ships no audio in the static HTML has lied. Producer-side honesty applies; the validator may eventually grow a heuristic that cross-checks the declaration against the static HTML (see [v0.4 candidate E.12](#e-12) if this lands; currently parked).
 
 ### 3.3 Artifact Types
 
@@ -592,6 +650,68 @@ function downloadCapsule() {
 
 **Recommended scope pairing.** Browsers normalize HTML during `outerHTML` serialization (attribute order, quote style, void-tag form, whitespace inside `<style>`). So the downloaded copy is *functionally* identical to the source but not *byte*-identical. Capsules that declare `download_capsule` SHOULD use `hash_scope: "data+manifest"` or `hash_scope: "data_only"` for `integrity.content_hash` — those scopes hash only the JSON inside `<script type="application/json">` raw-text elements, which browsers don't normalize. Capsules using `hash_scope: "full_document"` will hand recipients a copy whose hash doesn't verify against the original; if `full_document` integrity is essential, omit `download_capsule` and direct recipients to `curl -O` instead.
 
+#### 5.1.2 The `media.*` capability family (added v0.3.6)
+
+Domain-namespaced capability vocabulary for capsules that bundle playable media — symbolic (MIDI), audio (rendered songs / podcasts), or multi-stem (mixed audio + symbolic). Formalized in v0.3.6 under empirical pressure from the `capsule-midi` producer (which exercises every entry below) and the Shasta producer (audio songs, in progress). Naming follows the `<domain>.<action>` convention from Core rule 7 with `.<subdomain>` permitted when an action targets a specific sub-resource (e.g. a single stem of a multi-stem capsule).
+
+| Capability | Description |
+|---|---|
+| `media.play` | Begin playback of the bundled media from the current playhead |
+| `media.pause` | Suspend playback; preserves playhead position for `media.play` to resume |
+| `media.stop` | Halt playback and reset playhead to start |
+| `media.seek` | Set playhead position; typically wired to a click on a timeline / piano-roll / waveform |
+| `media.tempo_scale` | Scale playback speed (0.25× – 4× recommended range); applies to symbolic playback (MIDI synthesis); may shift pitch unless the runtime implements pitch correction |
+| `media.loop_bar` | Loop playback over a bar range (or time range, when bars aren't applicable); paired with start/end UI inputs |
+| `media.midi.download` | Export the bundled source MIDI bytes back out as `.mid` |
+| `media.audio.download_mix` | Export the bundled rendered audio mix (if present) as `.mp3` / `.wav` / etc. |
+| `media.audio.download_stem` | Export an individual rendered audio stem (if per-stem audio is bundled) as `.mp3` / `.wav` / etc. |
+| `media.stems.mute` | Per-component mute toggle in a multi-stem capsule; marker carries `data-channel="<n>"` or `data-component-id="<id>"` |
+| `media.stems.solo` | Per-component solo toggle; same scoping attribute as `media.stems.mute` |
+| `media.stems.set_patch` | Per-component voice/patch assignment (for symbolic stems where the runtime synthesizes the sound) |
+| `media.stems.set_volume` | Per-component gain adjustment in the mix |
+
+**Per Core rule 7 (declared = implemented),** every entry above declared in `manifest.capabilities` must have a corresponding `data-capsule-action="<cap>"` marker in the rendered HTML. For per-component actions (`media.stems.*`), the marker is on the UI element scoped to that component (typically with a `data-channel` or `data-component-id` attribute the runtime reads to dispatch correctly).
+
+**Producer references.** [`capsule-midi`](https://github.com/bigfancygarden/capsule-midi) v0.2.0 implements the full set above (except `media.audio.download_mix` / `media.audio.download_stem`, queued for its v0.3.0 Tier 2 / Tier 3 work). The Shasta producer (audio songs, in progress) is expected to implement `media.play` / `media.pause` / `media.stop` / `media.seek` / `media.audio.download_mix` as the minimum, with `media.stems.*` becoming relevant when Shasta gains multi-stem support.
+
+**Why a namespace, not a flat list.** Multi-track media capsules need per-component control distinct from whole-capsule transport. The `.stems.*` sub-namespace makes the scope visible in the capability name (a consumer reading the manifest sees `media.stems.mute` and knows it's per-stem) and lets the validator's Rule 7 heuristic match the scoped marker pattern cleanly.
+
+#### 5.1.3 The `export.fragment_provenance` capability (added v0.3.6)
+
+Universal-envelope capability for **exporting a reference to a fragment of this capsule for use in a downstream capsule's `parents[]` chain**. Formalized in v0.3.6 under empirical pressure from `capsule-midi`'s DAW use case — where the load-bearing primitive of a remix workflow is *"cite the source: component X, bars Y-Z of capsule UUID W."* The same shape applies across the producer family: a remix capsule cites a fragment of a song; a derived map cites a tagged region of a parent map; a clipped photo cites a rectangle of a parent photo.
+
+**Universal envelope (always present).** Every `export.fragment_provenance` output carries:
+
+```json
+{
+  "from_capsule": "<source-capsule-uuid>",
+  "from_capsule_title": "<denormalized title>",
+  "from_capsule_version": "<source capsule_version>",
+  "exported_at": "<ISO 8601 datetime>",
+  "fragment": { … },
+  "note": "Paste into a downstream capsule manifest.parents[] entry."
+}
+```
+
+The output is meant to be pasted (or programmatically inserted) into the **downstream** capsule's `parents[]` array as a single entry: the envelope's `from_capsule` + `from_capsule_title` become the standard `parents[]` `uuid` + `title`; the `fragment` block carries the slice information for tools that want to interpret it.
+
+**Domain-specific `fragment` shape.** The envelope is universal; what goes inside `fragment` is domain-specific:
+
+| Domain | Recommended fragment shape |
+|---|---|
+| `domain.midi_stem` | `{ component: {id, label, channel}, bar_range: {start, end}, tick_range: {start, end}, time_range_sec: {start, end} }` |
+| `domain.song` | `{ stem: {id, label} | null, time_range_sec: {start, end} }` (`stem: null` when the fragment refers to the whole mix) |
+| `domain.photo` | `{ rectangle: {x, y, w, h} } | { region_id: "<id>" } | { face_id: "<id>" }` (any one of three addressing modes) |
+| `domain.exploration_map` | `{ bounding_box: {n, s, e, w} } | { feature_id: "<id>" } | { center: [lat, lon], zoom: int }` |
+
+Domain schemas in `DOMAIN_CAPSULES.md` SHOULD specify the recommended `fragment` shape for their domain. Producers MAY add domain-specific fields beyond the recommendation; consumers MUST tolerate unknown fields (forward-compat).
+
+**Implementation pattern.** Runtime wires a "Generate" button (typically with adjacent inputs for the fragment selection — component dropdown + bar range, or canvas rectangle selection, or feature picker, depending on domain) to `data-capsule-action="export.fragment_provenance"`. The handler reads the current selection state, builds the envelope + fragment payload, and writes the JSON to the clipboard (and/or a visible `<pre>` for inspection). The user pastes the output into the downstream capsule's manifest.
+
+**Why an envelope, not domain-specific capabilities.** A naive design would give each domain its own capability (`export.midi_remix`, `export.song_clip`, `export.photo_crop`, `export.map_region`). The envelope approach is cleaner: the *machinery* is universal — same shape, same paste-target, same downstream interpretation — only the *fragment* differs by domain. One capability name unblocks all downstream tooling that operates on lineage chains.
+
+**Note on the relationship to `parents[]` and `derived_from[]`.** `export.fragment_provenance` produces an entry suitable for `parents[]` (when the target capsule is itself a Capsule with a UUID). For non-Capsule fragment sources (rare but possible — e.g., a region of a non-Capsule reference image), the consumer may route the same envelope into `derived_from[]` with the `from_capsule` field renamed to `reference` and the entry's `type` populated. The export capability is agnostic about which lineage field the consumer chooses; it produces the data, the consumer routes it.
+
 ### 5.2 Minimum Required Capabilities
 
 Every capsule must implement at least:
@@ -710,7 +830,7 @@ When a capsule supports the `export_response` capability, responses must follow 
 
 The import workflow must validate:
 
-1. `capsule_reference.uuid` is looked up in the registry. *If found:* full validation including per-record content-hash comparison for stale-response detection. *If not found:* degraded validation (envelope structure, sanitization, schema conformance only) — the user is prompted to register the referenced capsule. The registry is a trust amplifier, not a gate (see Section 11.4).
+1. `capsule_reference.uuid` is looked up in the registry. *If found:* full validation including per-record content-hash comparison for stale-response detection. *If not found:* degraded validation (envelope structure, sanitization, schema conformance only) — the user is prompted to register the referenced capsule. The registry is a trust amplifier, not a gate (see Section 11.5).
 2. `capsule_reference.capsule_version` matches or is noted as outdated
 3. `response.type` is a recognized type
 4. `response.payload` conforms to the type's expected structure
@@ -983,15 +1103,65 @@ Multiple parents are meaningful and supported: a capsule that compares two earli
 
 If the conversation didn't start from a capsule, omit `parents` entirely (don't include an empty array — absent and empty are equivalent, and absent is cleaner).
 
-### 11.2 The deprecated `related` field
+### 11.2 Non-Capsule provenance (`derived_from`)
+
+When a capsule is built from sources that are **not themselves Capsules** — compositions, recordings, datasets, documents, chat sessions, photographs, screenshots, anything addressable or describable but lacking a Capsule UUID — record each source in the optional `derived_from` array. **New in v0.3.6** (graduated from Appendix E.11 under empirical pressure from `capsule-midi` producer hitting it on the first non-synthetic capsule build; see [RESEARCH.md F-finding harvest for v0.3.6]).
+
+```json
+{
+  "derived_from": [
+    {
+      "type": "composition",
+      "title": "W.A. Mozart — Requiem in D minor, K.626: Lacrimosa",
+      "reference": "https://www.wikidata.org/wiki/Q193326",
+      "role": "source composition"
+    },
+    {
+      "type": "dataset",
+      "title": "BC Ministry of Forests survey 2024-Q3",
+      "reference": "https://catalogue.data.gov.bc.ca/dataset/example",
+      "hash": "sha256:0a1b2c…",
+      "role": "primary geospatial data"
+    },
+    {
+      "type": "chat",
+      "title": "Synthesis conversation, 2026-05-15",
+      "reference": null,
+      "date": "2026-05-15",
+      "role": "synthesis input"
+    }
+  ]
+}
+```
+
+**Required per entry:**
+- `type` (string) — what kind of source this is. Free-form short label. Recommended values: `"composition"`, `"recording"`, `"dataset"`, `"document"`, `"chat"`, `"screenshot"`, `"photograph"`, `"survey"`, `"webpage"`, `"book"`, `"article"`, `"interview"`. Producers may use domain-specific values; consumers should not assume a closed enumeration.
+- `title` (string) — human-readable label, non-empty.
+
+**Recommended per entry:**
+- `reference` (string | null) — URL, URN, DOI, Wikidata ID, MusicBrainz ID, or other addressable identifier. `null` when the source is not addressable (e.g., a private chat session, an unpublished interview). Producers should provide one when available; consumers can treat `null` as an honest "this source exists but has no stable identifier."
+- `role` (string) — short phrase describing how this source relates to the capsule. Examples: `"source composition"`, `"primary data"`, `"synthesis input"`, `"reference image"`, `"transcribed interview"`.
+
+**Optional per entry:**
+- `hash` (string) — `sha256:<hex>` of the source content if hashable. Pairs with `reference` for stronger lineage when both are present.
+- `date` (string) — ISO 8601 date or datetime of the source.
+- Additional domain-specific fields are permitted; consumers should ignore fields they don't recognize.
+
+**Difference from `parents`.** `parents` is strict Capsule-to-Capsule lineage: every entry references another Capsule by UUID, and the validator enforces that. `derived_from` is the natural place for everything else — the long tail of sources that exist in the world but aren't (yet, or ever) Capsules themselves. The two coexist on the same manifest: a remixed capsule might have both a `parents[]` entry citing the source capsule it forked from AND a `derived_from[]` entry citing the original composition the source capsule's MIDI came from.
+
+**Producer-side authoring rule.** As with `parents`, producers must not invent `derived_from` entries. Each entry should correspond to a real source the capsule's content depends on or references. The structured form exists to make honest provenance machine-readable, not to inflate apparent depth.
+
+**Migration note.** Capsules pre-v0.3.6 that used `parents[]` with synthesized-v5-UUID workarounds for non-Capsule sources (e.g., `uuid: uuid5(NAMESPACE_URL, "composition:wikidata:Q193326:Lacrimosa")` to satisfy the validator's `parents[i].uuid is required` check) should migrate those entries to `derived_from[]` on the next rebuild. The v5-UUID workaround was a producer-side patch for the missing field; the field now exists, so the patch is no longer needed. Both forms remain valid through v0.4 for back-compat.
+
+### 11.3 The deprecated `related` field
 
 Prior to v0.3 the schema reserved a `related` array for soft associations between capsules (`parent`, `sibling`, `supersedes`, `related`). It was unused in practice and is **deprecated in v0.3**, planned for removal in v0.4. Hard provenance now lives in `parents` (above). Soft associations — "this capsule is thematically similar to that one" — belong in the capsule's prose, not in structured metadata, because schema fields invite producers to fabricate edges that aren't load-bearing. The validator emits an informational note when it encounters a `related` array on a v0.3 capsule; the field still passes validation for v0.2 backward compatibility.
 
-### 11.3 Index Capsule
+### 11.4 Index Capsule
 
 An index capsule is a capsule of type `collection` whose data records are references to other capsules. It allows a recipient to see all artifacts shared with them in one view.
 
-### 11.4 Registration and the Three Production Paths
+### 11.5 Registration and the Three Production Paths
 
 A capsule is *valid* by virtue of meeting this spec, regardless of what produced it. The registry is a *personal tracking layer*, not a gate. Capsules from any source can be registered:
 
@@ -1609,9 +1779,11 @@ This conversion bridge is reusable for any design tool whose raw canvas export i
 
 **Empirical record.** This is also the first independently-confirmed reproduction of an LLM-kind producer reaching conformance directly from `CAPSULE_CORE.md` as a prompt input — strengthening the multi-producer interop claim in §1. The model produced a 24/25-passing, 0-fail file; the integration failure was downstream of the model, in the bundler step.
 
-### E.11 Extended manifest fields raised by external review (parked)
+### E.11 Extended manifest fields raised by external review
 
-**Source.** Two external LLM reviewers, reviewing the v11.x landing page's HTML-version-control narrative (Observation 3 → Question 3 → Answers 3a/3b/3c), independently surfaced three candidate manifest fields the spec doesn't currently carry. The proposals are recorded here as parked v0.4+ candidates pending real-producer empirical pressure — they're not added to the spec now.
+> **Status as of v0.3.6 (2026-05-22):** `derived_from[]` has **graduated** to a formal field in §11.2. See the F-finding harvest in `RESEARCH.md` for the empirical-pressure case that triggered the graduation. The other two candidates (`supersedes[]`, `change_summary`) remain parked.
+
+**Source.** Two external LLM reviewers, reviewing the v11.x landing page's HTML-version-control narrative (Observation 3 → Question 3 → Answers 3a/3b/3c), independently surfaced three candidate manifest fields the spec doesn't currently carry. The proposals are recorded here as parked v0.4+ candidates pending real-producer empirical pressure.
 
 **The three candidates.**
 
@@ -1626,7 +1798,7 @@ This conversion bridge is reusable for any design tool whose raw canvas export i
 The spec discipline (§1) is *no new schema fields without empirical pressure from a real producer or consumer hitting a real problem*. As of writing:
 
 - **`supersedes[]`**: no observed case where a producer or consumer has hit the limitation. The existing `parents[]` carries most lineage; "replaces" is implicit in version-bump semantics for the common case. Worth recording so we don't forget it; not worth adding until someone is actually unable to express what they need.
-- **`derived_from[]`**: closer to real pressure — the Mintel producer (F20) actually has source content (geospatial datasets, agency briefings) that aren't Capsules but inform the output. Currently this is buried in prose `description` text. A structured field would be useful. But no consumer has yet needed to programmatically distinguish "real parent Capsule" from "external source"; until they do, `description` text suffices.
+- **`derived_from[]`**: **Graduated in v0.3.6.** Empirical pressure arrived from `capsule-midi` on first non-synthetic build: the Mozart Lacrimosa capsule had a composition reference (Mozart's Requiem K.626) that isn't itself a Capsule. Producers had to either (a) bury composition lineage in prose `description` text or (b) mint a synthetic v5 UUID and put it in `parents[]` to satisfy the validator's `parents[i].uuid is required` check. (a) loses machine-readability; (b) is a workaround. The Mintel pressure recorded above (geospatial datasets, agency briefings) was the same pattern at the producer level; the four-producer family (Mintel + Shasta + capsule-midi + capsule-photo) compounds it. Field now lives in §11.2 as a sibling of `parents[]`. See [F-finding harvest for v0.3.6](../RESEARCH.md) for the full empirical-pressure record.
 - **`change_summary`**: arguably already covered by the producer's own changelog (the landing page has one; CAPSULE_SPEC.md has version sections in CHANGELOG.md). A per-capsule `change_summary` would duplicate that for files that are part of a versioned series, but adds noise for one-shot artifacts. Defer until a tool that would *consume* it exists (e.g., the capsule-diff tool sketched in landing Answer 3c).
 
 **Empirical record.** This Appendix E entry is documentation that the ideas exist and have been considered, so that future Claude / future-maintainer doesn't re-derive them from scratch when the question comes up again. The review that produced them is referenced from the v11.15 landing CHANGELOG entry; the methodological observation is that *external-LLM review* is now a recurring source of spec-design candidates (in addition to producer pressure, consumer pressure, and maintainer reflection). Worth tracking as its own pattern in RESEARCH.md if it keeps happening.
