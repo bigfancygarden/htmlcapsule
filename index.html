@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.13.0",
+  "capsule_version": "11.14.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.13.0 strips the inline TOC `.cb-frame-lead` paragraph from all three Question sections (Q1, Q2, Q3) — the answers naturally follow in their own sibling sections below, so the explicit 'Answer Na, Answer Nb…' pointer was redundant. Question sections are now lean: just the corner label, the H2 with kicker + the question itself, and nothing else. Each Question reads as a single beat that opens its arc; the Answer sections immediately below do the rest. v11.12.0 restructured the question numbering and added two new sections. New Question 1: 'How do I get HTML out of my LLM?' inserted upstream of the existing Question 1 (which becomes Question 2). New Question 1 has two answers: Answer 1a (vague approach — Karpathy + Thariq both 'just ask the LLM for HTML' — what you get is unstructured, no manifest, no identity), Answer 1b (contract-based approach — paste the Capsule Core spec into your prompt, the LLM returns a sealed .html with manifest + integrity + UUID + parents[] + declared capabilities + pre-rendered content + no network deps; the artifact carries its own context). Renumbering: existing Q1 → Q2 (what do you do with HTML), existing A1a/1b/1c → A2a/2b/2c, existing Q2 → Q3 (how do you track versions), existing A2a/2b → A3a/3b. New Answer 3c added (spec-evolution path for semantic Capsule diffs) — explains how a capsule-diff tool layered on the spec could semantically diff manifest + data + content blocks separately, sketches example output, parks the implementation in spec Appendix E pending empirical pressure. data-num values unchanged for stable sections (00, 00b, 00b1, 00b2, 00c, 00f, 00f1, 00f2); new data-num values 00a/00a1/00a2 for new Q1 + A1a + A1b, 00f3 for new A3c. UUID 7d1a1ac8 preserved through v11.12.",
+  "description": "Landing page in hero framing exploration mode. v11.14.0: (1) Question 3 title tightened to 'How do you keep track of which version of an HTML file you're working on?' (was '...of an artifact you're working with?'). (2) Observation 3 gains a middle paragraph about chat-hosted artifacts (Claude's artifacts, ChatGPT's canvas) having no natural versioning system — the artifact mutates in place; forking into a new conversation doesn't inherit a clean version label; the chat keeps going, the artifact loses its history. (3) NEW Observation 5 (00h, white) added at the end of the analysis arc, after Observation 4 and before the hero gallery: 'There's no easy way to get chat-hosted content out of an LLM platform.' Three prose paragraphs: share links exist on every platform but are platform-locked viewing artifacts; cross-platform interop is poor (a ChatGPT share link handed to Claude doesn't compose); the file-as-artifact discipline (Obs 1, Obs 2, Answer 1b) is the project's response — a Capsule opens in any browser, can be handed to any LLM, the host doesn't have to be in the loop. UUID 7d1a1ac8 preserved through v11.14.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -85,7 +85,8 @@
     { "num": "00f1", "id": "Answer 3a",     "framing": "Answer 3a · filename versioning",                                          "title": "Answer 3a: v1.html, v2.html, v3-final.html, v3-real-final.html.", "sub": "(Was Answer 2a.) What people actually do: filename suffixes; the version lives outside the file. Cost: filename can be dropped, lineage breaks.", "kind": "section" },
     { "num": "00f2", "id": "Answer 3b",     "framing": "Answer 3b · UUID + parents[] + capsule_version (identity inside the file)", "title": "Answer 3b: uuid, capsule_version, parents[] — in the manifest.", "sub": "(Was Answer 2b.) Each Capsule carries three identity fields in its inline JSON manifest; identity + lineage live in the bytes, not the filename. Forward-points to Answer 3c on the diffs question.", "kind": "section" },
     { "num": "00f3", "id": "Answer 3c",     "framing": "Answer 3c · spec-evolution path for semantic Capsule diffs (open work)",   "title": "Answer 3c: A Capsule-aware diff over manifest + data + content, layered on the spec.", "sub": "New. Addresses the HTML-diffs-are-noisy problem by sketching what a capsule-diff tool could do: semantic structural diff over each required block (manifest JSON delta, data JSON delta, visible-content text delta, bounded style/runtime). Includes an example output. Not built yet; parked in spec Appendix E pending empirical pressure. Framed as a layer on the spec (like git log --oneline on git's commit graph), not a spec change — the spec's structural discipline is exactly what makes a semantic diff tractable.", "kind": "section" },
-    { "num": "00g",  "id": "Observation 4", "framing": "Observation 4 · live-editing/collab layer emerging (Claude Design, html-docs, Workplane)", "title": "Observation 4: A live-editing and collaboration layer is emerging around AI-emitted HTML.", "sub": "Names three players in different shapes: Claude Design (Anthropic Labs, April 2026 — chat-and-preview HTML/CSS/JS generation, exportable as standalone HTML); html-docs.com (Raunaq Bhutoria — agents publish, humans comment, agents revise); Workplane (Matan/matanrak — MCP-first, multi-agent, same shape as html-docs). Maintainer commentary: Capsule sits downstream as the seal step; format is editor-agnostic; whether the project grows a collab layer is open — MinDev registry could plausibly host lightweight commenting (registry concern, not format concern).", "kind": "section" }
+    { "num": "00g",  "id": "Observation 4", "framing": "Observation 4 · live-editing/collab layer emerging (Claude Design, html-docs, Workplane)", "title": "Observation 4: A live-editing and collaboration layer is emerging around AI-emitted HTML.", "sub": "Names three players in different shapes: Claude Design (Anthropic Labs, April 2026 — chat-and-preview HTML/CSS/JS generation, exportable as standalone HTML); html-docs.com (Raunaq Bhutoria — agents publish, humans comment, agents revise); Workplane (Matan/matanrak — MCP-first, multi-agent, same shape as html-docs). Maintainer commentary: Capsule sits downstream as the seal step; format is editor-agnostic; whether the project grows a collab layer is open — MinDev registry could plausibly host lightweight commenting (registry concern, not format concern).", "kind": "section" },
+    { "num": "00h",  "id": "Observation 5", "framing": "Observation 5 · no easy export from LLM platforms; share links don't compose",                "title": "Observation 5: There's no easy way to get chat-hosted content out of an LLM platform.", "sub": "Share links exist on every platform (ChatGPT, Claude, Gemini) but they're platform-locked viewing artifacts, not portable. Cross-platform interop is poor: a ChatGPT share link handed to Claude doesn't compose — the receiving LLM might fetch the URL but doesn't get the structured conversation. Reframes the file-as-artifact discipline (Obs 1, Obs 2, A1b) as the project's response: a Capsule opens in any browser, can be handed to any LLM, the host doesn't have to be in the loop.", "kind": "section" }
   ],
   "spec": { "core": "v0.3.0", "full": "v0.3.4", "released": "2026-05-19" },
   "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
@@ -1312,6 +1313,8 @@
 
         <p class="cb-frame-prose">Fair. HTML diffs <em>are</em> noisy. But there's a related, more general problem worth pulling apart: when you're iterating on an artifact across long chats and tweaks, you lose track of what you're actually looking at. People already know this problem from PDFs — the <code>v1.pdf</code> / <code>v2.pdf</code> / <code>v3-final.pdf</code> / <code>v3-real-final.pdf</code> / <code>v3-real-real-final-USE-THIS.pdf</code> sequence. Not a good system. But it represents something real: people need to know what version they're working with.</p>
 
+        <p class="cb-frame-prose">Chat-hosted artifacts make this worse, not better. Claude's artifacts, ChatGPT's canvas — they don't have a natural versioning system. The artifact just keeps mutating in place as you iterate. You can fork into a new conversation, but the new one doesn't inherit a clean version label or any explicit "this is v3" anchor — it just starts fresh, often with no easy way to refer back to the previous state. The chat keeps going and going; the artifact loses its history.</p>
+
         <p class="cb-frame-prose">HTML diffs proper are still hard. But artifact <em>identity</em> and <em>lineage</em> are different problems — and they're addressable.</p>
       </div>
     </article>
@@ -1320,7 +1323,7 @@
     <article class="cb-frame is-observation is-question" data-num="00f" aria-labelledby="frame-00f-title">
       <span class="cb-frame-num">Question 3</span>
       <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00f-title"><span class="cb-kicker">Question 3:</span> How do you keep track of which version of an artifact you're working with?</h2>
+        <h2 class="cb-frame-title is-observation-h" id="frame-00f-title"><span class="cb-kicker">Question 3:</span> How do you keep track of which version of an HTML file you're working on?</h2>
       </div>
     </article>
 
@@ -1400,6 +1403,20 @@
         <p class="cb-frame-prose">Capsule sits <em>downstream</em> of all three. It's the seal step, not the edit step. The format is editor-agnostic: a Capsule can swallow output from Claude Design, from html-docs, from Workplane, from a hand-written compiler script — all the same envelope shape. The producer kind (<code>llm</code> / <code>compiler</code> / <code>hybrid</code> / <code>human</code>) is declared in the manifest; the editor that produced it is otherwise invisible.</p>
 
         <p class="cb-frame-prose">Whether the project itself ever grows a collaboration layer is an open question. The maintainer's MinDev registry could plausibly host lightweight commenting on hosted Capsules — read-only annotations alongside the bytes, not co-editing of the bytes — and that would be a <em>registry</em> concern, not a format concern. The spec stays out of the editor business, same way it stays out of the host business.</p>
+      </div>
+    </article>
+
+    <!-- 00h — Observation 5 (no easy way to get chat-hosted content out of an LLM platform; share links don't compose) -->
+    <article class="cb-frame is-observation" data-num="00h" aria-labelledby="frame-00h-title">
+      <span class="cb-frame-num">Observation 5</span>
+      <div class="cb-frame-inner">
+        <h2 class="cb-frame-title is-observation-h" id="frame-00h-title"><span class="cb-kicker">Observation 5:</span> There's no easy way to get chat-hosted content out of an LLM platform.</h2>
+
+        <p class="cb-frame-prose">Share links exist on every platform — ChatGPT, Claude, Gemini, and the rest. They've existed for years. The links work for <em>viewing</em>: anyone with the URL can read the conversation in the platform that minted it. But the content stays locked to the host. The formatting, the navigation, the ability to continue the thread — all of it lives inside whatever app the share link belongs to.</p>
+
+        <p class="cb-frame-prose">Try to hand a ChatGPT share link to Claude (or the other way around). It doesn't compose. The receiving LLM might fetch and read the URL, but it doesn't get the structured conversation — no message boundaries, no nesting, no thread state, no way to "pick up where the other one left off." Share links are read-only viewers for the platform that produced them, not portable artifacts.</p>
+
+        <p class="cb-frame-prose">This is part of what the file-as-artifact discipline (<a href="#frame-00-title">Observations 1</a> and <a href="#frame-00d-title">2</a>; <a href="#frame-00a2-title">Answer 1b</a>) is a response to. A Capsule produced from a Claude conversation opens the same in any browser, can be handed to any LLM, can be archived, can be forked — because the file <em>is</em> the artifact. The host that produced it doesn't need to be in the loop. That's the practical difference between "I shared a link" and "I shared a file."</p>
       </div>
     </article>
 
@@ -1570,7 +1587,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.13.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.14.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
