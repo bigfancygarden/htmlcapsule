@@ -63,6 +63,10 @@ The capsule's distinctive promise — not merely that an AI can open the file, b
 
 The project's positioning. Capsules exist so useful AI work survives across tools, time, sessions, and platform churn — not as an attack on AI platforms, but as durable infrastructure complementary to them.
 
+### Document-first artifact
+
+The technical thesis underneath the format: **a capsule is a document first, an app second.** *Apps when alive. Documents when dormant.* HTML and CSS are the base substrate; JavaScript is a runtime upgrade layered on top. A well-built capsule stacks interactivity in tiers — Tier 0 static document → Tier 1 native HTML controls (`<details>`, `<audio>`) → Tier 2 CSS-state machines (radio-button tabs, `:target`) → Tier 3 precomputed alternates → Tier 4 JavaScript runtime — such that the substance survives at the lowest tier the producer can land it at, and higher tiers are progressive enhancement. Open the same file in iOS QuickLook and Safari: same file, two experiences, no degradation cliff. The 5-tier framework lives in [`spec/CAPSULE_SPEC.md`](spec/CAPSULE_SPEC.md) §2.3.2 (added v0.3.8); the implementation primitives live in §2.3.3. Pairs with **Interactive archive** below (which names what's permitted under Rule 12) and with the **Graceful degradation** principle in spec §2.3.1 (which names what survives).
+
 ### Universal AI reader
 
 An AI platform that can read many file types and connect to many sources directly (Claude, ChatGPT with connectors, Gemini, etc.). Complementary to capsules — a smart reader still needs explicit packaging, provenance, intent, and usage rules to reason responsibly.
@@ -226,4 +230,4 @@ References that have come up in discussion (positioned, not endorsed). Longer wr
 
 ---
 
-*Glossary v0.3.0 · 2026-05-19. Lives alongside [`CAPSULE_CORE.md`](CAPSULE_CORE.md) (currently v0.3.0) and [`spec/CAPSULE_SPEC.md`](spec/CAPSULE_SPEC.md) (currently v0.3.2).*
+*Glossary v0.3.1 · 2026-05-22. Lives alongside [`CAPSULE_CORE.md`](CAPSULE_CORE.md) (currently v0.3.0) and [`spec/CAPSULE_SPEC.md`](spec/CAPSULE_SPEC.md) (currently v0.3.8).*

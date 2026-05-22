@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.7 (Core currently v0.3.0)
+# Capsule Spec v0.3.8 (Core currently v0.3.0)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -146,6 +146,10 @@ Every capsule is a single `.html` file. Internal sections are identified by `id`
 
 ### 2.3 Rendering Model (Core v0.1.3 rule 12)
 
+> **A capsule is a document first, an app second.** *Apps when alive. Documents when dormant.* (added v0.3.8)
+>
+> Rule 12 is the format's enforcement of that thesis at the rendering layer. The interactivity tiers built on top (see §2.3.2) compound progressively — but they all rest on a base of pre-rendered HTML that survives when scripts don't run.
+
 The `<main id="capsule-root">` body **must already contain the full readable artifact when the file is opened.** Title, prose, embedded media (`<img src="data:...">`, `<audio src="data:...">`, `<video src="data:...">`), tables, lists, metadata — all rendered into the HTML at build time. Runtime JavaScript may *enhance* the capsule (wire up export buttons, dynamic UI, copy-to-clipboard) but must not be required to produce the readable content.
 
 **Why:** Capsules are archives, not apps. They must remain readable in environments that don't execute inline scripts — iOS Files / QuickLook previews, email client previews, screen readers, search indexers, archive viewers, and future browsers whose JavaScript support has drifted from today's APIs. A capsule whose `capsule-root` is mostly empty `<div id="...">` containers will render as a blank page in any of those environments.
@@ -238,7 +242,7 @@ The distinction matters because external commentary on the project has periodica
 >
 > **No-JS capsule interactivity is declarative, not computational. It should expose precomputed states through native HTML and CSS controls.** (added v0.3.7)
 
-Rule 12 and the interactive-archive framing above already imply this. v0.3.6 promotes it from implication to named design principle — the *upstream-feedback-discipline* (see [F29 in RESEARCH.md](../RESEARCH.md)) capture of producer-side adaptation that this spec section formalizes. v0.3.7 (this section + §2.3.2 below) extends with the second tagline above and a documented technique inventory: no-JS does not mean *no interaction*; it means *no logic*. Selection, navigation, expansion, layer toggles, view switching, and media playback all work without JS through native HTML controls and CSS state selectors.
+Rule 12 and the interactive-archive framing above already imply this. v0.3.6 promotes it from implication to named design principle — the *upstream-feedback-discipline* (see [F29 in RESEARCH.md](../RESEARCH.md)) capture of producer-side adaptation that this spec section formalizes. v0.3.7 (this section + §2.3.3 below) extends with the second tagline above and a documented technique inventory: no-JS does not mean *no interaction*; it means *no logic*. Selection, navigation, expansion, layer toggles, view switching, and media playback all work without JS through native HTML controls and CSS state selectors. v0.3.8 (§2.3.2 below) frames the same observation as a five-tier interactivity stack so producers can stack deliberately rather than treating "preservable" and "interactive" as opposed.
 
 **Three modes** every capsule should support gracefully, in order of decreasing capability:
 
@@ -261,21 +265,68 @@ Rule 12 and the interactive-archive framing above already imply this. v0.3.6 pro
 
 **The `fallbacks` manifest field.** Producers MAY declare what fallbacks they've bundled in an optional `fallbacks` manifest section — see §3.2 below for the shape. This is purely descriptive (a consumer reading the manifest can discover what fallbacks exist) and does not change the static HTML, which must contain the actual fallback content per Rule 12.
 
-#### 2.3.2 No-JS interactivity techniques (added v0.3.7)
+#### 2.3.2 Document-first: the five tiers of capsule interactivity (added v0.3.8)
 
-The "preview" mode in §2.3.1 is not "static document." Native HTML controls and CSS state selectors give a capsule a meaningful interaction surface without any JS — readers can reveal, choose, navigate, play, compare, expand, collapse, and switch between prebuilt states. **The interaction shape is *selection among precomputed possibilities*, not computation.** Producers cannot synthesize, parse, mix, or calculate new views without JS, but they can ship the views and let the user pick.
+> *How far can a self-contained document go before it needs to become an app?*
 
-Recommended primitives, all CSS-only / native-control:
+The graceful-degradation principle in §2.3.1 names *what* survives when JS is unavailable; this section names *how* — the technical thesis the format leans on. **A capsule's interactivity is layered, not monolithic.** JavaScript is the *top* layer, not the *base*. The base is HTML and CSS — substrates that survive when scripts don't run, when the rendering engine is unfamiliar, when the preview surface refuses execution, when the file is opened ten years from now.
+
+The five tiers below organize the producer's available palette. Tiers 0–3 all survive without JavaScript; tier 4 is the runtime upgrade that turns the document into an app while the lower tiers continue to carry the substance.
+
+| Tier | Name | Mechanism | Survives no-JS? | Capsule examples |
+|---|---|---|---|---|
+| **0** | Static document | Text, images, headings, links, tables, lists — no interaction | Yes (every surface) | Briefing capsule; implementation notes; design-system reference |
+| **1** | Native HTML interaction | Browser-owned controls: `<details>` / `<summary>`, `<audio controls>` / `<video controls>` with `data:` source, `<a href="#anchor">`, SVG `<title>` / `<a>` | Yes (most preview surfaces honor native controls) | Manifest as `<details>`; bundled audio mix as `<audio controls>`; in-document anchor nav |
+| **2** | CSS-state interaction | State expressed via form controls (`<input type="radio">` / `<input type="checkbox">` / `:target`); logic expressed via CSS sibling and pseudo-class selectors (`:checked ~`, `:target`, `:hover`) | Yes (CSS engines are simpler than JS engines and reach further) | Radio-button tabs; checkbox layer overlays on a map; `:target`-driven slide decks |
+| **3** | Precomputed interactivity | Selection among prebuilt alternates shipped inline (the substance pattern that tier-2 mechanisms select among) | Yes (no computation, just selection) | Alt mixes (full / drums-only / piano-only); alt map layers as pre-rendered PNGs; alt table groupings |
+| **4** | JavaScript runtime | The full app: live filter / sort / search, real-time DSP, continuous controls, dynamic UI, AI-side interaction within the capsule | No (degrades to whatever tiers 0–3 carry) | DAW transport with continuous volume sliders; live map pan/zoom over vector tiles; in-capsule LLM chat |
+
+**The compounding logic.** A well-built capsule stacks tiers: tier 4 is built *on top of* tier 3, which is built *on top of* tier 2, etc. The substance of the artifact lives at the lowest tier the producer can land it at; higher tiers are progressive enhancement. A `domain.exploration_map` capsule typically ships:
+
+- **Tier 0**: title, legend, scale bar, attribution, narrative prose (always visible)
+- **Tier 1**: `<details>` for the manifest panel and per-feature metadata; static image fallback inside the SVG container per the carve-out above
+- **Tier 2**: checkbox layer toggles for base / claims / geology / samples overlays (each layer is a pre-rendered PNG)
+- **Tier 3**: alt regional views as pre-rendered PNGs selectable via radio-button tabs
+- **Tier 4**: click-to-measure distance, click-to-find-coordinates, hover-tooltips, vector-tile pan/zoom
+
+Open in iOS QuickLook: tiers 0–3 work; user can read the map, toggle layers, switch to alt views. Open in Safari: tier 4 lights up; user can measure distances, query coordinates, zoom into vector geometry. **Same file, two experiences, no degradation cliff.**
+
+**Where this lands in the four-producer family.**
+
+- `domain.photo` lives mostly at tiers 0–2 (the image IS the substance; tier 1 `<details>` drawers for EXIF / location / provenance; tier 2 radio-tabs for Photo / Metadata / Provenance view switching; optional tier 4 for face-region overlay computation).
+- `domain.song` lives mostly at tier 1 (the bundled MP3 IS the substance, played by `<audio controls>`; the rest is metadata at tier 0).
+- `domain.music_stems` / `domain.midi_stem` aspires to tier 4 (live stem mixing, tempo scaling, DAW transport) but should ship with a tier 1 fallback (a single bundled rendered mix as `<audio controls>`) and optionally a tier 2/3 alt-mixes panel so the artifact survives without JS.
+- `domain.exploration_map` aspires to tier 4 (interactive geometry, measure tools) but ships tier 0–3 substance per the carve-out and worked examples above.
+
+**Why the framing matters.** Producer projects keep arriving at the same crossroads: *should this capsule be a runtime app, or a static document?* The answer is almost always *both — at different tiers*. The 5-tier framework names what's actually in the design space so producers can stack deliberately instead of treating "interactive" and "preservable" as opposed. The slogan in §2.3 ("Apps when alive. Documents when dormant.") captures the design rule: build the app on top of a document that survives without it.
+
+The technique inventory in §2.3.3 documents the specific HTML/CSS primitives that implement tiers 1–3. **What still requires tier 4** is named in the same section (live MIDI synthesis, continuous-control DSP, live search/filter over arbitrary data, file parsing, runtime state persistence, AI interaction, network fetches).
+
+#### 2.3.3 No-JS interactivity techniques (added v0.3.7; reorganized v0.3.8 around the 5-tier framework in §2.3.2)
+
+The "preview" mode in §2.3.1 is not "static document." Native HTML controls (tier 1) and CSS state selectors (tier 2) give a capsule a meaningful interaction surface without any JS, and pre-rendered alternates (tier 3) layer selection-among-prebuilt-states on top. **The interaction shape is *selection among precomputed possibilities*, not computation.** Producers cannot synthesize, parse, mix, or calculate new views without JS, but they can ship the views and let the user pick.
+
+**Tier 1 primitives — native HTML controls** (browser-owned; every preview surface that renders HTML at all honors these):
 
 | Technique | What it gives | Recommended use |
 |---|---|---|
 | `<details>` / `<summary>` | Collapsible drawer — reveal/hide bounded content | Manifest panel; per-stem metadata; provenance/source notes; export panel; license; how-to-open-full-version |
 | `<audio controls>` / `<video controls>` with `data:` source | Native media playback — play/pause/scrub/volume owned by the browser | Bundled rendered mix; pre-rendered alt mixes; spoken-narration podcast version; video preview |
+| SVG `<title>` / `<a>` / hover | Static-but-rich diagrams — tooltips, links, clickable regions | Geology cross-sections; clickable map targets; legend callouts |
+
+**Tier 2 primitives — CSS-state machines** (form-control state + CSS selectors; no JS, no computation, just state):
+
+| Technique | What it gives | Recommended use |
+|---|---|---|
 | Radio buttons + CSS sibling selector | Tabs — one of N views visible at a time | Multi-view capsule UI: Overview / Listen / Tracks / Sources / Manifest |
 | Checkboxes + CSS sibling selector | Layer toggles — N independent on/off | Map layer overlay (base + claims + geology + ...); diagram annotation toggles |
 | `:target` pseudo-class + URL hash | Page-like navigation — current section from URL fragment | Slide decks; multi-step explainers; "choose your view" documents |
-| SVG `<title>` / `<a>` / hover CSS | Static-but-rich diagrams — tooltips, links, clickable regions | Geology cross-sections; clickable map targets; legend callouts |
-| Pre-rendered alternate states | Selection-driven alternatives — choose among N versions | Alt mixes (full / drums-only / piano-only); alt map layers; alt table groupings; alt slide views |
+
+**Tier 3 substance pattern — precomputed alternates** (the substance arrangement that tier-2 mechanisms select among):
+
+| Pattern | What it gives | Recommended use |
+|---|---|---|
+| Pre-rendered alternate states | Selection-driven alternatives — choose among N inlined versions | Alt mixes (full / drums-only / piano-only); alt map layers as pre-rendered PNGs; alt table groupings; alt slide views |
 
 **Radio-button tabs snippet** (the most useful one for multi-view capsules):
 
@@ -1940,7 +1991,7 @@ Three candidate sub-fields:
 
 The spec discipline (§1) is *no new schema fields without empirical pressure from a real producer or consumer hitting a real problem*. As of v0.3.7:
 
-- **Producer side:** the techniques themselves (radio-tabs, checkbox-layers, `:target` navigation, pre-rendered alts) are documented in §2.3.2 and producers can use them today without any manifest declaration. No producer currently *needs* the declaration to ship their capsule — the techniques are visible in the rendered HTML.
+- **Producer side:** the techniques themselves (radio-tabs, checkbox-layers, `:target` navigation, pre-rendered alts) are documented in §2.3.3 (organized under the 5-tier framework in §2.3.2) and producers can use them today without any manifest declaration. No producer currently *needs* the declaration to ship their capsule — the techniques are visible in the rendered HTML.
 - **Consumer side:** no registry viewer, validator, or downstream tool has yet asked the question "what no-JS interactivity does this capsule provide?" The current `fallbacks` field's coarser `requires_js_for` and `static_summary_present` give consumers enough signal for now.
 - **Risk of premature canonicalization:** the techniques are still evolving in producer practice. Locking in specific field names (`native_controls` / `css_views` / `precomputed_assets`) before the patterns settle could ossify the wrong shape.
 

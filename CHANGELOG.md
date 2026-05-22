@@ -12,6 +12,52 @@ Nothing pending right now. v13 landing-cleanup queue from earlier was largely sa
 
 ---
 
+## [Spec v0.3.8] — 2026-05-22
+
+**Second documentation patch in 24 hours** — no normative schema changes, no validator changes, no compat surface added. Lands the technical thesis under the format: **a capsule is a document first, an app second.** *Apps when alive. Documents when dormant.* The slogan is the compression; the five-tier framework is the engineering substance underneath it.
+
+### Why now
+
+Two pieces of pressure converged in the same conversation. **(1) Producer-side**: the four-producer family (Mintel, capsule-midi, Shasta, capsule-photo) kept arriving at the same crossroads — *should this capsule be a runtime app, or a static document?* — and the existing §2.3 / §2.3.1 framing answered "both" without naming the design vocabulary that lets producers stack deliberately. **(2) Consumer-side**: external commentary on the project periodically over-rotates in either direction ("Capsule forbids interactivity" / "Capsule is a sealed mini-app"). The 5-tier framework is the vocabulary that makes the actual design space legible without either misread.
+
+The slogan landed alongside two alternatives ("The capsule is a document first, an app second." / "Progressive enhancement for AI-era artifacts.") and was chosen because it compresses the *temporal* dimension that matters most to the format's preservation case: a capsule may live for an hour next to its producer, then sit dormant for years; the dormant case is when the document-first property earns its keep.
+
+### Added — spec (documentation only; no normative changes)
+
+- **§2.3 epigraph** — adds a slogan-bearing two-line preamble to the Rendering Model section: *"A capsule is a document first, an app second. Apps when alive. Documents when dormant."* The epigraph names Rule 12 as the *enforcement* of that thesis at the rendering layer and forwards to §2.3.2 for the interactivity tiers built on top.
+- **§2.3.2 new — "Document-first: the five tiers of capsule interactivity."** The organizing framework for the rest of §2.3.x. Five tiers tabulated with mechanism, no-JS survival, and capsule examples:
+  - **Tier 0** — Static document (text, images, headings, tables — every preview surface)
+  - **Tier 1** — Native HTML interaction (`<details>`, `<audio controls>`, `<video controls>`, `<a href="#anchor">`, SVG `<title>` / `<a>` — browser-owned controls)
+  - **Tier 2** — CSS-state interaction (`<input type="radio">` + `:checked ~`, `<input type="checkbox">` + sibling selectors, `:target` — form-control state machines with CSS-only logic)
+  - **Tier 3** — Precomputed interactivity (selection among prebuilt alternates shipped inline — the substance pattern that tier-2 mechanisms select among)
+  - **Tier 4** — JavaScript runtime (live filter / sort / search / DSP / continuous controls / network — the only tier that doesn't survive no-JS)
+  
+  Plus **compounding logic** (a well-built capsule stacks tiers; substance lives at the lowest tier that can carry it; higher tiers are progressive enhancement), a **worked stack** for `domain.exploration_map` (tier 0–4 inventory), and **where this lands in the four-producer family** mapping each producer's typical tier residence (photo at 0–2, song at 1, music_stems at 4-with-1-fallback, exploration_map at 4-with-0-3-substance).
+- **§2.3.3 (renumbered from §2.3.2)** — "No-JS interactivity techniques." Same content; reorganized so each technique sits under the tier it implements. Tier 1 primitives table (`<details>`, `<audio>`/`<video>`, SVG natives). Tier 2 primitives table (radio-tabs, checkbox-layers, `:target` nav). Tier 3 substance pattern (pre-rendered alternates). The three worked snippets and the "what still requires JS" honest list and the two producer caveats are preserved unchanged.
+- **§2.3.1 internal reference updated** — the v0.3.7 cross-reference to §2.3.2 below was renumbered to §2.3.3 (techniques) and extended with one sentence pointing forward to v0.3.8's §2.3.2 (framework). Appendix E.12's reference updated correspondingly.
+- **`GLOSSARY.md`** — new entry **"Document-first artifact"** in the Positioning terms section. Lives alongside *Sealed handoff format*, *Portable context contract*, *Anti-context-loss*, *Universal AI reader*, *Interactive archive*. Names the thesis + slogan + 5-tier stack + the "open in QuickLook and Safari: same file, two experiences, no degradation cliff" payoff. Cross-references spec §2.3.1, §2.3.2, §2.3.3 and the *Interactive archive* entry. Glossary state line bumped 0.3.0 → 0.3.1 and spec-cross-reference bumped v0.3.2 → v0.3.8 (catching up two prior revs that hadn't propagated).
+
+### Changed — landing page (v13.2.1)
+
+- **`index.html`** "What this is not" section gains a fourth bullet: *"Not an app pretending to be a document. A document that can wake up into an app."* Heading bumped "Three lines of fence-posting" → "Four lines of fence-posting." Surfaces the document-first thesis to landing-page readers without expanding the hero or pushing the spec doorways. `capsule_version` 13.2.0 → 13.2.1 (patch — single bullet + heading word).
+
+### Changed — infrastructure
+
+- `CITATION.cff` 0.3.7 → 0.3.8.
+- `README.md` v0.3.7 → v0.3.8 (state line + body references + phase-table row).
+- `llms.txt` v0.3.7 → v0.3.8 + full-spec description updated to summarize v0.3.8 (slogan + 5-tier framework + §2.3.3 renumber) + CHANGELOG version range bumped to v0.3.0 → v0.3.8.
+- 8 markdown capsules rebuilt by `compiler/build_md_capsules.py` to pick up the spec + glossary + changelog content updates. All pass 26/26.
+
+### Numbering note
+
+The user's approved plan named the framework subsection `§2.3.0` (a zero-numbered subsection that would have lived before §2.3.1). The actual landed numbering is `§2.3.2` (new framework) + `§2.3.3` (renumbered technique inventory), which reads `rule (§2.3) → principle (§2.3.1) → framework (§2.3.2) → techniques (§2.3.3)`. The deviation is editorial — narrative ordering benefits from reading the framework after the principle that sets up *why* tier separation matters, and most readers won't expect a `2.3.0` subsection. The substance (slogan + 5-tier framework + glossary entry + landing touch) is exactly as approved.
+
+### Cross-project notes
+
+No FEEDBACK harvest required for v0.3.8 (no items in producer-side queues). The 5-tier framework is reference material that all four producer projects (Mintel, capsule-midi, Shasta, capsule-photo) can cite when documenting their own tier residence. Suggested follow-on: each producer project adds a brief "Tier residence" note to its README naming which tiers it ships at, which makes the multi-producer interop story legible across the family.
+
+---
+
 ## [Spec v0.3.7] — 2026-05-22
 
 **Documentation patch on top of v0.3.6** — no normative schema changes, no validator changes, no compat surface added. Lands a documented inventory of no-JS interactivity techniques + parks one new candidate manifest extension.
