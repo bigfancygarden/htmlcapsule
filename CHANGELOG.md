@@ -8,7 +8,110 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
-Nothing pending. Idea queue (`spec/DOMAIN_CAPSULES.md`) and voices queue (`voices/README.md`) hold candidates that haven't met the empirical-pressure bar.
+Active pending — post-v13 landing-cleanup tasks (not blocking, not on critical path; paused 2026-05-22 pending maintainer decision):
+
+- **Sketch cleanup decision.** `landing-sketch.html` (v1, pre-design-system) and `landing-sketch-v2.html` (v2, design-applied) are both now superseded by `index.html` at v13.0.0 (`landing-sketch-v2`'s content is what `index.html` v13 IS). Same for `research-sketch.html` v1 vs `research-sketch-v2.html`. Decision pending on whether to prune the v1 sketches (keep v2s as record-of-exploration), keep both for full lineage, or move all sketches to `sketches/` subfolder so they're catalogued but not at the repo root.
+- **Footer cross-link on `index.html`** pointing at `/exploration.html` for visitors who want the long-form research narrative. Not added in v13.0.0 because the integration brief was "make it the real landing" not "wire in cross-references." The existing top-nav has Spec / Examples / GitHub — could add an `Exploration` or `Long-form` link as a fourth.
+- **Archive banner URL verification on `exploration.html`.** The banner currently says "production landing is now at htmlcapsule.org" with a link target of `index.html` (relative). Verify both display correctly when deployed and the relative path resolves to the canonical landing in the live environment.
+- **Top-nav link verification on the new `index.html`.** The landing-sketch-v2 top-nav had `Spec / Examples / GitHub` links; verify each resolves to the right repo path (`CAPSULE_CORE.md` / `spec/examples/` / GitHub URL). The page may also benefit from a `Notes` link for the production essay at `notes.html`.
+- **Possible: feature the `design/` folder.** It's now in the repo but not linked from any of the production pages. Worth considering whether `design/proposal.html` deserves a discoverable surface (e.g., a footer link on `index.html` or an entry in `llms.txt`) so future readers can find the canonical design-system source-of-truth.
+
+Idea queue (`spec/DOMAIN_CAPSULES.md`) and voices queue (`voices/README.md`) hold candidates that haven't met the empirical-pressure bar.
+
+---
+
+## [Landing decision — v13.0.0] — 2026-05-22
+
+**Not a spec change.** The landing-page exploration arc that ran from `v10.x` through `v12.0.0` (nine hero candidates, numbered Observation / Question / Answer editorial spine, devil's-advocate copy revision pass, the Claude Design design-system pass) is now closed. The maintainer has committed to the **Linear/Stripe-style stripped landing direction** — iterated through `landing-sketch.html` (v1, UUID `9bde04e1`) and `landing-sketch-v2.html` (v2, UUID `2860450e`) — as the production landing.
+
+### Changed — `index.html` (v12.0.0 → v13.0.0)
+
+- **Page structure completely replaced.** The 1883-line research-narrative hybrid (hero gallery 01-09 + Observations 1-5 + Questions 1-3 + Answers 1a/1b/2a/2b/2c/3a/3b/3c + downstream framing) is gone from the live page. In its place, the 612-line stripped landing from `landing-sketch-v2.html` (v0.3.0 form, post-design-system-pass): one hero (*"HTML you can keep."*), one primary CTA (*"Read the spec"*), one secondary CTA (*"View an example"*), the 5-block anatomy card with the manifest row highlighted in indigo, the lifecycle pill strip with **Seal** as the solid-indigo project slot, the rose-tinted "What this is not" callout, the slim demo + about + footer.
+- **Identity preserved.** UUID `7d1a1ac8-c6d9-4ed1-98a7-f5399466262a` — the canonical landing's stable identity across structural restyles — is retained. `parents[]` records the two sketch UUIDs the design was iterated through (`2860450e` v0.3.0 + `9bde04e1`).
+- **Version jump.** `capsule_version` 12.0.0 → 13.0.0 (major structural restyle, not just a token swap).
+- **Title.** `"HTML Capsule — hero framing exploration"` → `"HTML Capsule"` (production title, not exploration title).
+
+### Added — `exploration.html`
+
+- **New file.** Captures the prior `index.html` content (the v12.0.0 form: full research-narrative hybrid + 9 hero candidates + numbered editorial spine + the Claude Design design-system pass already applied at the section-kind taxonomy level — Observations teal, Questions violet, Answers amber).
+- **Fresh UUID** `881fed04-727e-441b-b626-c0637585043e` — this is now a distinct artifact (an archive page), not the production landing it once was.
+- **`capsule_version` 1.0.0** — first version of this file as an independent capsule.
+- **`parents[]`** references the canonical landing's `7d1a1ac8` (the v12.0.0 form was the immediate ancestor).
+- **Archive banner** (amber-tinted aside, top of body) signals the role explicitly: *"Archive. This page is the landing-exploration phase that ran through May 2026 ... preserved here for record. The production landing is now at htmlcapsule.org."*
+- **Why preserved as a live page instead of git-only:** the editorial content (Observations / Questions / Answers with verified-quote sourcing, three convergence findings, the maintainer's case study, the lineage / diff-tool / capsule-aware-review-surfaces argument) is meaningful research material in its own right. Future readers — and future Claude / future-maintainer — should be able to follow the argument as a live document, not have to git-archaeology it.
+
+### Unchanged — sister sketches and notes
+
+- `landing-sketch.html` (v1), `landing-sketch-v2.html` (v2), `research-sketch.html` (v1), `research-sketch-v2.html` (v2), `positioning-sketch.html` — all preserved in place as records of the exploration phase. Each carries its own UUID and design-system-pass version (v0.3.0 / v0.2.0 / etc.). The v2 design-system passes are the canonical record of how the design was applied per genre commitment.
+- `notes.html` (v1.3.0) — already the production essay page; no integration needed. Design system already applied; preferred by maintainer in the same breath as the landing.
+
+### What this validates
+
+Three independent reads converged on this commitment over the May 2026 exploration arc: the devil's-advocate critique pass identified the genre tension on the long-form hybrid; the landing-agent's hero pick selected "HTML you can keep." as the strongest single claim; the external ChatGPT Deep Research review framed the project as research that doesn't need a sales-y landing. Each pointed at a different exit from the hybrid; the maintainer's chosen exit is the Linear/Stripe-style stripped landing (the cleanest conversion shape) with the research narrative preserved live at `/exploration.html` for those who want it.
+
+### Added — research record (post-ship)
+
+- **F27 — *The landing-page genre tension for applied-research projects resolves by splitting, not merging.*** Recorded in `RESEARCH.md` as the formal capture of this decision. Generalizable observation: a single URL cannot serve both "convert in 30 seconds" and "walk the full argument with citations" without paying both genres' costs. The two-page split — one URL per audience, same UUID lineage — is what worked. Includes a method-observation: external review convergence on a structural decision (here, three independent reads pointing at the split) is empirical pressure even when the decision feels like cowardice.
+
+---
+
+## [Design system v1] — 2026-05-22
+
+**Not a spec change.** First canonical visual design system for the project's landing pages. Received as a handoff bundle from Claude Design (`claude.ai/design`) after the maintainer asked it to *"propose visual enhancements for all of these"* (the seven landing-page sketches in flight). Claude Design produced two proposals; the maintainer rejected the first (editorial-archival, italic display serif, oxide accent) and accepted the second (modern-sans, weight contrast, semantic color taxonomy). The chat transcript captures the rejection language verbatim and the project preserves both proposals for record.
+
+### Added — design folder
+
+- **`design/proposal.html`** (canonical) — full design memo from Claude Design with mockups of all four target pages (landing, research, positioning, notes). Contains the design's CSS in context. Uses Google Fonts directly; this is a design-tool output, not a Capsule, and is preserved as-received.
+- **`design/proposal-v1-editorial.html`** (rejected) — the first version Claude Design produced before the maintainer's redirect. Preserved for record.
+- **`design/README.md`** — documents the system in repo-native terms: origin story, five-hue taxonomy table, paper/ink/rule token tables, typography pattern (weight contrast replaces italic), Capsule-compliance discipline (system-font fallback, no network), and a per-page application table mapping each landing page to its lead taxonomy color.
+- **`design/tokens.css`** — extractable CSS variable block + utility classes for copy-paste into Capsule `<style>` blocks. System-font fallback only; Core rule 2 compliant when inlined.
+
+### The system in brief
+
+- **Type:** Geist (300, 400, 500, 600, 700, 800) + Geist Mono, with system-sans fallback for Core rule 2 compliance when inlined into Capsules.
+- **Paper system (cool fog):** `--paper` `#f5f6f8` / `--paper-soft` `#ebedf1` / `--paper-deep` `#dee1e7` / `--paper-page` `#ffffff`.
+- **Ink scale:** five values from `--ink` `#0c0e13` down to `--ink-quiet` `#b0b5be`.
+- **Rule scale:** `--rule` / `--rule-soft` / `--rule-strong`.
+- **Five semantic hues, each with base/soft/edge/deep variants:**
+  - **Indigo** `#4f46e5` — brand · primary CTA · headline emphasis · spec material
+  - **Violet** `#7c3aed` — **Questions** · open work · research-flagged
+  - **Teal** `#0d9488` — **Observations** · evidence · quotes
+  - **Amber** `#b45309` — **Answers** · maintainer voice · essay
+  - **Rose** `#be123c` — **Pain** · negation · "shouldn't die" framing
+- **Pattern:** weight contrast (300 light + 800 punch) replaces italic emphasis in headlines.
+- **Radii:** 8px (controls), 14px (cards), 999px (pills).
+
+### Changed — landing page (`index.html` v11.19.0 → v12.0.0)
+
+First page to adopt the canonical design system. Visual-layer-only pass — editorial copy unchanged from the v11.x devil's-advocate revision pass.
+
+- **`:root` token block** replaced with the full design system (paper / ink / rule scales + five-hue palette with base/soft/edge/deep variants + Geist system-font stack).
+- **Back-compat aliases preserved.** `--accent` now maps to `--indigo`; `--accent-soft` is a brighter indigo `#6366f1` (used for dark-frame hover on `data-num="05"`); `--accent-deep` maps to `--indigo-deep`. Existing rules pick up the new brand color without rewriting every reference.
+- **Section-kind backgrounds re-mapped to the taxonomy:**
+  - `.is-observation` → `var(--teal-soft)` (was white)
+  - `.is-question` → `var(--violet-soft)` (was paper-soft grey)
+  - `.is-answer` → `var(--amber-soft)` (was cream `#fcfaf3`)
+- **Kind-tinted inline text** — `.cb-kicker` (the "Observation 1:" / "Question 2:" / "Answer 3c:" prefix), `.cb-frame-tag` (small mono section labels), and `.cb-aster` pick up their hue's deep variant so the taxonomy carries through to inline text, not just card backgrounds.
+
+UUID `7d1a1ac8` preserved throughout (the page is the same capsule, restyled).
+
+### Changed — sister sketches (parallel design-system pass)
+
+Four sister sketches updated in parallel to apply the same design system, each picking up its lead taxonomy color per the application table in `design/README.md`:
+
+- **`landing-sketch-v2.html`** — lead color: indigo. Hero "HTML you can keep." picks up weight contrast (300 light "HTML you can" + 800 indigo "keep."). Anatomy card with manifest row highlighted in indigo.
+- **`research-sketch-v2.html`** — lead color: teal. Paper title "HTML Capsule" picks up weight contrast (300 + 800 teal). Findings O1-O5 converted to a 2×3 grid of taxonomy-colored cards (O1 teal, O2 indigo, O3 amber, O4 violet, O5 rose).
+- **`positioning-sketch.html`** — lead colors: rose → indigo. Two-color headline ("die" in rose 800, "seal" in indigo 800). Lifecycle becomes a weighted timeline with the Seal node 30% larger, indigo-filled, on an indigo halo.
+- **`notes.html`** — lead color: amber. Amber category chip, margin numerals in amber 700, amber pull quote at the "file over app" pivot moment.
+
+All sister sketches retain their existing UUIDs (capsules are restyled, not replaced); `capsule_version` bumps minor for each.
+
+### Provenance
+
+- Bundle origin: `https://api.anthropic.com/v1/design/h/1h9LEWoDBWZgTL3Fqnnz6w` (received 2026-05-22)
+- Bundle path: `html-capsule-improvements/`
+- Design tool: Claude Design (`claude.ai/design`)
+- Decision chat: preserved in the bundle at `html-capsule-improvements/chats/chat1.md` (the design-tool conversation where direction was decided)
 
 ---
 
@@ -34,13 +137,42 @@ Doc-only patch. No schema, validator, or behavior change. Records external-revie
 - `llms.txt` updated to reflect `v0.3.5` in the full-spec entry and the CHANGELOG range.
 - `index.html` landing badge updated to `v0.3.5`, About panel reference updated to "full spec v0.3.5", `data.spec.full` field updated to `v0.3.5`. Landing capsule_version bumped `11.15.0 → 11.15.1`.
 
+### Changed — infrastructure (freshness — surfaced by external strategic review)
+
+- **`README.md` F-finding lag fixed** — three places that referenced "F1–F22" or "F22" updated to "F1–F25" / "F25". Added one new sentence acknowledging F24 (host-vs-registry, the missing commitment layer) and F25 (ChatGPT producer-population reads of Core supplementary guidance) as recent findings worth surfacing in the intro paragraph. External ChatGPT Deep Research review explicitly flagged that the summary surface (README, `llms.txt`) lagged the underlying corpus (`RESEARCH.md`) — this fix closes that gap.
+- **`llms.txt` F-finding lag fixed** — Research-log line and CHANGELOG-description line both updated from "F1-F21" / "F1–F22" to "F1-F25". Research-log line gained a one-sentence note pointing at F24 and F25 by name.
+- **`GLOSSARY.md` "The four layers" section** gained a bridge paragraph explicitly mapping the verb-shaped four-layer model (Think / Shape / Seal / Harden) to the noun-shaped ecosystem-stack framing in `PRECEDENTS.md` (substrate / live editing / seal / host / discover). Both name "seal" as the slot Capsule occupies; the bridge note prevents the two vocabularies from drifting apart as they get used across landing-page sketches and external reviews.
+
 ### Added — research record (post-ship additions)
 
 - **F25** — *ChatGPT producer-population reads Core supplementary guidance reliably; aesthetic adapts to content domain; legacy "Artifact Capsule" wording persists in user-side prompt templates.* Recorded in `RESEARCH.md`. Drawn from review of a batch of 7+ ChatGPT (GPT-5.5 Thinking) conversation-summary capsules across varied domains (coding, geology, legal, fire pits, vehicles, mining permits, identity-rights, design-award fit). Five distinct sub-findings: (1) all five required blocks present; (2) Rule 4 supplementary QR-code guidance followed faithfully — placement, sizing, URN encoding all respected, which means Core's supplementary sections (not just the twelve numbered rules) are load-bearing in practice when written as recipes; (3) where Core leaves implementation open (integrity, Rule 7 verification convention) producers diverge; (4) producer aesthetic adapts to content domain (geological capsule → earth tones; fire-pit capsule → warm cream/orange; legal letter → clean neutral; etc.); (5) legacy "Artifact Capsule" terminology persists in user-side prompt templates because Core had no explicit "use the canonical name" reminder. Initial framing of QR-code presence as "emergent producer behavior" was corrected (caught by maintainer) — it's actually Core spec being followed correctly, a stronger positive signal.
 
+- **F26** — *Core spec accommodates 10 MB domain-specific media capsules without rule changes.* Recorded in `RESEARCH.md`. Drawn from a one-off domain-specific song capsule experiment (Paul McCartney & Wings, "Nineteen Hundred and Eighty-Five", 1973) embedding a 7.6 MB MP3 plus Wikipedia-sourced metadata plus a transcribed lyric sheet into a single 10.16 MB self-contained HTML capsule (UUID `e26b58da`, currently at `capsule_version` 1.1.0). Shipped 25/25 against the reference validator on first build with zero spec changes. Seven sub-findings: (1) domain via `type` field (`type: "song"`) — Core accepts arbitrary domain values; (2) CSP delta minimal (`media-src data:` is the only addition required); (3) capability vocabulary extends naturally (`media.play_audio` and `media.download_audio` using `<domain>.<action>`; Rule 7 markers heuristically validated); (4) size limits hold under-cap (10.16 MB under both 15 MB soft-warn and 20 MB hard cap; validator graceful with binary-heavy under-cap); (5) round-trip extraction works (the embedded MP3 is recovered byte-identically via `dataUriToBlob` runtime helper — genuinely portable, not just embedded for display); (6) aesthetic adapts to content domain (warm 1970s earth tones — extending F25's same-pattern-finding from ChatGPT-text-capsules to hybrid-produced media); (7) version semantics in practice (v1.0.0 → v1.1.0 same UUID, `capsule_version` bump alone — the parked Appendix E.11 fields stayed parked correctly since nothing was distributed between versions, but the empirical-pressure point for `supersedes[]` is now recorded for the next time someone hits it).
+
 ### Changed — Core spec (post-ship clarification, not a rule change)
 
 - **`CAPSULE_CORE.md`** — added a "use the canonical name when you write your prompt" reminder immediately above the "How to ask an LLM to produce a capsule" section. Cross-references F25. Closes the loop on the legacy-prompt-template leak by making the canonical name unmissable to anyone templating their own prompts. **No rule change** — Core stays at v0.3.0; this is a clarification, not a normative edit. Full spec stays at v0.3.5.
+
+### Changed — landing page (devil's-advocate copy revision pass, v11.16.0 → v11.19.0)
+
+Four-version sequential pass through the landing page's editorial spine — Observation 1, Question 1, Answers 1a/1b, Question 2, Answers 2a/2b/2c, Observation 2, Observation 3, Question 3, Answers 3a/3b/3c, Observation 4, Observation 5. All twelve sections tightened against a single set of devil's-advocate critiques: footnote-apologies → word swaps, redundant cross-references removed, walls-of-bold converted to real `<ul>`s, jargon ("empirical pressure", "anyone technical", "bring your own bucket") replaced with plain English, forward-pointer parentheticals stripped, weak hedges committed-or-cut, punchlines promoted from buried paragraphs to titles where they earned the slot.
+
+- **v11.16.0** — Observation 1 retitled "HTML has emerged as a key substrate" → "HTML is becoming the default output format." Self-apologetic footnote about "substrate" removed (the fix is the word swap, not the apology). Karpathy quote demoted from parallel blockquote to one-line attributed mention in body prose; Thariq carries the structural claim alone.
+- **v11.17.0** — Q1/A1a/A1b. Q1 depersonalized ("How do I get HTML out of *my* LLM" → "How do you get HTML out of an LLM"); A1a re-quote redundancy of Karpathy + Thariq dropped; A1b title hedge "(according to the Spec)" dropped; wall-of-bold contract-elements paragraph converted to real `<ul>`; "first-class spec-aware participant" promoted from body prose to `.cb-frame-punchline`.
+- **v11.18.0** — Q2/A2a/A2b. Q2 retitled with framing sentence; A2a tag retitled "Viewing strategy" → "View it"; A2b's two-paragraph 270-word architectural description collapsed to one punchline + one short body (~95 words), load-bearing "Format and host are different jobs" finding now visually dominates instead of buried.
+- **v11.19.0** — A2c (was held), Obs 2, Obs 3, Q3, A3a, A3b, A3c, Obs 4, Obs 5. A2c title "Maybe let's take it a step further" → "Build your own producer"; A3c punchline "The HTML is the artifact. The manifest is the review surface" promoted to title; Obs 5 title sharpened; Obs 4 hedge replaced with committed scope; cross-reference web removed.
+
+Net effect across the four versions: visible prose 19,113 → 15,675 chars (~18% reduction), with section-level cuts in A1b / A2b / Obs 3 / A3c closer to 40%. UUID `7d1a1ac8` preserved throughout (the page is the same capsule, content-tightened — not a new derived capsule). All four versions validated 25/25 against the reference validator at ship.
+
+### Added — comparison sketches (parallel direction exploration)
+
+Three sibling capsules built alongside `index.html` to test alternative genre commitments before deciding the page's direction. Each one is itself a valid Capsule (5 required blocks, 25/25 against the reference validator) and declares its position relative to `index.html` via the genre signal in its `data` block.
+
+- **`landing-sketch.html`** (350 lines, UUID `9bde04e1`) — Linear / Stripe / Vercel commitment. Hero: "HTML you can keep." One primary CTA, one secondary CTA, one code-block functional demo of the 5 required blocks, slim footer. Single accent color, dark/light theme. Zero numbered observations, zero cross-references, zero research jargon. Roughly 9% of `index.html`'s prose volume.
+- **`research-sketch.html`** (490 lines, UUID `766faed9`) — NeRF / gaussian-splatting / academic project page commitment. Structure: Title + author block + abstract + numbered findings O1-O5 (deliberately avoiding collision with `RESEARCH.md` F1-F25) + Methods + Related Work + Spec & Artifacts + Cite this work + slim footer naming the page as a Capsule. Restrained academic aesthetic (serif body, single muted accent, generous margins). Zero CTA buttons; pointers do the conversion job.
+- **`landing-sketch-v2.html`** (397 lines, UUID `2860450e`, parents → `9bde04e1`) — `landing-sketch.html` iteration absorbing external strategic review signals (ChatGPT Deep Research + maintainer devil's-advocate critique). Three additions kept from absorbing v1's conversion shape: (1) "Anti-context-loss" accent eyebrow above the hero (project's own native term from `GLOSSARY.md`); (2) sharpened lede itemizing failure modes; (3) CSS-only lifecycle pill strip ("Substrate · Live edit · **Seal** · Host · Discover") naming Capsule's slot in the landscape; (4) a "What this is not" callout pulling verbatim from `GLOSSARY.md`.
+
+These sketches are exploratory artifacts, not landing-page replacements; the production landing remains `index.html` at v11.19.0 pending a maintainer commitment to one of the genres. (`research-sketch-v2.html` and `positioning-sketch.html` still in flight at time of writing.)
 
 ---
 

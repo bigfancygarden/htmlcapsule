@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="description" content="HTML Capsule landing page — currently in hero framing exploration mode. Eight candidate framings side by side; reverts to single-direction hero once a winner is picked. Open spec for sealed, self-contained, provenance-bearing HTML artifacts.">
-<meta name="color-scheme" content="light">
-<title>HTML Capsule — hero framing exploration</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>HTML Capsule — HTML you can keep</title>
 
 <script id="capsule-manifest" type="application/json">
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.15.1",
-  "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.15.0 sharpens the HTML-version-control arc per converging external-review feedback. (1) Observation 3 retitled 'HTML diffs are noisy. Lineage is the bigger problem.' and rewritten around the three-layer framing (raw diff / semantic diff / lineage) as an explicit ordered list; new opening explains why HTML diffs are noisy in the first place (HTML is closer to a runtime artifact than a writing format); closes on 'Capsule doesn't claim raw HTML diffs become pleasant; it claims artifacts need identity and lineage first.' (2) Answer 3b gains the closing punchline 'Git tracks files. Capsule tracks artifacts.' (3) Answer 3c retitled and rewritten around the punchline 'The HTML is the artifact. The manifest is the review surface.' followed by an 8-row review-surfaces table (Raw HTML / Manifest / Content / Data / Style / Asset / Render / Runtime diff) — adds Asset and Render surfaces that weren't in the prior treatment. Example-output block preserved. Three new utility CSS classes added: .cb-frame-list (ordered three-layer list), .cb-frame-punchline (the two slogan lines), .cb-diff-table (8-row review surfaces). Three new manifest field ideas (supersedes, derived_from, change_summary) raised by the same external review are NOT added to the spec; parked in spec Appendix E pending real-producer empirical pressure. UUID 7d1a1ac8 preserved through v11.15.",
+  "capsule_version": "13.0.0",
+  "title": "HTML Capsule",
+  "description": "Production landing page for htmlcapsule.org. v13.0.0 is a major restructure: the page commits to the Linear/Stripe-style landing direction the maintainer iterated through landing-sketch (v1, UUID 9bde04e1) and landing-sketch-v2 (v2, UUID 2860450e), and adopts the Claude Design design-system pass (cool fog paper, five-hue semantic taxonomy with indigo as the brand color, weight-contrast hero — 'HTML you can' in 300 light + 'keep.' in 800 indigo, anatomy card with the manifest row highlighted, lifecycle pill strip with Seal as the solid-indigo slot, rose-tinted 'what this is not' callout). The previous research-narrative content at v12.0.0 — nine hero candidates, numbered Observations / Questions / Answers, devil's-advocate tightened editorial — is preserved at /exploration.html (new UUID 881fed04). UUID 7d1a1ac8 is inherited from the canonical landing's identity history; that identity tracks the production landing across structural restyles. parents[] records the two sketch UUIDs the design was iterated through.",
   "type": "landing_page",
-  "created_at": "2026-05-20T00:00:00Z",
-  "generator": {
-    "name": "human + Claude",
-    "version": "Opus 4.7 (1M context)",
-    "kind": "hybrid"
-  },
+  "created_at": "2026-05-22T00:00:00Z",
+  "generator": { "name": "human + Claude", "version": "Opus 4.7 (1M context)", "kind": "hybrid" },
   "source": {
     "origin": "project_authorship",
     "snapshot_type": "landing_page",
-    "snapshot_id": "snapshot:htmlcapsule_landing_split_v10_1_2026_05_20",
-    "spec_received": "v0.3.0 · 2026-05-19",
-    "included_records": 1
+    "snapshot_id": "snapshot:htmlcapsule_landing_v13_2026_05_22",
+    "included_records": 1,
+    "spec_received": "v0.3.0 · 2026-05-19"
   },
   "privacy": {
     "visibility": "public",
@@ -35,1775 +29,567 @@
     "redaction_applied": false,
     "external_dependencies": false
   },
-  "capabilities": [
-    "about",
-    "copy_as_json",
-    "copy_as_markdown",
-    "copy_as_prompt",
-    "download_json",
-    "download_capsule",
-    "print_to_pdf"
+  "parents": [
+    { "uuid": "2860450e-1824-4067-8120-4a6c3456511c", "title": "HTML Capsule — landing sketch (v2)" },
+    { "uuid": "9bde04e1-1699-47cf-b0b6-af471417e5c2", "title": "HTML Capsule — landing sketch (v1)" }
   ],
-  "synthesis": {
-    "kind": "human_authored_with_ai_assistance",
-    "model": "Claude Opus 4.7",
-    "human_reviewed": true
-  }
+  "capabilities": ["about", "copy_as_json", "download_json", "download_capsule", "print_to_pdf"]
 }
 </script>
 
 <script id="capsule-data" type="application/json">
 {
-  "mode": "hero_framing_exploration",
-  "title": "Hero framing exploration",
-  "intro": {
-    "eyebrow": "Hero framing exploration · 2026-05-21",
-    "title": "Picking the right framing.",
-    "sub": "Eight candidate heroes below. Each tries a different angle — discipline, outcome, comparison, question — with its own copy, layout, and background. Scroll, pick winners. Previous landing (v10.15) preserved at commit 94c3802."
+  "hero": {
+    "eyebrow": "Anti-context-loss",
+    "claim": "HTML you can keep.",
+    "lede": "After the chat closes, the canvas mutates, the share link rots — useful AI work shouldn't die there. A Capsule is one sealed HTML file that survives across tools, time, sessions, and platform churn."
   },
-  "variants": [
-    { "num": "01", "framing": "Discipline · research-led", "title": "A discipline for HTML artifacts.", "sub": "AI tools emit HTML by default. Capsule is the contract that makes those artifacts durable, inspectable, and re-readable years from now." },
-    { "num": "02", "framing": "Outcome-led", "title": "Sealed HTML. Built to last.", "sub": "One file. No network. Built to be re-opened years from now — by humans, and by the LLMs they ask to continue the work." },
-    { "num": "03", "framing": "Substrate · question", "title": "HTML is the substrate. Now what?", "sub": "An open spec for what to do with the HTML that AI tools already give you — so it survives the chat it was born in." },
-    { "num": "04", "framing": "Contract · interop-first", "title": "A contract for HTML artifacts.", "sub": "Manifest. Provenance. Integrity. No network. The same envelope whether an LLM, a build script, or a human writes it." },
-    { "num": "05", "framing": "Max-short · benefit-led", "title": "HTML you can keep.", "sub": "Sealed. Self-contained. Provenance-bearing. One file you can email, archive, or fork." },
-    { "num": "06", "framing": "Comparison · familiar anchor", "title": "Like a PDF, but alive.", "sub": "PDFs are sealed and closed. Capsules are sealed and open — programmable, inspectable, re-renderable. The HTML profile for work worth preserving." },
-    { "num": "07", "framing": "Visual-led · brand-first", "title": "HTML Capsule", "sub": "A profile of HTML for sealed, self-contained artifacts. One file. Twelve rules. Zero network." },
-    { "num": "08", "framing": "Problem · why-this-exists", "title": "Where does AI's HTML go?", "sub": "Capsule is the discipline that makes AI-generated HTML durable, inspectable, and shareable beyond the platform that produced it." },
-    { "num": "09", "framing": "Context-led · plain-English on-ramp", "title": "HTML you can keep.", "sub": "AI tools increasingly produce HTML: reports, maps, demos, dashboards, visual notes, and interactive documents. HTML Capsule is an open spec for saving that work as one self-contained .html file. A Capsule includes its own content, styles, metadata, provenance, and validation rules, with no required network access. It is not a new file format — it is a stricter way to package HTML so the work can be archived, shared, inspected, and continued later by humans, tools, and LLMs.", "tagline": "One file. No network. Built to last." },
-    { "num": "00",   "id": "Observation 1", "framing": "Observation 1 · two leading voices",                                 "title": "Observation 1: HTML has emerged as a key substrate for AI-assisted work.", "sub": "Editorial opening: an observation about HTML as the de-facto AI substrate, backed by two voice quotes (Thariq Shihipar; Andrej Karpathy). White background.", "kind": "section" },
-    { "num": "00a",  "id": "Question 1",    "framing": "Question 1 · how to get HTML out of an LLM (two answers)",             "title": "Question 1: How do I get HTML out of my LLM?", "sub": "Lean section + TOC linking to two sibling Answer sections: 1a (vague approach — Karpathy + Thariq), 1b (contract-based approach — paste the Core spec, get back a Capsule).", "kind": "section" },
-    { "num": "00a1", "id": "Answer 1a",     "framing": "Answer 1a · vague approach · just ask the LLM (Karpathy + Thariq)",   "title": "Answer 1a: Just ask the LLM for HTML.", "sub": "Two voices in the wild, both pointing at 'tell the LLM you want HTML and you'll get HTML': Karpathy's prompting tip and Thariq's stated preference. Works for one-off viewing; what you get is unstructured HTML — no manifest, no identity, no integrity, no contract. The file can't speak for itself. Fine for show-me-what-you-mean; lossy for everything else (which is what Answer 1b addresses).", "kind": "section" },
-    { "num": "00a2", "id": "Answer 1b",     "framing": "Answer 1b · contract-based approach · ask for a Capsule",             "title": "Answer 1b: Ask the LLM for a Capsule (according to the Spec).", "sub": "The contract-based approach. Instead of asking for HTML, ask for a Capsule — the Core spec is one page (twelve numbered rules) designed to paste into an LLM prompt; that's the contract behind 'according to the Spec'. The LLM returns a sealed .html with manifest, integrity hash, UUID + parents[], declared capabilities (Rule 7), pre-rendered content (Rule 12), and no network deps (Rule 2). The artifact carries its own context; the producer (LLM) becomes a first-class spec-aware participant. Pointers to CAPSULE_CORE.md, full spec, worked examples.", "kind": "section" },
-    { "num": "00b",  "id": "Question 2",    "framing": "Question 2 · what do you do with HTML (three answers)",                "title": "Question 2: What do you do with all that HTML?", "sub": "(Was Question 1; renumbered to make room for the new Question 1 about getting HTML out of an LLM.) Lean section + TOC linking to three sibling Answer sections below (2a viewing, 2b hosting, 2c custom producer + MinDev registry).", "kind": "section" },
-    { "num": "00b1", "id": "Answer 2a",     "framing": "Answer 2a · viewing strategy · Thariq",                                "title": "Answer 2a: Open it in a browser. Or upload to S3.", "sub": "(Was Answer 1a.) Thariq's FAQ recommendation blockquote + commentary on what the minimum-viable answer offers (portable substrate) and what it leaves open (no default shareable URL — addressed by 2b).", "kind": "section" },
-    { "num": "00b2", "id": "Answer 2b",     "framing": "Answer 2b · hosting layer · htmlbin.dev",                              "title": "Answer 2b: Host it on htmlbin.dev.", "sub": "(Was Answer 1b.) htmlbin.dev positioning blockquote + analysis of what htmlbin does (purpose-built hosting, OAuth device-code flow, /p/{slug} + /raw, format-agnostic) and the format/host split it demonstrates. Doesn't name MinDev here (that belongs to 2c).", "kind": "section" },
-    { "num": "00c",  "id": "Answer 2c",     "framing": "Answer 2c · custom producer + MinDev registry · maintainer's own",    "title": "Answer 2c: Maybe let's take it a step further.", "sub": "(Was Answer 1c.) Maintainer's first-person case study: map-making tool emitting Capsule-spec-conforming HTML for clients, with MinDev as the registry catching those artifacts. File-size tradeoff acknowledged. Signoff: Luke Schuss · maintainer · Vancouver · lukeschuss.com.", "kind": "section" },
-    { "num": "00d",  "id": "Observation 2", "framing": "Observation 2 · file over app + the Obsidian-plugin critique",            "title": "Observation 2: File over app is as relevant today as it ever was.", "sub": "Quotes Steph Ango (Kepano)'s 'File over app' essay, then carries maintainer reflection on Obsidian's plugin route undermining the principle.", "kind": "section" },
-    { "num": "00e",  "id": "Observation 3", "framing": "Observation 3 · HTML diffs are hard + version-tracking problem",         "title": "Observation 3: HTML diffs are noisy; version tracking is its own problem.", "sub": "Quotes Thariq's FAQ on HTML diffs being noisy vs. Markdown; maintainer reframes that the related-but-distinct problem is artifact identity ('which version am I looking at?'), using the PDF v1/v2/final/real-final analogy. Argues identity is addressable even if diffs aren't.", "kind": "section" },
-    { "num": "00f",  "id": "Question 3",    "framing": "Question 3 · three answers (3a filenames, 3b spec identity, 3c spec evolution for diffs)", "title": "Question 3: How do you keep track of which version of an artifact you're working with?", "sub": "(Was Question 2; renumbered after the new Q1 inserted upstream.) Lean question + TOC linking to three sibling Answer sections.", "kind": "section" },
-    { "num": "00f1", "id": "Answer 3a",     "framing": "Answer 3a · filename versioning",                                          "title": "Answer 3a: v1.html, v2.html, v3-final.html, v3-real-final.html.", "sub": "(Was Answer 2a.) What people actually do: filename suffixes; the version lives outside the file. Cost: filename can be dropped, lineage breaks.", "kind": "section" },
-    { "num": "00f2", "id": "Answer 3b",     "framing": "Answer 3b · UUID + parents[] + capsule_version (identity inside the file)", "title": "Answer 3b: uuid, capsule_version, parents[] — in the manifest.", "sub": "(Was Answer 2b.) Each Capsule carries three identity fields in its inline JSON manifest; identity + lineage live in the bytes, not the filename. Forward-points to Answer 3c on the diffs question.", "kind": "section" },
-    { "num": "00f3", "id": "Answer 3c",     "framing": "Answer 3c · spec-evolution path for semantic Capsule diffs (open work)",   "title": "Answer 3c: A Capsule-aware diff over manifest + data + content, layered on the spec.", "sub": "New. Addresses the HTML-diffs-are-noisy problem by sketching what a capsule-diff tool could do: semantic structural diff over each required block (manifest JSON delta, data JSON delta, visible-content text delta, bounded style/runtime). Includes an example output. Not built yet; parked in spec Appendix E pending empirical pressure. Framed as a layer on the spec (like git log --oneline on git's commit graph), not a spec change — the spec's structural discipline is exactly what makes a semantic diff tractable.", "kind": "section" },
-    { "num": "00g",  "id": "Observation 4", "framing": "Observation 4 · live-editing/collab layer emerging (Claude Design, html-docs, Workplane)", "title": "Observation 4: A live-editing and collaboration layer is emerging around AI-emitted HTML.", "sub": "Names three players in different shapes: Claude Design (Anthropic Labs, April 2026 — chat-and-preview HTML/CSS/JS generation, exportable as standalone HTML); html-docs.com (Raunaq Bhutoria — agents publish, humans comment, agents revise); Workplane (Matan/matanrak — MCP-first, multi-agent, same shape as html-docs). Maintainer commentary: Capsule sits downstream as the seal step; format is editor-agnostic; whether the project grows a collab layer is open — MinDev registry could plausibly host lightweight commenting (registry concern, not format concern).", "kind": "section" },
-    { "num": "00h",  "id": "Observation 5", "framing": "Observation 5 · no easy export from LLM platforms; share links don't compose",                "title": "Observation 5: There's no easy way to get chat-hosted content out of an LLM platform.", "sub": "Share links exist on every platform (ChatGPT, Claude, Gemini) but they're platform-locked viewing artifacts, not portable. Cross-platform interop is poor: a ChatGPT share link handed to Claude doesn't compose — the receiving LLM might fetch the URL but doesn't get the structured conversation. Reframes the file-as-artifact discipline (Obs 1, Obs 2, A1b) as the project's response: a Capsule opens in any browser, can be handed to any LLM, the host doesn't have to be in the loop.", "kind": "section" }
+  "lifecycle": {
+    "note": "Capsule sits between the live-editing surfaces and the hosting / discovery layer.",
+    "stages": ["Substrate", "Live edit", "Seal", "Host", "Discover"],
+    "ours": "Seal"
+  },
+  "primitives": [
+    { "key": "capsule-manifest", "note": "identity, provenance, integrity" },
+    { "key": "capsule-data",     "note": "the snapshot, as JSON" },
+    { "key": "capsule-style",    "note": "all CSS, inlined" },
+    { "key": "capsule-root",     "note": "the rendered artifact" },
+    { "key": "capsule-runtime",  "note": "optional enhancement" }
   ],
-  "spec": { "core": "v0.3.0", "full": "v0.3.5", "released": "2026-05-19" },
-  "stats": { "rules": 12, "blocks": 5, "network_deps": 0 },
-  "footer_links": [
-    ["Core spec", "CAPSULE_CORE.md"],
-    ["Full spec", "spec/CAPSULE_SPEC.md"],
-    ["Research log", "RESEARCH.md"],
-    ["Notes (journey)", "notes.html"],
-    ["GitHub", "https://github.com/bigfancygarden/htmlcapsule"],
-    ["About this page", "#about-capsule"]
+  "not_this": [
+    "Not a standard you have to comply with. A loose discipline.",
+    "Not anti-platform. Anti-context-loss.",
+    "Not finished. Active research."
   ],
-  "not_this": "This page is itself a capsule (UUID 7d1a1ac8, v11.0.0). The exploration layout is temporary — once a framing wins, the page rebuilds around it. The prior landing layout (v10.15) is preserved in git at commit 94c3802."
+  "links": {
+    "spec_core":  "CAPSULE_CORE.md",
+    "spec_full":  "spec/CAPSULE_SPEC.md",
+    "github":     "https://github.com/bigfancygarden/htmlcapsule",
+    "examples":   "spec/examples/"
+  }
 }
 </script>
 
 <style id="capsule-style">
-  :root {
-    --paper:       #f4f5f7;
-    --paper-soft:  #eceef2;
-    --paper-deep:  #e1e4ea;
-    --ink:         #0e1116;
-    --ink-soft:    #262a33;
-    --ink-mute:    #5a606c;
-    --ink-faint:   #8a909c;
-    --rule:        #d5d9e0;
-    --rule-soft:   #e3e6ec;
-    --accent:      #1652f0;
-    --accent-soft: #3d70f5;
-    --accent-deep: #0c3bb8;
-    --sans:  -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --mono:  ui-monospace, "SF Mono", "Menlo", "Cascadia Code", Consolas, "DejaVu Sans Mono", monospace;
-    --measure: 68ch;
-    --gap-section: clamp(80px, 12vw, 144px);
-  }
+:root {
+  /* ── Paper system — cool fog ─────────────────────────── */
+  --paper:        #f5f6f8;
+  --paper-soft:   #ebedf1;
+  --paper-deep:   #dee1e7;
+  --paper-page:   #ffffff;
 
-  *, *::before, *::after { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  html { background: var(--paper); }
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 17px;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
+  /* ── Ink ─────────────────────────────────────────────── */
+  --ink:          #0c0e13;
+  --ink-soft:     #2a2e38;
+  --ink-mute:     #5d6470;
+  --ink-faint:    #8a909c;
+  --ink-quiet:    #b0b5be;
 
-  .skip-link {
-    position: absolute; top: -200px; left: 8px;
-    background: var(--ink); color: var(--paper);
-    padding: 8px 14px; font: 500 13px/1 var(--sans);
-    text-decoration: none; z-index: 100; border-radius: 2px;
-  }
-  .skip-link:focus { top: 8px; }
+  /* ── Rule ────────────────────────────────────────────── */
+  --rule:         #dde0e6;
+  --rule-soft:    #e8eaef;
+  --rule-strong:  #c8ccd4;
 
-  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent); }
-  a:hover, a:focus { color: var(--accent-deep); border-bottom-color: var(--accent-deep); outline: none; }
-  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  code, kbd, samp { font-family: var(--mono); font-size: 0.92em; }
-  ::selection { background: color-mix(in oklab, var(--accent) 22%, transparent); color: var(--ink); }
+  /* ── Five semantic hues — taxonomy ───────────────────── */
+  --indigo:       #4f46e5;
+  --indigo-soft:  #eef0fe;
+  --indigo-edge:  #c7cbf6;
+  --indigo-deep:  #3730a3;
 
-  /* In exploration mode (v11.x), #capsule-root no longer constrains width;
-     each child block handles its own width via .cb-shell (max-width centered)
-     or .cb-frames (full-bleed). This lets numbered frames extend their
-     background colors edge-to-edge. */
-  #capsule-root {
-    width: 100%;
-  }
-  .cb-shell {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 clamp(24px, 5vw, 64px);
-  }
-  .cb-shell.cb-shell-top { padding-top: 20px; }
-  .cb-shell.cb-shell-foot { padding-bottom: 64px; }
+  --violet:       #7c3aed;
+  --violet-soft:  #f3edff;
+  --violet-edge:  #d6c5fa;
+  --violet-deep:  #5b21b6;
 
-  /* Top bar */
-  .cb-topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; flex-wrap: wrap;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--rule);
-  }
-  .cb-mark {
-    display: flex; align-items: center; gap: 10px;
-    flex-wrap: wrap;
-    font: 500 14px/1 var(--sans);
-    color: var(--ink-soft);
-    min-width: 0;
-  }
-  .cb-mark .cb-glyph {
-    display: block;
-    width: 36px;
-    height: auto;
-    color: var(--ink);
-    flex-shrink: 0;
-  }
-  .cb-mark strong { color: var(--ink); font-weight: 600; }
-  .cb-badge {
-    font: 600 11.5px/1 var(--mono);
-    letter-spacing: 0.02em;
-    color: var(--accent);
-    background: color-mix(in oklab, var(--accent) 8%, transparent);
-    border: 1px solid color-mix(in oklab, var(--accent) 28%, transparent);
-    border-radius: 999px;
-    padding: 4px 9px;
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in oklab, var(--accent) 28%, transparent);
-    transition: background .15s, border-color .15s, color .15s;
-    white-space: nowrap;
-  }
-  .cb-badge:hover, .cb-badge:focus {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    outline: none;
-  }
-  .cb-topnav {
-    display: flex; gap: 18px; flex-wrap: wrap; align-items: center;
-    font: 500 13.5px/1 var(--sans);
-  }
-  .cb-icon-link {
-    display: inline-flex; align-items: center; gap: 8px;
-    color: var(--ink-soft);
-    border-bottom: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: color .15s, background .15s;
-  }
-  .cb-icon-link:hover, .cb-icon-link:focus {
-    color: var(--ink);
-    background: var(--paper-soft);
-    outline: none;
-  }
-  .cb-icon { display: block; }
-  .cb-icon-label { font-weight: 500; }
+  --teal:         #0d9488;
+  --teal-soft:    #e0f5f1;
+  --teal-edge:    #a8dcd1;
+  --teal-deep:    #115e59;
 
-  /* Hero — horizontal split */
-  .cb-hero {
-    padding: clamp(28px, 4vw, 48px) 0 clamp(28px, 4vw, 44px);
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    column-gap: clamp(32px, 5vw, 72px);
-    row-gap: 4px;
-    align-items: end;
-  }
-  .cb-hero-lead { grid-column: 1; min-width: 0; }
-  .cb-hero-aside {
-    grid-column: 2; min-width: 0;
-    display: flex; flex-direction: column;
-    gap: 22px;
-    padding-bottom: 2px;
-  }
-  .cb-eyebrow {
-    font: 500 12.5px/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 20px;
-  }
-  .cb-eyebrow::before {
-    content: ""; display: inline-block;
-    width: 18px; height: 1px;
-    background: var(--accent);
-    vertical-align: 0.32em; margin-right: 10px;
-  }
-  .cb-title {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: clamp(40px, 6vw, 78px);
-    line-height: 0.98;
-    letter-spacing: -0.034em;
-    color: var(--ink);
-    margin: 0;
-    text-wrap: balance;
-  }
-  .cb-title em {
-    font-style: normal;
-    color: var(--accent);
-    font-weight: 700;
-  }
-  .cb-sub {
-    font: 400 17px/1.5 var(--sans);
-    color: var(--ink-soft);
-    max-width: 42ch;
-    margin: 0;
-    text-wrap: pretty;
-  }
-  .cb-cta { display: flex; gap: 12px; flex-wrap: wrap; margin: 0; }
-  .cb-btn {
-    font: 600 14px/1 var(--sans);
-    letter-spacing: -0.005em;
-    padding: 14px 22px;
-    border-radius: 2px;
-    border: 1.5px solid var(--ink);
-    color: var(--ink);
-    background: transparent;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background .15s, color .15s, border-color .15s;
-    display: inline-flex; align-items: center; gap: 10px;
-  }
-  .cb-btn:hover, .cb-btn:focus { background: var(--ink); color: var(--paper); border-color: var(--ink); outline: none; }
-  .cb-btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-  .cb-btn.primary:hover, .cb-btn.primary:focus { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .cb-btn .arrow { font-weight: 400; }
+  --amber:        #b45309;
+  --amber-soft:   #fbeed5;
+  --amber-edge:   #ecd09b;
+  --amber-deep:   #7c2d12;
 
-  .cb-stats {
-    display: flex; gap: clamp(24px, 3.5vw, 44px); flex-wrap: wrap;
-    padding-top: 18px;
-    border-top: 1px solid var(--rule);
-    margin-top: 4px;
-  }
-  .cb-stat .v {
-    display: block;
-    font: 700 26px/1 var(--sans);
-    color: var(--ink);
-    letter-spacing: -0.03em;
-    margin-bottom: 4px;
-    font-feature-settings: "tnum";
-  }
-  .cb-stat .l {
-    font: 500 12px/1.2 var(--mono);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-  }
+  --rose:         #be123c;
+  --rose-soft:    #fce4ea;
+  --rose-edge:    #efb7c2;
+  --rose-deep:    #831843;
 
-  /* Bridge — two-beat block between hero and questions: premise + consequence */
-  .cb-bridge {
-    max-width: 36ch;
-    margin: clamp(64px, 10vw, 128px) auto clamp(64px, 10vw, 128px);
-    text-align: left;
-  }
-  .cb-bridge-premise {
-    font-family: var(--sans);
-    font-weight: 500;
-    font-size: clamp(19px, 2.7vw, 28px);
-    line-height: 1.3;
-    letter-spacing: -0.016em;
-    color: var(--ink-soft);
-    margin: 0 0 20px;
-    text-wrap: balance;
-  }
-  .cb-bridge-consequence {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: clamp(28px, 4.6vw, 44px);
-    line-height: 1.08;
-    letter-spacing: -0.025em;
-    color: var(--ink);
-    margin: 0;
-    max-width: 22ch;
-    text-wrap: balance;
-  }
-  .cb-bridge-consequence em {
-    color: var(--accent);
-    font-style: normal;
-    font-weight: 700;
-  }
+  /* ── Typography — system-font fallback (no network) ─── */
+  --sans:   "Geist", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono:   "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  /* Section */
-  .cb-section { margin-top: var(--gap-section); }
-  .cb-sec-num {
-    font: 500 12.5px/1 var(--mono);
-    letter-spacing: 0.14em;
-    color: var(--ink-mute);
-    margin: 0 0 16px;
-  }
-  .cb-sec-num .accent { color: var(--accent); }
-  .cb-sec-title {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: clamp(32px, 5vw, 52px);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    margin: 0 0 18px;
-    max-width: 20ch;
-    text-wrap: balance;
-  }
-  .cb-sec-title em { color: var(--accent); font-style: normal; font-weight: 700; }
-  .cb-sec-lead {
-    font: 400 17px/1.5 var(--sans);
-    color: var(--ink-soft);
-    max-width: 56ch;
-    margin: 0 0 clamp(24px, 4vw, 40px);
-    text-wrap: pretty;
-  }
+  /* ── Layout ──────────────────────────────────────────── */
+  --shell-w: 1240px;
 
-  /* Questions grid (2x2 on desktop) */
-  .cb-questions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(20px, 2.5vw, 32px);
-  }
-  .cb-question {
-    padding: 30px 32px 28px;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-  }
-  .cb-question-mark {
-    font: 500 12px/1 var(--mono);
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    margin: 0 0 18px;
-  }
-  .cb-question-h {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 22px;
-    line-height: 1.18;
-    letter-spacing: -0.018em;
-    color: var(--ink);
-    margin: 0 0 12px;
-  }
-  .cb-question-body {
-    font: 400 15px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 16px;
-    text-wrap: pretty;
-    max-width: 38ch;
-  }
-  .cb-question-ref {
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.06em;
-    color: var(--ink-mute);
-    margin: 0;
-  }
+  /* ── Radii ───────────────────────────────────────────── */
+  --radius:      14px;  /* cards, panels */
+  --radius-sm:    8px;  /* controls, buttons, inputs */
+  --radius-pill: 999px; /* eyebrows, tags, status chips */
 
-  /* File-over-app aside */
-  .cb-aside {
-    margin-top: clamp(40px, 6vw, 64px);
-    padding: 4px 0 4px 28px;
-    border-left: 3px solid var(--accent);
-    max-width: 60ch;
-  }
-  .cb-aside h3 {
-    font: 700 18px/1.25 var(--sans);
-    letter-spacing: -0.015em;
-    color: var(--ink);
-    margin: 0 0 12px;
-  }
-  .cb-aside h3 em { color: var(--accent); font-style: normal; font-weight: 700; }
-  .cb-aside p {
-    font: 400 15.5px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 12px;
-    text-wrap: pretty;
-  }
-  .cb-aside p:last-child { margin: 0; }
-  .cb-aside .external::after {
-    content: " ↗";
-    color: var(--ink-faint);
-    font-size: 0.85em;
-    border-bottom: none;
-  }
+  /* ── Back-compat aliases for existing references ────── */
+  --ink-2:       var(--ink-soft);
+  --muted:       var(--ink-mute);
+  --line:        var(--rule);
+  --accent:      var(--indigo);
+  --accent-soft: var(--indigo-soft);
+  --max:         1040px;
+  --font-sans:   var(--sans);
+  --font-mono:   var(--mono);
+}
 
-  /* Adjacent voices panel */
-  .cb-voices {
-    margin-top: clamp(40px, 6vw, 64px);
-    padding: 28px 32px;
-    background: var(--paper-soft);
-    border-radius: 4px;
-  }
-  .cb-voices-head {
-    margin: 0 0 22px;
-  }
-  .cb-voices-head h3 {
-    font: 500 11px/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    margin: 0 0 10px;
-    font-weight: 500;
-  }
-  .cb-voices-head p {
-    font: 400 14px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0;
-    max-width: 64ch;
-  }
-  .cb-voices-group {
-    margin-top: 28px;
-  }
-  .cb-voices-group:first-of-type {
-    margin-top: 0;
-  }
-  .cb-voices-group-h {
-    font: 500 12px/1.2 var(--sans);
-    letter-spacing: 0.005em;
-    color: var(--ink);
-    font-weight: 600;
-    margin: 0 0 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--rule);
-    text-transform: none;
-  }
-  .cb-voices-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px clamp(24px, 3vw, 40px);
-  }
-  .cb-voice { padding: 0; }
-  .cb-voice-name {
-    font: 700 15px/1.2 var(--sans);
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    margin: 0 0 4px;
-  }
-  .cb-voice-layer {
-    display: inline-block;
-    margin-left: 8px;
-    font: 500 10.5px/1 var(--mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    vertical-align: 2px;
-  }
-  .cb-voice-claim {
-    font: 500 14.5px/1.35 var(--sans);
-    color: var(--accent);
-    font-style: italic;
-    margin: 0 0 8px;
-  }
-  .cb-voice-blurb {
-    font: 400 13.5px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 8px;
-  }
-  .cb-voice-link {
-    font: 500 12px/1 var(--mono);
-    margin: 0;
-  }
-  .cb-voice-link a {
-    color: var(--ink-mute);
-    border-bottom: 1px dotted var(--ink-faint);
-  }
-  .cb-voice-link a:hover, .cb-voice-link a:focus {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-  .cb-voice-link a::after {
-    content: " ↗";
-    color: var(--ink-faint);
-    font-size: 0.85em;
-  }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+body { font-family: var(--sans); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color .15s, border-color .15s; }
+a:hover { color: var(--indigo); border-color: var(--indigo); }
+a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 2px; }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 1rem; top: 1rem; background: var(--ink); color: var(--paper-page); padding: .5rem .75rem; border-radius: var(--radius-sm); z-index: 99; }
 
-  /* Journey callout */
-  .cb-journey {
-    margin-top: clamp(48px, 7vw, 80px);
-    padding: 28px 32px;
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    background: var(--paper);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: clamp(20px, 3vw, 40px);
-  }
-  .cb-journey-meta {
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 12px;
-  }
-  .cb-journey-quote {
-    font: 400 17px/1.45 var(--sans);
-    color: var(--ink);
-    margin: 0;
-    text-wrap: pretty;
-    max-width: 52ch;
-  }
-  .cb-journey-quote::before { content: "“"; color: var(--ink-faint); margin-right: 2px; }
-  .cb-journey-quote::after { content: "”"; color: var(--ink-faint); margin-left: 2px; }
-  .cb-journey a.cb-btn {
-    white-space: nowrap;
-  }
+#capsule-root { max-width: var(--max); margin: 0 auto; padding: 1.5rem clamp(1.25rem, 4vw, 2.5rem) 4rem; }
 
-  /* About / exports */
-  .cb-about {
-    margin-top: clamp(64px, 9vw, 96px);
-    background: var(--paper-soft);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .cb-about > summary {
-    list-style: none; cursor: pointer;
-    padding: 20px 28px;
-    font: 500 13px/1 var(--mono);
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ink); user-select: none;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .cb-about > summary::-webkit-details-marker { display: none; }
-  .cb-about > summary::after {
-    content: ""; flex: 1; height: 1px; background: var(--rule); margin: 0 0 0 8px;
-  }
-  .cb-about > summary::before {
-    content: "+"; display: inline-grid; place-items: center;
-    width: 22px; height: 22px;
-    border: 1px solid var(--rule); border-radius: 50%;
-    font: 500 14px/1 var(--sans); color: var(--ink-mute);
-    background: var(--paper);
-  }
-  .cb-about[open] > summary::before { content: "−"; }
-  .cb-about-body { padding: 4px 28px 28px; }
-  .cb-about-body p {
-    font: 400 15px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 22px; max-width: 60ch;
-  }
-  .cb-export {
-    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px;
-  }
-  .cb-export button {
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    color: var(--ink);
-    font: 500 12.5px/1 var(--sans);
-    padding: 10px 16px;
-    cursor: pointer; border-radius: 999px;
-    transition: border-color .15s, color .15s, background .15s;
-  }
-  .cb-export button:hover, .cb-export button:focus {
-    border-color: var(--accent); color: var(--accent); outline: none;
-  }
-  .cb-about h4 {
-    font: 500 11px/1 var(--mono);
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ink-mute); margin: 0 0 8px;
-  }
-  .cb-about pre {
-    margin: 0; background: var(--paper);
-    border: 1px solid var(--rule); border-radius: 4px;
-    padding: 16px 18px;
-    font: 400 12.5px/1.6 var(--mono); color: var(--ink-soft);
-    max-height: 360px; overflow: auto;
-  }
+.nav { display: flex; align-items: center; justify-content: space-between; padding: .5rem 0 4rem; gap: 16px; flex-wrap: wrap; }
+.nav .mark { display: inline-flex; align-items: center; gap: .55rem; font-weight: 600; font-size: 15px; letter-spacing: -.005em; }
+.nav .mark svg { width: 26px; height: auto; color: var(--indigo); }
+.nav .mark a { border: 0; color: var(--ink); }
+.nav .links { display: flex; gap: .25rem; font-size: 13px; }
+.nav .links a { border: 0; color: var(--ink-soft); padding: .5rem .75rem; border-radius: var(--radius-sm); font-weight: 500; }
+.nav .links a:hover { color: var(--ink); background: var(--paper-soft); }
 
-  /* Footer */
-  .cb-foot {
-    margin-top: clamp(56px, 8vw, 80px);
-    padding-top: 36px;
-    border-top: 1px solid var(--rule);
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
-    gap: 36px;
-  }
-  .cb-foot-isnt {
-    font: 400 15px/1.5 var(--sans);
-    color: var(--ink-soft);
-    margin: 0;
-    max-width: 40ch;
-  }
-  .cb-foot-isnt strong { color: var(--ink); font-weight: 500; }
-  .cb-foot-col h4 {
-    font: 500 11px/1 var(--mono);
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ink-mute);
-    margin: 0 0 14px;
-  }
-  .cb-foot-col ul { list-style: none; padding: 0; margin: 0; }
-  .cb-foot-col li { margin-bottom: 8px; }
-  .cb-foot-col a {
-    color: var(--ink);
-    border-bottom: none;
-    font: 400 14.5px/1.4 var(--sans);
-  }
-  .cb-foot-col a:hover, .cb-foot-col a:focus { color: var(--accent); }
-  .cb-colophon {
-    grid-column: 1 / -1;
-    margin-top: 16px;
-    padding-top: 20px;
-    border-top: 1px solid var(--rule-soft);
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.06em;
-    color: var(--ink-mute);
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  }
+.hero { padding: clamp(2rem, 8vh, 6rem) 0 clamp(2rem, 6vh, 4rem); max-width: 760px; }
+.hero .eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px; font-weight: 500; letter-spacing: 0;
+  color: var(--teal-deep);
+  background: var(--teal-soft);
+  padding: 7px 14px 7px 12px;
+  border-radius: var(--radius-pill);
+  margin: 0 0 24px;
+  text-transform: none;
+}
+.hero .eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal);
+  display: inline-block;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -.034em;
+  margin: 0 0 1.5rem;
+  color: var(--ink);
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.hero h1 .light { font-weight: 300; color: var(--ink-soft); }
+.hero h1 .keep  { font-weight: 800; color: var(--indigo); }
+.hero p.lede { font-size: clamp(1.05rem, 1.9vw, 1.2rem); line-height: 1.5; color: var(--ink-soft); margin: 0 0 2.25rem; max-width: 50ch; font-weight: 400; }
+.cta { display: inline-flex; gap: .8rem; align-items: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: 13px 22px;
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: 14px; font-weight: 600;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-page);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.btn:hover { background: var(--paper-soft); border-color: var(--rule-strong); color: var(--ink); }
+.btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn.primary:hover { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.btn .arrow { color: var(--indigo); transition: transform .15s; }
+.btn.primary .arrow { color: #fff; }
+.btn:hover .arrow { transform: translateX(2px); }
 
-  /* Toast */
-  .cb-toast {
-    position: fixed; bottom: 28px; left: 50%;
-    transform: translateX(-50%) translateY(8px);
-    background: var(--ink); color: var(--paper);
-    padding: 11px 18px;
-    font: 500 13px/1 var(--sans);
-    border-radius: 999px;
-    opacity: 0; pointer-events: none;
-    transition: opacity .18s, transform .18s;
-    z-index: 200;
-    box-shadow: 0 12px 36px -14px rgba(28,26,22,0.4);
-  }
-  .cb-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  @media (prefers-reduced-motion: reduce) { .cb-toast { transition: opacity 0.001s; } }
+.lifecycle { padding: clamp(2rem, 5vh, 4rem) 0 clamp(2.5rem, 6vh, 5rem); }
+.lifecycle .strip { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; margin: 0 0 1rem; }
+.lifecycle .pill {
+  display: inline-flex; align-items: center;
+  padding: .4rem .85rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  font-size: 13px; font-weight: 500;
+  color: var(--ink-soft); background: var(--paper-page);
+  white-space: nowrap;
+}
+.lifecycle .pill.is-substrate { color: var(--teal-deep); border-color: var(--teal-edge); background: var(--teal-soft); }
+.lifecycle .pill.is-liveedit  { color: var(--violet-deep); border-color: var(--violet-edge); background: var(--violet-soft); }
+.lifecycle .pill.is-host      { color: var(--amber-deep); border-color: var(--amber-edge); background: var(--amber-soft); }
+.lifecycle .pill.is-discover  { color: var(--ink-mute); border-color: var(--rule); background: var(--paper-page); }
+.lifecycle .pill.ours { color: #fff; background: var(--indigo); border-color: var(--indigo); font-weight: 600; }
+.lifecycle .sep { color: var(--ink-faint); font-size: 13px; user-select: none; }
+.lifecycle .note { font-size: 14px; color: var(--ink-mute); margin: 0; max-width: 38em; }
 
-  /* ============================================================
-     Hero framing exploration (v11.x) — explorer intro + frames + slim footer
-     ============================================================ */
+section { padding: clamp(2.5rem, 6vh, 5rem) 0; border-top: 1px solid var(--rule); }
+section .eyebrow { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-mute); margin: 0 0 1rem; font-weight: 500; }
+section h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 1.25rem; max-width: 30em; color: var(--ink); }
+section h2 .light { font-weight: 300; color: var(--ink-soft); }
+section p { color: var(--ink-soft); max-width: 38em; margin: 0; }
 
-  .cb-explorer-intro {
-    padding: 56px 0 36px;
-    max-width: 720px;
-  }
-  .cb-explorer-eyebrow {
-    font: 500 12.5px/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 16px;
-  }
-  .cb-explorer-eyebrow::before {
-    content: ""; display: inline-block;
-    width: 18px; height: 1px;
-    background: var(--accent);
-    vertical-align: 0.32em; margin-right: 10px;
-  }
-  .cb-explorer-h {
-    font: 700 clamp(28px, 4vw, 40px)/1.05 var(--sans);
-    letter-spacing: -0.025em;
-    color: var(--ink);
-    margin: 0 0 16px;
-    text-wrap: balance;
-  }
-  .cb-explorer-sub {
-    font: 400 16px/1.55 var(--sans);
-    color: var(--ink-soft);
-    max-width: 60ch;
-    margin: 0;
-  }
-  .cb-explorer-sub code {
-    background: var(--paper-soft);
-    padding: 1px 6px;
-    border-radius: 3px;
-    font-size: 0.86em;
-  }
+.demo { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; margin-top: 2rem; }
+@media (min-width: 720px) { .demo { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+.demo pre { margin: 0; background: var(--paper-page); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1rem 1.1rem; font-family: var(--mono); font-size: 13px; line-height: 1.6; color: var(--ink); overflow-x: auto; }
+.demo pre .c { color: var(--ink-faint); }
+.demo pre .k { color: var(--indigo); }
 
-  /* Frames container — full bleed */
-  .cb-frames {
-    width: 100%;
-    margin-top: 24px;
-  }
+/* Anatomy card — replaces the legend list per proposal pattern */
+.anatomy-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.anatomy-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule-soft);
+  flex-wrap: wrap; gap: 8px;
+}
+.anatomy-head h3 {
+  font: 600 14px/1.2 var(--sans);
+  color: var(--ink);
+  margin: 0;
+}
+.anatomy-head h3 .light { color: var(--ink-mute); font-weight: 400; }
+.anatomy-head .meta {
+  font: 500 11.5px/1.4 var(--mono);
+  color: var(--ink-mute);
+}
+.anatomy-grid { display: grid; gap: 8px; }
+.block-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 16px;
+  padding: 11px 14px;
+  background: var(--paper-page);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--radius-sm);
+  align-items: center;
+  transition: border-color .15s, background .15s;
+}
+@media (min-width: 720px) {
+  .block-row { grid-template-columns: 28px 180px 1fr auto; }
+}
+.block-row:hover { border-color: var(--rule-strong); }
+.block-row.is-emphasis {
+  background: var(--indigo-soft);
+  border-color: var(--indigo-edge);
+}
+.block-row .n {
+  font: 600 11px/1 var(--mono);
+  color: var(--ink-faint);
+}
+.block-row.is-emphasis .n { color: var(--indigo); }
+.block-row .k {
+  font: 500 13.5px/1 var(--mono);
+  color: var(--ink);
+}
+.block-row.is-emphasis .k { color: var(--indigo-deep); font-weight: 600; }
+.block-row .d {
+  font: 400 13.5px/1.4 var(--sans);
+  color: var(--ink-soft);
+  display: none;
+}
+@media (min-width: 720px) {
+  .block-row .d { display: block; }
+}
+.block-row .opt {
+  font: 600 10.5px/1 var(--mono);
+  padding: 5px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-soft);
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.block-row.is-emphasis .opt {
+  background: var(--indigo);
+  color: #fff;
+}
+.block-row.is-optional .opt {
+  background: transparent;
+  color: var(--ink-faint);
+  border: 1px solid var(--rule);
+}
 
-  .cb-frame {
-    width: 100%;
-    position: relative;
-    padding: clamp(72px, 11vh, 128px) clamp(28px, 6vw, 80px);
-    min-height: clamp(440px, 70vh, 640px);
-    display: flex;
-    align-items: center;
-    border-top: 1px solid color-mix(in oklab, currentColor 8%, transparent);
-  }
-  .cb-frame-inner {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .cb-frame-num {
-    position: absolute;
-    top: clamp(20px, 3.5vh, 32px);
-    right: clamp(28px, 6vw, 80px);
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.14em;
-    color: var(--ink-faint);
-    opacity: 0.7;
-  }
-  .cb-frame-tag {
-    font: 500 12px/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 24px;
-  }
-  .cb-frame-tag::before {
-    content: ""; display: inline-block;
-    width: 16px; height: 1px;
-    background: currentColor;
-    vertical-align: 0.32em; margin-right: 10px;
-  }
-  .cb-frame-title {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: clamp(34px, 5.2vw, 60px);
-    line-height: 1.02;
-    letter-spacing: -0.034em;
-    color: var(--ink);
-    margin: 0 0 22px;
-    text-wrap: balance;
-    max-width: 20ch;
-  }
-  .cb-frame-title em {
-    font-style: normal;
-    color: var(--accent);
-    font-weight: 700;
-  }
-  .cb-frame-title.is-huge {
-    font-size: clamp(48px, 8vw, 96px);
-    max-width: 13ch;
-  }
-  .cb-frame-title.is-wordmark {
-    font-size: clamp(26px, 3vw, 36px);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    max-width: none;
-    margin-bottom: 18px;
-    color: var(--ink-soft);
-  }
-  .cb-frame-sub {
-    font: 400 17px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 28px;
-    max-width: 52ch;
-    text-wrap: pretty;
-  }
-  .cb-frame-cta {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .cb-frame-stats {
-    display: flex;
-    gap: clamp(24px, 4vw, 44px);
-    flex-wrap: wrap;
-    margin-top: 32px;
-    padding-top: 22px;
-    border-top: 1px solid color-mix(in oklab, currentColor 14%, transparent);
-  }
-  .cb-stat-mini .v {
-    display: block;
-    font: 700 24px/1 var(--sans);
-    color: var(--ink);
-    letter-spacing: -0.03em;
-    margin-bottom: 4px;
-    font-feature-settings: "tnum";
-  }
-  .cb-stat-mini .l {
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-  }
+/* "What this is not" — rose styling (pain/negation hue) */
+.not-this { display: grid; gap: .65rem; margin-top: 1.75rem; max-width: 42em; }
+.not-this ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .65rem; }
+.not-this li {
+  list-style: none;
+  padding: .9rem 1.1rem;
+  border-left: 3px solid var(--rose);
+  background: var(--rose-soft);
+  border-top: 1px solid var(--rose-edge);
+  border-right: 1px solid var(--rose-edge);
+  border-bottom: 1px solid var(--rose-edge);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--rose-deep);
+  font-size: 15px;
+  font-weight: 500;
+}
 
-  /* Layout modifiers */
-  .cb-frame.is-centered .cb-frame-inner { text-align: center; }
-  .cb-frame.is-centered .cb-frame-title,
-  .cb-frame.is-centered .cb-frame-sub { margin-left: auto; margin-right: auto; }
-  .cb-frame.is-centered .cb-frame-cta,
-  .cb-frame.is-centered .cb-frame-stats { justify-content: center; }
-  .cb-frame.is-centered .cb-frame-tag::before { display: none; }
+.about { font-size: 14.5px; color: var(--ink-soft); }
+.about summary { cursor: pointer; color: var(--ink-mute); padding: .4rem 0; list-style: none; font-size: 13px; letter-spacing: .02em; font-family: var(--mono); }
+.about summary::-webkit-details-marker { display: none; }
+.about summary::before { content: "›  "; display: inline-block; transition: transform .15s; }
+.about[open] summary::before { transform: rotate(90deg); }
+.about[open] summary { color: var(--ink); }
+.about-body { padding: 1rem 0 0; }
+.about-body .row { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.about-body .row button { font: inherit; padding: .45rem .8rem; font-size: 13px; font-weight: 500; border: 1px solid var(--rule-strong); border-radius: var(--radius-sm); background: var(--paper-page); color: var(--ink-soft); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.about-body .row button:hover { background: var(--paper-soft); color: var(--ink); border-color: var(--rule-strong); }
+.about-body pre { background: var(--indigo-soft); border: 1px solid var(--indigo-edge); border-radius: var(--radius-sm); padding: .85rem 1rem; font-family: var(--mono); font-size: 12px; line-height: 1.55; color: var(--ink); overflow-x: auto; max-height: 360px; }
 
-  /* Mark-first variant */
-  .cb-frame.is-mark-first .cb-frame-bigmark {
-    display: block;
-    margin: 0 auto 20px;
-    width: clamp(140px, 22vw, 220px);
-    height: auto;
-    color: var(--ink);
-  }
+footer.site { margin-top: 4rem; padding-top: 1.75rem; border-top: 1px solid var(--rule); display: flex; gap: 1.5rem; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--ink-mute); }
+footer.site nav { display: flex; gap: 1.25rem; }
+footer.site nav a { color: var(--ink-mute); border: 0; }
+footer.site nav a:hover { color: var(--indigo); }
+footer.site .meta { font-family: var(--mono); font-size: 11.5px; letter-spacing: .01em; }
 
-  /* Dark inverted variant */
-  .cb-frame.is-dark { color: var(--paper); }
-  .cb-frame.is-dark .cb-frame-title { color: var(--paper); }
-  .cb-frame.is-dark .cb-frame-sub { color: color-mix(in oklab, var(--paper) 78%, transparent); }
-  .cb-frame.is-dark .cb-frame-tag { color: var(--accent-soft); }
-  .cb-frame.is-dark .cb-frame-num { color: color-mix(in oklab, var(--paper) 50%, transparent); }
-  .cb-frame.is-dark .cb-stat-mini .v { color: var(--paper); }
-  .cb-frame.is-dark .cb-stat-mini .l { color: color-mix(in oklab, var(--paper) 60%, transparent); }
-  .cb-frame.is-dark .cb-btn {
-    background: transparent; color: var(--paper); border-color: var(--paper);
-  }
-  .cb-frame.is-dark .cb-btn:hover, .cb-frame.is-dark .cb-btn:focus {
-    background: var(--paper); color: var(--ink); border-color: var(--paper);
-  }
-  .cb-frame.is-dark .cb-btn.primary {
-    background: var(--paper); color: var(--ink); border-color: var(--paper);
-  }
-  .cb-frame.is-dark .cb-btn.primary:hover, .cb-frame.is-dark .cb-btn.primary:focus {
-    background: var(--accent-soft); border-color: var(--accent-soft); color: #fff;
-  }
+.toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100%); background: var(--ink); color: var(--paper-page); padding: .6rem 1.1rem; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: transform .2s, opacity .2s; pointer-events: none; z-index: 100; }
+.toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-  /* Per-variant backgrounds (hero candidates 01-09; analysis sections
-     00/00b/00b1/00b2/00c/00d get their bg from .is-observation / .is-question /
-     .is-answer KIND classes instead). */
-  .cb-frame[data-num="01"] { background: var(--paper); }
-  .cb-frame[data-num="02"] { background: #f0ede5; }   /* warm cream */
-  .cb-frame[data-num="03"] { background: #ecf0f3; }   /* cool gray */
-  .cb-frame[data-num="04"] { background: #ebeef8; }   /* pale blue */
-  .cb-frame[data-num="05"] { background: var(--ink); }
-  .cb-frame[data-num="06"] { background: #f0ebde; }   /* sand */
-  .cb-frame[data-num="07"] { background: #ebf0f7; }   /* soft blue */
-  .cb-frame[data-num="08"] { background: var(--paper-deep); }
-  .cb-frame[data-num="09"] { background: #fbfaf5; }   /* near-white warm */
-
-  /* Observation-led preamble (variant 00) — editorial composition */
-  /* Tighter vertical rhythm than the hero frames; not viewport-height-filling */
-  .cb-frame.is-observation {
-    padding-top: clamp(40px, 5vh, 64px);
-    padding-bottom: clamp(40px, 5vh, 64px);
-    min-height: 0;
-  }
-  .cb-frame.is-observation .cb-frame-inner { max-width: 780px; }
-  .cb-frame.is-observation .cb-frame-title.is-observation-h {
-    font-size: clamp(24px, 3vw, 36px);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.18;
-    max-width: 28ch;
-    margin-bottom: 8px;
-  }
-  .cb-frame.is-observation .cb-kicker {
-    color: var(--accent);
-    font-weight: 700;
-    margin-right: 2px;
-  }
-  .cb-frame.is-observation .cb-aster {
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.55em;
-    vertical-align: super;
-    margin-left: 1px;
-  }
-  .cb-frame-footnote {
-    font: 400 13.5px/1.5 var(--sans);
-    color: var(--ink-mute);
-    margin: 0 0 26px;
-    max-width: 56ch;
-    font-style: italic;
-  }
-  .cb-frame-footnote sup {
-    color: var(--accent);
-    font-weight: 600;
-    margin-right: 4px;
-    font-style: normal;
-  }
-  .cb-frame-lead {
-    font: 500 15px/1.5 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 14px;
-  }
-  .cb-quote {
-    margin: 0 0 16px;
-    padding: 14px 20px;
-    background: var(--paper);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 4px 4px 0;
-  }
-  .cb-quote blockquote {
-    margin: 0 0 8px;
-    font: 400 15.5px/1.5 var(--sans);
-    color: var(--ink);
-  }
-  .cb-quote figcaption {
-    font: 500 12px/1 var(--mono);
-    letter-spacing: 0.04em;
-    color: var(--ink-mute);
-  }
-  .cb-quote figcaption a {
-    color: var(--accent);
-    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
-  }
-  .cb-frame-leadin {
-    font: 500 16px/1.45 var(--sans);
-    color: var(--ink-soft);
-    margin: 22px 0 18px;
-    max-width: 56ch;
-  }
-  .cb-frame-jumplink {
-    font: 500 13px/1 var(--mono);
-    letter-spacing: 0.06em;
-    margin: 0;
-  }
-  .cb-frame-jumplink a {
-    color: var(--accent);
-    border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
-  }
-  .cb-frame-jumplink a:hover, .cb-frame-jumplink a:focus {
-    color: var(--accent-deep);
-    border-bottom-color: var(--accent-deep);
-  }
-  .cb-frame-jumplink .arrow { margin-left: 4px; }
-  .cb-frame-leadin em {
-    font-style: normal;
-    color: var(--ink);
-    font-weight: 600;
-  }
-
-  /* ─── KIND background colors for analysis sections ───
-     Observations / Questions / Answers each get a distinct background.
-     Specificity is equal across the three; later rules win. A section
-     with both .is-observation and .is-question gets grey (question wins);
-     a section with both .is-observation and .is-answer gets cream
-     (answer wins). Plain observation sections get white. */
-  .cb-frame.is-observation { background: #ffffff; }
-  .cb-frame.is-question    { background: var(--paper-soft); }
-  .cb-frame.is-answer      { background: #fcfaf3; }
-
-  /* Section-content widths per kind (overrides the .is-observation default
-     of 780px where useful). */
-  .cb-frame.is-question .cb-frame-inner { max-width: 820px; }
-
-  /* Case-study sub-modifier (Answer 1c) — keeps the narrower prose width
-     and italic emphasis on the title. */
-  .cb-frame.is-case-study .cb-frame-inner { max-width: 760px; }
-  .cb-frame.is-case-study .cb-frame-title.is-observation-h em {
-    font-style: italic;
-    font-weight: 600;
-    color: var(--ink);
-  }
-  .cb-frame-kicker-line {
-    font: 500 11.5px/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    margin: 0 0 12px;
-  }
-  /* (Deprecated: .cb-frame-bridge — old italic-bridge title style for Answer 1c.
-     Answer 1c now uses the standard .cb-frame-title.is-observation-h pattern
-     with <em> for the italic phrase, matching the parallel treatment of 1a/1b.) */
-  .cb-frame-prose {
-    font: 400 15.5px/1.6 var(--sans);
-    color: var(--ink-soft);
-    margin: 0 0 14px;
-    max-width: 60ch;
-  }
-  .cb-frame-signoff {
-    font: 500 12.5px/1.4 var(--mono);
-    letter-spacing: 0.04em;
-    color: var(--ink-mute);
-    margin: 18px 0 22px;
-  }
-  .cb-frame-signoff a {
-    color: var(--ink-mute);
-    border-bottom: 1px solid color-mix(in oklab, var(--ink-mute) 35%, transparent);
-  }
-  .cb-frame-signoff a:hover, .cb-frame-signoff a:focus {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  /* Context-led variant — multiple stacked sub paragraphs + tagline punch */
-  .cb-frame.is-context-led .cb-frame-sub + .cb-frame-sub { margin-top: -8px; }
-  .cb-frame.is-context-led .cb-frame-sub code {
-    background: color-mix(in oklab, var(--accent) 8%, transparent);
-    color: var(--accent-deep);
-    padding: 1px 6px; border-radius: 3px; font-size: 0.86em;
-  }
-  .cb-frame-tagline {
-    font: 600 13px/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 6px 0 28px;
-  }
-  .cb-frame-tagline::before {
-    content: ""; display: inline-block;
-    width: 18px; height: 1px;
-    background: currentColor;
-    vertical-align: 0.32em; margin-right: 10px;
-  }
-
-  /* Slim footer for exploration mode */
-  .cb-foot-slim {
-    margin: 0 auto;
-    padding: 56px 0 0;
-    display: flex; flex-direction: column;
-    gap: 18px;
-    border-top: 1px solid var(--rule);
-    margin-top: clamp(40px, 6vw, 64px);
-  }
-  .cb-foot-slim-links {
-    display: flex; gap: 22px; flex-wrap: wrap;
-    font: 500 13.5px/1 var(--sans);
-  }
-  .cb-foot-slim-links a { color: var(--ink-soft); border-bottom: none; padding: 4px 0; }
-  .cb-foot-slim-links a:hover, .cb-foot-slim-links a:focus { color: var(--accent); }
-
-  /* Numbered list inside analysis sections (used by Obs 3 three-layer breakdown) */
-  .cb-frame-list {
-    font: 400 16.5px/1.55 var(--sans);
-    color: var(--ink-soft);
-    margin: 14px 0 20px;
-    padding-left: 24px;
-    max-width: 62ch;
-  }
-  .cb-frame-list li { margin-bottom: 8px; }
-  .cb-frame-list strong { color: var(--ink); font-weight: 600; }
-
-  /* Punchline / pull-quote treatment for the two slogan lines
-     (Answer 3b closing "Git tracks files. Capsule tracks artifacts."
-      and Answer 3c opener "The HTML is the artifact. The manifest is the review surface.") */
-  .cb-frame-punchline {
-    font: 600 20px/1.35 var(--sans);
-    letter-spacing: -0.012em;
-    color: var(--ink);
-    margin: 24px 0;
-    max-width: 44ch;
-  }
-  .cb-frame-punchline strong { color: var(--accent); font-weight: 700; }
-
-  /* Diff-surfaces table for Answer 3c — 8 review layers × (what it compares / why it helps) */
-  .cb-diff-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 18px 0 22px;
-    font: 400 14.5px/1.4 var(--sans);
-    color: var(--ink-soft);
-  }
-  .cb-diff-table thead th {
-    text-align: left;
-    font: 500 12px/1 var(--mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--rule);
-    background: transparent;
-    vertical-align: bottom;
-  }
-  .cb-diff-table tbody td {
-    padding: 10px 14px;
-    vertical-align: top;
-    border-bottom: 1px solid var(--rule-soft);
-  }
-  .cb-diff-table tbody tr:last-child td { border-bottom: none; }
-  .cb-diff-table td:first-child {
-    font-weight: 600;
-    color: var(--ink);
-    white-space: nowrap;
-  }
-  @media (max-width: 700px) {
-    .cb-diff-table { font-size: 13.5px; }
-    .cb-diff-table thead th, .cb-diff-table tbody td { padding: 8px 10px; }
-    .cb-diff-table td:first-child { white-space: normal; }
-  }
-
-  /* Frame responsive tweaks */
-  @media (max-width: 600px) {
-    .cb-frame { padding: clamp(56px, 9vh, 96px) clamp(20px, 5vw, 32px); min-height: auto; }
-    .cb-frame-num { top: 16px; right: 20px; font-size: 10.5px; }
-    .cb-frame-tag { margin-bottom: 20px; }
-    .cb-frame-title { margin-bottom: 18px; }
-    .cb-frame-stats { gap: 20px; }
-    .cb-stat-mini .v { font-size: 20px; }
-  }
-
-  /* Responsive */
-  @media (max-width: 900px) {
-    .cb-hero { grid-template-columns: 1fr; row-gap: 28px; align-items: start; }
-    .cb-hero-lead, .cb-hero-aside { grid-column: 1; }
-    .cb-questions { grid-template-columns: 1fr; }
-    .cb-voices-list { grid-template-columns: 1fr; }
-    .cb-journey { grid-template-columns: 1fr; }
-    .cb-foot { grid-template-columns: 1fr 1fr; }
-    .cb-foot-isnt { grid-column: 1 / -1; }
-  }
-  @media (max-width: 600px) {
-    #capsule-root { padding: 24px clamp(16px, 4vw, 24px) 48px; }
-    .cb-topbar { padding-bottom: 18px; gap: 10px; }
-    .cb-mark { font-size: 13.5px; gap: 8px; }
-    .cb-mark .cb-glyph { width: 30px; }
-    .cb-badge { font-size: 11px; padding: 3px 7px; }
-    .cb-icon-link { padding: 6px 8px; }
-    .cb-icon-label { display: none; }
-    .cb-stats { gap: 18px; padding-top: 14px; }
-    .cb-stat .v { font-size: 22px; }
-    .cb-cta .cb-btn { padding: 12px 18px; font-size: 13.5px; }
-  }
-  @media (max-width: 540px) {
-    body { font-size: 16px; }
-    .cb-foot { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 380px) {
-    .cb-cta { flex-direction: column; align-items: stretch; }
-    .cb-cta .cb-btn { width: 100%; justify-content: center; }
-  }
-
-  /* Print */
-  @media print {
-    body { background: white; color: black; font-size: 11pt; }
-    .cb-topbar, .cb-cta, .cb-export, .cb-toast, .skip-link { display: none !important; }
-    a { color: black; border-bottom: none; }
-    .cb-question, .cb-journey, .cb-about { background: white !important; border: 1px solid #ccc; }
-  }
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+@media print {
+  .nav .links, .about, .toast, footer.site { display: none; }
+  body { font-size: 12pt; background: #fff; color: #000; }
+}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#frames">Skip to content</a>
+<a class="skip" href="#capsule-root">Skip to content</a>
 
 <main id="capsule-root">
+  <nav class="nav" aria-label="Top">
+    <span class="mark">
+      <svg viewBox="0 0 32 18" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="2"/>
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
+          <path d="M 13.5 13 L 18.5 5"/>
+          <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
+        </g>
+      </svg>
+      <a href="#capsule-root">HTML Capsule</a>
+    </span>
+    <div class="links">
+      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="spec/examples/">Examples</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </div>
+  </nav>
 
-  <div class="cb-shell cb-shell-top">
-    <header class="cb-topbar" role="banner">
-      <div class="cb-mark">
-        <svg class="cb-glyph" viewBox="0 0 32 18" width="36" height="20" aria-hidden="true" focusable="false">
-          <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
-          <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
-            <path d="M 13.5 13 L 18.5 5"/>
-            <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
-          </g>
-        </svg>
-        <strong>HTML Capsule</strong>
-        <a class="cb-badge" href="CAPSULE_CORE.md" aria-label="Specification version 0.3.5">v0.3.5</a>
-      </div>
-      <nav class="cb-topnav" aria-label="Primary">
-        <a class="cb-icon-link" href="https://github.com/bigfancygarden/htmlcapsule" aria-label="View source on GitHub" rel="noopener">
-          <svg class="cb-icon" viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" focusable="false">
-            <path fill="currentColor" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
-          <span class="cb-icon-label">GitHub</span>
-        </a>
-      </nav>
-    </header>
+  <header class="hero">
+    <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Anti-context-loss</p>
+    <h1><span class="light">HTML you can</span> <span class="keep">keep.</span></h1>
+    <p class="lede">After the chat closes, the canvas mutates, the share link rots — useful AI work shouldn't die there. A Capsule is one sealed HTML file that survives across tools, time, sessions, and platform churn.</p>
+    <div class="cta">
+      <a href="CAPSULE_CORE.md" class="btn primary">Read the spec <span class="arrow">→</span></a>
+      <a href="spec/examples/" class="btn">See examples <span class="arrow">↗</span></a>
+    </div>
+  </header>
+
+  <div class="lifecycle" aria-label="Where Capsule sits in the AI-work lifecycle">
+    <div class="strip">
+      <span class="pill is-substrate">Substrate</span><span class="sep" aria-hidden="true">·</span>
+      <span class="pill is-liveedit">Live edit</span><span class="sep" aria-hidden="true">·</span>
+      <span class="pill ours" aria-current="step">Seal</span><span class="sep" aria-hidden="true">·</span>
+      <span class="pill is-host">Host</span><span class="sep" aria-hidden="true">·</span>
+      <span class="pill is-discover">Discover</span>
+    </div>
+    <p class="note">Canvas, Artifacts, html-docs, Workplane do the live editing. htmlbin, MinDev, llms.txt do hosting and discovery. Capsule is the seal step in between — what an artifact becomes when the live work is done.</p>
   </div>
 
-  <section class="cb-frames" id="frames" aria-label="Hero variants">
-
-    <!-- 00 — Observation 1 (with proof voices) -->
-    <article class="cb-frame is-observation" data-num="00" aria-labelledby="frame-00-title">
-      <span class="cb-frame-num">Observation 1</span>
-      <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00-title"><span class="cb-kicker">Observation 1:</span> HTML has emerged as a key substrate<sup class="cb-aster">*</sup> for AI-assisted work.</h2>
-        <p class="cb-frame-footnote"><sup>*</sup> I know, I know — "substrate" is overused.</p>
-
-        <p class="cb-frame-lead">Two leading voices, same direction:</p>
-
-        <figure class="cb-quote">
-          <blockquote>Markdown has become the dominant file format used by agents to communicate with us&hellip; But as agents have become more and more powerful, I have felt that markdown has become a restricting format&hellip; I've started preferring HTML as an output format instead of Markdown and increasingly see this being used by others on the Claude Code team.</blockquote>
-          <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a></figcaption>
-        </figure>
-
-        <figure class="cb-quote">
-          <blockquote>&hellip; at the end of your query ask your LLM to &ldquo;structure your response as HTML&rdquo;&hellip;</blockquote>
-          <figcaption>— Andrej Karpathy · <a href="voices/karpathy-html-progression-2026.html">archive</a></figcaption>
-        </figure>
-      </div>
-    </article>
-
-    <!-- 00a — Question 1 (NEW: How do I get HTML out of my LLM?) -->
-    <article class="cb-frame is-observation is-question" data-num="00a" aria-labelledby="frame-00a-title">
-      <span class="cb-frame-num">Question 1</span>
-      <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00a-title"><span class="cb-kicker">Question 1:</span> How do I get HTML out of my LLM?</h2>
-      </div>
-    </article>
-
-    <!-- 00a1 — Answer 1a · the vague approach (Karpathy + Thariq) -->
-    <article class="cb-frame is-observation is-answer" data-num="00a1" aria-labelledby="frame-00a1-title">
-      <span class="cb-frame-num">Answer 1a</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Vague approach · just ask the LLM</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00a1-title"><span class="cb-kicker">Answer 1a:</span> Just ask the LLM for HTML.</h2>
-
-        <p class="cb-frame-prose">Two voices in the wild, same shape — both pointing at the same vague-but-functional default of telling the LLM you want HTML:</p>
-
-        <figure class="cb-quote">
-          <blockquote>&hellip; at the end of your query ask your LLM to &ldquo;structure your response as HTML&rdquo;&hellip;</blockquote>
-          <figcaption>— Andrej Karpathy · <a href="voices/karpathy-html-progression-2026.html">archive</a> (also cited in <a href="#frame-00-title">Observation 1</a>)</figcaption>
-        </figure>
-
-        <figure class="cb-quote">
-          <blockquote>I've started preferring HTML as an output format instead of Markdown&hellip;</blockquote>
-          <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> (also cited in <a href="#frame-00-title">Observation 1</a>)</figcaption>
-        </figure>
-
-        <p class="cb-frame-prose">This works for one-off viewing. The LLM produces some HTML, the bytes render in a browser, you can read what's there. But what you actually get is <em>unstructured</em> HTML: no manifest, no identity, no integrity guarantees, no contract on what's inside. The file can't say what it is, where it came from, what tool made it, what version it represents, or whether it's been modified. Fine for "show me what you mean" — lossy for everything else (which is what <a href="#frame-00a2-title">Answer 1b</a> addresses).</p>
-      </div>
-    </article>
-
-    <!-- 00a2 — Answer 1b · the contract-based approach (paste Core spec, get back a Capsule) -->
-    <article class="cb-frame is-observation is-answer" data-num="00a2" aria-labelledby="frame-00a2-title">
-      <span class="cb-frame-num">Answer 1b</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Contract-based approach · ask for a Capsule</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00a2-title"><span class="cb-kicker">Answer 1b:</span> Ask the LLM for a Capsule (according to the <a href="CAPSULE_CORE.md">Spec</a>).</h2>
-
-        <p class="cb-frame-prose">Instead of asking for HTML, ask for a <em>Capsule</em>. The Core spec is one page — twelve numbered rules, designed to paste directly into an LLM prompt. The LLM returns a sealed <code>.html</code> file with:</p>
-
-        <p class="cb-frame-prose">A <strong>manifest</strong> (inline JSON) declaring what the artifact is, who produced it, when, and what it claims to be · An <strong>integrity hash</strong> over the data + manifest so tampering is detectable · A <strong>UUID</strong> stamped into the file plus a <strong>parents[]</strong> array recording what the artifact descended from · Declared <strong>capabilities</strong> (export, copy, download) that are guaranteed to be implemented (Rule 7: declared = implemented) · <strong>Pre-rendered content</strong> in the HTML body so the artifact still works with JavaScript disabled (Rule 12) · <strong>No network dependencies</strong>: every byte the file needs is inline (Rule 2).</p>
-
-        <p class="cb-frame-prose">Why this matters: the artifact carries its own context. It knows what it is, what it came from, what tools made it, what it can do, and whether anyone has changed its bytes. That's the difference between "here's some HTML, you figure out what to do with it" (the vague approach in 1a) and "here's a self-describing artifact you can archive, fork, share, or hand to another LLM with full context preserved." The producer (LLM) becomes a first-class spec-aware participant — not just "make some HTML" but "produce a Capsule per Core v0.3.0," which is a much sharper instruction.</p>
-
-        <p class="cb-frame-prose">Pointers: the Core spec is <a href="CAPSULE_CORE.md">one page of twelve rules</a> · the implementer-grade <a href="spec/CAPSULE_SPEC.md">full spec</a> covers the contract in detail · <a href="spec/examples/">worked examples</a> show what a conforming Capsule looks like.</p>
-      </div>
-    </article>
-
-    <!-- 00b — Question 2 (was Question 1): What do you do with all that HTML? -->
-    <article class="cb-frame is-observation is-question" data-num="00b" aria-labelledby="frame-00b-title">
-      <span class="cb-frame-num">Question 2</span>
-      <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00b-title"><span class="cb-kicker">Question 2:</span> What do you do with all that HTML?</h2>
-      </div>
-    </article>
-
-    <!-- 00b1 — Answer 2a · viewing strategy (Thariq's FAQ) -->
-    <article class="cb-frame is-observation is-answer" data-num="00b1" aria-labelledby="frame-00b1-title">
-      <span class="cb-frame-num">Answer 2a</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Viewing strategy</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00b1-title"><span class="cb-kicker">Answer 2a:</span> Open it in a browser. Or upload to S3.</h2>
-
-        <figure class="cb-quote">
-          <blockquote><strong>How do I view the HTML file?</strong> I tend just open it in a browser locally (you can ask Claude to open it), or upload to S3 if you want a shareable link.</blockquote>
-          <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> · FAQ</figcaption>
-        </figure>
-
-        <p class="cb-frame-prose">Minimum-viable. The substrate is portable enough that this works for anyone technical — the bytes open in any browser, locally or hosted. The gap it leaves: there's no shareable URL <em>by default</em>. You have to bring your own bucket. Which is the friction <a href="#frame-00b2-title">Answer 2b</a> is designed for.</p>
-      </div>
-    </article>
-
-    <!-- 00b2 — Answer 2b · hosting layer (htmlbin.dev) -->
-    <article class="cb-frame is-observation is-answer" data-num="00b2" aria-labelledby="frame-00b2-title">
-      <span class="cb-frame-num">Answer 2b</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Hosting layer</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00b2-title"><span class="cb-kicker">Answer 2b:</span> Host it on <a href="https://htmlbin.dev/" rel="noopener">htmlbin.dev</a>.</h2>
-
-        <figure class="cb-quote">
-          <blockquote>API for agents to share HTML. Agent-native, end to end. Drop HTML — get a public URL.</blockquote>
-          <figcaption>— htmlbin.dev positioning · Utkarsh Sengar (<a href="https://x.com/utsengar" rel="noopener">@utsengar</a>)</figcaption>
-        </figure>
-
-        <p class="cb-frame-prose">A purpose-built public hosting layer for agent-emitted HTML, launched May 2026 (the same week as htmlcapsule). One human click for the first publish — OAuth device-code flow — and after that the agent owns the bucket and publishes over HTTP. URL shape <code>/p/{slug}</code> with a byte-identical <code>/raw</code> endpoint, small host header + attribution footer (<em>"hosted by htmlbin — content authored by the agent that uploaded it"</em>), and no format discipline imposed: any self-contained HTML works.</p>
-
-        <p class="cb-frame-prose">What makes htmlbin notable for this landscape: it stays out of the format-discipline business. Hosting is one job; format is another. The two layers compose — a valid Capsule can be served by htmlbin or self-hosted, and the format itself stays hosting-agnostic. Multiple independent hosting layers have now converged on the same minimal shape (short URL + byte-identical <code>/raw</code> endpoint + minimal chrome + format-agnostic), which is empirical evidence the <strong>format/host split is real, not theoretical</strong> — documented as <a href="RESEARCH.md">F21 in the research log</a>; descriptive pattern in <a href="spec/HOSTING.md">spec/HOSTING.md</a>. Full archive of htmlbin's positioning + architecture: <a href="voices/utsengar-htmlbin-2026.html">voices/utsengar-htmlbin-2026.html →</a></p>
-      </div>
-    </article>
-
-    <!-- 00c — Answer 2c · custom producer + MinDev registry · maintainer's own answer -->
-    <article class="cb-frame is-observation is-answer is-case-study" data-num="00c" aria-labelledby="frame-00c-title">
-      <span class="cb-frame-num">Answer 2c</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Custom producer + MinDev registry · maintainer's own</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00c-title"><span class="cb-kicker">Answer 2c:</span> <em>Maybe let's take it a step further.</em></h2>
-
-        <p class="cb-frame-prose">When I'm doing my work — for example, creating JPEG/geospatial maps and reports for clients or colleagues — I've designed my map-making tool to emit HTML according to domain-specific logic that conforms to my HTML Capsule spec. That way they get exactly the thing they want and need: it's standalone (doesn't require maintaining a database or datasets), and it's permanent. And it's also HTML, so it's AI/LLM friendly.</p>
-
-        <p class="cb-frame-prose">Does the file size creep up? Yes — but frankly, I don't care. The tradeoff is worth it for me: I get a permanent object that doesn't require me to maintain a database. Plus, it can be used offline, by either me or them.</p>
-
-        <p class="cb-frame-signoff">— Luke Schuss · maintainer · Vancouver · <a href="https://lukeschuss.com" rel="noopener">lukeschuss.com</a></p>
-
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-          <a href="spec/examples/" class="cb-btn">See examples</a>
-        </div>
-      </div>
-    </article>
-
-    <!-- 00d — Observation 2 (file over app, Kepano + Obsidian-plugin critique) -->
-    <article class="cb-frame is-observation" data-num="00d" aria-labelledby="frame-00d-title">
-      <span class="cb-frame-num">Observation 2</span>
-      <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00d-title"><span class="cb-kicker">Observation 2:</span> File over app is as relevant today as it ever was.</h2>
-
-        <p class="cb-frame-lead">The principle, from Steph Ango (Kepano):</p>
-
-        <figure class="cb-quote">
-          <blockquote>If you want to create digital artifacts that last, they must be files you can control, in formats that are easy to retrieve and read.</blockquote>
-          <figcaption>— Steph Ango (<a href="https://x.com/kepano" rel="noopener">@kepano</a>) · <a href="https://stephango.com/file-over-app" rel="noopener">"File over app"</a></figcaption>
-        </figure>
-
-        <p class="cb-frame-prose">But something happened along the way. Obsidian enthusiasts went down a plugin route that, while well-intentioned, began to break the whole thing — or at least make it more fragile. The presentation is such a key part of things: the look, the feel, the layout. When you need to install a bunch of plugins (third-party or otherwise) to get what you want, are you really any better off? You're straight back at <em>app over file</em>.</p>
-      </div>
-    </article>
-
-    <!-- 00e — Observation 3 (HTML diffs are noisy; lineage is the bigger problem) -->
-    <article class="cb-frame is-observation" data-num="00e" aria-labelledby="frame-00e-title">
-      <span class="cb-frame-num">Observation 3</span>
-      <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00e-title"><span class="cb-kicker">Observation 3:</span> HTML diffs are noisy. Lineage is the bigger problem.</h2>
-
-        <p class="cb-frame-lead">The diff problem, from Thariq again:</p>
-
-        <figure class="cb-quote">
-          <blockquote><strong>What about version control?</strong> This is honestly one of the biggest downsides of HTML — HTML diffs are noisy and hard to review compared to Markdown.</blockquote>
-          <figcaption>— Thariq Shihipar · <a href="https://x.com/trq212" rel="noopener">@trq212</a> · FAQ</figcaption>
-        </figure>
-
-        <p class="cb-frame-prose">Fair. Raw HTML diffs are noisy because HTML is closer to a <em>runtime</em> artifact than a writing format. A small visual change can move wrappers, attribute orders, inline styles, scripts, or embedded assets in ways that make a normal Git diff look much larger than the real change.</p>
-
-        <p class="cb-frame-prose">But raw diffs are only one layer of the problem. There are really three separate questions:</p>
-
-        <ol class="cb-frame-list">
-          <li><strong>Raw diff:</strong> what changed in the HTML bytes?</li>
-          <li><strong>Semantic diff:</strong> what changed in the artifact's content, structure, style, data, assets, or runtime behavior?</li>
-          <li><strong>Lineage:</strong> what artifact is this, what version is it, where did it come from, and what does it replace?</li>
-        </ol>
-
-        <p class="cb-frame-prose">The lineage question is the most basic — and the one people most often lose track of. People already know this problem from PDFs: the <code>v1.pdf</code> / <code>v2.pdf</code> / <code>v3-final.pdf</code> / <code>v3-real-final.pdf</code> / <code>v3-real-real-final-USE-THIS.pdf</code> sequence. Not a good system. But it represents something real — people need to know what artifact they're looking at.</p>
-
-        <p class="cb-frame-prose">Chat-hosted artifacts make this worse, not better. Claude's artifacts, ChatGPT's canvas — they don't have a natural versioning system. The artifact just keeps mutating in place as you iterate. You can fork into a new conversation, but the new one doesn't inherit a clean version label or any explicit "this is v3" anchor — it just starts fresh, often with no easy way to refer back to the previous state. The chat keeps going and going; the artifact loses its history.</p>
-
-        <p class="cb-frame-prose">Capsule doesn't claim raw HTML diffs become pleasant. It claims artifacts need identity and lineage first. Once an artifact has a manifest, UUID, version, parents, timestamps, and integrity hashes, tools can build cleaner review surfaces <em>around</em> the HTML instead of forcing humans to review the HTML directly. Identity and lineage are addressable — and they unlock the rest.</p>
-      </div>
-    </article>
-
-    <!-- 00f — Question 3 (was Question 2): How do you keep track of which version? -->
-    <article class="cb-frame is-observation is-question" data-num="00f" aria-labelledby="frame-00f-title">
-      <span class="cb-frame-num">Question 3</span>
-      <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00f-title"><span class="cb-kicker">Question 3:</span> How do you keep track of which version of an HTML file you're working on?</h2>
-      </div>
-    </article>
-
-    <!-- 00f1 — Answer 3a · filename versioning -->
-    <article class="cb-frame is-observation is-answer" data-num="00f1" aria-labelledby="frame-00f1-title">
-      <span class="cb-frame-num">Answer 3a</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Filename versioning</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00f1-title"><span class="cb-kicker">Answer 3a:</span> <code>v1.html</code>, <code>v2.html</code>, <code>v3-final.html</code>, <code>v3-real-final.html</code>.</h2>
-
-        <p class="cb-frame-prose">The default. People rename the file with a version suffix — <code>_v2</code>, <code>_final</code>, <code>_final-final</code>, <code>_real-final-USE-THIS</code>. Almost a joke, but it works because the version lives <em>outside</em> the file: in the filename, in the email subject, in the folder name. People intuit it.</p>
-
-        <p class="cb-frame-prose">The cost is that nothing <em>inside</em> the file knows about its own version. When the file gets renamed, forwarded, copy-pasted into a chat, or unzipped from an archive, the version information goes with the filename — and if the filename gets dropped (or changed by someone trying to "clean up"), the lineage breaks. The artifact can't speak for itself.</p>
-      </div>
-    </article>
-
-    <!-- 00f2 — Answer 3b · UUID + parents[] + capsule_version (identity inside the file) -->
-    <article class="cb-frame is-observation is-answer" data-num="00f2" aria-labelledby="frame-00f2-title">
-      <span class="cb-frame-num">Answer 3b</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Identity + lineage, recorded inside the file</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00f2-title"><span class="cb-kicker">Answer 3b:</span> <code>uuid</code>, <code>capsule_version</code>, <code>parents[]</code> — in the manifest.</h2>
-
-        <p class="cb-frame-prose">Each Capsule carries three identity fields inside its own inline JSON manifest:</p>
-
-        <p class="cb-frame-prose"><code>uuid</code> — a stable identifier for <em>this</em> file (immutable; mint once, never change).<br>
-          <code>capsule_version</code> — a version string the producer maintains (semver-friendly; bumped on each meaningful change).<br>
-          <code>parents[]</code> — the UUIDs and titles of capsules this one was forked or derived from.</p>
-
-        <p class="cb-frame-prose">So the artifact knows what it is and what it descended from, regardless of filename. Paste a Capsule into a new editing session; the next Capsule the producer emits records the parent UUID in its own <code>parents[]</code> array. The lineage chain stays intact across renames, forwards, and zip files — because identity lives in the bytes, not the filename.</p>
-
-        <p class="cb-frame-prose">This solves <em>which version is this</em> and <em>where did it come from</em>. It doesn't yet solve the HTML-diffs problem proper — for that, see <a href="#frame-00f3-title">Answer 3c</a> on the review surfaces that can be built on top of this identity foundation. <a href="spec/CAPSULE_SPEC.md">Full spec</a> · <a href="CAPSULE_CORE.md">Core (one page)</a>.</p>
-
-        <p class="cb-frame-punchline"><strong>Git</strong> tracks files. <strong>Capsule</strong> tracks artifacts.</p>
-      </div>
-    </article>
-
-    <!-- 00f3 — Answer 3c · review surfaces layered on the spec -->
-    <article class="cb-frame is-observation is-answer" data-num="00f3" aria-labelledby="frame-00f3-title">
-      <span class="cb-frame-num">Answer 3c</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Spec-evolution path · review surfaces layered on the spec (open work)</p>
-        <h2 class="cb-frame-title is-observation-h" id="frame-00f3-title"><span class="cb-kicker">Answer 3c:</span> A Capsule-aware diff over manifest + data + content, layered on the spec.</h2>
-
-        <p class="cb-frame-punchline">The HTML <strong>is the artifact</strong>. The manifest <strong>is the review surface</strong>.</p>
-
-        <p class="cb-frame-prose">Raw HTML diffs are noisy because the file is dense with runtime detail. But a Capsule has five required blocks, each addressable on its own — and a <code>capsule-diff</code> tool layered on the spec doesn't need to make humans read raw HTML at all. It can compare each block separately and present the deltas at the right grain. There are several reasonable review surfaces, with very different signal-to-noise ratios:</p>
-
-        <table class="cb-diff-table" aria-label="Review surfaces for Capsule diffs">
-          <thead>
-            <tr><th>Review layer</th><th>What it compares</th><th>Why it helps</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Raw HTML diff</td>    <td>Source bytes</td>                                          <td>Complete, but noisy</td></tr>
-            <tr><td>Manifest diff</td>    <td>UUIDs, versions, parents, integrity, declared metadata</td><td>High-signal artifact review</td></tr>
-            <tr><td>Content diff</td>     <td>Extracted text / content regions</td>                     <td>Human-readable editorial review</td></tr>
-            <tr><td>Data diff</td>        <td>Embedded JSON, tables, datasets, structured payloads</td> <td>Shows factual / data changes</td></tr>
-            <tr><td>Style diff</td>       <td>CSS blocks, tokens, layout declarations</td>              <td>Separates visual changes from content changes</td></tr>
-            <tr><td>Asset diff</td>       <td>Images, fonts, media, embedded files by hash</td>         <td>Shows whether bundled materials changed</td></tr>
-            <tr><td>Runtime diff</td>     <td>Scripts, permissions, interaction logic</td>              <td>Flags behavior changes</td></tr>
-            <tr><td>Render diff</td>      <td>Screenshot or DOM snapshot before/after</td>              <td>Shows actual visual impact</td></tr>
-          </tbody>
-        </table>
-
-        <p class="cb-frame-prose">Output from such a tool might look like:</p>
-
-        <p class="cb-frame-prose"><code>Capsule diff: a.html → b.html<br>
-          · Manifest: capsule_version 1.0.0 → 1.1.0; +1 parent<br>
-          · Data: 3 entries added, 1 modified<br>
-          · Content: +120 chars of visible text<br>
-          · Style: no change<br>
-          · Runtime: no change<br>
-          · Integrity: content_hash changed (expected; manifest re-stamped)</code></p>
-
-        <p class="cb-frame-prose">Not built yet. Parked in <a href="spec/CAPSULE_SPEC.md">spec Appendix E</a> candidates, pending empirical pressure — a real producer or reviewer hitting a real diff-review problem worth solving. When it materializes, the diff tool sits as a <em>layer on the spec</em>, not a spec change: the spec's existing structural discipline (manifest JSON, data JSON, pre-rendered content, bounded styles/runtime) is exactly the foundation that makes a semantic diff tractable. Same way <code>git log --oneline</code> is a tool layered on git's commit graph, not a change to the graph itself.</p>
-      </div>
-    </article>
-
-    <!-- 00g — Observation 4 (live editing / collab layer is emerging) -->
-    <article class="cb-frame is-observation" data-num="00g" aria-labelledby="frame-00g-title">
-      <span class="cb-frame-num">Observation 4</span>
-      <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00g-title"><span class="cb-kicker">Observation 4:</span> A live-editing and collaboration layer is emerging around AI-emitted HTML.</h2>
-
-        <p class="cb-frame-lead">Three projects, three different shapes of "editor":</p>
-
-        <p class="cb-frame-prose"><strong><a href="https://www.anthropic.com/news/claude-design-anthropic-labs" rel="noopener">Claude Design</a></strong> (Anthropic Labs, launched April 17, 2026) — Claude generates production-ready HTML / CSS / JS from natural-language descriptions inside a chat-and-preview interface. Renders in a preview pane alongside the conversation; standalone HTML is exportable. Single-user iteration loop (you + Claude).</p>
-
-        <p class="cb-frame-prose"><strong><a href="https://html-docs.com/" rel="noopener">html-docs.com</a></strong> (Raunaq Bhutoria) — agents publish HTML pages; humans review with inline comments; agents read the comments and revise. The async agent ↔ human review loop named as a workflow primitive.</p>
-
-        <p class="cb-frame-prose"><strong><a href="https://workplane.co/" rel="noopener">Workplane</a></strong> (Matan / <a href="https://github.com/matanrak" rel="noopener">matanrak</a>) — same shape as html-docs; MCP-first; multi-agent (Claude Code, Codex, Cursor, Devin, Claude Desktop). Open-source agent skill at <code>work-plane/workplane-skills</code> (MIT). Independent convergence with html-docs.com on the same publish → comment → revise loop — <a href="RESEARCH.md">F22 in the research log</a>.</p>
-
-        <p class="cb-frame-prose">Capsule sits <em>downstream</em> of all three. It's the seal step, not the edit step. The format is editor-agnostic: a Capsule can swallow output from Claude Design, from html-docs, from Workplane, from a hand-written compiler script — all the same envelope shape. The producer kind (<code>llm</code> / <code>compiler</code> / <code>hybrid</code> / <code>human</code>) is declared in the manifest; the editor that produced it is otherwise invisible.</p>
-
-        <p class="cb-frame-prose">Whether the project itself ever grows a collaboration layer is an open question. The maintainer's MinDev registry could plausibly host lightweight commenting on hosted Capsules — read-only annotations alongside the bytes, not co-editing of the bytes — and that would be a <em>registry</em> concern, not a format concern. The spec stays out of the editor business, same way it stays out of the host business.</p>
-      </div>
-    </article>
-
-    <!-- 00h — Observation 5 (no easy way to get chat-hosted content out of an LLM platform; share links don't compose) -->
-    <article class="cb-frame is-observation" data-num="00h" aria-labelledby="frame-00h-title">
-      <span class="cb-frame-num">Observation 5</span>
-      <div class="cb-frame-inner">
-        <h2 class="cb-frame-title is-observation-h" id="frame-00h-title"><span class="cb-kicker">Observation 5:</span> There's no easy way to get chat-hosted content out of an LLM platform.</h2>
-
-        <p class="cb-frame-prose">Share links exist on every platform — ChatGPT, Claude, Gemini, and the rest. They've existed for years. The links work for <em>viewing</em>: anyone with the URL can read the conversation in the platform that minted it. But the content stays locked to the host. The formatting, the navigation, the ability to continue the thread — all of it lives inside whatever app the share link belongs to.</p>
-
-        <p class="cb-frame-prose">Try to hand a ChatGPT share link to Claude (or the other way around). It doesn't compose. The receiving LLM might fetch and read the URL, but it doesn't get the structured conversation — no message boundaries, no nesting, no thread state, no way to "pick up where the other one left off." Share links are read-only viewers for the platform that produced them, not portable artifacts.</p>
-
-        <p class="cb-frame-prose">This is part of what the file-as-artifact discipline (<a href="#frame-00-title">Observations 1</a> and <a href="#frame-00d-title">2</a>; <a href="#frame-00a2-title">Answer 1b</a>) is a response to. A Capsule produced from a Claude conversation opens the same in any browser, can be handed to any LLM, can be archived, can be forked — because the file <em>is</em> the artifact. The host that produced it doesn't need to be in the loop. That's the practical difference between "I shared a link" and "I shared a file."</p>
-      </div>
-    </article>
-
-    <!-- 01 — Discipline (left, technical, default paper) -->
-    <article class="cb-frame" data-num="01" aria-labelledby="frame-01-title">
-      <span class="cb-frame-num">01 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Discipline · research-led</p>
-        <h2 class="cb-frame-title" id="frame-01-title">A discipline for <em>HTML artifacts.</em></h2>
-        <p class="cb-frame-sub">AI tools emit HTML by default. Capsule is the contract that makes those artifacts durable, inspectable, and re-readable years from now.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-          <a href="https://github.com/bigfancygarden/htmlcapsule" class="cb-btn">View on GitHub</a>
-        </div>
-        <div class="cb-frame-stats">
-          <div class="cb-stat-mini"><span class="v">12</span><span class="l">rules</span></div>
-          <div class="cb-stat-mini"><span class="v">5</span><span class="l">required blocks</span></div>
-          <div class="cb-stat-mini"><span class="v">0</span><span class="l">network deps</span></div>
-        </div>
-      </div>
-    </article>
-
-    <!-- 02 — Sealed / outcome-led (centered, warm cream) -->
-    <article class="cb-frame is-centered" data-num="02" aria-labelledby="frame-02-title">
-      <span class="cb-frame-num">02 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Outcome-led</p>
-        <h2 class="cb-frame-title" id="frame-02-title">Sealed HTML. <em>Built to last.</em></h2>
-        <p class="cb-frame-sub">One file. No network. Built to be re-opened years from now — by humans, and by the LLMs they ask to continue the work.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-        </div>
-      </div>
-    </article>
-
-    <!-- 03 — Substrate question (left, cool gray) -->
-    <article class="cb-frame" data-num="03" aria-labelledby="frame-03-title">
-      <span class="cb-frame-num">03 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Substrate · question</p>
-        <h2 class="cb-frame-title" id="frame-03-title">HTML is the substrate. <em>Now what?</em></h2>
-        <p class="cb-frame-sub">An open spec for what to do with the HTML that AI tools already give you — so it survives the chat it was born in.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-        </div>
-      </div>
-    </article>
-
-    <!-- 04 — Contract / interop-first (left, pale blue) -->
-    <article class="cb-frame" data-num="04" aria-labelledby="frame-04-title">
-      <span class="cb-frame-num">04 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Contract · interop-first</p>
-        <h2 class="cb-frame-title" id="frame-04-title">A contract for <em>HTML artifacts.</em></h2>
-        <p class="cb-frame-sub">Manifest. Provenance. Integrity. No network. The same envelope whether an LLM, a build script, or a human writes it.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-          <a href="spec/CAPSULE_SPEC.md" class="cb-btn">Full spec</a>
-        </div>
-      </div>
-    </article>
-
-    <!-- 05 — Max-short / benefit-led (centered, dark inverted, huge type) -->
-    <article class="cb-frame is-centered is-dark" data-num="05" aria-labelledby="frame-05-title">
-      <span class="cb-frame-num">05 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Max-short · benefit-led</p>
-        <h2 class="cb-frame-title is-huge" id="frame-05-title">HTML you can keep.</h2>
-        <p class="cb-frame-sub">Sealed. Self-contained. Provenance-bearing. One file you can email, archive, or fork.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-        </div>
-      </div>
-    </article>
-
-    <!-- 06 — PDF comparison (left, sand) -->
-    <article class="cb-frame" data-num="06" aria-labelledby="frame-06-title">
-      <span class="cb-frame-num">06 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Comparison · familiar anchor</p>
-        <h2 class="cb-frame-title" id="frame-06-title">Like a PDF, <em>but inspectable.</em></h2>
-        <p class="cb-frame-sub">PDFs are sealed and closed. Capsules are sealed and open — programmable, inspectable, re-renderable. The HTML profile for work worth preserving.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-        </div>
-      </div>
-    </article>
-
-    <!-- 07 — Mark-first / brand-led (centered, soft blue, big mark + wordmark) -->
-    <article class="cb-frame is-centered is-mark-first" data-num="07" aria-labelledby="frame-07-title">
-      <span class="cb-frame-num">07 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Visual-led · brand-first</p>
-        <svg class="cb-frame-bigmark" viewBox="0 0 32 18" aria-hidden="true" focusable="false">
-          <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="1.8"/>
-          <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
-            <path d="M 13.5 13 L 18.5 5"/>
-            <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
-          </g>
-        </svg>
-        <h2 class="cb-frame-title is-wordmark" id="frame-07-title">HTML Capsule</h2>
-        <p class="cb-frame-sub">A profile of HTML for sealed, self-contained artifacts. One file. Twelve rules. Zero network.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-        </div>
-      </div>
-    </article>
-
-    <!-- 08 — Problem question / why-this-exists (left, deeper paper) -->
-    <article class="cb-frame" data-num="08" aria-labelledby="frame-08-title">
-      <span class="cb-frame-num">08 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Problem · why-this-exists</p>
-        <h2 class="cb-frame-title" id="frame-08-title">Where does <em>AI's HTML</em> go?</h2>
-        <p class="cb-frame-sub">Capsule is the discipline that makes AI-generated HTML durable, inspectable, and shareable beyond the platform that produced it.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-        </div>
-      </div>
-    </article>
-
-    <!-- 09 — Context-led / plain-English on-ramp (left, near-white warm; external-review pick) -->
-    <article class="cb-frame is-context-led" data-num="09" aria-labelledby="frame-09-title">
-      <span class="cb-frame-num">09 / 09</span>
-      <div class="cb-frame-inner">
-        <p class="cb-frame-tag">Context-led · plain-English on-ramp</p>
-        <h2 class="cb-frame-title" id="frame-09-title">HTML you can keep.</h2>
-        <p class="cb-frame-sub">AI tools increasingly produce HTML: reports, maps, demos, dashboards, visual notes, and interactive documents.</p>
-        <p class="cb-frame-sub">HTML Capsule is an open spec for saving that work as one self-contained <code>.html</code> file. A Capsule includes its own content, styles, metadata, provenance, and validation rules, with no required network access.</p>
-        <p class="cb-frame-sub">It is not a new file format. It is a stricter way to package HTML so the work can be archived, shared, inspected, and continued later — by humans, tools, and LLMs.</p>
-        <p class="cb-frame-tagline">One file. No network. Built to last.</p>
-        <div class="cb-frame-cta">
-          <a href="CAPSULE_CORE.md" class="cb-btn primary">Read the spec <span class="arrow">→</span></a>
-          <a href="spec/examples/" class="cb-btn">View examples</a>
-        </div>
-      </div>
-    </article>
-
+  <section aria-labelledby="what-title">
+    <p class="eyebrow">What it is</p>
+    <h2 id="what-title">One file. Manifest, data, style, root, runtime — all inlined.</h2>
+    <p>AI tools emit HTML by default: reports, dashboards, notes, demos. A Capsule is what that HTML becomes when it's sealed for keeping. The same envelope whether an LLM, a build script, or a human authored it — readable in five years, on any device, without a server.</p>
   </section>
 
-  <div class="cb-shell cb-shell-foot">
-    <details class="cb-about" id="about-capsule">
-      <summary>About this page · exports · manifest</summary>
-      <div class="cb-about-body">
-        <p>This page is itself a Capsule per Core v0.3.0 (full spec v0.3.5). Five required blocks, all inline. No network, no analytics. Validates against the reference validator. Mode: <code>hero_framing_exploration</code> — the eight numbered sections above are candidate framings; this layout is temporary.</p>
-        <div class="cb-export" role="group" aria-label="Export actions">
-          <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
-          <button type="button" data-capsule-action="copy_as_markdown">Copy variants as Markdown</button>
-          <button type="button" data-capsule-action="copy_as_prompt">Copy prompt fragment</button>
-          <button type="button" data-capsule-action="download_json">Download JSON</button>
-          <button type="button" data-capsule-action="download_capsule">Download capsule (.html)</button>
-          <button type="button" data-capsule-action="print_to_pdf">Print · PDF</button>
-        </div>
-        <h4>Manifest</h4>
-        <pre id="manifest-pretty">Loading manifest…</pre>
-      </div>
-    </details>
+  <section aria-labelledby="shape-title">
+    <p class="eyebrow">How it's shaped</p>
+    <h2 id="shape-title">Five required blocks. Twelve rules. Zero ambiguity.</h2>
+    <div class="demo">
+      <pre aria-label="Capsule structure"><span class="c">&lt;!-- A valid Capsule, in outline --&gt;</span>
+&lt;<span class="k">script</span> id="capsule-manifest" type="application/json"&gt;
+  { "uuid": "...", "title": "...", ... }
+&lt;/<span class="k">script</span>&gt;
 
-    <footer class="cb-foot-slim" role="contentinfo">
-      <nav class="cb-foot-slim-links" aria-label="Footer navigation">
-        <a href="CAPSULE_CORE.md">Core spec</a>
-        <a href="spec/CAPSULE_SPEC.md">Full spec</a>
-        <a href="RESEARCH.md">Research log</a>
-        <a href="notes.html">Notes (journey)</a>
-        <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
-        <a href="#about-capsule">About this page</a>
-      </nav>
-      <div class="cb-colophon">
-        <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.15.1 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+&lt;<span class="k">script</span> id="capsule-data" type="application/json"&gt;
+  { ... your snapshot, free-form ... }
+&lt;/<span class="k">script</span>&gt;
+
+&lt;<span class="k">style</span> id="capsule-style"&gt; ... &lt;/<span class="k">style</span>&gt;
+
+&lt;<span class="k">main</span> id="capsule-root"&gt;
+  <span class="c">&lt;!-- the readable artifact, pre-rendered --&gt;</span>
+&lt;/<span class="k">main</span>&gt;
+
+&lt;<span class="k">script</span> id="capsule-runtime"&gt; ... &lt;/<span class="k">script</span>&gt;</pre>
+      <div class="anatomy-card" aria-label="Capsule anatomy">
+        <div class="anatomy-head">
+          <h3>Anatomy <span class="light">· one file, five inline blocks</span></h3>
+          <span class="meta">CAPSULE_CORE.md · rule 01</span>
+        </div>
+        <div class="anatomy-grid">
+          <div class="block-row is-emphasis">
+            <span class="n">01</span>
+            <span class="k">capsule-manifest</span>
+            <span class="d">Identity, provenance, integrity</span>
+            <span class="opt">required</span>
+          </div>
+          <div class="block-row">
+            <span class="n">02</span>
+            <span class="k">capsule-data</span>
+            <span class="d">The snapshot, as JSON</span>
+            <span class="opt">required</span>
+          </div>
+          <div class="block-row">
+            <span class="n">03</span>
+            <span class="k">capsule-style</span>
+            <span class="d">All CSS, inlined</span>
+            <span class="opt">required</span>
+          </div>
+          <div class="block-row">
+            <span class="n">04</span>
+            <span class="k">capsule-root</span>
+            <span class="d">The rendered artifact</span>
+            <span class="opt">required</span>
+          </div>
+          <div class="block-row is-optional">
+            <span class="n">05</span>
+            <span class="k">capsule-runtime</span>
+            <span class="d">Optional enhancement</span>
+            <span class="opt">optional</span>
+          </div>
+        </div>
       </div>
-    </footer>
-  </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="not-title">
+    <p class="eyebrow">What this is not</p>
+    <h2 id="not-title">Three lines of fence-posting.</h2>
+    <div class="not-this">
+      <ul>
+        <li>Not a standard you have to comply with. A loose discipline.</li>
+        <li>Not anti-platform. Anti-context-loss.</li>
+        <li>Not finished. Active research.</li>
+      </ul>
+    </div>
+  </section>
+
+  <details class="about" id="about">
+    <summary>About this page</summary>
+    <div class="about-body">
+      <p>This page is itself a Capsule per Core v0.3.0. Five required blocks, all inline. No network, no analytics. v2 — forked from the original landing sketch; v0.3.0 applies the HTML Capsule design system.</p>
+      <div class="row" role="group" aria-label="Exports">
+        <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
+        <button type="button" data-capsule-action="download_json">Download JSON</button>
+        <button type="button" data-capsule-action="download_capsule">Download capsule</button>
+        <button type="button" data-capsule-action="print_to_pdf">Print to PDF</button>
+      </div>
+      <pre id="manifest-view" aria-label="Capsule manifest JSON">Loading manifest…</pre>
+    </div>
+  </details>
+
+  <footer class="site" role="contentinfo">
+    <nav aria-label="Footer">
+      <a href="CAPSULE_CORE.md">Spec</a>
+      <a href="spec/CAPSULE_SPEC.md">Full spec</a>
+      <a href="spec/examples/">Examples</a>
+      <a href="https://github.com/bigfancygarden/htmlcapsule">GitHub</a>
+    </nav>
+    <span class="meta">Capsule v0.3.0 · spec 0.3.0 · open source (MIT)</span>
+  </footer>
 </main>
 
-<div class="cb-toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script id="capsule-runtime">
 (function () {
   'use strict';
-
   var manifest = JSON.parse(document.getElementById('capsule-manifest').textContent);
   var data = JSON.parse(document.getElementById('capsule-data').textContent);
 
-  var manifestEl = document.getElementById('manifest-pretty');
-  if (manifestEl) {
-    manifestEl.textContent = JSON.stringify(manifest, null, 2);
-  }
+  var manifestView = document.getElementById('manifest-view');
+  if (manifestView) manifestView.textContent = JSON.stringify(manifest, null, 2);
 
   var toastEl = document.getElementById('toast');
   var toastTimer = null;
   function toast(msg) {
     if (!toastEl) return;
     toastEl.textContent = msg;
-    toastEl.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+    toastEl.classList.add('visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('visible'); }, 2200);
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
   }
 
   function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      return navigator.clipboard.writeText(text).then(
-        function () { return true; },
-        function () { return fallback(text); }
-      );
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function () {
+        if (!fallbackCopy(text)) throw new Error(`Copy failed`);
+      });
     }
-    return Promise.resolve(fallback(text));
-  }
-  function fallback(text) {
-    try {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed'; ta.style.left = '-9999px';
-      document.body.appendChild(ta); ta.select();
-      var ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      return ok;
-    } catch (e) { return false; }
+    return new Promise(function (resolve, reject) {
+      if (fallbackCopy(text)) resolve(); else reject(new Error(`Copy failed`));
+    });
   }
 
   function downloadBlob(filename, mime, content) {
     var blob = new Blob([content], { type: mime });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
-    a.href = url; a.download = filename;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-  }
-
-  // The prompt fragment lives in CAPSULE_CORE.md; we duplicate it here for copy_as_prompt.
-  var PROMPT_FRAGMENT = `Produce a Capsule per Core v0.3.0.
-Output a single .html file with five inline blocks:
-capsule-manifest, capsule-data, capsule-style,
-capsule-root, capsule-runtime.
-
-Set generator.kind to "llm" and version to your model ID.
-Include the "about" capability plus copy_as_json.
-Pre-render content in HTML (rule 12). Use backtick
-template literals for multi-line strings (rule 11).
-
-[paste the twelve rules from CAPSULE_CORE.md]
-
-Data to embed:
-[paste your data]`;
-
-  function buildMarkdown() {
-    var lines = [];
-    var push = function (s) { lines.push(s); };
-    push(`# ${data.title}`);
-    push(``);
-    push(`> ${data.intro.title} ${data.intro.sub}`);
-    push(``);
-    push(`Mode: \`${data.mode}\` · Spec: Core ${data.spec.core} · Full ${data.spec.full}`);
-    push(``);
-    push(`## Variants`);
-    push(``);
-    data.variants.forEach(function (v) {
-      push(`### ${v.num} — ${v.title}`);
-      push(``);
-      push(`_${v.framing}_`);
-      push(``);
-      push(v.sub);
-      push(``);
-    });
-    push(`---`);
-    push(``);
-    push(data.not_this);
-    push(``);
-    push(`_capsule:landing/v${manifest.capsule_version} · uuid ${manifest.uuid} · sealed ${manifest.created_at.slice(0, 10)} · mode: ${data.mode}_`);
-    return lines.join(`\n`);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 250);
   }
 
   function serializeCapsule() {
-    var doctype = `<!DOCTYPE html>`;
-    var html = document.documentElement.outerHTML;
-    return `${doctype}\n${html}`;
+    return `<!DOCTYPE html>\n` + document.documentElement.outerHTML;
   }
 
   var actions = {
     copy_as_json: function () {
-      return copyText(JSON.stringify(data, null, 2)).then(function () {
-        toast(`Copied data as JSON · ${Object.keys(data).length} keys`);
-      });
-    },
-    copy_as_markdown: function () {
-      var md = buildMarkdown();
-      return copyText(md).then(function () {
-        toast(`Copied as Markdown · ${md.length.toLocaleString()} chars`);
-      });
-    },
-    copy_as_prompt: function () {
-      return copyText(PROMPT_FRAGMENT).then(function () {
-        toast(`Copied prompt fragment · ${PROMPT_FRAGMENT.length} chars`);
-      });
+      copyText(JSON.stringify(data, null, 2)).then(
+        function () { toast(`Copied data as JSON`); },
+        function (err) { toast(err.message); }
+      );
     },
     download_json: function () {
       downloadBlob(`capsule-data-${manifest.uuid.slice(0, 8)}.json`, `application/json`, JSON.stringify(data, null, 2));
-      toast(`Downloaded capsule-data.json`);
+      toast(`Downloaded JSON`);
     },
     download_capsule: function () {
-      var name = `htmlcapsule-landing-${manifest.uuid.slice(0, 8)}.html`;
+      var name = `htmlcapsule-landing-v2-${manifest.uuid.slice(0, 8)}.html`;
       downloadBlob(name, `text/html`, serializeCapsule());
       toast(`Downloaded ${name}`);
     },
@@ -1820,11 +606,6 @@ Data to embed:
       e.preventDefault();
       try { actions[name](); } catch (err) { toast(`Error: ${err.message}`); }
     });
-  });
-
-  manifest.capabilities.forEach(function (cap) {
-    if (cap === 'about') return;
-    if (!actions[cap]) console.warn(`[capsule] declared capability "${cap}" has no runtime handler — rule 7 violation`);
   });
 })();
 </script>

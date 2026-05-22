@@ -888,6 +888,62 @@ This is the largest single-batch empirical sample of a single LLM producer kind 
 - [F23](#f23-urn-not-url-qr-encoding--empirical-validation-of-a-deliberate-spec-choice) — URN-not-URL QR encoding choice; this batch is the largest sample confirming producers respect that default
 - [CAPSULE_CORE.md "How to ask an LLM to produce a capsule"](CAPSULE_CORE.md) — the produce-prompt where the "use canonical name" reminder was added
 
+### F26: Core spec accommodates 10 MB domain-specific media capsules without rule changes
+
+**Date:** 2026-05-21
+
+**Source:** One-off domain-specific song capsule experiment — Paul McCartney & Wings, "Nineteen Hundred and Eighty-Five" (1973). A 7.6 MB MP3 plus Wikipedia-sourced metadata (personnel, role on *Band on the Run*, covers, critical reception, live history, composition genesis quote) plus a transcribed lyric sheet, sealed as a 10.16 MB self-contained HTML capsule (UUID `e26b58da-a3b2-4675-aa33-78511ad93e60`, currently at `capsule_version` 1.1.0). Shipped 25/25 against the reference validator on first build with zero spec changes required.
+
+**Finding.** Core spec v0.3.0 plus the existing supplementary recipes (QR convention, CSP defaults, capability vocabulary) is sufficient for domain-specific binary-media capsules at the 10 MB scale. Spec held at every dimension tested:
+
+- **Domain via `type` field:** `type: "song"` — Core accepts arbitrary domain values without modification; the producer-population pattern from F25 extends straightforwardly to media domains.
+- **CSP delta is minimal:** `media-src data:` is the only addition required to the default recipe (default-src 'none' baseline; img-src data: already present for QR codes). No new directives.
+- **Capability vocabulary extends naturally:** `media.play_audio` and `media.download_audio` follow the established `<domain>.<action>` convention added in v0.3.2; Rule 7 markers (`data-capsule-action="media.play_audio"` on the `<audio>` element) were validated heuristically as expected.
+- **Size limits hold under-cap:** 10.16 MB sits under both the 15 MB soft-warn tier and the 20 MB hard cap. Reference validator does not penalize binary-heavy capsules under-cap; size scaling is graceful.
+- **Round-trip extraction works:** the `media.download_audio` capability recovers the embedded MP3 byte-identically via a `dataUriToBlob` runtime helper — the file is genuinely portable, not just embedded-for-display. The downstream "this is just a file" mental model from F21 holds even for 10 MB media.
+- **Aesthetic adapts to content domain:** producer (hybrid: Claude Opus 4.7 + maintainer) selected warm earth tones (`#f4ebd9` background, `#b8421a` accent) appropriate to a 1970s rock recording. Extends F25's "aesthetic adapts to content domain" finding from text-only ChatGPT capsules into hybrid-produced media capsules — the pattern is producer-kind-agnostic.
+- **Version semantics in practice:** the song capsule went v1.0.0 (audio + metadata only) → v1.1.0 (added transcribed lyric sheet) on the same UUID via `capsule_version` bump alone. No `parents[]` chaining was needed because nothing was distributed between versions.
+
+**Implication for the spec.** Core is not under-specified for binary-media capsules at this scale. No new rules needed; no Core changes triggered. The fidelity gradient between LLM-produced and compiler-produced capsules (per F25) remains the open work, not size or domain scaling.
+
+**Implication for parked Appendix E.11 fields.** The song-with-lyrics-added scenario lived through the exact use case the parked `supersedes[]` / `derived_from[]` / `change_summary` fields (raised by external review, parked in spec Appendix E.11 pending real-producer pressure) would address — same UUID, content change worth signaling to downstream holders, current solution is just a `capsule_version` bump. Since the capsule was *not* distributed between v1.0.0 and v1.1.0, the parked fields stayed parked correctly: empirical pressure point is now recorded for the next time a producer needs to signal "this supersedes my previously-shared v1.0.0" without minting a new UUID.
+
+**Cross-reference.** The producer for this capsule was the in-conversation Claude Opus 4.7 hybrid pattern (the same producer pattern as the project's landing page itself, per its `generator` block). This is the first F-finding from a deliberately one-off, domain-specific, copyright-laden capsule that was not committed to the public repo — a different empirical-pressure source than F25's open-corpus producer population, and a useful complement.
+
+**Related findings:**
+- [F19](#f19-design-tool-integration-experiment--claude-design-with-capsule_coremd-attached) — Claude Design as first independent LLM-kind producer reaching conformance from Core alone
+- [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) — Mintel as first compiler-kind production capsule
+- [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates) — producer-population reads supplementary guidance; aesthetic adapts to content domain (the source claim this finding extends to media)
+- [Spec Appendix E.11](spec/CAPSULE_SPEC.md) — parked `supersedes[]` / `derived_from[]` / `change_summary` fields awaiting empirical pressure
+
+### F27: The landing-page genre tension for applied-research projects resolves by splitting, not merging
+
+**Date:** 2026-05-22
+
+**Source.** The May 2026 landing-page exploration arc on this project — from `index.html` v10.x through v13.0.0, plus four comparison sketches (`landing-sketch.html` v1/v2, `research-sketch.html` v1/v2, `positioning-sketch.html`) — and three independent external reads (devil's-advocate critique pass, the in-flight Claude landing-agent's hero pick during the parallel-sketch experiment, and a ChatGPT Deep Research site survey). The maintainer captured the tension directly during the arc: *"it's hard to create a landing page for something which is, at its heart, research, albeit applied."*
+
+**Finding.** A landing page for an applied-research project pays a real cost trying to do both jobs at once. Landing pages convert (one claim, one CTA, one demo, optimize for click); research pages persuade (cite everything, walk the argument, optimize for "you can verify this"). When a single page tries to do both, it pays both costs and converts on neither. The exploration arc tried all three pure-genre commitments plus the hybrid before settling:
+
+1. **Hybrid** (research narrative + landing elements in one page) — `index.html` through v12.0.0. Numbered Observations / Questions / Answers + nine hero candidates + CTAs + research apparatus all on one surface. The genre tension was visible to every reader: research apparatus showed through landing veneer; landing apparatus interrupted research depth. Both genres paid for the other.
+2. **Pure landing** (Stripe / Linear stripped) — `landing-sketch.html` / `landing-sketch-v2.html`. Conversion-shaped, ~9% of the prose volume. Lost the research argument; "research project" signal collapsed to "yet another file format."
+3. **Pure research-paper** (NeRF-style academic) — `research-sketch.html` / `research-sketch-v2.html`. Author block / abstract / numbered findings / methods / related work / cite-this-work. Lost the conversion shape; the word "Abstract" reads as "not for you" to non-research audiences.
+4. **Synthesis** (positioning-led, lifecycle-diagram-centered) — `positioning-sketch.html`. Pain-first hero (*"Your AI work shouldn't die when the chat closes."*), lifecycle SVG as the centerpiece. The most novel of the single-page options; still asks one URL to carry both audiences.
+
+**The resolution that worked.** The two-page split — listed as "Option B" / "Option D" during the exploration but consistently underweighted because splitting *feels* like the hedge move. It isn't. The production landing (`index.html` at v13.0.0, UUID `7d1a1ac8`) is the pure-landing commit, optimized for conversion. The full research-narrative is preserved as a separately-accessible page (`exploration.html`, UUID `881fed04`), optimized for depth. Same UUID lineage (via `parents[]`); distinct identities. Each page is genre-pure; each page pays only its own genre's cost.
+
+**Implication.** The framing "decide between landing-genre and research-genre" was wrong all along — it presumed one URL. The right framing was "decide which page is which." The genre tension dissolves when you stop asking one URL to carry both audiences.
+
+**Generalization.** This pattern likely transfers to any applied-research project with a mixed audience (technical / general / research-leaning). Front door optimized for *"what is this and why should I care in 30 seconds"*; deep page optimized for *"I'm bought in and want the full argument with citations."* Cross-link explicitly. Don't try to merge.
+
+**Method observation.** Three independent reads converged on the split — devil's-advocate critique, the landing-agent's hero pick (which selected "HTML you can keep." as the strongest single claim, implying genre commitment), the ChatGPT Deep Research review (which framed the project as research that doesn't need a sales-y landing). When multiple independent reads converge on a structural conclusion that you'd been resisting (because it feels like a hedge), that convergence is a stronger signal than any single read. Worth tracking as a methodological pattern: *external review convergence on a structural decision is empirical pressure even when the decision feels like cowardice.*
+
+**Related findings:**
+- [F18](#f18-peer-review-2026-05-19--sharpest-framing-landscape-position-and-trust-model-gaps) — peer review as a source of structural framing pressure (same kind of empirical-pressure pattern operating at the spec level)
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — same split-instead-of-merge pattern at the hosting layer; when two roles are tangled, split first
+- [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates) — the maintainer's research-method post-mortem on external-LLM review as a recurring source of design pressure
+- [CHANGELOG `[Landing decision — v13.0.0]`](CHANGELOG.md) — the operational record of the commit, including the parents[] chain and the role assignment for `exploration.html`
+- [`design/proposal.html`](design/proposal.html) — the design memo from Claude Design that synthesized the landing direction (anti-context-loss pain framing + lifecycle layer + indigo brand) before the commitment
+
 ## Open questions
 
 In rough priority:
