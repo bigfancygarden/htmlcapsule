@@ -849,6 +849,45 @@ F24 didn't come from a tool, a capsule, or an external piece. It came from the m
 - [spec/HOSTING.md "Hosts vs. registries"](spec/HOSTING.md) — the compliance contract sketch this finding motivated
 - [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin) — host-pattern convergence; the compliance contract makes explicit what F21 observed implicitly
 
+### F25: ChatGPT producer-population reads Core supplementary guidance reliably; aesthetic adapts to content domain; legacy "Artifact Capsule" wording persists in user-side prompt templates
+
+**Date:** 2026-05-21
+
+A batch of 7+ ChatGPT-generated capsules (GPT-5.5 Thinking; conversation summaries across varied domains — hands-free coding workflows, geological target reinterpretation, Indigenous-rights conversation, design-award fit assessment, propane fire-pit purchase brief, Kia Sedona vs pickup decision, Swedish mining permits, Colombian pension-refund letter) were reviewed against Core v0.3.0. All produced from the user's prompt template *"Produce an Artifact Capsule per the Core spec (attached) summarizing this conversation."*
+
+This is the largest single-batch empirical sample of a single LLM producer kind working from Core v0.3.0 to date. Five distinct findings emerged.
+
+**1. All five required blocks present.** Rule 2 (no network) and Rule 12 (pre-rendered content) honored across every capsule in the batch. Multi-producer interop validated yet again at scale.
+
+**2. Rule 4 supplementary QR-code guidance followed faithfully across the population.** Every capsule embeds a QR encoded as `urn:uuid:<uuid>` (per [F23](#f23-urn-not-url-qr-encoding--empirical-validation-of-a-deliberate-spec-choice)'s URN-not-URL choice), placed top-right in the header, sized 88×88 px (Core suggested 80–96 px), with `image-rendering: pixelated`, a `data:image/png;base64,...` URI, `alt="QR code for capsule UUID <uuid>"`, and a `<figcaption>` showing the UUID's first 8 chars. **This is independent reproduction of supplementary-guidance compliance, not just compliance with the twelve numbered rules.** When Core writes implementation-recipe-shape guidance — specific placement, exact sizing, a Python `qrcode`-library code example — LLM producers follow it precisely. This strengthens the F18/F19 multi-producer interop claim into a sharper version: *Core's supplementary sections are load-bearing in practice, when they're written as recipes.*
+
+**3. Where Core leaves implementation open, producers diverge with their own conventions:**
+
+   - **Integrity hash:** Core explicitly excludes integrity from required content (it lists *"Content hash protocol and integrity verification"* under *"What this short spec does NOT cover"*). Producers correctly skip the `integrity.content_hash` field. Behavior matches design — *not* a conformance gap, just integrity remaining opt-in for capsules that don't need tamper-detection.
+   - **Rule 7 verification convention:** Core says *"Capabilities don't lie. Every capability declared in the manifest must have a working implementation"* but doesn't specify HOW to mark the implementations. The validator's `data-capsule-action="<cap>"` heuristic was added in v0.3.2 (surfaced by external compiler-kind producers and recorded in v0.3.2 release notes) — but that convention lives only in the validator, not in Core. LLM producers in this batch each invent their own pattern (`data-action="copy-json"`, `id="copy-json"`, plain DOMReady listeners). The capabilities ARE implemented and DO work in the browser; only the validator's auto-verification heuristic misses them. **Research signal:** if a Rule 7 verification convention should reach LLM producers, it needs to be in Core (or in the produce-prompt fragment), not only in the validator. A validator heuristic alone doesn't propagate back to producer kinds that aren't being validated by that exact tool.
+
+**4. Producer aesthetic adapts to content domain.** Genuinely new observation. Capsules in the batch use distinctly different visual treatments per subject:
+
+   - Geological target report → warm earth tones (sand/cream), serif headings, sample-card layout that nods at field-notebook aesthetics
+   - Propane fire-pit purchase brief → warm cream/orange/brown palette, fire-appropriate vibe, decision-matrix table
+   - Legal identification-update letter → neutral clean palette, legal-document neutrality
+   - Sweden mining permits → cream with green accents (tonal nod to Swedish flag)
+   - Voice/coding workflow → tech-blue with sans, system-font, dashboard feel
+   - Indigenous-rights conversation → cool grey/blue editorial
+   - Vehicle-decision brief (Sedona vs pickup for camping) → warm woodsy/camping cream-brown
+   - DNDA fit assessment → modern blue-grey editorial
+
+   The format constrains structure (five blocks, twelve rules, no network) but does not constrain visual design at all, and producers exploit that to make Capsules feel domain-appropriate. The aesthetic is *part of what's being archived* — a reader opening a geological capsule five years from now will see it in the visual register the producer thought matched the subject, which is itself a form of preservation. This is unspecified-but-useful emergent producer behavior. **For project posture:** if a future "house theme" became tempting (one stylesheet to rule them all), this is the data point that argues against constraining it. Producers treating Capsules as design objects (not just data containers) is doing useful preservation work that a uniform stylesheet would erase.
+
+**5. Legacy "Artifact Capsule" terminology persists in user-side prompt templates.** All capsules in the batch have `prompt_received` containing *"Produce an Artifact Capsule per the Core spec (attached)…"* — using the v0.1 name that was renamed to just "Capsule" in v0.2 (see [GLOSSARY.md](GLOSSARY.md) and [spec/CAPSULE_SPEC.md](spec/CAPSULE_SPEC.md) naming-history notes). The Core spec itself uses "Capsule" everywhere — its own produce-prompt template ([CAPSULE_CORE.md](CAPSULE_CORE.md) §"How to ask an LLM to produce a capsule") says *"Produce a Capsule"* — so the legacy term is propagating via the user's stored prompt template, not via the spec. **Project response (this commit):** added an explicit "use the canonical name" reminder immediately above Core's produce-prompt section, with a back-reference to this finding. Doesn't change spec rules; closes the loop by making the canonical name unmissable to anyone templating their own prompts. The producer-side field values are accepted under legacy v0.2 compatibility per the naming notes in the full spec.
+
+**Cross-references:**
+- [F18](#f18-peer-review-2026-05-19--sharpest-framing-landscape-position-and-trust-model-gaps) — peer-review framing of multi-producer interop
+- [F19](#f19-design-tool-integration-experiment--claude-design-with-capsule_coremd-attached) — Claude Design as first independent LLM-kind producer reaching conformance from Core alone
+- [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) — Mintel as first compiler-kind production capsule
+- [F23](#f23-urn-not-url-qr-encoding--empirical-validation-of-a-deliberate-spec-choice) — URN-not-URL QR encoding choice; this batch is the largest sample confirming producers respect that default
+- [CAPSULE_CORE.md "How to ask an LLM to produce a capsule"](CAPSULE_CORE.md) — the produce-prompt where the "use canonical name" reminder was added
+
 ## Open questions
 
 In rough priority:

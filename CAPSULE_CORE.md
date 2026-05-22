@@ -157,6 +157,8 @@ If the conversation didn't start from a capsule, omit `parents` entirely (don't 
 
 ## How to ask an LLM to produce a capsule
 
+> **Use the canonical name when you write your prompt.** The format is called **Capsule** (singular). The v0.1 name *"Artifact Capsule"* was renamed in v0.2 and only persists in this repo's naming-history notes; legacy field values (`artifact_id`, `artifact_version`) are still accepted under v0.2 compatibility, but new prompts and new content should use just "Capsule." Empirically — see [RESEARCH.md F25](RESEARCH.md) — the legacy term persists in stored user prompt templates and leaks into the `prompt_received` field of newly-produced capsules. Update your template once and the leak goes away.
+
 A working prompt fragment:
 
 > Produce a Capsule conforming to the rules below. The output should be a single `.html` file with no external dependencies, no network requests, and these five embedded blocks: `capsule-manifest`, `capsule-data`, `capsule-style`, `capsule-root`, `capsule-runtime`. Set `generator.kind` to `"llm"` and `generator.version` to your model ID. Include at minimum the `about` capability (a `<details>` panel showing the manifest) and `copy_as_json` (a button that copies the data block to the clipboard). Use semantic HTML, keyboard-accessible interactions, and `textContent` (never `innerHTML`) when rendering data values.

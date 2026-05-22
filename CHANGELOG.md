@@ -34,6 +34,14 @@ Doc-only patch. No schema, validator, or behavior change. Records external-revie
 - `llms.txt` updated to reflect `v0.3.5` in the full-spec entry and the CHANGELOG range.
 - `index.html` landing badge updated to `v0.3.5`, About panel reference updated to "full spec v0.3.5", `data.spec.full` field updated to `v0.3.5`. Landing capsule_version bumped `11.15.0 → 11.15.1`.
 
+### Added — research record (post-ship additions)
+
+- **F25** — *ChatGPT producer-population reads Core supplementary guidance reliably; aesthetic adapts to content domain; legacy "Artifact Capsule" wording persists in user-side prompt templates.* Recorded in `RESEARCH.md`. Drawn from review of a batch of 7+ ChatGPT (GPT-5.5 Thinking) conversation-summary capsules across varied domains (coding, geology, legal, fire pits, vehicles, mining permits, identity-rights, design-award fit). Five distinct sub-findings: (1) all five required blocks present; (2) Rule 4 supplementary QR-code guidance followed faithfully — placement, sizing, URN encoding all respected, which means Core's supplementary sections (not just the twelve numbered rules) are load-bearing in practice when written as recipes; (3) where Core leaves implementation open (integrity, Rule 7 verification convention) producers diverge; (4) producer aesthetic adapts to content domain (geological capsule → earth tones; fire-pit capsule → warm cream/orange; legal letter → clean neutral; etc.); (5) legacy "Artifact Capsule" terminology persists in user-side prompt templates because Core had no explicit "use the canonical name" reminder. Initial framing of QR-code presence as "emergent producer behavior" was corrected (caught by maintainer) — it's actually Core spec being followed correctly, a stronger positive signal.
+
+### Changed — Core spec (post-ship clarification, not a rule change)
+
+- **`CAPSULE_CORE.md`** — added a "use the canonical name when you write your prompt" reminder immediately above the "How to ask an LLM to produce a capsule" section. Cross-references F25. Closes the loop on the legacy-prompt-template leak by making the canonical name unmissable to anyone templating their own prompts. **No rule change** — Core stays at v0.3.0; this is a clarification, not a normative edit. Full spec stays at v0.3.5.
+
 ---
 
 ## [Spec v0.3.4] — 2026-05-20
