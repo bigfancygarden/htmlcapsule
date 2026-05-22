@@ -12,9 +12,9 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "11.12.0",
+  "capsule_version": "11.13.0",
   "title": "HTML Capsule — hero framing exploration",
-  "description": "Landing page in hero framing exploration mode. v11.12.0 restructures the question numbering and adds two new sections. New Question 1: 'How do I get HTML out of my LLM?' inserted upstream of the existing Question 1 (which becomes Question 2). New Question 1 has two answers: Answer 1a (vague approach — Karpathy + Thariq both 'just ask the LLM for HTML' — what you get is unstructured, no manifest, no identity), Answer 1b (contract-based approach — paste the Capsule Core spec into your prompt, the LLM returns a sealed .html with manifest + integrity + UUID + parents[] + declared capabilities + pre-rendered content + no network deps; the artifact carries its own context). Renumbering: existing Q1 → Q2 (what do you do with HTML), existing A1a/1b/1c → A2a/2b/2c, existing Q2 → Q3 (how do you track versions), existing A2a/2b → A3a/3b. New Answer 3c added (spec-evolution path for semantic Capsule diffs) — explains how a capsule-diff tool layered on the spec could semantically diff manifest + data + content blocks separately, sketches example output, parks the implementation in spec Appendix E pending empirical pressure. data-num values unchanged for stable sections (00, 00b, 00b1, 00b2, 00c, 00f, 00f1, 00f2); new data-num values 00a/00a1/00a2 for new Q1 + A1a + A1b, 00f3 for new A3c. UUID 7d1a1ac8 preserved through v11.12.",
+  "description": "Landing page in hero framing exploration mode. v11.13.0 strips the inline TOC `.cb-frame-lead` paragraph from all three Question sections (Q1, Q2, Q3) — the answers naturally follow in their own sibling sections below, so the explicit 'Answer Na, Answer Nb…' pointer was redundant. Question sections are now lean: just the corner label, the H2 with kicker + the question itself, and nothing else. Each Question reads as a single beat that opens its arc; the Answer sections immediately below do the rest. v11.12.0 restructured the question numbering and added two new sections. New Question 1: 'How do I get HTML out of my LLM?' inserted upstream of the existing Question 1 (which becomes Question 2). New Question 1 has two answers: Answer 1a (vague approach — Karpathy + Thariq both 'just ask the LLM for HTML' — what you get is unstructured, no manifest, no identity), Answer 1b (contract-based approach — paste the Capsule Core spec into your prompt, the LLM returns a sealed .html with manifest + integrity + UUID + parents[] + declared capabilities + pre-rendered content + no network deps; the artifact carries its own context). Renumbering: existing Q1 → Q2 (what do you do with HTML), existing A1a/1b/1c → A2a/2b/2c, existing Q2 → Q3 (how do you track versions), existing A2a/2b → A3a/3b. New Answer 3c added (spec-evolution path for semantic Capsule diffs) — explains how a capsule-diff tool layered on the spec could semantically diff manifest + data + content blocks separately, sketches example output, parks the implementation in spec Appendix E pending empirical pressure. data-num values unchanged for stable sections (00, 00b, 00b1, 00b2, 00c, 00f, 00f1, 00f2); new data-num values 00a/00a1/00a2 for new Q1 + A1a + A1b, 00f3 for new A3c. UUID 7d1a1ac8 preserved through v11.12.",
   "type": "landing_page",
   "created_at": "2026-05-20T00:00:00Z",
   "generator": {
@@ -1175,10 +1175,6 @@
       <span class="cb-frame-num">Question 1</span>
       <div class="cb-frame-inner">
         <h2 class="cb-frame-title is-observation-h" id="frame-00a-title"><span class="cb-kicker">Question 1:</span> How do I get HTML out of my LLM?</h2>
-
-        <p class="cb-frame-lead">Two approaches, in their own sections below:<br>
-          <a href="#frame-00a1-title">Answer 1a — just ask it (the vague approach)</a>,
-          <a href="#frame-00a2-title">Answer 1b — paste the Core spec (the contract-based approach)</a>.</p>
       </div>
     </article>
 
@@ -1227,11 +1223,6 @@
       <span class="cb-frame-num">Question 2</span>
       <div class="cb-frame-inner">
         <h2 class="cb-frame-title is-observation-h" id="frame-00b-title"><span class="cb-kicker">Question 2:</span> What do you do with all that HTML?</h2>
-
-        <p class="cb-frame-lead">Three answers, in their own sections below:<br>
-          <a href="#frame-00b1-title">Answer 2a — viewing strategy</a>,
-          <a href="#frame-00b2-title">Answer 2b — hosting layer</a>,
-          <a href="#frame-00c-title">Answer 2c — custom producer + MinDev registry (maintainer's own)</a>.</p>
       </div>
     </article>
 
@@ -1330,11 +1321,6 @@
       <span class="cb-frame-num">Question 3</span>
       <div class="cb-frame-inner">
         <h2 class="cb-frame-title is-observation-h" id="frame-00f-title"><span class="cb-kicker">Question 3:</span> How do you keep track of which version of an artifact you're working with?</h2>
-
-        <p class="cb-frame-lead">Three answers, in their own sections below:<br>
-          <a href="#frame-00f1-title">Answer 3a — filename versioning (what people actually do)</a>,
-          <a href="#frame-00f2-title">Answer 3b — identity + lineage inside the file (what the spec offers today)</a>,
-          <a href="#frame-00f3-title">Answer 3c — evolving the spec for semantic diffs (open work)</a>.</p>
       </div>
     </article>
 
@@ -1584,7 +1570,7 @@
       </nav>
       <div class="cb-colophon">
         <span>Set in system sans · Apache 2.0 · maintained by <a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a> · Vancouver</span>
-        <span>capsule:landing/v11.12.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
+        <span>capsule:landing/v11.13.0 · uuid 7d1a1ac8 · sealed 2026-05-20 · mode: hero_framing_exploration</span>
       </div>
     </footer>
   </div>
