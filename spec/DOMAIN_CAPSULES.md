@@ -404,6 +404,8 @@ When something graduates from this queue to a real domain, move the entry up to 
 
 **Idea (2026-05-21):** Hold the stems of a song / loop / sketch in a single capsule, with mute/solo per stem, optional Web Audio API effects (gain, EQ, reverb, filter), MIDI tracks alongside audio, and the friend-rework workflow as the load-bearing use case.
 
+> **2026-05-22 status note.** Two producer projects are prototyping specializations of this parent idea: [`domain.midi_stem`](#domainmidi_stem) (capsule-midi, symbolic-only, no audio bundled — working v0.2.0 implementation) and [`domain.song`](#domainsong) (Shasta, audio-primary — in progress). The parent `domain.music_stems` entry — combined audio stems + MIDI tracks + effects + friend-rework workflow — remains an idea-queue entry pending a producer that takes on the combined shape. Likely path: graduate `domain.midi_stem` and `domain.song` first when their producers ship publicly-validated capsules; revisit `domain.music_stems` if a future producer wants the combined shape.
+
 **Provenance of the idea:** Maintainer surfaced it after thinking about Studio One (PreSonus DAW) workflows. DAW projects have MIDI tracks, audio tracks, effects, VSTs — and the maintainer used to swap versions with friends: *"I would get a version from them and rework it or they'd take a version from me and steal the drums or a loop or something and rework it."* A capsule for stems would carry that exchange shape without each party needing the same DAW or having compatible plugins.
 
 **Why it fits the format:**
@@ -452,6 +454,64 @@ When something graduates from this queue to a real domain, move the entry up to 
 **Recommended capabilities if it ever ships:** `about`, `copy_as_json`, `download_json`, `download_capsule`, plus domain-scoped `audio.play`, `audio.mute_solo`, `audio.gain`, `audio.effects`, and optionally `audio.export_mix` (uses `OfflineAudioContext` to render the current mute/gain/effect state to a single mixed audio file the recipient can download).
 
 **What's missing to graduate:** A working example. Maintainer should pick a short loop or sketch they have lying around, hand-author or LLM-author a single capsule with stems + a mute/solo/play runtime, and see what breaks (file size, audio API quirks across browsers, mobile playback, transport sync across stems). If it works and someone forks it under `parents[]`, this entry moves up to "Initial domains" with a full schema and at least one canonical example.
+
+---
+
+### `domain.midi_stem`
+
+**Idea (2026-05-22):** Symbolic-only multi-track music capsules. Take a `.mid` file, parse channels into symbolic stems, render a piano roll, synthesize playback via Web Audio at runtime (no bundled audio). Per-stem mute/solo, assignable patches (11 waveform/ADSR/filter recipes), tempo scaling, loop-by-bar, click-to-seek, remix-provenance export.
+
+**Provenance of the idea:** Producer project [`capsule-midi`](https://github.com/bigfancygarden/capsule-midi) v0.2.0 (2026-05-22). Pipeline: pure-stdlib SMF parser → channel grouping & note pairing → Core-conforming manifest assembler → 5-block HTML template builder with embedded MIDI as `data:audio/midi;base64,…` URI. Validates 26/26 against the reference validator on synthetic fixtures and on two real-world MIDIs (Mozart Lacrimosa, 10 components, 1,225 notes, 171.69 s; "Bad Bad Thing" 1999 pop, 8 components, 629 notes, 44.08 s).
+
+**Why it fits the format:**
+
+- Symbolic representation is dense: a 10-component, 1,225-note, ~3-minute symbolic piece encodes at ~10 KB of structured JSON + the source `.mid` (~30 KB base64) = ~40 KB before UI. The full DAW-view capsule is ~220 KB. Well under the 20 MB cap; can scale to symphonic-length works.
+- The "interactive archive" pattern from spec §2.3 holds cleanly: lanes + manifest + remix-export panel pre-render statically (Rule 12 passes); the canvas piano roll + Web Audio synth are enhancement layers the runtime adds.
+- `parents[]` lineage references composition (e.g., the Mozart Lacrimosa capsule cites `composition:wikidata:Q193326` as a v5-UUID-namespaced parent). **First empirical pressure on the parked `derived_from[]` field** for non-capsule parents — see Q4 in `capsule-midi/FEEDBACK.md` and the upcoming Appendix E.11 graduation.
+- Capability namespace surfaces a multi-track-media pattern: `media.stems.mute`, `media.stems.solo`, `media.stems.set_patch`, plus the universal `export.remix_provenance` primitive. See `capsule-midi/FEEDBACK.md` Q2 + Q3 for namespace-formalization asks against the spec.
+
+**Distinction from `domain.music_stems`:** Symbolic-only — *no audio data is bundled*. The Web Audio synth produces sound from MIDI events at playback time. Trade-off: tiny files (200 KB for orchestra; would be ~10 MB if audio-rendered) but synth-quality timbre. Bundled-soundfont and bundled-audio-stems tiers are queued for capsule-midi v0.3.0.
+
+**What's missing to graduate:** First publicly-validated capsule shipped at a stable URL (most likely on `htmlcapsule.org/examples/` or via MinDev). Also: resolution of `capsule-midi/FEEDBACK.md` items Q1 (this entry — formal schema graduation), Q2 (`media.stems.*` namespace), Q3 (`export.remix_provenance` payload shape), and Q4 (`derived_from[]` graduation from Appendix E.11). Schema is sketched in [`capsule-midi/README.md`](https://github.com/bigfancygarden/capsule-midi/blob/main/README.md#domain-schema--domainmidi_stem).
+
+---
+
+### `domain.song`
+
+**Idea (2026-05-22):** Audio-primary song capsules. Embed a rendered MP3 (or per-stem MP3 set) alongside metadata (title, artist, album, release year, personnel, role on album, covers, critical reception, live history, source / license). Playback uses `<audio>` element with the bundled `data:audio/mpeg;base64,…` URI. Optional per-stem control if multi-stem (mute/solo). Optional remix-provenance export referencing time-ranges.
+
+**Provenance of the idea:** Producer project **Shasta** (in progress, separate repo). First experimental capsule shipped during the htmlcapsule landing-page exploration arc: McCartney/Wings "Nineteen Hundred and Eighty-Five" capsule (private, copyright-laden — see [F26](../RESEARCH.md#f26-core-spec-accommodates-10-mb-domain-specific-media-capsules-without-rule-changes)). The song-capsule pattern was the seed; Shasta is the formal producer project building it out.
+
+**Why it fits the format:**
+
+- Audio as `data:audio/mpeg;base64,…` is empirically tested at the 7.6 MB MP3 / 10 MB capsule scale (F26). CSP needs `media-src data:` (single-line addition to default recipe).
+- `<audio controls>` element with `data-capsule-action="media.play_audio"` marker satisfies Rule 7; transport buttons (play/pause/stop) are declared capabilities each backed by markers.
+- `parents[]` lineage references the composition + the recording (when distinct). The recording itself may carry an additional reference to the album / label / release identifier. Same empirical pressure on `derived_from[]` as `domain.midi_stem` — every song capsule has non-capsule parents (composition, recording, album).
+- Wikipedia / MusicBrainz / Discogs / Wikidata identifiers slot naturally into `derived_from[]` once the field graduates.
+
+**Distinction from `domain.music_stems`:** Audio-primary — *a single rendered MP3 (or set) is bundled as inline data*. The friend-rework workflow of `domain.music_stems` is out of scope; the song capsule is a *listening + provenance* artifact, not a *remix-and-rework* artifact.
+
+**What's missing to graduate:** Shasta ships a working capsule + validator pass; coordination with `derived_from[]` graduation; either an open / permissively-licensed song corpus or a clean private-by-default story. Schema sketched per the song-capsule experiment in F26.
+
+---
+
+### `domain.photo`
+
+**Idea (2026-05-22):** Single-image artifacts. Embed one (or a small set of) photograph(s) as inline `data:image/...;base64,…` URI alongside structured metadata: who's in the photo (face tags, names, ages), where it was taken (place, GPS, event), when (date / approximate era), provenance (camera, photographer, original file hash, source negative if scanned). The "family photo + the story behind it" shape.
+
+**Provenance of the idea:** Producer project **capsule-photo** (new, 2026-05-22; separate repo). Use case: family-photo preservation where the *context around the photo* (who, where, when, why) is just as fragile as the image bytes and tends to die with the people who knew. A capsule packages both into one self-contained, sealed, portable artifact that survives the storage medium.
+
+**Why it fits the format:**
+
+- Photos as `data:image/jpeg;base64,…` are inline-friendly; the existing CSP allows `img-src data:` (Rule 4 supplementary guidance already specifies this for QR codes — same primitive). A modest family photo at 4-8 MP and ~80% quality is 0.5-2 MB; well under the 20 MB cap.
+- The pre-rendered content rule (Rule 12) is easy for photo capsules: the image and its metadata table are static HTML; runtime adds enhancement (zoom, tagged-region highlights, copy structured metadata).
+- `parents[]` lineage for photo capsules has interesting semantics: a *digitized* photo's parent might be a film negative or print; a *cropped / edited* photo's parent is the original capsule. People-and-place references (Wikidata person/place IDs, GEDCOM individual IDs) belong in `derived_from[]` once graduated — same empirical pressure point as MIDI/song.
+
+**Likely capability vocabulary:** `about`, `copy_as_json`, `download_json`, `download_capsule`, `print_to_pdf`, `image.download` (download the embedded photo), `image.copy_metadata` (clipboard-friendly structured-metadata export), possibly `image.regions.highlight` (toggle visibility of face/region overlays). Not in the `media.*` family because photos aren't time-based — `image.*` is the natural sibling namespace.
+
+**Honest constraint:** the 20 MB cap scopes this to *standalone-photo* shape. An album-of-many-photos would need either per-photo capsules with `parents[]` chains pointing at a parent "album" capsule, OR splitting at the storage layer. Either is fine; the format doesn't try to be a photo library.
+
+**What's missing to graduate:** capsule-photo ships a working capsule + validator pass; canonical schema sketched in the producer project's README; coordination with `derived_from[]` graduation; a privacy posture (most family photos are private by default — `privacy.visibility: "private"` per-capsule, with the `private` value already supported by the validator).
 
 ## What this document is not
 

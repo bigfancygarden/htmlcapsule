@@ -944,6 +944,46 @@ This is the largest single-batch empirical sample of a single LLM producer kind 
 - [CHANGELOG `[Landing decision — v13.0.0]`](CHANGELOG.md) — the operational record of the commit, including the parents[] chain and the role assignment for `exploration.html`
 - [`design/proposal.html`](design/proposal.html) — the design memo from Claude Design that synthesized the landing direction (anti-context-loss pain framing + lifecycle layer + indigo brand) before the commitment
 
+### F28: Producers reach for Capsule-shape independently when given the idiom but not the spec — empirical pressure for discoverable onboarding
+
+**Date:** 2026-05-22
+
+**Source.** Review of a ChatGPT-produced MIDI capsule POC (Mozart Lacrimosa, ~220 KB; preserved at [`capsule-midi/proofs/lacrimosa-chatgpt-poc.html`](https://github.com/bigfancygarden/capsule-midi/blob/main/proofs/lacrimosa-chatgpt-poc.html)). The user asked ChatGPT to "make a DAW-like HTML capsule from this MIDI" *without* attaching Core as a prompt fragment.
+
+**Finding.** Without Core attached, the LLM producer (ChatGPT in this case) independently reached for the **Capsule idiom** — single-file HTML, embedded JSON manifest, schema declaration (`capsule_schema: "midi-stem-capsule-v0.1"`), `parents[]` array (with composition reference), `sha256` of source bytes, honest `license_note` with "verify before redistribution" caveat — but missed the **Capsule specifics**:
+
+- ❌ Single `<script id="capsule-json">` block containing both manifest + data, instead of the five separate spec-required blocks (`capsule-manifest`, `capsule-data`, `capsule-style`, `capsule-root`, `capsule-runtime`)
+- ❌ No integrity hash block
+- ❌ No `data-capsule-action` markers on UI buttons (Rule 7 — declared capabilities have no implementation-binding convention)
+- ❌ No CSP `<meta>` block
+- ❌ Empty `<div id="lanes">` / `<div id="facts">` populated only at runtime (Rule 12 borderline)
+
+Validator result: **5/10 pass, 1 warn, 4 fail** — the basic-shape checks pass (HTML5 doctype, html/body, no external network refs, well-formed runtime JS, under-cap size), but every structural check fails (5-block requirement, manifest section parseable, data section parseable, content hash verifies).
+
+**Companion to [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates).** F25 observed producers *with* Core attached reliably follow supplementary guidance. F28 observes producers *without* Core attached reach for the shape but miss the specifics. Together: **Core works when attached as a prompt fragment; when not attached, the idiom is reached for organically but the specifics are reinvented.**
+
+**Implication for the spec — discoverable onboarding is empirically warranted.** The Capsule shape is a real attractor — LLMs reach for it even without prompting — but they can't reproduce the structural specifics without seeing them. Possible spec-level responses:
+
+1. **Extend `/llms.txt`** to publish Core as a paragraph-level summary plus a link to the full Core, so any LLM doing web research on htmlcapsule.org lands on the discipline naturally. Cost: small. Benefit: every LLM that's done its own research has Core in context.
+2. **Publish a one-page "Producer starter kit"** — Core + minimal example + the most common producer mistakes (5-block vs single-json, missing Rule 7 markers, etc.) — at a stable URL discoverable from `llms.txt`. Cost: medium. Benefit: producers without Core fall back to a clear failure mode (the starter kit) rather than reinventing.
+3. **Document the "reached for the shape but missed the specifics" failure pattern** in `spec/CAPSULE_SPEC.md` as a known gap, with the response being "attach Core; without Core attached, expect 5/10 at the validator." Cost: very small. Benefit: sets accurate expectations.
+
+The maintainer's pick (per `capsule-midi/FEEDBACK.md`): option 1 is the smallest and most discoverable. Worth doing as part of the next operational pass.
+
+**Methodological side-finding.** This is the second time a producer-side experiment has yielded research-record material that crosses back into spec design. The pattern is now visible:
+
+```
+producer attempts a domain → hits a friction → friction is logged in producer's FEEDBACK.md → harvested into htmlcapsule's RESEARCH.md as an F-finding → may trigger a spec change
+```
+
+This is the *cross-project memory pattern* the producer projects (capsule-midi, Shasta, capsule-photo, Mintel) use to feed empirical pressure back into the spec without unilaterally inventing changes. Worth naming as a deliberate methodology — call it **upstream feedback discipline**. The producer projects own the friction; the spec project owns the response.
+
+**Related findings:**
+- [F19](#f19-design-tool-integration-experiment--claude-design-with-capsule_coremd-attached) — Claude Design reached conformance from Core alone (Core attached → producer succeeds)
+- [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates) — ChatGPT-with-Core-attached reads supplementary guidance reliably (Core attached → producer succeeds at specifics)
+- [F26](#f26-core-spec-accommodates-10-mb-domain-specific-media-capsules-without-rule-changes) — Core spec accommodates 10 MB domain-specific media capsules without rule changes (the song capsule experiment; same Lacrimosa POC seeded this line of research)
+- [`capsule-midi`](https://github.com/bigfancygarden/capsule-midi) — the producer project that surfaced this finding; raised in its `FEEDBACK.md` as item F-A before being filed here
+
 ## Open questions
 
 In rough priority:
