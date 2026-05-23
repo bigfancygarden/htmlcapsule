@@ -10,7 +10,7 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "14.12.0",
+  "capsule_version": "14.15.0",
   "title": "HTML Capsule",
   "description": "Production landing page for htmlcapsule.org. v14.6.1 swaps the hero image to a refined version with a Dr. Strangelove-riff subtitle (Or: How I Learned to Stop Overengineering and Save as HTML) and war-room figures labeled Thariq / Karpathy / Boris (the PRECEDENTS lineage). Same compression recipe (sips -Z 1600 jpeg q85). data: URI replaced in-place; data block hero.claim updated to match the new subtitle; page <title> updated correspondingly. v14.1.1 swaps UC1's scenario paragraph from the original abstract opener ('You finish a chat with Claude, ChatGPT, Gemini. You worked through a decision…') for the maintainer-voiced version drafted by the user: conversational, rhetorical-question-heavy, names ChatGPT specifically, traces the natural arc from end-of-conversation through 'where does the info go' to 'what format do I share in,' ends with 'something about [a share link] seems brittle…' which now sets up a callback to the existing payoff line ('the share link can break. The file still opens.'). Lighter tighten on the user's draft preserving the I-guess / What-if voice markers and the trailing ellipsis. v14.1.0 reshaped the former 'Why not just use…' comparison section into a proper FAQ. Section now eyebrowed 'Common questions' / H2 'What people ask first.' Six FAQ entries, ordered foundational-first then by reader-frequency: (1) What is a Capsule? — opens with the spec-canonical definition (five inline blocks, no external deps, profile of HTML not a new format); (2) Isn't that like an Artifact? — the most common first-contact comparison, distinguishing working canvases (Claude Artifacts / ChatGPT Canvas / Gemini Canvas) from sealed outputs; (3) Why not Markdown? — content vs structure-plus-provenance-plus-interactivity; (4) Why not a notes app? — Notion / Obsidian / Tana as working surfaces vs Capsules as sealed outputs; (5) Why not a database? — live mutable state vs frozen snapshot; (6) Why not a PDF? — closed lossy print-format vs open programmable re-readable screen-format. Drops the violet 'vs' badge — the question heading itself is the marker now, with a small mono 'Q.' prefix in violet. CSS renamed .vs-block → .faq-block, .vs-badge removed, .vs-payoff → .faq-payoff. Data block 'comparisons' array → 'faqs' array, each entry is now {q, a} pair. v14.0.2 added a fifth 'vs' comparison block addressing 'Isn't that like an Artifact?' — the most direct comparison most readers will have on first contact. Block heading 'vs An AI canvas' (generic noun phrase matching the patterning of the other four entries), body name-checks Claude Artifacts / ChatGPT Canvas / Gemini Canvas specifically, frames them as 'working canvases' for making vs Capsules as sealed outputs for keeping. Echoes the README's 'different roles, complementary tools' framing and extends the same complementary-layers logic from the existing 'vs A notes app' block (Notion / Obsidian — also working surfaces). H2 updated 'Why not markdown, a notes app, a database, or a PDF?' → 'Why not markdown, a notes app, an AI canvas, a database, or a PDF?' Placement: between 'A notes app' and 'A database' — both notes app and AI canvas are working-surface comparisons; database starts the state/format comparisons. v14.0.1 weaves the project's deeper architectural framing — 'an atomic unit of preserved work' — into the hero lede as a middle sentence between the existing 'sealed HTML file that holds a snapshot' opening and the 'five use cases / two commitments' navigation copy. The phrase is canonical from spec/CAPSULE_SPEC.md §0 and Research F8 (where it's named as the framing that explains all earlier ones the project tried). Pairs with the existing front-facing 'memory object' framing in CAPSULE_CORE.md / README that captures the human-readable + machine-readable + provenance-bearing trio in one noun phrase. v14.0.0 is a use-case-focused restructure of the landing direction. The v1 landing (capsule_version 13.x) led with the format's conceptual framing — anti-context-loss eyebrow, 'HTML you can keep' claim, lifecycle pills strip, anatomy card showing the 5 inline blocks. v14 leads with what people DO with capsules: five long-form use-case sections (UC1 save AI chats, UC2 notes beyond markdown, UC3 time-bounded snapshots, UC4 a self-contained app from a thumb drive, UC5 share with a domain-aware registry), followed by a 'Why not markdown, a notes app, a database, or a PDF?' section with four vs-blocks addressing the obvious skeptical follow-ups (markdown — content vs structure-plus-provenance-plus-interactivity; notes app — working surface vs sealed output; database — live mutable state vs frozen snapshot; PDF — closed lossy print-format vs open programmable re-readable screen-format), followed by a 'Why a Capsule lasts' section holding the two technical commitments (minimum floor + sealed boundary) that make every use case durable. The v1 landing is preserved at /v1 (file v1.html, UUID edbb017a, capsule_version 1.0.0). New hero: eyebrow 'Five ways to use a Capsule', claim 'Save what's worth saving.', lede pointing forward to the use cases + commitments structure. Cut from v1: the lifecycle pills strip + 'What it is' section + 'How it's shaped' anatomy. Preserved from v1: top nav (Spec / Notes / Long-form / Research / GitHub), 'What this is not' (with all 4 fence-posting bullets including 'Not an app pretending to be a document'), 'Go deeper' 3-card section, About panel with manifest viewer, 4-column footer site map. New CSS for case-meta chip rows + commitment block styling. UUID 7d1a1ac8 preserved across the v1 → v2 transition because this is the same conceptual landing at the same URL; only the framing direction changed. v13.2.1 lands the document-first thesis in the 'What this is not' section: adds the line 'Not an app pretending to be a document. A document that can wake up into an app.' Pairs with spec v0.3.8's new §2.3.2 (the five tiers of capsule interactivity) and the new GLOSSARY 'Document-first artifact' entry. No structural changes; one bullet added; heading bumped 'Three lines' → 'Four lines'. Capsule_version 13.2.0 → 13.2.1 (patch — single bullet + heading word). v13.2.0 promotes the deeper material to first-class on-site reading views: 8 new Capsules at clean URLs render the markdown content directly on htmlcapsule.org instead of bouncing visitors to GitHub. Generated by compiler/build_md_capsules.py (stdlib-only markdown→HTML, no pip deps). Each generated capsule is a valid Core-spec Capsule (5 blocks, manifest, integrity hash, declared capabilities) and passes the reference validator at 26/26. New URLs: /core (Core spec), /full-spec (Full spec), /domains (Domain schemas), /hosting (Hosting pattern), /research (Research log F1-F28), /glossary (Glossary), /precedents (Precedents), /changelog (Changelog). All nav, Go-deeper, hero CTA, and footer links updated to point at these local Capsules. Validator also got a scope-aware refactor in the same pass — network API patterns (fetch, XMLHttpRequest, @import, etc.) now scan only inside <script> and <style> blocks instead of free-text body, eliminating the false positives that prevented the research / full-spec capsules from passing on initial build. UUID 7d1a1ac8 preserved. v13.1.1 fixes broken .md links: the htmlcapsule.org host (Cloudflare Pages by the response headers) serves .md files as raw text/markdown rather than rendering them, so clicking 'Research' / 'Spec' / etc. in v13.1.0 displayed wall-of-raw-markdown to the user instead of the expected reading view. Fix: all .md links in nav, hero CTA, Go-deeper section, and footer site-map now point at the GitHub blob/tree views (https://github.com/bigfancygarden/htmlcapsule/blob/main/<file>), which render markdown reliably and offer a comfortable reading experience. .html links (notes.html, exploration.html, design/proposal.html) kept as relative paths because the host's 308 redirect from /file.html → /file works fine. spec/examples/ directory link also switched to GitHub tree view since Cloudflare Pages doesn't do directory listings by default. v13.1.0 recovers framing-content doorways that the v13.0.0 strip lost. The landing-direction commit at v13.0.0 (Linear/Stripe-style, Claude Design design-system pass, indigo brand) intentionally cut the long-form Observations / Questions / Answers spine — but with no visible link to where that content went (/exploration.html), readers had no doorway. v13.1.0 fixes that: (1) top nav expanded from 3 to 5 links — added Notes (notes.html essay) + Long-form (exploration.html research-narrative spine) + Research (RESEARCH.md F-finding log); (2) new 'Go deeper' body section between 'What this is not' and the About details panel — three cards surfacing the notes essay, the long-form exploration, and the research log with descriptions of each; (3) footer expanded from a single-row 4-link list to a 4-column site map (Spec / Read / Code / About) covering 17 destinations including Domain schemas, Hosting pattern, PRECEDENTS, GLOSSARY, Design system, Changelog, llms.txt, maintainer link, README. All linked resources verified to exist in the repo. Capsule_version 13.0.0 → 13.1.0 (minor — content additions, no structural restyle). UUID 7d1a1ac8 preserved.",
   "type": "landing_page",
@@ -55,8 +55,10 @@
     "eyebrow": "Before",
     "title": "What was working — and what wasn't.",
     "paragraphs": [
-      "Here's the thing. None of this was crazy. Claude has dramatically accelerated my prototyping. v0 and shadcn produce real UI fast. Cloud sync works. Multiplayer collaborative editing is incredible. For the first time, software feels conversational. AI turns ideas into artifacts at unprecedented speed.",
-      "But every layer solves one problem while introducing two more. Artifacts get trapped in proprietary systems. AI sessions go ephemeral. Exports break. Sharing requires accounts. Local-first tools still secretly depend on the cloud. The most reliable thing in the whole stack — the thing I could share without asking anyone's permission and still reopen on any laptop in 2035 — kept turning out to be the one that came out of the AI as a single HTML file.",
+      "More than anything, I'm putting this out there for discussion. I'm not trying to proselytize. I'm just presenting what's been working for me and what hasn't.",
+      "None of this was crazy. Claude has dramatically accelerated my prototyping. v0 and shadcn produce real UI fast. Cloud sync works. Multiplayer collaborative editing is incredible. For the first time, software feels conversational. AI turns ideas into artifacts at unprecedented speed.",
+      "Before any of that, I was spending serious time with Airtable. Coda. Google Sheets. Nocodb. Baserow. Building systems to manage all my work. The systems kept becoming their own work. When AI came in, it didn't replace that pattern — it gave me a faster way to build the next layer of it.",
+      "Every layer solves one problem while introducing two more. Artifacts get trapped in proprietary systems. AI sessions go ephemeral. Exports break. Sharing requires accounts. Local-first tools still secretly depend on the cloud. The most reliable thing in the whole stack — the thing I could share without asking anyone's permission and still reopen on any laptop in 2035 — kept turning out to be the one that came out of the AI as a single HTML file.",
       "Here are five scenes from that realization."
     ]
   },
@@ -97,9 +99,9 @@
     {
       "n": "04",
       "eyebrow": "Offline, portable, self-contained",
-      "title": "An app that runs from a thumb drive.",
+      "title": "An interactive document that runs from a thumb drive.",
       "scenario": "You want to give your sister the family photos. Not a Google Drive link she'll lose. Not an iCloud share that requires her to have an iCloud account. Not a USB stick of raw JPEGs she'll have to figure out how to open. You want one file she can double-click. It opens like a tiny website. The photos are arranged, the captions are visible, the dates and locations are there if she wants them. No internet needed. No installation. The same shape works for a reference manual that has to run in airplane mode, a self-contained calculator, a small DAW with bundled stems and live mixing.",
-      "solution": "Capsules at tier 4 (the top of the interactivity stack) are full apps. They just happen to be apps that fit in a single HTML file with their data baked in. Open one in 2026 or 2035; if the browser engine still renders HTML and runs JavaScript, the app works.",
+      "solution": "Capsules at tier 4 (the top of the interactivity stack) can feel like full apps in a desktop browser — but they're still single HTML files with their data baked in. Open one in 2026 or 2035; if the browser still renders HTML and runs JavaScript, the interactive parts work. No backend. No API to maintain. No account. No internet required. (iOS preview surfaces strip the JavaScript; the document layer still reads. We're mostly building for a desktop browser.)",
       "payoff": "No backend, no API to maintain, no DLC to download. The trade-off is the size budget (everything's inline, so the file is bigger than a typical webpage) and the lack of live data (it's a snapshot, not a service). Those are the same trade-offs PDFs make. Capsules just make them for richer content.",
       "example": { "label": "capsule-photo (in development)", "pending": true },
       "generator": "hybrid",
@@ -120,7 +122,7 @@
   "faqs": [
     {
       "q": "What is a Capsule?",
-      "a": "A Capsule is one sealed HTML file with five inline blocks: a manifest (identity, provenance, integrity hash), a data block (the snapshot, as JSON), styles, the rendered content, and an optional runtime. No external dependencies. No network requests. No companion folders or sidecar files. The same envelope shape whether an LLM, a build script, or a human authored it. Open it in any browser, on any device, decades from now. A profile of HTML, not a new file format. See the twelve rules in CAPSULE_CORE.md."
+      "a": "First and foremost, a Capsule is a sealed, versioned document. One HTML file with five inline blocks: a manifest (identity, provenance, integrity hash), a data block (the snapshot, as JSON), styles, the rendered content, and an optional runtime. No external dependencies. No network requests. No companion folders or sidecar files. The same envelope shape whether an LLM, a build script, or a human authored it. Open it in any browser, on any device, decades from now. A profile of HTML, not a new file format. Where it makes sense, a Capsule can include controlled interactivity — tabs, layered images, CSS-state UI, embedded media, a small DAW. The rule is simple: if the interactivity needs an account, an API, or the internet, it doesn't belong here. Document first; interactive where it can earn its place without breaking the seal. See the twelve rules in CAPSULE_CORE.md."
     },
     {
       "q": "Isn't that like an Artifact?",
@@ -266,14 +268,16 @@
   --line:        var(--rule);
   --accent:      var(--indigo);
   --accent-soft: var(--indigo-soft);
-  --max:         1040px;
+  --max:         1180px;
   --font-sans:   var(--sans);
   --font-mono:   var(--mono);
 }
 
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+html, body { margin: 0; padding: 0; background: var(--paper-soft); color: var(--ink); }
 body { font-family: var(--sans); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+/* v14.13: visual debug — show the #capsule-root container against the body background */
+#capsule-root { background: var(--paper); }
 a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color .15s, border-color .15s; }
 a:hover { color: var(--indigo); border-color: var(--indigo); }
 a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 2px; }
@@ -361,9 +365,9 @@ a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-
 
 section { padding: clamp(2.5rem, 6vh, 5rem) 0; border-top: 1px solid var(--rule); }
 section .eyebrow { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-mute); margin: 0 0 1rem; font-weight: 500; }
-section h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 1.25rem; max-width: 30em; color: var(--ink); }
+section h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 1.25rem; max-width: 44em; color: var(--ink); }
 section h2 .light { font-weight: 300; color: var(--ink-soft); }
-section p { color: var(--ink-soft); max-width: 38em; margin: 0; }
+section p { color: var(--ink-soft); max-width: 60em; margin: 0; }
 
 .demo { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; margin-top: 2rem; }
 @media (min-width: 720px) { .demo { grid-template-columns: 1fr 1fr; gap: 2rem; } }
@@ -574,6 +578,66 @@ footer.site .meta {
   display: block;
 }
 
+/* ── v14.14: TL;DR toggle ──
+   Button hidden by default; only appears when JS adds .js-ready.
+   When section.tldr-on, body + meta hide, summary callout shows. */
+.tldr-toggle {
+  display: none;
+}
+.js-ready .tldr-toggle {
+  display: inline-flex;
+  align-items: center;
+  font: 500 11px/1 var(--mono);
+  padding: 7px 13px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-soft);
+  color: var(--ink-mute);
+  border: 1px solid var(--rule);
+  cursor: pointer;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin: 0 0 1.25rem;
+  transition: background .15s, color .15s, border-color .15s;
+  font-family: inherit;
+  font-size: 11px;
+}
+.js-ready .tldr-toggle:hover {
+  color: var(--indigo);
+  border-color: var(--indigo);
+  background: var(--paper-page);
+}
+.js-ready .tldr-toggle[aria-pressed="true"] {
+  background: var(--indigo-soft);
+  color: var(--indigo-deep);
+  border-color: var(--indigo-edge);
+}
+.tldr-summary {
+  display: none;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink);
+  padding: 1.1rem 1.4rem;
+  background: var(--indigo-soft);
+  border-left: 3px solid var(--indigo);
+  border-top: 1px solid var(--indigo-edge);
+  border-right: 1px solid var(--indigo-edge);
+  border-bottom: 1px solid var(--indigo-edge);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  max-width: 60em;
+  margin: 0;
+}
+.tldr-summary p { margin: 0; max-width: none; color: inherit; }
+.tldr-summary p + p { margin-top: .65rem; }
+.tldr-summary ul { margin: 0; padding-left: 1.25rem; }
+.tldr-summary li + li { margin-top: .4rem; }
+.js-ready section.tldr-on .case-body,
+.js-ready section.tldr-on .case-meta {
+  display: none;
+}
+.js-ready section.tldr-on .tldr-summary {
+  display: block;
+}
+
 /* ── v14.12: thesis pull quote between UC5 and FAQ ── */
 .thesis-quote {
   margin: clamp(2rem, 6vh, 4rem) auto;
@@ -729,15 +793,22 @@ footer.site .meta {
 @media (prefers-reduced-motion: reduce) {
   .js-ready .nav-sticky { transition: none; }
 }
-/* .hero inside #capsule-root no longer carries the image — just lede + cta */
+/* .hero inside #capsule-root no longer carries the image — just lede (CTAs removed v14.14) */
 .hero.hero-image {
   padding: 0 0 clamp(2rem, 5vh, 3rem);
   max-width: none;
 }
+.hero.hero-image p.lede {
+  max-width: 60em;
+  font-size: clamp(1.05rem, 1.9vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+  font-weight: 400;
+}
 #capsule-root {
   padding-top: clamp(2rem, 5vh, 3rem);
 }
-/* lede + cta inherit defaults: lede max-width 50ch left-aligned, cta inline-flex */
 
 /* ── v14: use-case section meta — chips at the bottom of each scenario ── */
 .case-meta {
@@ -745,7 +816,7 @@ footer.site .meta {
   margin: 1.75rem 0 0;
   padding: 1.1rem 0 0;
   border-top: 1px dashed var(--rule);
-  max-width: 42em;
+  max-width: 60em;
 }
 .case-meta-chip {
   display: inline-flex; align-items: center;
@@ -798,7 +869,7 @@ section .case-body p + p {
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   margin: 1.25rem 0 0;
-  max-width: 42em;
+  max-width: 60em;
 }
 .faq-block h3 {
   font: 700 18px/1.3 var(--sans);
@@ -830,7 +901,7 @@ section .case-body p + p {
   margin: 1.75rem 0 0 !important;
   color: var(--ink-mute) !important;
   font-size: 15px;
-  max-width: 42em;
+  max-width: 60em;
   line-height: 1.55;
 }
 .faq-payoff strong {
@@ -845,7 +916,7 @@ section .case-body p + p {
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   margin: 1.25rem 0 0;
-  max-width: 42em;
+  max-width: 60em;
 }
 .commitment h3 {
   font: 700 17px/1.3 var(--sans);
@@ -873,7 +944,7 @@ section .case-body p + p {
   font-style: italic;
   color: var(--ink-mute) !important;
   font-size: 15px;
-  max-width: 42em;
+  max-width: 60em;
 }
 
 .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100%); background: var(--ink); color: var(--paper-page); padding: .6rem 1.1rem; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: transform .2s, opacity .2s; pointer-events: none; z-index: 100; }
@@ -923,25 +994,28 @@ section .case-body p + p {
 
   <header class="hero hero-image">
     <p class="lede">I did not set out to build an HTML project. I set out to solve a workflow problem. Then another one. Then another. Eventually I found myself operating a small air traffic control tower of AI tools, sync systems, vector databases, cloud runtimes, local agents, export formats, authentication layers, and "universal" collaboration platforms that absolutely could not talk to each other. The most reliable artifact in my entire workflow turned out to be the thing everyone had spent twenty years trying to abstract away: a standalone HTML file.</p>
-    <div class="cta">
-      <a href="#uc1" class="btn primary">Browse use cases <span class="arrow">↓</span></a>
-      <a href="core.html" class="btn">Read the spec <span class="arrow">→</span></a>
-    </div>
   </header>
 
   <section aria-labelledby="before-title">
     <p class="eyebrow">Before</p>
     <h2 id="before-title">What was working — and what wasn't.</h2>
+    <button class="tldr-toggle" type="button" aria-pressed="false" aria-label="Toggle TL;DR summary">TL;DR</button>
     <div class="case-body">
-      <p>Here's the thing. None of this was crazy. Claude has dramatically accelerated my prototyping. v0 and shadcn produce real UI fast. Cloud sync works. Multiplayer collaborative editing is incredible. For the first time, software feels conversational. AI turns ideas into artifacts at unprecedented speed.</p>
-      <p>But every layer solves one problem while introducing two more. Artifacts get trapped in proprietary systems. AI sessions go ephemeral. Exports break. Sharing requires accounts. Local-first tools still secretly depend on the cloud. The most reliable thing in the whole stack — the thing I could share without asking anyone's permission and still reopen on any laptop in 2035 — kept turning out to be the one that came out of the AI as a single HTML file.</p>
+      <p>More than anything, I'm putting this out there for discussion. I'm not trying to proselytize. I'm just presenting what's been working for me and what hasn't.</p>
+      <p>None of this was crazy. Claude has dramatically accelerated my prototyping. v0 and shadcn produce real UI fast. Cloud sync works. Multiplayer collaborative editing is incredible. For the first time, software feels conversational. AI turns ideas into artifacts at unprecedented speed.</p>
+      <p>Before any of that, I was spending serious time with Airtable. Coda. Google Sheets. Nocodb. Baserow. Building systems to manage all my work. The systems kept becoming their own work. When AI came in, it didn't replace that pattern — it gave me a faster way to build the next layer of it.</p>
+      <p>Every layer solves one problem while introducing two more. Artifacts get trapped in proprietary systems. AI sessions go ephemeral. Exports break. Sharing requires accounts. Local-first tools still secretly depend on the cloud. The most reliable thing in the whole stack — the thing I could share without asking anyone's permission and still reopen on any laptop in 2035 — kept turning out to be the one that came out of the AI as a single HTML file.</p>
       <p>Here are five scenes from that realization.</p>
+    </div>
+    <div class="tldr-summary">
+      <p>Modern AI tooling is genuinely great. Every layer around it breaks artifact preservation — sessions go ephemeral, exports rot, sharing needs accounts. The one thing that consistently survives the whole stack is a single HTML file. Five scenes from that realization follow.</p>
     </div>
   </section>
 
   <section id="uc1" aria-labelledby="uc1-title">
     <p class="eyebrow">Use case 01 · The origin</p>
     <h2 id="uc1-title">Save the parts of an AI conversation worth keeping.</h2>
+    <button class="tldr-toggle" type="button" aria-pressed="false" aria-label="Toggle TL;DR summary">TL;DR</button>
     <div class="case-body">
       <p>You start a new chat in ChatGPT. You ask some questions, it answers. The conversation meanders, one topic linking to another, but you finish feeling like you got something of value out of it. Then what? You close the tab. Where does the info go? Into your chat history. Ready to pollute the next conversation you didn't want it to. What if you want to share it with someone? You ask for a summary. But in what format? PDF? Markdown? Just text and screenshots? What about HTML? I guess you could share a "link," but something about that seems brittle…</p>
       <p>A Capsule is what you save. Manifest with provenance (which model, what date, what conversation source). Data block with the structured content: decisions, sources, conclusions, open questions. Rendered HTML that reads on its own without the runtime. Integrity hash that proves the bytes haven't drifted.</p>
@@ -952,11 +1026,15 @@ section .case-body p + p {
       <span class="case-meta-chip">Generator: <code>llm</code></span>
       <span class="case-meta-chip">Tier 0–2</span>
     </div>
+    <div class="tldr-summary">
+      <p>Save the AI conversation as one HTML file with provenance (model, date, source), structured content (decisions, sources, conclusions), and an integrity hash. The chat closes; the canvas mutates; the share link rots; the file still opens.</p>
+    </div>
   </section>
 
   <section id="uc2" aria-labelledby="uc2-title">
     <p class="eyebrow">Use case 02 · File over app</p>
     <h2 id="uc2-title">Notes that outgrew markdown.</h2>
+    <button class="tldr-toggle" type="button" aria-pressed="false" aria-label="Toggle TL;DR summary">TL;DR</button>
     <div class="case-body">
       <p>You're deep in Obsidian. Vault built, plugins humming, daily-notes template dialed in. Then a note grows up. It wants to embed a chart. It wants a manifest the next reader can interrogate. It wants to be shareable to someone who doesn't have your vault. Markdown doesn't carry those. You can hand-write HTML inside the markdown, but then it doesn't render right in half the viewers, and you start fighting your own format.</p>
       <p>A Capsule is what notes become when they reach that point. The plain text is still there, rendered into the HTML at build time, readable in any browser. On top: structured fields the runtime can use. A decision table the reader can sort. References that copy as citations. Exports that produce JSON for downstream tools. An "about" panel showing where this came from.</p>
@@ -967,11 +1045,15 @@ section .case-body p + p {
       <span class="case-meta-chip">Domain: <code>implementation_notes</code></span>
       <span class="case-meta-chip">Tier 0–2</span>
     </div>
+    <div class="tldr-summary">
+      <p>A Capsule is what a note becomes when it outgrows markdown. Still file-over-app, but with a manifest, embedded media, integrity, and a runtime that does what plugins used to do — without the plugin-shelf maintenance.</p>
+    </div>
   </section>
 
   <section id="uc3" aria-labelledby="uc3-title">
     <p class="eyebrow">Use case 03 · Time-bounded snapshots</p>
     <h2 id="uc3-title">Capture a moment of work without a database.</h2>
+    <button class="tldr-toggle" type="button" aria-pressed="false" aria-label="Toggle TL;DR summary">TL;DR</button>
     <div class="case-body">
       <p>You're three weeks into something. The state of what you know on Tuesday morning is the version that matters. It's what you took to the meeting, what the team agreed on, what you signed off on. By Friday it'll already be different. The property dossier just before LOI. The research conclusion at week three. The bug investigation right before the fix shipped. You want this moment, frozen, citable later. You could put it in Notion, but Notion will quietly change underneath you. You could put it in a doc, but the doc keeps editing itself the moment anyone else gets access.</p>
       <p>A Capsule packages it: structured data in a JSON block, human-readable rendering, provenance metadata, an integrity hash. No schema migrations, because the data block belongs to <em>this</em> snapshot. If next month's snapshot has a different shape, it's a different capsule. No database to maintain. No live query that might return different results tomorrow.</p>
@@ -982,14 +1064,18 @@ section .case-body p + p {
       <span class="case-meta-chip">Generator: <code>compiler</code> / <code>hybrid</code></span>
       <span class="case-meta-chip">Tier 0–2</span>
     </div>
+    <div class="tldr-summary">
+      <p>Frozen-state HTML snapshot. No database, no schema migrations, no live query. Captures what was true on a specific date and stays that way. Cost: it won't auto-update. Benefit: it stays exactly the way it was when you sealed it.</p>
+    </div>
   </section>
 
   <section id="uc4" aria-labelledby="uc4-title">
     <p class="eyebrow">Use case 04 · Offline, portable, self-contained</p>
-    <h2 id="uc4-title">An app that runs from a thumb drive.</h2>
+    <h2 id="uc4-title">An interactive document that runs from a thumb drive.</h2>
+    <button class="tldr-toggle" type="button" aria-pressed="false" aria-label="Toggle TL;DR summary">TL;DR</button>
     <div class="case-body">
       <p>You want to give your sister the family photos. Not a Google Drive link she'll lose. Not an iCloud share that requires her to have an iCloud account. Not a USB stick of raw JPEGs she'll have to figure out how to open. You want one file she can double-click. It opens like a tiny website. The photos are arranged, the captions are visible, the dates and locations are there if she wants them. No internet needed. No installation. The same shape works for a reference manual that has to run in airplane mode, a self-contained calculator, a small DAW with bundled stems and live mixing.</p>
-      <p>Capsules at <a href="full-spec.html">tier 4</a> (the top of the interactivity stack) are full apps. They just happen to be apps that fit in a single HTML file with their data baked in. Open one in 2026 or 2035; if the browser engine still renders HTML and runs JavaScript, the app works. No backend, no API to maintain, no DLC to download.</p>
+      <p>Capsules at <a href="full-spec.html">tier 4</a> (the top of the interactivity stack) can feel like full apps in a desktop browser — but they're still single HTML files with their data baked in. Open one in 2026 or 2035; if the browser still renders HTML and runs JavaScript, the interactive parts work. No backend. No API to maintain. No account. No internet required. (iOS preview surfaces strip the JavaScript; the document layer still reads. We're mostly building for a desktop browser.)</p>
       <p>The trade-off is the size budget (everything's inline, so the file is bigger than a typical webpage) and the lack of live data (it's a snapshot, not a service). Those are the same trade-offs PDFs make. Capsules just make them for richer content.</p>
     </div>
     <div class="case-meta">
@@ -997,11 +1083,15 @@ section .case-body p + p {
       <span class="case-meta-chip">Generator: <code>hybrid</code></span>
       <span class="case-meta-chip">Tier 4</span>
     </div>
+    <div class="tldr-summary">
+      <p>An interactive document that runs from a thumb drive. Single HTML file, no install, no account, no internet. Put it on a thumb drive, hand it to your sister, open it on any laptop in 2035. Same trade-offs PDFs make, applied to interactive content.</p>
+    </div>
   </section>
 
   <section id="uc5" aria-labelledby="uc5-title">
     <p class="eyebrow">Use case 05 · Discovery + collaboration</p>
     <h2 id="uc5-title">Share with a domain-aware registry.</h2>
+    <button class="tldr-toggle" type="button" aria-pressed="false" aria-label="Toggle TL;DR summary">TL;DR</button>
     <div class="case-body">
       <p>You're not making something for one recipient. You're making something other people in your same line of work — the same domain, the same conversations — should be able to find. A regular link drops it in a sea of regular links. You want this file to land somewhere your peers will see it, discuss it, fork it, attest its integrity hash when it loads. That's the job of a registry, and the format works with one without depending on one.</p>
       <p>A registry like <a href="https://mindev.ca" rel="noopener">MinDev</a> hosts capsules from people working in geological exploration. Each capsule keeps its integrity hash. Each gets a stable URL. Each can be discussed in conversations attached to it.</p>
@@ -1011,6 +1101,9 @@ section .case-body p + p {
       <span class="case-meta-chip case-meta-example"><a href="https://mindev.ca" rel="noopener">Worked example: <code>mindev.ca</code></a></span>
       <span class="case-meta-chip">Optional layer</span>
       <span class="case-meta-chip">Convention: <a href="hosting.html">HOSTING.md</a></span>
+    </div>
+    <div class="tldr-summary">
+      <p>Same Capsule works on a thumb drive or on a domain-aware registry like <a href="https://mindev.ca" rel="noopener">MinDev</a>. Registries add discovery and discussion; they don't change the file. The host-vs-format split is documented in <a href="hosting.html">HOSTING.md</a> for anyone building a registry in their own domain.</p>
     </div>
   </section>
 
@@ -1024,8 +1117,9 @@ section .case-body p + p {
     <h2 id="faq-title">What people ask first.</h2>
     <div class="faq-block">
       <h3>What is a Capsule?</h3>
-      <p>A Capsule is one sealed HTML file with five inline blocks: a <em>manifest</em> (identity, provenance, integrity hash), a <em>data block</em> (the snapshot, as JSON), <em>styles</em>, the <em>rendered content</em>, and an optional <em>runtime</em>. No external dependencies. No network requests. No companion folders or sidecar files. The same envelope shape whether an LLM, a build script, or a human authored it.</p>
+      <p>First and foremost, a Capsule is a sealed, versioned document. One HTML file with five inline blocks: a <em>manifest</em> (identity, provenance, integrity hash), a <em>data block</em> (the snapshot, as JSON), <em>styles</em>, the <em>rendered content</em>, and an optional <em>runtime</em>. No external dependencies. No network requests. No companion folders or sidecar files. The same envelope shape whether an LLM, a build script, or a human authored it.</p>
       <p>Open it in any browser, on any device, decades from now. A profile of HTML, not a new file format. <a href="core.html">See the twelve rules in CAPSULE_CORE.md</a>.</p>
+      <p>Where it makes sense, a Capsule can include controlled interactivity — tabs, layered images, CSS-state UI, embedded media, a small DAW. The rule is simple: if the interactivity needs an account, an API, or the internet, it doesn't belong here. Document first; interactive where it can earn its place without breaking the seal.</p>
     </div>
     <div class="faq-block">
       <h3>Isn't that like an Artifact?</h3>
@@ -1335,6 +1429,18 @@ section .case-body p + p {
     // No IntersectionObserver — show nav immediately so it's not trapped.
     stickyNav.classList.add('is-stuck');
   }
+
+  // v14.14: TL;DR toggle — per-section button collapses body to a summary.
+  // Default state (Tier 0 or JS-off): button hidden via CSS, full body visible.
+  document.querySelectorAll('.tldr-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var section = btn.closest('section');
+      if (!section) return;
+      var on = section.classList.toggle('tldr-on');
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.textContent = on ? 'Show full' : 'TL;DR';
+    });
+  });
 })();
 </script>
 </body>
