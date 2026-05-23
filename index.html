@@ -10,7 +10,7 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "14.15.0",
+  "capsule_version": "14.16.0",
   "title": "HTML Capsule",
   "description": "Production landing page for htmlcapsule.org. v14.6.1 swaps the hero image to a refined version with a Dr. Strangelove-riff subtitle (Or: How I Learned to Stop Overengineering and Save as HTML) and war-room figures labeled Thariq / Karpathy / Boris (the PRECEDENTS lineage). Same compression recipe (sips -Z 1600 jpeg q85). data: URI replaced in-place; data block hero.claim updated to match the new subtitle; page <title> updated correspondingly. v14.1.1 swaps UC1's scenario paragraph from the original abstract opener ('You finish a chat with Claude, ChatGPT, Gemini. You worked through a decision…') for the maintainer-voiced version drafted by the user: conversational, rhetorical-question-heavy, names ChatGPT specifically, traces the natural arc from end-of-conversation through 'where does the info go' to 'what format do I share in,' ends with 'something about [a share link] seems brittle…' which now sets up a callback to the existing payoff line ('the share link can break. The file still opens.'). Lighter tighten on the user's draft preserving the I-guess / What-if voice markers and the trailing ellipsis. v14.1.0 reshaped the former 'Why not just use…' comparison section into a proper FAQ. Section now eyebrowed 'Common questions' / H2 'What people ask first.' Six FAQ entries, ordered foundational-first then by reader-frequency: (1) What is a Capsule? — opens with the spec-canonical definition (five inline blocks, no external deps, profile of HTML not a new format); (2) Isn't that like an Artifact? — the most common first-contact comparison, distinguishing working canvases (Claude Artifacts / ChatGPT Canvas / Gemini Canvas) from sealed outputs; (3) Why not Markdown? — content vs structure-plus-provenance-plus-interactivity; (4) Why not a notes app? — Notion / Obsidian / Tana as working surfaces vs Capsules as sealed outputs; (5) Why not a database? — live mutable state vs frozen snapshot; (6) Why not a PDF? — closed lossy print-format vs open programmable re-readable screen-format. Drops the violet 'vs' badge — the question heading itself is the marker now, with a small mono 'Q.' prefix in violet. CSS renamed .vs-block → .faq-block, .vs-badge removed, .vs-payoff → .faq-payoff. Data block 'comparisons' array → 'faqs' array, each entry is now {q, a} pair. v14.0.2 added a fifth 'vs' comparison block addressing 'Isn't that like an Artifact?' — the most direct comparison most readers will have on first contact. Block heading 'vs An AI canvas' (generic noun phrase matching the patterning of the other four entries), body name-checks Claude Artifacts / ChatGPT Canvas / Gemini Canvas specifically, frames them as 'working canvases' for making vs Capsules as sealed outputs for keeping. Echoes the README's 'different roles, complementary tools' framing and extends the same complementary-layers logic from the existing 'vs A notes app' block (Notion / Obsidian — also working surfaces). H2 updated 'Why not markdown, a notes app, a database, or a PDF?' → 'Why not markdown, a notes app, an AI canvas, a database, or a PDF?' Placement: between 'A notes app' and 'A database' — both notes app and AI canvas are working-surface comparisons; database starts the state/format comparisons. v14.0.1 weaves the project's deeper architectural framing — 'an atomic unit of preserved work' — into the hero lede as a middle sentence between the existing 'sealed HTML file that holds a snapshot' opening and the 'five use cases / two commitments' navigation copy. The phrase is canonical from spec/CAPSULE_SPEC.md §0 and Research F8 (where it's named as the framing that explains all earlier ones the project tried). Pairs with the existing front-facing 'memory object' framing in CAPSULE_CORE.md / README that captures the human-readable + machine-readable + provenance-bearing trio in one noun phrase. v14.0.0 is a use-case-focused restructure of the landing direction. The v1 landing (capsule_version 13.x) led with the format's conceptual framing — anti-context-loss eyebrow, 'HTML you can keep' claim, lifecycle pills strip, anatomy card showing the 5 inline blocks. v14 leads with what people DO with capsules: five long-form use-case sections (UC1 save AI chats, UC2 notes beyond markdown, UC3 time-bounded snapshots, UC4 a self-contained app from a thumb drive, UC5 share with a domain-aware registry), followed by a 'Why not markdown, a notes app, a database, or a PDF?' section with four vs-blocks addressing the obvious skeptical follow-ups (markdown — content vs structure-plus-provenance-plus-interactivity; notes app — working surface vs sealed output; database — live mutable state vs frozen snapshot; PDF — closed lossy print-format vs open programmable re-readable screen-format), followed by a 'Why a Capsule lasts' section holding the two technical commitments (minimum floor + sealed boundary) that make every use case durable. The v1 landing is preserved at /v1 (file v1.html, UUID edbb017a, capsule_version 1.0.0). New hero: eyebrow 'Five ways to use a Capsule', claim 'Save what's worth saving.', lede pointing forward to the use cases + commitments structure. Cut from v1: the lifecycle pills strip + 'What it is' section + 'How it's shaped' anatomy. Preserved from v1: top nav (Spec / Notes / Long-form / Research / GitHub), 'What this is not' (with all 4 fence-posting bullets including 'Not an app pretending to be a document'), 'Go deeper' 3-card section, About panel with manifest viewer, 4-column footer site map. New CSS for case-meta chip rows + commitment block styling. UUID 7d1a1ac8 preserved across the v1 → v2 transition because this is the same conceptual landing at the same URL; only the framing direction changed. v13.2.1 lands the document-first thesis in the 'What this is not' section: adds the line 'Not an app pretending to be a document. A document that can wake up into an app.' Pairs with spec v0.3.8's new §2.3.2 (the five tiers of capsule interactivity) and the new GLOSSARY 'Document-first artifact' entry. No structural changes; one bullet added; heading bumped 'Three lines' → 'Four lines'. Capsule_version 13.2.0 → 13.2.1 (patch — single bullet + heading word). v13.2.0 promotes the deeper material to first-class on-site reading views: 8 new Capsules at clean URLs render the markdown content directly on htmlcapsule.org instead of bouncing visitors to GitHub. Generated by compiler/build_md_capsules.py (stdlib-only markdown→HTML, no pip deps). Each generated capsule is a valid Core-spec Capsule (5 blocks, manifest, integrity hash, declared capabilities) and passes the reference validator at 26/26. New URLs: /core (Core spec), /full-spec (Full spec), /domains (Domain schemas), /hosting (Hosting pattern), /research (Research log F1-F28), /glossary (Glossary), /precedents (Precedents), /changelog (Changelog). All nav, Go-deeper, hero CTA, and footer links updated to point at these local Capsules. Validator also got a scope-aware refactor in the same pass — network API patterns (fetch, XMLHttpRequest, @import, etc.) now scan only inside <script> and <style> blocks instead of free-text body, eliminating the false positives that prevented the research / full-spec capsules from passing on initial build. UUID 7d1a1ac8 preserved. v13.1.1 fixes broken .md links: the htmlcapsule.org host (Cloudflare Pages by the response headers) serves .md files as raw text/markdown rather than rendering them, so clicking 'Research' / 'Spec' / etc. in v13.1.0 displayed wall-of-raw-markdown to the user instead of the expected reading view. Fix: all .md links in nav, hero CTA, Go-deeper section, and footer site-map now point at the GitHub blob/tree views (https://github.com/bigfancygarden/htmlcapsule/blob/main/<file>), which render markdown reliably and offer a comfortable reading experience. .html links (notes.html, exploration.html, design/proposal.html) kept as relative paths because the host's 308 redirect from /file.html → /file works fine. spec/examples/ directory link also switched to GitHub tree view since Cloudflare Pages doesn't do directory listings by default. v13.1.0 recovers framing-content doorways that the v13.0.0 strip lost. The landing-direction commit at v13.0.0 (Linear/Stripe-style, Claude Design design-system pass, indigo brand) intentionally cut the long-form Observations / Questions / Answers spine — but with no visible link to where that content went (/exploration.html), readers had no doorway. v13.1.0 fixes that: (1) top nav expanded from 3 to 5 links — added Notes (notes.html essay) + Long-form (exploration.html research-narrative spine) + Research (RESEARCH.md F-finding log); (2) new 'Go deeper' body section between 'What this is not' and the About details panel — three cards surfacing the notes essay, the long-form exploration, and the research log with descriptions of each; (3) footer expanded from a single-row 4-link list to a 4-column site map (Spec / Read / Code / About) covering 17 destinations including Domain schemas, Hosting pattern, PRECEDENTS, GLOSSARY, Design system, Changelog, llms.txt, maintainer link, README. All linked resources verified to exist in the repo. Capsule_version 13.0.0 → 13.1.0 (minor — content additions, no structural restyle). UUID 7d1a1ac8 preserved.",
   "type": "landing_page",
@@ -69,7 +69,7 @@
       "title": "Save the parts of an AI conversation worth keeping.",
       "scenario": "You start a new chat in ChatGPT. You ask some questions, it answers. The conversation meanders, one topic linking to another, but you finish feeling like you got something of value out of it. Then what? You close the tab. Where does the info go? Into your chat history. Ready to pollute the next conversation you didn't want it to. What if you want to share it with someone? You ask for a summary. But in what format? PDF? Markdown? Just text and screenshots? What about HTML? I guess you could share a 'link,' but something about that seems brittle…",
       "solution": "A Capsule is what you save. Manifest with provenance (which model, what date, what conversation source). Data block with the structured content: decisions, sources, conclusions, open questions. Rendered HTML that reads on its own without the runtime. Integrity hash that proves the bytes haven't drifted.",
-      "payoff": "One file. Drop it in a folder, attach it to email, hand it to someone who can continue the work. The model behind the conversation can change; the platform can disappear; the share link can break. The file still opens.",
+      "payoff": "One file. Drop it in a folder, attach it to email, hand it to someone who can continue the work. The model behind the conversation can change; the platform can disappear; the share link can break. The file still opens. And the next AI you hand it to can read it — it's HTML with a structured data block any model can ingest. The work moves with the file, not the platform.",
       "example": { "label": "coming soon", "pending": true },
       "generator": "llm",
       "tier": "0–2"
@@ -160,6 +160,15 @@
   ],
   "commitments_payoff": "Together: the boundary makes the floor possible; the floor is what makes a Capsule honest about what it can promise.",
   "thesis": "Working canvases are for making. Capsules are for keeping.",
+  "multi_system": {
+    "eyebrow": "Multi-system, by design",
+    "title": "The work moves with the file, not the platform.",
+    "paragraphs": [
+      "I don't want all my chats locked into one AI system. I want to bounce ideas off Claude, refine them in Gemini, hand them to Codex, paste them back into ChatGPT. Sometimes the same week. Sometimes the same conversation. Different models are good at different things, and I want to use the right one for the moment without committing my entire body of work to whoever happens to be ahead this quarter.",
+      "A Capsule is what makes that possible. It's HTML with a structured data block any LLM can ingest — attach it to a Claude conversation, paste it into ChatGPT, drop it into Gemini, give it to a local model running on your laptop. The next system reads the manifest, sees the provenance (which model worked on this, what was decided, what's still open), and picks up where the last one stopped.",
+      "That's the consumer side of the same property that makes Capsules portable across time. Any AI can produce one. Any AI can read one. The format is the neutral substrate. No platform owns the work."
+    ]
+  },
   "closing": {
     "eyebrow": "Closing",
     "title": "That's why I save my work as HTML now.",
@@ -176,6 +185,7 @@
     "Not an app pretending to be a document. A document that can wake up into an app.",
     "Not a standard you have to comply with. A loose discipline.",
     "Not anti-platform. Anti-context-loss.",
+    "Not provider-locked. The file goes wherever you go.",
     "Not anti-modern. Post-overengineering.",
     "Not finished. Active research."
   ],
@@ -286,13 +296,11 @@ a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-
 
 #capsule-root { max-width: var(--max); margin: 0 auto; padding: 1.5rem clamp(1.25rem, 4vw, 2.5rem) 4rem; }
 
-.nav { display: flex; align-items: center; justify-content: space-between; padding: .5rem 0 4rem; gap: 16px; flex-wrap: wrap; }
-.nav .mark { display: inline-flex; align-items: center; gap: .55rem; font-weight: 600; font-size: 15px; letter-spacing: -.005em; }
-.nav .mark svg { width: 26px; height: auto; color: var(--indigo); }
-.nav .mark a { border: 0; color: var(--ink); }
-.nav .links { display: flex; gap: .25rem; font-size: 13px; }
-.nav .links a { border: 0; color: var(--ink-soft); padding: .5rem .75rem; border-radius: var(--radius-sm); font-weight: 500; }
-.nav .links a:hover { color: var(--ink); background: var(--paper-soft); }
+/* legacy .nav rules from the v1 layout removed v14.15.2 — they had
+   padding: .5rem 0 4rem which was adding 64px bottom padding to the
+   sticky nav (because HTML had class="nav nav-sticky" so both applied
+   and .nav-sticky never reset the outer padding). The HTML now uses
+   class="nav-sticky" only. */
 
 .hero { padding: clamp(2rem, 8vh, 6rem) 0 clamp(2rem, 6vh, 4rem); max-width: 760px; }
 .hero .eyebrow {
@@ -725,7 +733,7 @@ footer.site .meta {
 .nav-sticky .nav-inner {
   max-width: var(--max);
   margin: 0 auto;
-  padding: .55rem clamp(1.25rem, 4vw, 2.5rem);
+  padding: .4rem clamp(1.25rem, 4vw, 2.5rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -737,12 +745,12 @@ footer.site .meta {
   align-items: center;
   gap: .5rem;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: -.005em;
   color: var(--ink);
 }
-.nav-sticky .mark svg { width: 22px; }
-.nav-sticky .links a { padding: .4rem .65rem; font-size: 12.5px; }
+.nav-sticky .mark svg { width: 18px; }
+.nav-sticky .links a { padding: .35rem .55rem; font-size: 12px; }
 .nav-sticky .mark a {
   color: inherit;
   border: 0;
@@ -954,7 +962,7 @@ section .case-body p + p {
   * { transition: none !important; animation: none !important; }
 }
 @media print {
-  .nav .links, .about, .toast, footer.site { display: none; }
+  .nav-sticky, .about, .toast, footer.site { display: none; }
   body { font-size: 12pt; background: #fff; color: #000; }
 }
 </style>
@@ -963,7 +971,7 @@ section .case-body p + p {
 <a class="skip" href="#capsule-root">Skip to content</a>
 
 <header class="page-hero">
-  <nav class="nav nav-sticky" aria-label="Top">
+  <nav class="nav-sticky" aria-label="Top">
     <div class="nav-inner">
       <span class="mark">
         <svg viewBox="0 0 32 18" aria-hidden="true" focusable="false">
@@ -1019,7 +1027,7 @@ section .case-body p + p {
     <div class="case-body">
       <p>You start a new chat in ChatGPT. You ask some questions, it answers. The conversation meanders, one topic linking to another, but you finish feeling like you got something of value out of it. Then what? You close the tab. Where does the info go? Into your chat history. Ready to pollute the next conversation you didn't want it to. What if you want to share it with someone? You ask for a summary. But in what format? PDF? Markdown? Just text and screenshots? What about HTML? I guess you could share a "link," but something about that seems brittle…</p>
       <p>A Capsule is what you save. Manifest with provenance (which model, what date, what conversation source). Data block with the structured content: decisions, sources, conclusions, open questions. Rendered HTML that reads on its own without the runtime. Integrity hash that proves the bytes haven't drifted.</p>
-      <p>One file. Drop it in a folder, attach it to email, hand it to someone who can continue the work. The model behind the conversation can change; the platform can disappear; the share link can break. The file still opens.</p>
+      <p>One file. Drop it in a folder, attach it to email, hand it to someone who can continue the work. The model behind the conversation can change; the platform can disappear; the share link can break. The file still opens. And the next AI you hand it to can read it — it's HTML with a structured data block any model can ingest. The work moves with the file, not the platform.</p>
     </div>
     <div class="case-meta">
       <span class="case-meta-chip case-meta-pending">Worked example: coming soon</span>
@@ -1107,6 +1115,20 @@ section .case-body p + p {
     </div>
   </section>
 
+  <section aria-labelledby="multi-system-title">
+    <p class="eyebrow">Multi-system, by design</p>
+    <h2 id="multi-system-title">The work moves with the file, not the platform.</h2>
+    <button class="tldr-toggle" type="button" aria-pressed="false" aria-label="Toggle TL;DR summary">TL;DR</button>
+    <div class="case-body">
+      <p>I don't want all my chats locked into one AI system. I want to bounce ideas off Claude, refine them in Gemini, hand them to Codex, paste them back into ChatGPT. Sometimes the same week. Sometimes the same conversation. Different models are good at different things, and I want to use the right one for the moment without committing my entire body of work to whoever happens to be ahead this quarter.</p>
+      <p>A Capsule is what makes that possible. It's HTML with a structured data block any LLM can ingest — attach it to a Claude conversation, paste it into ChatGPT, drop it into Gemini, give it to a local model running on your laptop. The next system reads the manifest, sees the provenance (which model worked on this, what was decided, what's still open), and picks up where the last one stopped.</p>
+      <p>That's the consumer side of the same property that makes Capsules portable across time. Any AI can produce one. Any AI can read one. The format is the neutral substrate. No platform owns the work.</p>
+    </div>
+    <div class="tldr-summary">
+      <p>I don't want all my chats in one AI system. Capsules are HTML with a structured data block — any LLM can produce one, any LLM can read one. The work moves with the file, not the platform. The format is the neutral substrate that lets ideas travel between Claude, ChatGPT, Gemini, Codex, local models — whatever you reach for next.</p>
+    </div>
+  </section>
+
   <aside class="thesis-quote" role="presentation" aria-label="Thesis">
     <span class="making">Working canvases are for making.</span>
     <span class="keeping">Capsules are for keeping.</span>
@@ -1180,12 +1202,13 @@ section .case-body p + p {
 
   <section aria-labelledby="not-title">
     <p class="eyebrow">What this is not</p>
-    <h2 id="not-title">Five lines of fence-posting.</h2>
+    <h2 id="not-title">Six lines of fence-posting.</h2>
     <div class="not-this">
       <ul>
         <li>Not an app pretending to be a document. A document that can wake up into an app.</li>
         <li>Not a standard you have to comply with. A loose discipline.</li>
         <li>Not anti-platform. Anti-context-loss.</li>
+        <li>Not provider-locked. The file goes wherever you go.</li>
         <li>Not anti-modern. Post-overengineering.</li>
         <li>Not finished. Active research.</li>
       </ul>
