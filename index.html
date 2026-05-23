@@ -10,7 +10,7 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "14.10.0",
+  "capsule_version": "14.11.0",
   "title": "HTML Capsule",
   "description": "Production landing page for htmlcapsule.org. v14.6.1 swaps the hero image to a refined version with a Dr. Strangelove-riff subtitle (Or: How I Learned to Stop Overengineering and Save as HTML) and war-room figures labeled Thariq / Karpathy / Boris (the PRECEDENTS lineage). Same compression recipe (sips -Z 1600 jpeg q85). data: URI replaced in-place; data block hero.claim updated to match the new subtitle; page <title> updated correspondingly. v14.1.1 swaps UC1's scenario paragraph from the original abstract opener ('You finish a chat with Claude, ChatGPT, Gemini. You worked through a decision…') for the maintainer-voiced version drafted by the user: conversational, rhetorical-question-heavy, names ChatGPT specifically, traces the natural arc from end-of-conversation through 'where does the info go' to 'what format do I share in,' ends with 'something about [a share link] seems brittle…' which now sets up a callback to the existing payoff line ('the share link can break. The file still opens.'). Lighter tighten on the user's draft preserving the I-guess / What-if voice markers and the trailing ellipsis. v14.1.0 reshaped the former 'Why not just use…' comparison section into a proper FAQ. Section now eyebrowed 'Common questions' / H2 'What people ask first.' Six FAQ entries, ordered foundational-first then by reader-frequency: (1) What is a Capsule? — opens with the spec-canonical definition (five inline blocks, no external deps, profile of HTML not a new format); (2) Isn't that like an Artifact? — the most common first-contact comparison, distinguishing working canvases (Claude Artifacts / ChatGPT Canvas / Gemini Canvas) from sealed outputs; (3) Why not Markdown? — content vs structure-plus-provenance-plus-interactivity; (4) Why not a notes app? — Notion / Obsidian / Tana as working surfaces vs Capsules as sealed outputs; (5) Why not a database? — live mutable state vs frozen snapshot; (6) Why not a PDF? — closed lossy print-format vs open programmable re-readable screen-format. Drops the violet 'vs' badge — the question heading itself is the marker now, with a small mono 'Q.' prefix in violet. CSS renamed .vs-block → .faq-block, .vs-badge removed, .vs-payoff → .faq-payoff. Data block 'comparisons' array → 'faqs' array, each entry is now {q, a} pair. v14.0.2 added a fifth 'vs' comparison block addressing 'Isn't that like an Artifact?' — the most direct comparison most readers will have on first contact. Block heading 'vs An AI canvas' (generic noun phrase matching the patterning of the other four entries), body name-checks Claude Artifacts / ChatGPT Canvas / Gemini Canvas specifically, frames them as 'working canvases' for making vs Capsules as sealed outputs for keeping. Echoes the README's 'different roles, complementary tools' framing and extends the same complementary-layers logic from the existing 'vs A notes app' block (Notion / Obsidian — also working surfaces). H2 updated 'Why not markdown, a notes app, a database, or a PDF?' → 'Why not markdown, a notes app, an AI canvas, a database, or a PDF?' Placement: between 'A notes app' and 'A database' — both notes app and AI canvas are working-surface comparisons; database starts the state/format comparisons. v14.0.1 weaves the project's deeper architectural framing — 'an atomic unit of preserved work' — into the hero lede as a middle sentence between the existing 'sealed HTML file that holds a snapshot' opening and the 'five use cases / two commitments' navigation copy. The phrase is canonical from spec/CAPSULE_SPEC.md §0 and Research F8 (where it's named as the framing that explains all earlier ones the project tried). Pairs with the existing front-facing 'memory object' framing in CAPSULE_CORE.md / README that captures the human-readable + machine-readable + provenance-bearing trio in one noun phrase. v14.0.0 is a use-case-focused restructure of the landing direction. The v1 landing (capsule_version 13.x) led with the format's conceptual framing — anti-context-loss eyebrow, 'HTML you can keep' claim, lifecycle pills strip, anatomy card showing the 5 inline blocks. v14 leads with what people DO with capsules: five long-form use-case sections (UC1 save AI chats, UC2 notes beyond markdown, UC3 time-bounded snapshots, UC4 a self-contained app from a thumb drive, UC5 share with a domain-aware registry), followed by a 'Why not markdown, a notes app, a database, or a PDF?' section with four vs-blocks addressing the obvious skeptical follow-ups (markdown — content vs structure-plus-provenance-plus-interactivity; notes app — working surface vs sealed output; database — live mutable state vs frozen snapshot; PDF — closed lossy print-format vs open programmable re-readable screen-format), followed by a 'Why a Capsule lasts' section holding the two technical commitments (minimum floor + sealed boundary) that make every use case durable. The v1 landing is preserved at /v1 (file v1.html, UUID edbb017a, capsule_version 1.0.0). New hero: eyebrow 'Five ways to use a Capsule', claim 'Save what's worth saving.', lede pointing forward to the use cases + commitments structure. Cut from v1: the lifecycle pills strip + 'What it is' section + 'How it's shaped' anatomy. Preserved from v1: top nav (Spec / Notes / Long-form / Research / GitHub), 'What this is not' (with all 4 fence-posting bullets including 'Not an app pretending to be a document'), 'Go deeper' 3-card section, About panel with manifest viewer, 4-column footer site map. New CSS for case-meta chip rows + commitment block styling. UUID 7d1a1ac8 preserved across the v1 → v2 transition because this is the same conceptual landing at the same URL; only the framing direction changed. v13.2.1 lands the document-first thesis in the 'What this is not' section: adds the line 'Not an app pretending to be a document. A document that can wake up into an app.' Pairs with spec v0.3.8's new §2.3.2 (the five tiers of capsule interactivity) and the new GLOSSARY 'Document-first artifact' entry. No structural changes; one bullet added; heading bumped 'Three lines' → 'Four lines'. Capsule_version 13.2.0 → 13.2.1 (patch — single bullet + heading word). v13.2.0 promotes the deeper material to first-class on-site reading views: 8 new Capsules at clean URLs render the markdown content directly on htmlcapsule.org instead of bouncing visitors to GitHub. Generated by compiler/build_md_capsules.py (stdlib-only markdown→HTML, no pip deps). Each generated capsule is a valid Core-spec Capsule (5 blocks, manifest, integrity hash, declared capabilities) and passes the reference validator at 26/26. New URLs: /core (Core spec), /full-spec (Full spec), /domains (Domain schemas), /hosting (Hosting pattern), /research (Research log F1-F28), /glossary (Glossary), /precedents (Precedents), /changelog (Changelog). All nav, Go-deeper, hero CTA, and footer links updated to point at these local Capsules. Validator also got a scope-aware refactor in the same pass — network API patterns (fetch, XMLHttpRequest, @import, etc.) now scan only inside <script> and <style> blocks instead of free-text body, eliminating the false positives that prevented the research / full-spec capsules from passing on initial build. UUID 7d1a1ac8 preserved. v13.1.1 fixes broken .md links: the htmlcapsule.org host (Cloudflare Pages by the response headers) serves .md files as raw text/markdown rather than rendering them, so clicking 'Research' / 'Spec' / etc. in v13.1.0 displayed wall-of-raw-markdown to the user instead of the expected reading view. Fix: all .md links in nav, hero CTA, Go-deeper section, and footer site-map now point at the GitHub blob/tree views (https://github.com/bigfancygarden/htmlcapsule/blob/main/<file>), which render markdown reliably and offer a comfortable reading experience. .html links (notes.html, exploration.html, design/proposal.html) kept as relative paths because the host's 308 redirect from /file.html → /file works fine. spec/examples/ directory link also switched to GitHub tree view since Cloudflare Pages doesn't do directory listings by default. v13.1.0 recovers framing-content doorways that the v13.0.0 strip lost. The landing-direction commit at v13.0.0 (Linear/Stripe-style, Claude Design design-system pass, indigo brand) intentionally cut the long-form Observations / Questions / Answers spine — but with no visible link to where that content went (/exploration.html), readers had no doorway. v13.1.0 fixes that: (1) top nav expanded from 3 to 5 links — added Notes (notes.html essay) + Long-form (exploration.html research-narrative spine) + Research (RESEARCH.md F-finding log); (2) new 'Go deeper' body section between 'What this is not' and the About details panel — three cards surfacing the notes essay, the long-form exploration, and the research log with descriptions of each; (3) footer expanded from a single-row 4-link list to a 4-column site map (Spec / Read / Code / About) covering 17 destinations including Domain schemas, Hosting pattern, PRECEDENTS, GLOSSARY, Design system, Changelog, llms.txt, maintainer link, README. All linked resources verified to exist in the repo. Capsule_version 13.0.0 → 13.1.0 (minor — content additions, no structural restyle). UUID 7d1a1ac8 preserved.",
   "type": "landing_page",
@@ -42,7 +42,7 @@
   "hero": {
     "eyebrow": "Introducing: HTML Capsule",
     "claim": "How I Learned to Stop Overengineering and Save as HTML.",
-    "lede": "I've tried everything else. Chat windows close. Canvases mutate. Share links rot. Markdown loses structure. Notion locks you in. PDFs lose interactivity. A Capsule is what I save now: one sealed HTML file, structured and readable, ready to share, archive, or re-read years from now. Five use cases below; two commitments make them last.",
+    "lede": "I did not set out to build an HTML project. I set out to solve a workflow problem. Then another one. Then another. Eventually I found myself operating a small air traffic control tower of AI tools, sync systems, vector databases, cloud runtimes, local agents, export formats, authentication layers, and 'universal' collaboration platforms that absolutely could not talk to each other. The most reliable artifact in my entire workflow turned out to be the thing everyone had spent twenty years trying to abstract away: a standalone HTML file.",
     "image": {
       "kind": "hero",
       "format": "image/jpeg",
@@ -50,6 +50,15 @@
       "source": "ChatGPT-generated illustration (May 2026 v2), mid-century-poster aesthetic, Dr. Strangelove subtitle riff ('How I Learned to Stop Overengineering and Save as HTML'), war-room figures labeled Thariq / Karpathy / Boris referencing PRECEDENTS.md voices, compressed to 1600px wide JPEG q85 (~363KB) and embedded as data: URI",
       "displayed_intrinsic_px": [1600, 900]
     }
+  },
+  "before": {
+    "eyebrow": "Before",
+    "title": "What was working — and what wasn't.",
+    "paragraphs": [
+      "Here's the thing. None of this was crazy. Claude has dramatically accelerated my prototyping. v0 and shadcn produce real UI fast. Cloud sync works. Multiplayer collaborative editing is incredible. For the first time, software feels conversational. AI turns ideas into artifacts at unprecedented speed.",
+      "But every layer solves one problem while introducing two more. Artifacts get trapped in proprietary systems. AI sessions go ephemeral. Exports break. Sharing requires accounts. Local-first tools still secretly depend on the cloud. The most reliable thing in the whole stack — the thing I could share without asking anyone's permission and still reopen on any laptop in 2035 — kept turning out to be the one that came out of the AI as a single HTML file.",
+      "Here are five scenes from that realization."
+    ]
   },
   "use_cases": [
     {
@@ -155,13 +164,15 @@
       "Not the only format I use. The one I trust to still open.",
       "The one that doesn't ask me to remember which platform I was on, which app the file came from, which login I'd need to recover, which CDN I'd need to be alive, which subscription I'd need to be paying.",
       "A Capsule is a small bet that the substrate stays open. Years from now, when I want to remember what I knew on a Tuesday in 2026 — the chat I had with the model that's no longer being served, the property dossier from the deal that fell through, the family photos I almost lost when the cloud went sideways — I want the file to just open.",
-      "That's the whole project."
+      "Maybe the future of software is not another platform. Maybe it is smaller. Stranger. More portable. More personal. Maybe the final form of the AI era is a folder full of weird little HTML files that still open perfectly in thirty years.",
+      "Gentlemen, you can't fight in here. This is the War Room."
     ]
   },
   "not_this": [
     "Not an app pretending to be a document. A document that can wake up into an app.",
     "Not a standard you have to comply with. A loose discipline.",
     "Not anti-platform. Anti-context-loss.",
+    "Not anti-modern. Post-overengineering.",
     "Not finished. Active research."
   ],
   "other_versions": [
@@ -883,12 +894,22 @@ section .case-body p + p {
 <main id="capsule-root">
 
   <header class="hero hero-image">
-    <p class="lede">I've tried everything else. Chat windows close. Canvases mutate. Share links rot. Markdown loses structure. Notion locks you in. PDFs lose interactivity. A Capsule is what I save now: one sealed HTML file, structured and readable, ready to share, archive, or re-read years from now. Five use cases below; two commitments make them last.</p>
+    <p class="lede">I did not set out to build an HTML project. I set out to solve a workflow problem. Then another one. Then another. Eventually I found myself operating a small air traffic control tower of AI tools, sync systems, vector databases, cloud runtimes, local agents, export formats, authentication layers, and "universal" collaboration platforms that absolutely could not talk to each other. The most reliable artifact in my entire workflow turned out to be the thing everyone had spent twenty years trying to abstract away: a standalone HTML file.</p>
     <div class="cta">
       <a href="#uc1" class="btn primary">Browse use cases <span class="arrow">↓</span></a>
       <a href="core.html" class="btn">Read the spec <span class="arrow">→</span></a>
     </div>
   </header>
+
+  <section aria-labelledby="before-title">
+    <p class="eyebrow">Before</p>
+    <h2 id="before-title">What was working — and what wasn't.</h2>
+    <div class="case-body">
+      <p>Here's the thing. None of this was crazy. Claude has dramatically accelerated my prototyping. v0 and shadcn produce real UI fast. Cloud sync works. Multiplayer collaborative editing is incredible. For the first time, software feels conversational. AI turns ideas into artifacts at unprecedented speed.</p>
+      <p>But every layer solves one problem while introducing two more. Artifacts get trapped in proprietary systems. AI sessions go ephemeral. Exports break. Sharing requires accounts. Local-first tools still secretly depend on the cloud. The most reliable thing in the whole stack — the thing I could share without asking anyone's permission and still reopen on any laptop in 2035 — kept turning out to be the one that came out of the AI as a single HTML file.</p>
+      <p>Here are five scenes from that realization.</p>
+    </div>
+  </section>
 
   <section id="uc1" aria-labelledby="uc1-title">
     <p class="eyebrow">Use case 01 · The origin</p>
@@ -1024,18 +1045,20 @@ section .case-body p + p {
       <p>Not the only format I use. The one I trust to still open.</p>
       <p>The one that doesn't ask me to remember which platform I was on, which app the file came from, which login I'd need to recover, which CDN I'd need to be alive, which subscription I'd need to be paying.</p>
       <p>A Capsule is a small bet that the substrate stays open. Years from now, when I want to remember what I knew on a Tuesday in 2026 — the chat I had with the model that's no longer being served, the property dossier from the deal that fell through, the family photos I almost lost when the cloud went sideways — I want the file to just open.</p>
-      <p>That's the whole project.</p>
+      <p>Maybe the future of software is not another platform. Maybe it is smaller. Stranger. More portable. More personal. Maybe the final form of the AI era is a folder full of weird little HTML files that still open perfectly in thirty years.</p>
+      <p><em>Gentlemen, you can't fight in here. This is the War Room.</em></p>
     </div>
   </section>
 
   <section aria-labelledby="not-title">
     <p class="eyebrow">What this is not</p>
-    <h2 id="not-title">Four lines of fence-posting.</h2>
+    <h2 id="not-title">Five lines of fence-posting.</h2>
     <div class="not-this">
       <ul>
         <li>Not an app pretending to be a document. A document that can wake up into an app.</li>
         <li>Not a standard you have to comply with. A loose discipline.</li>
         <li>Not anti-platform. Anti-context-loss.</li>
+        <li>Not anti-modern. Post-overengineering.</li>
         <li>Not finished. Active research.</li>
       </ul>
     </div>
