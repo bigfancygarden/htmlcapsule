@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="A short essay on the PKM Bell Curve meme applied to capsules. After the long detour through Obsidian, MCP servers, RAG pipelines, and agent frameworks, the master position turns out to be HTML — but HTML with the discipline the detour taught.">
+<meta name="color-scheme" content="light">
+<title>File over app. Master edition. · htmlcapsule</title>
+
+<script id="capsule-manifest" type="application/json">
+{
+  "spec_version": "0.3.0",
+  "uuid": "dad00ca4-6d9b-4c7e-9138-000aa9554939",
+  "capsule_version": "1.0.0",
+  "title": "File over app. Master edition.",
+  "description": "Short summary essay (~530 words) on the PKM Bell Curve meme applied to HTML Capsule. The classic meme positions Apple Notes at both ends of the bell curve (beginner and master) with the complex middle stuffed with plugins / vaults / Notion / Anki / etc. This essay redraws the curve with HTML at both edges and applies it to the LLM-assisted era: beginner copy-pastes from ChatGPT and loses the source; the intermediate runs MCP servers, agent frameworks, RAG pipelines, Obsidian, four prompt libraries, three conversation-export plugins (half broken); the master has a workflow shaped like the beginner's (ChatGPT to Capsule to folder) but the substrate is HTML with manifest, integrity hash, structured data block, declared capabilities. Punchline: the right-edge HTML is not the same as the left-edge HTML; it's HTML informed by the long detour. parents[] records lineage to notes.html (sibling essay) and the v14 landing (where this framing first surfaced in conversation). Sealed 2026-05-22.",
+  "type": "essay",
+  "created_at": "2026-05-22T00:00:00Z",
+  "generator": {
+    "name": "human + Claude",
+    "version": "Opus 4.7 (1M context)",
+    "kind": "hybrid"
+  },
+  "source": {
+    "origin": "project_authorship",
+    "snapshot_type": "essay",
+    "snapshot_id": "snapshot:htmlcapsule_bellcurve_essay_v1_2026_05_22",
+    "spec_received": "v0.3.0 · 2026-05-19",
+    "included_records": 1
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "parents": [
+    { "uuid": "c5f6a890-2b1d-4e3c-9f7a-8b6c5d4e3f2a", "title": "What I do with all the HTML I get from AI" },
+    { "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a", "title": "HTML Capsule (landing page)" }
+  ],
+  "derived_from": [
+    { "type": "blog_post", "title": "File over app", "reference": "https://stephango.com/file-over-app", "role": "originating_principle" }
+  ],
+  "capabilities": ["about", "copy_as_json", "download_json", "print_to_pdf"]
+}
+</script>
+
+<script id="capsule-data" type="application/json">
+{
+  "title": "File over app. Master edition.",
+  "byline": "Luke Schuss · 2026-05-22",
+  "read_time_min": 3,
+  "word_count": 530,
+  "thesis": "The PKM Bell Curve meme has HTML at both ends, but the right-edge HTML is not the same as the left-edge HTML. It's HTML informed by the long detour.",
+  "sections": [
+    {
+      "kind": "intro",
+      "paragraphs": [
+        "I was all in on file-over-app when I read Steph Ango's post in 2023. I messaged friends and family about Obsidian. I built a vault. I installed plugins. I customized templates. I tried Tana, Roam, Anytype. I made my own folder taxonomies. I bought Readwise. I rebuilt my workflow three times.",
+        "And then I became the meme."
+      ]
+    },
+    {
+      "kind": "section",
+      "heading": "The meme",
+      "paragraphs": [
+        "The PKM Bell Curve has three positions:",
+        "The beginner uses Apple Notes because it's accessible. The intermediate designs complex systems to get as many benefits as possible. The master uses Apple Notes because they realized it was all they needed.",
+        "I was the intermediate. I am, on bad days, still the intermediate."
+      ]
+    },
+    {
+      "kind": "section",
+      "heading": "The hidden flaw",
+      "paragraphs": [
+        "The meme has a subtle problem. Apple Notes isn't actually the master position. It's the position the meme imagines mastery looks like, because Apple Notes is the canonical 'simple' notes app most people have seen.",
+        "Apple Notes is platform-locked. Lossy on export. No provenance. No structured data. Can't be opened by anything that isn't Apple. If you tried to open an Apple Note in 2035, on a Windows laptop, or in an AI assistant, or on a phone you don't own, you'd get nothing.",
+        "The master position can't be a thing whose simplicity is bought by platform lock-in. The genuine master pick is HTML."
+      ]
+    },
+    {
+      "kind": "section",
+      "heading": "The LLM-era bell curve",
+      "paragraphs": [
+        "Redrawn for the AI-assisted era:",
+        "The beginner copy-pastes from ChatGPT into a folder. Loses the source. Forgets which model. Can't find anything six weeks later. But it works.",
+        "The intermediate runs MCP servers, agent frameworks, RAG pipelines, vector DBs. Cursor plus Claude Code plus Codex plus four prompt libraries plus an Obsidian vault to capture everything plus three different conversation-export plugins, half of them broken.",
+        "The master has a workflow shaped like the beginner's. ChatGPT to Capsule to folder. The LLM does the work. The Capsule holds the output."
+      ]
+    },
+    {
+      "kind": "section",
+      "heading": "The punchline",
+      "paragraphs": [
+        "The cleverness of the bell curve is that the master and the beginner end up at the same shape. The difference is what they know about it. The beginner doesn't know they're losing the source. The master knows, and engineered the substrate so they don't.",
+        "A Capsule is HTML informed by the long detour. It is what you reach for after you've tried the complex stack and remembered that the substrate has to be a single, self-contained, archive-able file you can hand someone in 2035 without explaining what software they need first.",
+        "HTML at both ends of the bell curve. But the HTML on the right edge is HTML with a manifest, an integrity hash, a structured data block, declared capabilities, and a runtime that does the things the intermediate needed plugins for. The master position is not 'use less.' It's 'use the right substrate, in a way that survives.'",
+        "If you're in the middle right now, I see you. The discipline that gets you to the right edge is not throwing the tools away. It's building the substrate that doesn't need them."
+      ]
+    }
+  ]
+}
+</script>
+
+<style id="capsule-style">
+:root {
+  --paper:        #f5f6f8;
+  --paper-soft:   #ebedf1;
+  --paper-page:   #ffffff;
+  --ink:          #0c0e13;
+  --ink-soft:     #2a2e38;
+  --ink-mute:     #5d6470;
+  --ink-faint:    #8a909c;
+  --rule:         #dde0e6;
+  --rule-soft:    #e8eaef;
+  --rule-strong:  #c8ccd4;
+  --indigo:       #4f46e5;
+  --indigo-soft:  #eef0fe;
+  --indigo-edge:  #c7cbf6;
+  --indigo-deep:  #3730a3;
+  --amber:        #b45309;
+  --amber-soft:   #fbeed5;
+  --amber-edge:   #ecd09b;
+  --amber-deep:   #7c2d12;
+  --sans:         "Geist", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+  --serif:        "Charter", "Iowan Old Style", "Source Serif Pro", Georgia, serif;
+  --mono:         "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius:       14px;
+  --radius-sm:    8px;
+  --radius-pill:  999px;
+  --max:          640px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+body { font-family: var(--serif); font-size: 19px; line-height: 1.65; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color .15s, border-color .15s; }
+a:hover { color: var(--indigo); border-color: var(--indigo); }
+a:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 2px; }
+.skip-link { position: absolute; left: -9999px; }
+.skip-link:focus { left: 1rem; top: 1rem; background: var(--ink); color: var(--paper-page); padding: .5rem .75rem; border-radius: var(--radius-sm); z-index: 99; font-family: var(--sans); }
+
+#capsule-root { max-width: var(--max); margin: 0 auto; padding: 1.5rem clamp(1.25rem, 4vw, 2rem) 4rem; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: .5rem 0 3rem; gap: 16px; flex-wrap: wrap; font-family: var(--sans); }
+.topbar .mark { display: inline-flex; align-items: center; gap: .55rem; font-weight: 600; font-size: 15px; letter-spacing: -.005em; }
+.topbar .mark svg { width: 26px; height: auto; color: var(--indigo); }
+.topbar .mark a { border: 0; color: var(--ink); }
+.topbar .links { display: flex; gap: .25rem; font-size: 13px; }
+.topbar .links a { border: 0; color: var(--ink-soft); padding: .5rem .75rem; border-radius: var(--radius-sm); font-weight: 500; }
+.topbar .links a:hover { color: var(--ink); background: var(--paper-soft); }
+
+article header { margin: 0 0 2.5rem; }
+.chip {
+  display: inline-flex; align-items: center;
+  font: 500 11px/1 var(--mono);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--amber-soft);
+  color: var(--amber-deep);
+  border: 1px solid var(--amber-edge);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin: 0 0 1.5rem;
+}
+article h1 {
+  font-family: var(--sans);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  margin: 0 0 1rem;
+  color: var(--ink);
+  max-width: 14ch;
+  text-wrap: balance;
+}
+article h1 .punch { font-weight: 800; color: var(--amber); }
+.byline {
+  font: 500 13px/1.4 var(--mono);
+  color: var(--ink-mute);
+  margin: 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.byline .author { color: var(--ink); font-weight: 600; }
+.byline .read { color: var(--indigo); }
+.byline a { border: 0; color: inherit; }
+.byline a:hover { color: var(--indigo); }
+.byline .sep { color: var(--ink-faint); }
+
+article h2 {
+  font-family: var(--sans);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.012em;
+  line-height: 1.25;
+  margin: 2.75rem 0 1.1rem;
+  color: var(--ink);
+}
+article p {
+  margin: 0 0 1.15rem;
+  max-width: none;
+}
+article p:last-child { margin-bottom: 0; }
+article em { font-style: italic; color: var(--ink); }
+
+.lede {
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0 0 2.5rem;
+  padding: 1.1rem 1.3rem;
+  background: var(--amber-soft);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+footer.colophon {
+  margin: 4rem 0 0;
+  padding: 1.75rem 0 0;
+  border-top: 1px solid var(--rule);
+  font: 500 12px/1.5 var(--mono);
+  color: var(--ink-mute);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: baseline;
+}
+footer.colophon a { border: 0; color: inherit; }
+footer.colophon a:hover { color: var(--indigo); }
+footer.colophon .sealed { color: var(--ink-faint); }
+
+.about { font-size: 13px; color: var(--ink-soft); margin-top: 2.5rem; font-family: var(--sans); }
+.about summary { cursor: pointer; color: var(--ink-mute); padding: .4rem 0; list-style: none; font-size: 12px; letter-spacing: .02em; font-family: var(--mono); }
+.about summary::-webkit-details-marker { display: none; }
+.about summary::before { content: "›  "; display: inline-block; transition: transform .15s; }
+.about[open] summary::before { transform: rotate(90deg); }
+.about[open] summary { color: var(--ink); }
+.about-body { padding: 1rem 0 0; }
+.about-body .row { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.about-body .row button { font: inherit; padding: .45rem .8rem; font-size: 12px; font-weight: 500; border: 1px solid var(--rule-strong); border-radius: var(--radius-sm); background: var(--paper-page); color: var(--ink-soft); cursor: pointer; }
+.about-body .row button:hover { background: var(--paper-soft); color: var(--ink); }
+.about-body pre { background: var(--indigo-soft); border: 1px solid var(--indigo-edge); border-radius: var(--radius-sm); padding: .85rem 1rem; font-family: var(--mono); font-size: 11.5px; line-height: 1.55; color: var(--ink); overflow-x: auto; max-height: 320px; }
+
+.toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100%); background: var(--ink); color: var(--paper-page); padding: .6rem 1.1rem; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: transform .2s, opacity .2s; pointer-events: none; z-index: 100; font-family: var(--sans); }
+.toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+@media print {
+  .topbar .links, .about, .toast { display: none; }
+  body { font-size: 12pt; background: #fff; color: #000; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#capsule-root">Skip to content</a>
+
+<main id="capsule-root">
+  <nav class="topbar" aria-label="Top">
+    <span class="mark">
+      <svg viewBox="0 0 32 18" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="30" height="16" rx="8" ry="8" fill="none" stroke="currentColor" stroke-width="2"/>
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 9.5 5.5 L 6 9 L 9.5 12.5"/>
+          <path d="M 13.5 13 L 18.5 5"/>
+          <path d="M 22.5 5.5 L 26 9 L 22.5 12.5"/>
+        </g>
+      </svg>
+      <a href="/">HTML Capsule</a>
+    </span>
+    <div class="links">
+      <a href="/">Home</a>
+      <a href="notes.html">Notes</a>
+      <a href="exploration.html">Long-form</a>
+      <a href="research.html">Research</a>
+    </div>
+  </nav>
+
+  <article>
+    <header>
+      <p class="chip">Essay · field notes</p>
+      <h1>File over app. <span class="punch">Master edition.</span></h1>
+      <p class="byline">
+        <span class="author"><a href="https://lukeschuss.com" rel="noopener">Luke Schuss</a></span>
+        <span class="sep">·</span>
+        <span>Vancouver</span>
+        <span class="sep">·</span>
+        <span class="read">3 min read</span>
+        <span class="sep">·</span>
+        <span>2026-05-22</span>
+      </p>
+    </header>
+
+    <p class="lede">After the long detour through Obsidian, MCP servers, RAG pipelines, and agent frameworks, the master position turns out to be HTML. But the HTML on the right edge of the bell curve is not the same as the HTML on the left.</p>
+
+    <p>I was all in on file-over-app when I read <a href="https://stephango.com/file-over-app" rel="noopener">Steph Ango's post</a> in 2023. I messaged friends and family about Obsidian. I built a vault. I installed plugins. I customized templates. I tried Tana, Roam, Anytype. I made my own folder taxonomies. I bought Readwise. I rebuilt my workflow three times.</p>
+    <p>And then I became the meme.</p>
+
+    <h2>The meme</h2>
+    <p>The PKM Bell Curve has three positions. The beginner uses Apple Notes because it's accessible. The intermediate designs complex systems to get as many benefits as possible. The master uses Apple Notes because they realized it was all they needed.</p>
+    <p>I was the intermediate. I am, on bad days, still the intermediate.</p>
+
+    <h2>The hidden flaw</h2>
+    <p>The meme has a subtle problem. Apple Notes isn't actually the master position. It's the position the meme <em>imagines</em> mastery looks like, because Apple Notes is the canonical "simple" notes app most people have seen.</p>
+    <p>Apple Notes is platform-locked. Lossy on export. No provenance. No structured data. Can't be opened by anything that isn't Apple. If you tried to open an Apple Note in 2035, on a Windows laptop, or in an AI assistant, or on a phone you don't own, you'd get nothing.</p>
+    <p>The master position can't be a thing whose simplicity is bought by platform lock-in. The genuine master pick is HTML.</p>
+
+    <h2>The LLM-era bell curve</h2>
+    <p>Redrawn for the AI-assisted era:</p>
+    <p>The <em>beginner</em> copy-pastes from ChatGPT into a folder. Loses the source. Forgets which model. Can't find anything six weeks later. But it works.</p>
+    <p>The <em>intermediate</em> runs MCP servers, agent frameworks, RAG pipelines, vector DBs. Cursor plus Claude Code plus Codex plus four prompt libraries plus an Obsidian vault to capture everything plus three different conversation-export plugins, half of them broken.</p>
+    <p>The <em>master</em> has a workflow shaped like the beginner's. ChatGPT to Capsule to folder. The LLM does the work. The Capsule holds the output.</p>
+
+    <h2>The punchline</h2>
+    <p>The cleverness of the bell curve is that the master and the beginner end up at the same shape. The difference is what they know about it. The beginner doesn't know they're losing the source. The master knows, and engineered the substrate so they don't.</p>
+    <p>A Capsule is HTML informed by the long detour. It is what you reach for after you've tried the complex stack and remembered that the substrate has to be a single, self-contained, archive-able file you can hand someone in 2035 without explaining what software they need first.</p>
+    <p>HTML at both ends of the bell curve. But the HTML on the right edge is HTML with a manifest, an integrity hash, a structured data block, declared capabilities, and a runtime that does the things the intermediate needed plugins for. The master position is not "use less." It's "use the right substrate, in a way that survives."</p>
+    <p>If you're in the middle right now, I see you. The discipline that gets you to the right edge is not throwing the tools away. It's building the substrate that doesn't need them.</p>
+
+    <footer class="colophon">
+      <span>capsule:bell-curve/v1.0.0</span>
+      <span class="sep">·</span>
+      <span>uuid dad00ca4</span>
+      <span class="sep">·</span>
+      <span class="sealed">sealed 2026-05-22</span>
+      <span class="sep">·</span>
+      <span><a href="/">htmlcapsule.org</a></span>
+    </footer>
+  </article>
+
+  <details class="about" id="about">
+    <summary>About this page</summary>
+    <div class="about-body">
+      <p>This page is itself a Capsule per Core v0.3.0. Five required blocks, all inline. No network, no analytics.</p>
+      <div class="row" role="group" aria-label="Exports">
+        <button type="button" data-capsule-action="copy_as_json">Copy data as JSON</button>
+        <button type="button" data-capsule-action="download_json">Download JSON</button>
+        <button type="button" data-capsule-action="print_to_pdf">Print to PDF</button>
+      </div>
+      <pre id="manifest-view" aria-label="Capsule manifest JSON">Loading manifest...</pre>
+    </div>
+  </details>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="capsule-runtime">
+(function () {
+  'use strict';
+  var manifest = JSON.parse(document.getElementById('capsule-manifest').textContent);
+  var data = JSON.parse(document.getElementById('capsule-data').textContent);
+
+  var manifestView = document.getElementById('manifest-view');
+  if (manifestView) manifestView.textContent = JSON.stringify(manifest, null, 2);
+
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('visible'); }, 1800);
+  }
+
+  function copyToClipboard(text, successMsg) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast(successMsg); }, function () { toast('Copy failed'); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      try { document.execCommand('copy'); toast(successMsg); } catch (e) { toast('Copy failed'); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  function downloadFile(content, mime, filename) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  document.querySelectorAll('[data-capsule-action]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var action = btn.getAttribute('data-capsule-action');
+      if (action === 'copy_as_json') {
+        copyToClipboard(JSON.stringify(data, null, 2), 'Data copied to clipboard');
+      } else if (action === 'download_json') {
+        downloadFile(JSON.stringify(data, null, 2), 'application/json', 'bell-curve.json');
+      } else if (action === 'print_to_pdf') {
+        window.print();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

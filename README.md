@@ -1,10 +1,10 @@
 # htmlcapsule
 
-> **A capsule is a sealed, self-contained HTML memory object for work worth preserving.**
+> **A capsule is a versioned, self-contained HTML file for work, data, or information worth preserving — a memory object that's human-readable, machine-readable, and provenance-bearing in one.**
 
 **Spec home: [htmlcapsule.org](https://htmlcapsule.org)** — landing page is itself a valid Capsule.
 
-`htmlcapsule` is a **research project** that produces an open specification, reference implementation, example corpus, and research log for **Capsule** — a profile of HTML for sealed, self-contained, provenance-bearing snapshots of work worth preserving.
+`htmlcapsule` is a **research project** that produces an open specification, reference implementation, example corpus, and research log for **Capsule** — a profile of HTML for versioned, self-contained, provenance-bearing snapshots of work, data, or information worth preserving.
 
 The hypothesis: the substrate (HTML) has already won as the universal display layer for AI-generated work; what's missing is *discipline* — a contract, manifest, integrity guarantees, capability honesty, and pre-rendered content — so that artifacts from LLMs, deterministic compilers, and human authors all carry the same envelope shape. The strongest claim the format makes is **multi-producer interop**: LLMs (Claude, ChatGPT, Gemini, Codex), deterministic compilers (Python/Node build scripts), and human authors all produce the same envelope shape. Empirically validated as of v0.3.4 with Mintel as the first independent compiler-kind producer (see [F20](RESEARCH.md)).
 
