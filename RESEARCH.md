@@ -1032,6 +1032,58 @@ The spec says this in two paragraphs of §2.3; this single sentence is the versi
 - [`capsule-midi/templates/capsule.html.tpl`](https://github.com/bigfancygarden/capsule-midi/blob/main/templates/capsule.html.tpl) — the producer template with the iOS-QuickLook `<noscript>` warning that surfaced the gap
 - [`spec/CAPSULE_SPEC.md` §2.3](spec/CAPSULE_SPEC.md) — the existing rendering-model section that the v0.3.6 generalization will extend
 
+### F30: Microsoft Copilot as the fourth observed LLM producer family — convergent envelope shape, predictable five-item gap profile, real-world lateral-portability handoff
+
+**Date:** 2026-05-23
+
+**Source.** A colleague of the maintainer produced a substantial HTML artifact (a multi-persona program journey map for a public-interest organization, ~30 KB) using Microsoft Copilot, then sent it to the maintainer, who opened it in Claude for review. No coordination with the maintainer's Capsule project. No CAPSULE_CORE.md attached to the producer's prompt. The colleague's brief was almost certainly a generic "make an HTML journey map for this program" — no Capsule shape requested. Specific organizational details kept out of this finding because the artifact is not yet cleared for public publication; the empirical observations stand independently of which program or organization it depicts.
+
+**Finding — three layered observations:**
+
+**(1) Microsoft Copilot is now the fourth named LLM producer family** in the project's corpus, alongside Claude / ChatGPT / Gemini / Codex previously documented in [F19](#f19-design-tool-integration-experiment--claude-design-with-capsule_coremd-attached), [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale), [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates), and [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding). Same convergent envelope shape: single-file HTML, pre-rendered content (Rule 12 spirit, satisfied strongly), CSS-only interactivity via class-toggle spotlight pattern, light/dark theme with `localStorage` persistence, full accessibility baseline (skip link, ARIA, `prefers-reduced-motion`, `prefers-color-scheme`, print media query, mobile responsive). The artifact is substantial: 6 personas × 6 stages swim-lane matrix, 5 named crossover dynamics with inline SVG network diagram, color-coded swim lanes, keyboard navigation, Escape key to clear spotlights. Strong information-design work, not throwaway sketch quality.
+
+**(2) The gap profile is consistent across all undocumented-producer artifacts** in the corpus. Every LLM-producing-HTML-without-Core artifact observed in the project's corpus (this one included) has the same predictable five-item gap:
+
+- ❌ External font dependency (this one: Google Fonts `<link>` to `fonts.googleapis.com` — Rule 2 violation)
+- ❌ No `<script id="capsule-manifest" type="application/json">` block
+- ❌ No `<script id="capsule-data" type="application/json">` block (the data IS in the HTML as rendered content, but not also as a separate structured-JSON block for machine consumers)
+- ❌ Missing IDs on `<style>` and runtime `<script>` (no `capsule-style` / `capsule-runtime` IDs)
+- ❌ `<main>` uses an ad-hoc ID (`<main id="main">`) instead of the spec-required `capsule-root`
+
+That's the **predictable five-item gap profile** for undocumented LLM producers. The artifact otherwise passes Rule 9 (accessibility — exceeds it actually, with skip link + aria-labels throughout + reduced-motion + dark-mode-with-system-pref-fallback + print stylesheet), Rule 11 (well-formed JS), and Rule 12 (content pre-rendered, strongly). It's roughly an 80% Capsule. The remaining 20% is the five-item mechanical gap that CAPSULE_CORE.md is precisely designed to close.
+
+**(3) Lateral portability got a real-time empirical validation** in the same session the landing-page thesis for it was added. The page's v14.16.0 commit (May 23) introduced a new "Multi-system, by design" section articulating the lateral-portability thesis: *"I don't want all my chats locked into one AI system... Any AI can produce one. Any AI can read one. The format is the neutral substrate."* Within the same conversation, an actual multi-system handoff occurred:
+
+```
+Microsoft Copilot (produced)
+  → colleague (received, retained, forwarded)
+    → maintainer (received from colleague)
+      → Claude (received from maintainer for review, parsed cleanly)
+```
+
+The artifact moved across three actors and two distinct LLM systems without any platform-specific coordination. The structured content was intelligible to Claude on first read. The handoff worked. **The thesis isn't speculative — it played out in front of the maintainer in the same conversation that named it.**
+
+**Implication for the spec.** No new rule needed. F30 confirms the value proposition of CAPSULE_CORE.md as a paste-into-prompt fragment: the five-item gap profile is exactly what Core covers. Reinforces the F28 recommendation to **extend `/llms.txt`** with a paragraph-level Core summary so any LLM doing web research lands on the discipline naturally. Microsoft Copilot was not in the producer set when the project was named; F30 documents the addition without requiring spec adaptation.
+
+**Implication for the producer corpus.** The colleague's journey-map artifact is a strong candidate for becoming a **real worked example** for the landing page (currently `UC1` and `UC4` carry "coming soon" amber chips), pending the colleague's permission to publish. The artifact already exists, was produced independently, demonstrates a genuinely complex domain (multi-persona swim-lane matrix with crossover network diagram), and would be a 30-minute mechanical upgrade to conformance:
+
+1. Download Atkinson Hyperlegible WOFF2 (≈60 KB at 2 weights), inline as `data:` URI in `@font-face` → kills Google Fonts dependency
+2. Add `id="capsule-style"` to `<style>` tag
+3. Change `<main id="main">` to `<main id="capsule-root">` + update skip-link `href`
+4. Add `id="capsule-runtime"` to `<script>` tag
+5. Add `<script id="capsule-manifest" type="application/json">` with `generator.kind: "llm"`, `version: "Microsoft Copilot"`, `type: "domain.journey_map"`, source info, plus the integrity-hash placeholder
+6. Add `<script id="capsule-data" type="application/json">` with the persona × stage × touchpoint matrix as structured JSON (lifting from the rendered HTML back into machine-readable form)
+
+Result: validates 25/25 strict, becomes the first Microsoft-Copilot-authored Capsule in the public corpus and the first independent-author (not the maintainer) Capsule beyond the Mintel compiler producer in F20. Pending the colleague's permission to publish.
+
+**Methodological note.** F30 is the first finding logged the day after F29 (which itself was logged same-day as F28) — the cross-project memory pattern named in F28 is also operating cross-conversation now: a conversation about landing-page copy produced an empirical observation that became an F-finding within the same conversation. The upstream-feedback-discipline framing extends to the maintainer's own conversational practice, not just the producer projects.
+
+**Related findings:**
+- [F19](#f19-design-tool-integration-experiment--claude-design-with-capsule_coremd-attached) — Claude Design reached conformance from Core alone (Core attached → producer succeeds)
+- [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates) — ChatGPT producer-population reads Core supplementary guidance reliably
+- [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — Producers reach for Capsule-shape independently when given the idiom but not the spec; F30 is the fourth-producer-family confirming data point for F28's "convergent envelope shape" claim
+- [`htmlcapsule.org` v14.16.0](https://htmlcapsule.org/) — the landing-page "Multi-system, by design" section that articulated the lateral-portability thesis that F30 validates empirically
+
 ## Open questions
 
 In rough priority:
