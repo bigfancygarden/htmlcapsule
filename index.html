@@ -10,7 +10,7 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "14.11.0",
+  "capsule_version": "14.12.0",
   "title": "HTML Capsule",
   "description": "Production landing page for htmlcapsule.org. v14.6.1 swaps the hero image to a refined version with a Dr. Strangelove-riff subtitle (Or: How I Learned to Stop Overengineering and Save as HTML) and war-room figures labeled Thariq / Karpathy / Boris (the PRECEDENTS lineage). Same compression recipe (sips -Z 1600 jpeg q85). data: URI replaced in-place; data block hero.claim updated to match the new subtitle; page <title> updated correspondingly. v14.1.1 swaps UC1's scenario paragraph from the original abstract opener ('You finish a chat with Claude, ChatGPT, Gemini. You worked through a decision…') for the maintainer-voiced version drafted by the user: conversational, rhetorical-question-heavy, names ChatGPT specifically, traces the natural arc from end-of-conversation through 'where does the info go' to 'what format do I share in,' ends with 'something about [a share link] seems brittle…' which now sets up a callback to the existing payoff line ('the share link can break. The file still opens.'). Lighter tighten on the user's draft preserving the I-guess / What-if voice markers and the trailing ellipsis. v14.1.0 reshaped the former 'Why not just use…' comparison section into a proper FAQ. Section now eyebrowed 'Common questions' / H2 'What people ask first.' Six FAQ entries, ordered foundational-first then by reader-frequency: (1) What is a Capsule? — opens with the spec-canonical definition (five inline blocks, no external deps, profile of HTML not a new format); (2) Isn't that like an Artifact? — the most common first-contact comparison, distinguishing working canvases (Claude Artifacts / ChatGPT Canvas / Gemini Canvas) from sealed outputs; (3) Why not Markdown? — content vs structure-plus-provenance-plus-interactivity; (4) Why not a notes app? — Notion / Obsidian / Tana as working surfaces vs Capsules as sealed outputs; (5) Why not a database? — live mutable state vs frozen snapshot; (6) Why not a PDF? — closed lossy print-format vs open programmable re-readable screen-format. Drops the violet 'vs' badge — the question heading itself is the marker now, with a small mono 'Q.' prefix in violet. CSS renamed .vs-block → .faq-block, .vs-badge removed, .vs-payoff → .faq-payoff. Data block 'comparisons' array → 'faqs' array, each entry is now {q, a} pair. v14.0.2 added a fifth 'vs' comparison block addressing 'Isn't that like an Artifact?' — the most direct comparison most readers will have on first contact. Block heading 'vs An AI canvas' (generic noun phrase matching the patterning of the other four entries), body name-checks Claude Artifacts / ChatGPT Canvas / Gemini Canvas specifically, frames them as 'working canvases' for making vs Capsules as sealed outputs for keeping. Echoes the README's 'different roles, complementary tools' framing and extends the same complementary-layers logic from the existing 'vs A notes app' block (Notion / Obsidian — also working surfaces). H2 updated 'Why not markdown, a notes app, a database, or a PDF?' → 'Why not markdown, a notes app, an AI canvas, a database, or a PDF?' Placement: between 'A notes app' and 'A database' — both notes app and AI canvas are working-surface comparisons; database starts the state/format comparisons. v14.0.1 weaves the project's deeper architectural framing — 'an atomic unit of preserved work' — into the hero lede as a middle sentence between the existing 'sealed HTML file that holds a snapshot' opening and the 'five use cases / two commitments' navigation copy. The phrase is canonical from spec/CAPSULE_SPEC.md §0 and Research F8 (where it's named as the framing that explains all earlier ones the project tried). Pairs with the existing front-facing 'memory object' framing in CAPSULE_CORE.md / README that captures the human-readable + machine-readable + provenance-bearing trio in one noun phrase. v14.0.0 is a use-case-focused restructure of the landing direction. The v1 landing (capsule_version 13.x) led with the format's conceptual framing — anti-context-loss eyebrow, 'HTML you can keep' claim, lifecycle pills strip, anatomy card showing the 5 inline blocks. v14 leads with what people DO with capsules: five long-form use-case sections (UC1 save AI chats, UC2 notes beyond markdown, UC3 time-bounded snapshots, UC4 a self-contained app from a thumb drive, UC5 share with a domain-aware registry), followed by a 'Why not markdown, a notes app, a database, or a PDF?' section with four vs-blocks addressing the obvious skeptical follow-ups (markdown — content vs structure-plus-provenance-plus-interactivity; notes app — working surface vs sealed output; database — live mutable state vs frozen snapshot; PDF — closed lossy print-format vs open programmable re-readable screen-format), followed by a 'Why a Capsule lasts' section holding the two technical commitments (minimum floor + sealed boundary) that make every use case durable. The v1 landing is preserved at /v1 (file v1.html, UUID edbb017a, capsule_version 1.0.0). New hero: eyebrow 'Five ways to use a Capsule', claim 'Save what's worth saving.', lede pointing forward to the use cases + commitments structure. Cut from v1: the lifecycle pills strip + 'What it is' section + 'How it's shaped' anatomy. Preserved from v1: top nav (Spec / Notes / Long-form / Research / GitHub), 'What this is not' (with all 4 fence-posting bullets including 'Not an app pretending to be a document'), 'Go deeper' 3-card section, About panel with manifest viewer, 4-column footer site map. New CSS for case-meta chip rows + commitment block styling. UUID 7d1a1ac8 preserved across the v1 → v2 transition because this is the same conceptual landing at the same URL; only the framing direction changed. v13.2.1 lands the document-first thesis in the 'What this is not' section: adds the line 'Not an app pretending to be a document. A document that can wake up into an app.' Pairs with spec v0.3.8's new §2.3.2 (the five tiers of capsule interactivity) and the new GLOSSARY 'Document-first artifact' entry. No structural changes; one bullet added; heading bumped 'Three lines' → 'Four lines'. Capsule_version 13.2.0 → 13.2.1 (patch — single bullet + heading word). v13.2.0 promotes the deeper material to first-class on-site reading views: 8 new Capsules at clean URLs render the markdown content directly on htmlcapsule.org instead of bouncing visitors to GitHub. Generated by compiler/build_md_capsules.py (stdlib-only markdown→HTML, no pip deps). Each generated capsule is a valid Core-spec Capsule (5 blocks, manifest, integrity hash, declared capabilities) and passes the reference validator at 26/26. New URLs: /core (Core spec), /full-spec (Full spec), /domains (Domain schemas), /hosting (Hosting pattern), /research (Research log F1-F28), /glossary (Glossary), /precedents (Precedents), /changelog (Changelog). All nav, Go-deeper, hero CTA, and footer links updated to point at these local Capsules. Validator also got a scope-aware refactor in the same pass — network API patterns (fetch, XMLHttpRequest, @import, etc.) now scan only inside <script> and <style> blocks instead of free-text body, eliminating the false positives that prevented the research / full-spec capsules from passing on initial build. UUID 7d1a1ac8 preserved. v13.1.1 fixes broken .md links: the htmlcapsule.org host (Cloudflare Pages by the response headers) serves .md files as raw text/markdown rather than rendering them, so clicking 'Research' / 'Spec' / etc. in v13.1.0 displayed wall-of-raw-markdown to the user instead of the expected reading view. Fix: all .md links in nav, hero CTA, Go-deeper section, and footer site-map now point at the GitHub blob/tree views (https://github.com/bigfancygarden/htmlcapsule/blob/main/<file>), which render markdown reliably and offer a comfortable reading experience. .html links (notes.html, exploration.html, design/proposal.html) kept as relative paths because the host's 308 redirect from /file.html → /file works fine. spec/examples/ directory link also switched to GitHub tree view since Cloudflare Pages doesn't do directory listings by default. v13.1.0 recovers framing-content doorways that the v13.0.0 strip lost. The landing-direction commit at v13.0.0 (Linear/Stripe-style, Claude Design design-system pass, indigo brand) intentionally cut the long-form Observations / Questions / Answers spine — but with no visible link to where that content went (/exploration.html), readers had no doorway. v13.1.0 fixes that: (1) top nav expanded from 3 to 5 links — added Notes (notes.html essay) + Long-form (exploration.html research-narrative spine) + Research (RESEARCH.md F-finding log); (2) new 'Go deeper' body section between 'What this is not' and the About details panel — three cards surfacing the notes essay, the long-form exploration, and the research log with descriptions of each; (3) footer expanded from a single-row 4-link list to a 4-column site map (Spec / Read / Code / About) covering 17 destinations including Domain schemas, Hosting pattern, PRECEDENTS, GLOSSARY, Design system, Changelog, llms.txt, maintainer link, README. All linked resources verified to exist in the repo. Capsule_version 13.0.0 → 13.1.0 (minor — content additions, no structural restyle). UUID 7d1a1ac8 preserved.",
   "type": "landing_page",
@@ -140,7 +140,7 @@
     },
     {
       "q": "Why not a PDF?",
-      "a": "PDFs were the previous answer to 'portable finished work.' They're closed, lossy, and not machine-readable. A Capsule gives the same role (portable, archive-able, single file) to HTML, which is open, programmable, re-readable, and inspectable. PDFs are great for print fidelity. Capsules are great for screen-native, machine-readable, re-rendered, interactive content. Both serve 'seal this and send it.' Just for different content shapes."
+      "a": "PDF is excellent when the job is faithful pages. A Capsule is better when the job is structured, inspectable, screen-native work that people or tools may want to reuse later. Different jobs, different tools. For print fidelity and fixed-layout preservation — especially PDF/A, which is a real archival format that institutions trust — use PDF. For portable HTML artifacts with embedded structure and behaviour the reader's machine can do something with, use a Capsule."
     }
   ],
   "faqs_payoff": "Different problems, different formats. A Capsule is the answer when you want structured, durable, single-file, AI-readable. Any one of those is what makes it different from any one alternative.",
@@ -157,6 +157,7 @@
     }
   ],
   "commitments_payoff": "Together: the boundary makes the floor possible; the floor is what makes a Capsule honest about what it can promise.",
+  "thesis": "Working canvases are for making. Capsules are for keeping.",
   "closing": {
     "eyebrow": "Closing",
     "title": "That's why I save my work as HTML now.",
@@ -164,6 +165,7 @@
       "Not the only format I use. The one I trust to still open.",
       "The one that doesn't ask me to remember which platform I was on, which app the file came from, which login I'd need to recover, which CDN I'd need to be alive, which subscription I'd need to be paying.",
       "A Capsule is a small bet that the substrate stays open. Years from now, when I want to remember what I knew on a Tuesday in 2026 — the chat I had with the model that's no longer being served, the property dossier from the deal that fell through, the family photos I almost lost when the cloud went sideways — I want the file to just open.",
+      "I still use working canvases. I just don't confuse them with archives.",
       "Maybe the future of software is not another platform. Maybe it is smaller. Stranger. More portable. More personal. Maybe the final form of the AI era is a folder full of weird little HTML files that still open perfectly in thirty years.",
       "Gentlemen, you can't fight in here. This is the War Room."
     ]
@@ -570,6 +572,32 @@ footer.site .meta {
   padding-top: 1.25rem;
   border-top: 1px solid var(--rule);
   display: block;
+}
+
+/* ── v14.12: thesis pull quote between UC5 and FAQ ── */
+.thesis-quote {
+  margin: clamp(2rem, 6vh, 4rem) auto;
+  padding: clamp(2rem, 4vh, 3rem) clamp(1rem, 3vw, 2rem);
+  max-width: 36em;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: clamp(1.4rem, 2.6vw, 1.75rem);
+  font-weight: 300;
+  line-height: 1.3;
+  letter-spacing: -.015em;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.thesis-quote .making {
+  font-style: italic;
+  color: var(--ink-mute);
+}
+.thesis-quote .keeping {
+  font-weight: 600;
+  color: var(--indigo);
+  display: block;
+  margin-top: .3rem;
 }
 
 /* ── v14.7: reveal-on-scroll for hero lede + CTAs ──
@@ -986,6 +1014,11 @@ section .case-body p + p {
     </div>
   </section>
 
+  <aside class="thesis-quote" role="presentation" aria-label="Thesis">
+    <span class="making">Working canvases are for making.</span>
+    <span class="keeping">Capsules are for keeping.</span>
+  </aside>
+
   <section aria-labelledby="faq-title">
     <p class="eyebrow">Common questions</p>
     <h2 id="faq-title">What people ask first.</h2>
@@ -1016,8 +1049,8 @@ section .case-body p + p {
     </div>
     <div class="faq-block">
       <h3>Why not a PDF?</h3>
-      <p>PDFs were the previous answer to "portable finished work." They're closed, lossy, and not machine-readable. A Capsule gives the same role (portable, archive-able, single file) to HTML, which is open, programmable, re-readable, and inspectable.</p>
-      <p>PDFs are great for print fidelity. Capsules are great for screen-native, machine-readable, re-rendered, interactive content. Both serve "seal this and send it." Just for different content shapes.</p>
+      <p>PDF is excellent when the job is faithful pages. A Capsule is better when the job is structured, inspectable, screen-native work that people or tools may want to reuse later. Different jobs, different tools.</p>
+      <p>For print fidelity and fixed-layout preservation — especially PDF/A, which is a real archival format that institutions trust — use PDF. For portable HTML artifacts with embedded structure and behaviour the reader's machine can do something with, use a Capsule.</p>
     </div>
     <p class="faq-payoff">Different problems, different formats. A Capsule is the answer when you want <strong>structured, durable, single-file, AI-readable</strong>. Any one of those is what makes it different from any one alternative.</p>
   </section>
@@ -1045,6 +1078,7 @@ section .case-body p + p {
       <p>Not the only format I use. The one I trust to still open.</p>
       <p>The one that doesn't ask me to remember which platform I was on, which app the file came from, which login I'd need to recover, which CDN I'd need to be alive, which subscription I'd need to be paying.</p>
       <p>A Capsule is a small bet that the substrate stays open. Years from now, when I want to remember what I knew on a Tuesday in 2026 — the chat I had with the model that's no longer being served, the property dossier from the deal that fell through, the family photos I almost lost when the cloud went sideways — I want the file to just open.</p>
+      <p>I still use working canvases. I just don't confuse them with archives.</p>
       <p>Maybe the future of software is not another platform. Maybe it is smaller. Stranger. More portable. More personal. Maybe the final form of the AI era is a folder full of weird little HTML files that still open perfectly in thirty years.</p>
       <p><em>Gentlemen, you can't fight in here. This is the War Room.</em></p>
     </div>
