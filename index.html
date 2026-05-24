@@ -10,7 +10,7 @@
 {
   "spec_version": "0.3.0",
   "uuid": "7d1a1ac8-c6d9-4ed1-98a7-f5399466262a",
-  "capsule_version": "14.18.0",
+  "capsule_version": "14.19.1",
   "title": "HTML Capsule",
   "description": "Production landing page for htmlcapsule.org. v14.6.1 swaps the hero image to a refined version with a Dr. Strangelove-riff subtitle (Or: How I Learned to Stop Overengineering and Save as HTML) and war-room figures labeled Thariq / Karpathy / Boris (the PRECEDENTS lineage). Same compression recipe (sips -Z 1600 jpeg q85). data: URI replaced in-place; data block hero.claim updated to match the new subtitle; page <title> updated correspondingly. v14.1.1 swaps UC1's scenario paragraph from the original abstract opener ('You finish a chat with Claude, ChatGPT, Gemini. You worked through a decision…') for the maintainer-voiced version drafted by the user: conversational, rhetorical-question-heavy, names ChatGPT specifically, traces the natural arc from end-of-conversation through 'where does the info go' to 'what format do I share in,' ends with 'something about [a share link] seems brittle…' which now sets up a callback to the existing payoff line ('the share link can break. The file still opens.'). Lighter tighten on the user's draft preserving the I-guess / What-if voice markers and the trailing ellipsis. v14.1.0 reshaped the former 'Why not just use…' comparison section into a proper FAQ. Section now eyebrowed 'Common questions' / H2 'What people ask first.' Six FAQ entries, ordered foundational-first then by reader-frequency: (1) What is a Capsule? — opens with the spec-canonical definition (five inline blocks, no external deps, profile of HTML not a new format); (2) Isn't that like an Artifact? — the most common first-contact comparison, distinguishing working canvases (Claude Artifacts / ChatGPT Canvas / Gemini Canvas) from sealed outputs; (3) Why not Markdown? — content vs structure-plus-provenance-plus-interactivity; (4) Why not a notes app? — Notion / Obsidian / Tana as working surfaces vs Capsules as sealed outputs; (5) Why not a database? — live mutable state vs frozen snapshot; (6) Why not a PDF? — closed lossy print-format vs open programmable re-readable screen-format. Drops the violet 'vs' badge — the question heading itself is the marker now, with a small mono 'Q.' prefix in violet. CSS renamed .vs-block → .faq-block, .vs-badge removed, .vs-payoff → .faq-payoff. Data block 'comparisons' array → 'faqs' array, each entry is now {q, a} pair. v14.0.2 added a fifth 'vs' comparison block addressing 'Isn't that like an Artifact?' — the most direct comparison most readers will have on first contact. Block heading 'vs An AI canvas' (generic noun phrase matching the patterning of the other four entries), body name-checks Claude Artifacts / ChatGPT Canvas / Gemini Canvas specifically, frames them as 'working canvases' for making vs Capsules as sealed outputs for keeping. Echoes the README's 'different roles, complementary tools' framing and extends the same complementary-layers logic from the existing 'vs A notes app' block (Notion / Obsidian — also working surfaces). H2 updated 'Why not markdown, a notes app, a database, or a PDF?' → 'Why not markdown, a notes app, an AI canvas, a database, or a PDF?' Placement: between 'A notes app' and 'A database' — both notes app and AI canvas are working-surface comparisons; database starts the state/format comparisons. v14.0.1 weaves the project's deeper architectural framing — 'an atomic unit of preserved work' — into the hero lede as a middle sentence between the existing 'sealed HTML file that holds a snapshot' opening and the 'five use cases / two commitments' navigation copy. The phrase is canonical from spec/CAPSULE_SPEC.md §0 and Research F8 (where it's named as the framing that explains all earlier ones the project tried). Pairs with the existing front-facing 'memory object' framing in CAPSULE_CORE.md / README that captures the human-readable + machine-readable + provenance-bearing trio in one noun phrase. v14.0.0 is a use-case-focused restructure of the landing direction. The v1 landing (capsule_version 13.x) led with the format's conceptual framing — anti-context-loss eyebrow, 'HTML you can keep' claim, lifecycle pills strip, anatomy card showing the 5 inline blocks. v14 leads with what people DO with capsules: five long-form use-case sections (UC1 save AI chats, UC2 notes beyond markdown, UC3 time-bounded snapshots, UC4 a self-contained app from a thumb drive, UC5 share with a domain-aware registry), followed by a 'Why not markdown, a notes app, a database, or a PDF?' section with four vs-blocks addressing the obvious skeptical follow-ups (markdown — content vs structure-plus-provenance-plus-interactivity; notes app — working surface vs sealed output; database — live mutable state vs frozen snapshot; PDF — closed lossy print-format vs open programmable re-readable screen-format), followed by a 'Why a Capsule lasts' section holding the two technical commitments (minimum floor + sealed boundary) that make every use case durable. The v1 landing is preserved at /v1 (file v1.html, UUID edbb017a, capsule_version 1.0.0). New hero: eyebrow 'Five ways to use a Capsule', claim 'Save what's worth saving.', lede pointing forward to the use cases + commitments structure. Cut from v1: the lifecycle pills strip + 'What it is' section + 'How it's shaped' anatomy. Preserved from v1: top nav (Spec / Notes / Long-form / Research / GitHub), 'What this is not' (with all 4 fence-posting bullets including 'Not an app pretending to be a document'), 'Go deeper' 3-card section, About panel with manifest viewer, 4-column footer site map. New CSS for case-meta chip rows + commitment block styling. UUID 7d1a1ac8 preserved across the v1 → v2 transition because this is the same conceptual landing at the same URL; only the framing direction changed. v13.2.1 lands the document-first thesis in the 'What this is not' section: adds the line 'Not an app pretending to be a document. A document that can wake up into an app.' Pairs with spec v0.3.8's new §2.3.2 (the five tiers of capsule interactivity) and the new GLOSSARY 'Document-first artifact' entry. No structural changes; one bullet added; heading bumped 'Three lines' → 'Four lines'. Capsule_version 13.2.0 → 13.2.1 (patch — single bullet + heading word). v13.2.0 promotes the deeper material to first-class on-site reading views: 8 new Capsules at clean URLs render the markdown content directly on htmlcapsule.org instead of bouncing visitors to GitHub. Generated by compiler/build_md_capsules.py (stdlib-only markdown→HTML, no pip deps). Each generated capsule is a valid Core-spec Capsule (5 blocks, manifest, integrity hash, declared capabilities) and passes the reference validator at 26/26. New URLs: /core (Core spec), /full-spec (Full spec), /domains (Domain schemas), /hosting (Hosting pattern), /research (Research log F1-F28), /glossary (Glossary), /precedents (Precedents), /changelog (Changelog). All nav, Go-deeper, hero CTA, and footer links updated to point at these local Capsules. Validator also got a scope-aware refactor in the same pass — network API patterns (fetch, XMLHttpRequest, @import, etc.) now scan only inside <script> and <style> blocks instead of free-text body, eliminating the false positives that prevented the research / full-spec capsules from passing on initial build. UUID 7d1a1ac8 preserved. v13.1.1 fixes broken .md links: the htmlcapsule.org host (Cloudflare Pages by the response headers) serves .md files as raw text/markdown rather than rendering them, so clicking 'Research' / 'Spec' / etc. in v13.1.0 displayed wall-of-raw-markdown to the user instead of the expected reading view. Fix: all .md links in nav, hero CTA, Go-deeper section, and footer site-map now point at the GitHub blob/tree views (https://github.com/bigfancygarden/htmlcapsule/blob/main/<file>), which render markdown reliably and offer a comfortable reading experience. .html links (notes.html, exploration.html, design/proposal.html) kept as relative paths because the host's 308 redirect from /file.html → /file works fine. spec/examples/ directory link also switched to GitHub tree view since Cloudflare Pages doesn't do directory listings by default. v13.1.0 recovers framing-content doorways that the v13.0.0 strip lost. The landing-direction commit at v13.0.0 (Linear/Stripe-style, Claude Design design-system pass, indigo brand) intentionally cut the long-form Observations / Questions / Answers spine — but with no visible link to where that content went (/exploration.html), readers had no doorway. v13.1.0 fixes that: (1) top nav expanded from 3 to 5 links — added Notes (notes.html essay) + Long-form (exploration.html research-narrative spine) + Research (RESEARCH.md F-finding log); (2) new 'Go deeper' body section between 'What this is not' and the About details panel — three cards surfacing the notes essay, the long-form exploration, and the research log with descriptions of each; (3) footer expanded from a single-row 4-link list to a 4-column site map (Spec / Read / Code / About) covering 17 destinations including Domain schemas, Hosting pattern, PRECEDENTS, GLOSSARY, Design system, Changelog, llms.txt, maintainer link, README. All linked resources verified to exist in the repo. Capsule_version 13.0.0 → 13.1.0 (minor — content additions, no structural restyle). UUID 7d1a1ac8 preserved.",
   "type": "landing_page",
@@ -59,7 +59,7 @@
       "None of this was crazy. Claude has dramatically accelerated my prototyping. v0 and shadcn produce real UI fast. Cloud sync works. Multiplayer collaborative editing is incredible. For the first time, software feels conversational. AI turns ideas into artifacts at unprecedented speed.",
       "Before any of that, I was spending serious time with Airtable. Coda. Google Sheets. Nocodb. Baserow. Building systems to manage all my work. The systems kept becoming their own work. When AI came in, it didn't replace that pattern — it gave me a faster way to build the next layer of it.",
       "Every layer solves one problem while introducing two more. Artifacts get trapped in proprietary systems. AI sessions go ephemeral. Exports break. Sharing requires accounts. Local-first tools still secretly depend on the cloud. The most reliable thing in the whole stack — the thing I could share without asking anyone's permission and still reopen on any laptop in 2035 — kept turning out to be the one that came out of the AI as a single HTML file.",
-      "Here are six scenes from that realization."
+      "Here are seven scenes from that realization."
     ]
   },
   "use_cases": [
@@ -125,6 +125,18 @@
       "scenario": "I was this person. Maybe you are. Either way, you know the type — the one with an Excel file for the household budget, another for the family recipe collection, another for the Christmas list (last updated 2024, with the 1998 column hidden but not deleted). A workout log. The plants in the garden, with Latin name, common name, where they're planted, and who gave them. Every book they've read since 2011. Twenty years of this. They are not a 'tech person.' They are a power user of one specific tool that gives them three things at once that nothing else does: structure (rows, columns, sort, filter, formulas), presentation (colour the row green when the bill is paid, bold the favourite recipes), and a file they own that opens on any computer with Excel or Numbers or Sheets.",
       "solution": "They are right to want all three. But they've been quietly frustrated for years. Spreadsheets are ugly when printed. They don't lay out narrative content well — a recipe is half ingredients-and-quantities (structured) and half method-and-story (prose), and a spreadsheet handles only the first half gracefully. They don't embed photos cleanly. Sharing to someone without Excel is awkward. They've wished, more than once, that the recipe book could 'look more like a real cookbook.' What they've actually been asking for, all along, is a file that holds structured data AND looks good AND has a bit of interactivity AND opens on any computer AND belongs to them. The spreadsheet was the closest thing they had.",
       "payoff": "Now they describe what they want to Claude (or ChatGPT or Copilot or Gemini): 'make me a recipe book that has a photo at the top of each recipe, ingredients in a list, method in steps, and let me click a tag to filter by what I have in the pantry.' They get back an HTML file. They open it in their browser. It looks like a real cookbook. It sorts. It filters. It expands. They save it to the Important folder, next to the .xlsx files. They email it to a family member. The family member double-clicks it; it opens; it works. One file. No app to install. No subscription. The file in the Important folder is still authoritative. They didn't become a developer. They finally got the file format the spreadsheet was always trying to be.",
+      "example": { "label": "coming soon", "pending": true },
+      "generator": "llm / hybrid",
+      "tier": "0–3"
+    },
+    {
+      "n": "07",
+      "eyebrow": "When 'it just works' runs out of room",
+      "title": "Apple Notes everywhere — until you need it anywhere else.",
+      "scenario": "You know this person too. Maybe you are. The Apple-ecosystem one. iPhone, iPad, Mac, all signed into the same Apple ID, all syncing through iCloud. Apple Notes open on every device. Hundreds — maybe thousands — of notes. Folders. Pinned items. Scanned documents. Quick Notes added with the Apple Pencil. A note for the Christmas list. A note for travel plans. A note for the WiFi password at the cabin (changes every year). Ten years of this. It's everywhere they are; it requires no thought.",
+      "solution": "They love it because it really does just work. Open the Mac, the note is there. Switch to the iPhone in line at the grocery store, the note is there. No friction. No login. Nothing to set up. And yet. Apple Notes has style limits — title, heading, body, monospace, that's about it. Tables are basic. Layout is limited. They can't make a note look like a real cookbook, or a real travel itinerary, or a real anything. Sharing to anyone outside Apple is awkward; PDFs export, lossily; clean Markdown export isn't a feature. The notes are theirs until they're not — leave the ecosystem and the notes don't really come with them, not all of them, not with the formatting they had.",
+      "payoff": "Now when a note matures into something worth keeping or sharing, they describe it to Claude (or ChatGPT or Copilot or Gemini): 'take this travel plan and make it a real itinerary, with the daily schedule, the restaurant list, and the maps inline.' They get back an HTML file. It looks like a real itinerary. It works on a phone, a laptop, anywhere. They save it to a folder that's not iCloud. They email it to a travel companion who doesn't use Apple. The travel companion opens it; it works. Apple Notes stays Apple Notes — the inbox, the drafting space, the everywhere-tool. The HTML file is what the note becomes when it's done being a note.",
+      "bell_curve_callback": "There's a meme about this — the PKM Bell Curve (see bell-curve.html) — that puts Apple Notes at both ends of the curve. The naive position is 'Apple Notes is all you need.' The complex middle is Notion + Obsidian + Tana + Roam + Anki + Readwise + everything else. The meme's punchline puts Apple Notes again at the master position because the master 'realized it was all they needed.' The bell-curve essay argues HTML is the genuinely simpler master pick — same accessibility, none of the lock-in. Apple Notes is where you keep working. HTML is where you keep what you make.",
       "example": { "label": "coming soon", "pending": true },
       "generator": "llm / hybrid",
       "tier": "0–3"
@@ -657,6 +669,75 @@ footer.site .meta {
   display: block;
 }
 
+/* ── v14.19.1: bell-curve cross-reference callback in UC7 ── */
+.bell-curve-callback {
+  font-size: 15px;
+  color: var(--ink-mute) !important;
+  border-left: 3px solid var(--rule-strong);
+  padding: .25rem 0 .25rem 1.1rem;
+  margin-top: 1.5rem !important;
+  max-width: 60em;
+}
+.bell-curve-callback em {
+  color: var(--ink);
+  font-style: italic;
+  font-weight: 500;
+}
+.bell-curve-callback a {
+  color: var(--indigo);
+  border-bottom-color: var(--indigo-edge);
+}
+
+/* ── v14.19: apple-notes visual for UC7 — stylized Apple Notes list aesthetic ── */
+.apple-notes {
+  background: #FCF9E8;
+  border: 1px solid #E8E5CC;
+  border-radius: 8px;
+  margin: 1.75rem 0 1.25rem;
+  max-width: 60em;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+}
+.apple-note-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #EFEBD4;
+}
+.apple-note-row:last-child { border-bottom: 0; }
+.apple-note-pin {
+  font-size: 11px;
+  min-width: 16px;
+  text-align: center;
+  padding-top: 1px;
+  filter: saturate(0.7);
+}
+.apple-note-content { flex: 1; min-width: 0; }
+.apple-note-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 2px;
+}
+.apple-note-preview {
+  font-size: 12px;
+  color: #6e6e73;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.apple-note-date {
+  color: #1d1d1f;
+  font-weight: 500;
+  margin-right: 6px;
+}
+.apple-note-row.apple-note-more .apple-note-title {
+  color: #8E7C3D;
+  font-style: italic;
+  font-weight: 400;
+}
+
 /* ── v14.18: sheet-tabs visual for UC6 — stylized Excel-tab-bar aesthetic ── */
 .sheet-tabs {
   display: flex;
@@ -1056,10 +1137,10 @@ section .case-body p + p {
       <p>None of this was crazy. Claude has dramatically accelerated my prototyping. v0 and shadcn produce real UI fast. Cloud sync works. Multiplayer collaborative editing is incredible. For the first time, software feels conversational. AI turns ideas into artifacts at unprecedented speed.</p>
       <p>Before any of that, I was spending serious time with Airtable. Coda. Google Sheets. Nocodb. Baserow. Building systems to manage all my work. The systems kept becoming their own work. When AI came in, it didn't replace that pattern — it gave me a faster way to build the next layer of it.</p>
       <p>Every layer solves one problem while introducing two more. Artifacts get trapped in proprietary systems. AI sessions go ephemeral. Exports break. Sharing requires accounts. Local-first tools still secretly depend on the cloud. The most reliable thing in the whole stack — the thing I could share without asking anyone's permission and still reopen on any laptop in 2035 — kept turning out to be the one that came out of the AI as a single HTML file.</p>
-      <p>Here are six scenes from that realization.</p>
+      <p>Here are seven scenes from that realization.</p>
     </div>
     <div class="tldr-summary">
-      <p>Modern AI tooling is genuinely great. Every layer around it breaks artifact preservation — sessions go ephemeral, exports rot, sharing needs accounts. The one thing that consistently survives the whole stack is a single HTML file. Six scenes from that realization follow.</p>
+      <p>Modern AI tooling is genuinely great. Every layer around it breaks artifact preservation — sessions go ephemeral, exports rot, sharing needs accounts. The one thing that consistently survives the whole stack is a single HTML file. Seven scenes from that realization follow.</p>
     </div>
   </section>
 
@@ -1187,6 +1268,75 @@ section .case-body p + p {
     </div>
     <div class="tldr-summary">
       <p>The spreadsheet person — recipes, lists, contacts, plants, every book they've read since 2011 — finally has the file format they were always asking for. Structure plus presentation plus interactivity plus ownership, in one HTML file. They don't have to learn to code; they just tell Claude what they want. The file in the Important folder still works the way it always has. <em>(I was this person. Maybe you are.)</em></p>
+    </div>
+  </section>
+
+  <section id="uc7" aria-labelledby="uc7-title">
+    <p class="eyebrow">Use case 07 · When "it just works" runs out of room</p>
+    <h2 id="uc7-title">Apple Notes everywhere — until you need it anywhere else.</h2>
+    <button class="tldr-toggle" type="button" aria-pressed="false" aria-label="Toggle TL;DR summary">TL;DR</button>
+    <div class="case-body">
+      <p>You know this person too. Maybe you are. The Apple-ecosystem one. iPhone, iPad, Mac, all signed into the same Apple ID, all syncing through iCloud. Apple Notes open on every device. Hundreds — maybe thousands — of notes. Folders. Pinned items. Scanned documents. Quick Notes added with the Apple Pencil. A note for the Christmas list. A note for travel plans. A note for the WiFi password at the cabin (changes every year). Ten years of this. It's everywhere they are; it requires no thought.</p>
+
+      <div class="apple-notes" aria-label="A folder in Apple Notes, showing the kinds of notes this person tends to keep" role="img">
+        <div class="apple-note-row apple-note-pinned">
+          <div class="apple-note-pin">📌</div>
+          <div class="apple-note-content">
+            <div class="apple-note-title">Christmas List 2024</div>
+            <div class="apple-note-preview"><span class="apple-note-date">Yesterday</span> Mom — slippers (size M), Dad — bird book…</div>
+          </div>
+        </div>
+        <div class="apple-note-row apple-note-pinned">
+          <div class="apple-note-pin">📌</div>
+          <div class="apple-note-content">
+            <div class="apple-note-title">Italy trip — Rome day 1</div>
+            <div class="apple-note-preview"><span class="apple-note-date">3 days ago</span> Vatican morning, lunch near Trastevere…</div>
+          </div>
+        </div>
+        <div class="apple-note-row">
+          <div class="apple-note-pin"></div>
+          <div class="apple-note-content">
+            <div class="apple-note-title">Recipes to try</div>
+            <div class="apple-note-preview"><span class="apple-note-date">Nov 18</span> Mom's apple pie (scanned), risotto, Friday pasta…</div>
+          </div>
+        </div>
+        <div class="apple-note-row">
+          <div class="apple-note-pin"></div>
+          <div class="apple-note-content">
+            <div class="apple-note-title">Book club</div>
+            <div class="apple-note-preview"><span class="apple-note-date">Nov 12</span> Demon Copperhead, Trust, The Bee Sting…</div>
+          </div>
+        </div>
+        <div class="apple-note-row">
+          <div class="apple-note-pin"></div>
+          <div class="apple-note-content">
+            <div class="apple-note-title">WiFi at the cabin</div>
+            <div class="apple-note-preview"><span class="apple-note-date">Aug 8</span> changes every year, keep this updated…</div>
+          </div>
+        </div>
+        <div class="apple-note-row apple-note-more">
+          <div class="apple-note-pin"></div>
+          <div class="apple-note-content">
+            <div class="apple-note-title">+412 more notes</div>
+          </div>
+        </div>
+      </div>
+
+      <p>They love it because it really does just work. Open the Mac, the note is there. Switch to the iPhone in line at the grocery store, the note is there. Add a checkmark, it syncs. Scan a document, it scans. No friction. No login (they're already signed in). Nothing to set up.</p>
+
+      <p>And yet. Apple Notes has style limits — title, heading, body, monospace, that's about it. Tables are basic. Layout is limited. They can't make a note look like a real cookbook, or a real travel itinerary, or a real anything. Sharing to anyone outside Apple is awkward; PDFs export, but lossily; clean Markdown export isn't a feature. The notes are theirs until they're not — leave the ecosystem and the notes don't really come with them, not all of them, not with the formatting they had. The 412 notes they've added since 2014 are great in the app and almost impossible anywhere else.</p>
+
+      <p>Now when a note matures into something worth keeping or sharing, they describe it to Claude (or ChatGPT or Copilot or Gemini): "take this travel plan and make it a real itinerary, with the daily schedule, the restaurant list, and the maps inline." They get back an HTML file. It looks like a real itinerary. It works on a phone, a laptop, anywhere. They save it to a folder that's not iCloud. They email it to a travel companion who doesn't use Apple. The travel companion opens it; it works. Apple Notes stays Apple Notes — the inbox, the drafting space, the everywhere-tool. The HTML file is what the note becomes when it's done being a note.</p>
+
+      <p class="bell-curve-callback">There's a meme about this — the <a href="bell-curve.html">PKM Bell Curve</a> — that puts Apple Notes at both ends of the curve. The naive position is "Apple Notes is all you need." The complex middle is Notion + Obsidian + Tana + Roam + Anki + Readwise + everything else. The meme's punchline puts Apple Notes again at the master position because the master "realized it was all they needed." The bell-curve essay argues HTML is the genuinely simpler master pick — same accessibility, none of the lock-in. <em>Apple Notes is where you keep working. HTML is where you keep what you make.</em></p>
+    </div>
+    <div class="case-meta">
+      <span class="case-meta-chip case-meta-pending">Worked example: coming soon</span>
+      <span class="case-meta-chip">Generator: <code>llm</code> / <code>hybrid</code></span>
+      <span class="case-meta-chip">Tier 0–3</span>
+    </div>
+    <div class="tldr-summary">
+      <p>The Apple Notes person — iPhone, iPad, Mac, hundreds of notes syncing through iCloud — finally has a way to take a note out of Apple Notes when it matures into something worth keeping or sharing. Same answer as the spreadsheet person: describe what you want to Claude, get back an HTML file, save it somewhere that isn't iCloud, send it to anyone regardless of what they use. Apple Notes stays Apple Notes (the inbox, the everywhere-tool); the HTML file is what the note becomes when it's done being a note.</p>
     </div>
   </section>
 
