@@ -1084,6 +1084,54 @@ Result: validates 25/25 strict, becomes the first Microsoft-Copilot-authored Cap
 - [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — Producers reach for Capsule-shape independently when given the idiom but not the spec; F30 is the fourth-producer-family confirming data point for F28's "convergent envelope shape" claim
 - [`htmlcapsule.org` v14.16.0](https://htmlcapsule.org/) — the landing-page "Multi-system, by design" section that articulated the lateral-portability thesis that F30 validates empirically
 
+### F31: Bundle emerges as sibling format — empirical pressure from a heavy-data investigation produces the project's first sibling spec; producer / format / host pattern named explicitly
+
+**Date:** 2026-05-24
+
+**Source.** A maintainer-led building leak investigation (Loft 495, Vancouver — a real strata building with water intrusion across floors L5–L8) required tooling Capsule was not equipped to handle: four georeferenced floor plan rasters at ~6 MB each (~9000×12500 px), an 83-feature GeoJSON layer with drains / slopes / unit boundaries / leak locations, a 237,473-point LiDAR cloud, and two viewer HTMLs (2D Leaflet map + 3D Three.js point-cloud renderer) depending on CDN-hosted libraries. Total artifact: 60+ MB with multi-viewer needs, heavy binary assets, and runtime dependencies on external libraries. The maintainer spun up a local side project called `leak` to do the work without bloating the destination host (Stratabot), and exported the result as a single portable archive with a `manifest.json` at the root, SHA-256 hashes per file, and a UUID minted at seal time.
+
+That export format was provisionally called a "Bundle" and got documented as a v0.1.0 spec inside the local `leak` project. It was not initially intended as a peer-of-Capsule format; it was a one-off solution for one investigation. Over the course of a design conversation with the maintainer (preserved in the parent chat thread, 2026-05-24), the conversation surfaced that Bundle's structural shape was load-bearing for more than just the leak investigation, and the decision was made to incorporate Bundle directly into the htmlcapsule project as a **sibling format**.
+
+**Three layered findings:**
+
+**(1) Capsule has a real ceiling, and Bundle is what's above it.** The empirical pressure that produced Bundle is the same pressure that produced Capsule's parked appendix candidates over time, except this one couldn't be absorbed by tightening or extending Capsule. The artifact was simply too heavy and too multi-viewer to fit the sealed-singleton commitment. Forcing it into Capsule would have meant either (a) breaking Rule 2 to allow external asset loads (which would have collapsed the entire sealed-boundary thesis just landed in v0.3.8 §1.5), or (b) accepting a ~100 MB single HTML file that would defeat the format's casual-portability promise (no email attachment, no iOS QuickLook, no offline-decades-later guarantee). Neither was acceptable. Bundle takes the honest third path: acknowledge Capsule's ceiling, name what's above it, give it a different format that shares the discipline.
+
+The shared discipline is the three principles Bundle borrows from Capsule's opening: **identity** (UUID at seal time), **integrity** (SHA-256 hashes), and **provenance** (manifest records authorship). The only thing Bundle trades is the **sealed boundary** — Capsule's Rule 2 says no network; Bundle's §3.2 says external dependencies are allowed but must be declared. Everything else about Bundle inherits from Capsule's design instincts. A reader who understands Capsule will understand Bundle in thirty seconds.
+
+**(2) The producer / format / host pattern is now explicit.** Bundle's emergence forced a project-level pattern into visibility that was previously implicit in Capsule's design but never articulated:
+
+> *The host stays light. The producer can be heavy and domain-specific. The portable format is the contract that lets them compose.*
+
+The pattern instantiates twice now:
+
+- **Capsule family**: Mintel (producer) → Capsule (format) → MinDev (host)
+- **Bundle family**: leak (producer) → Bundle (format) → Stratabot (host)
+
+Same shape, both times. Future producers can join either family without the format changing. Future hosts can join either family without the format changing. Stratabot specifically may end up multi-format (serving both Capsules and Bundles, dispatching by file type) — that's a desirable property because a domain-aware host should serve whatever sealed/manifested artifact is the right shape for the deliverable, not require producers to choose a host based on format.
+
+Without naming the pattern, Bundle's emergence would have looked like an ad-hoc deviation from Capsule. With the pattern named, Bundle's emergence looks like the project's discipline applied at the next scale up — the same factoring the project uses internally (producer / format / host), now visible as a load-bearing principle of how the family is structured.
+
+**(3) The project's scope expands without renaming.** The project is called "html capsule." It now hosts specs for two formats: Capsule (the original) and Bundle (the sibling). The choice is to keep the project name and let the family relationship be described, not branded. htmlcapsule.org becomes the home for both specs. The Capsule spec remains primary in positioning; the Bundle spec is the acknowledged sibling. Naming a separate umbrella ("[X] artifacts family") was considered and deferred — the cost of adding a new brand outweighs the clarity gain, and "Capsule + Bundle within the htmlcapsule project" is legible enough.
+
+This makes the project the second known case (after the four-producer family for Capsule) where the discipline produces sibling/extension structure rather than format inflation. It's healthier than the alternative — a single format stretched to handle every use case ends up handling none of them well.
+
+**Implication for the spec(s).** No Capsule rule changes. Bundle ships as `spec/BUNDLE_SPEC.md` at v0.1.0. The project version bumps to v0.4.0 to mark the introduction of a sibling spec (the change is significant enough to warrant a minor bump even though no individual existing spec changed). The Capsule spec stays at v0.3.8. CITATION.cff bumps to v0.4.0 because that field tracks project-level versioning. The README state line now reports both spec versions.
+
+**Implication for the producer corpus.** Bundle currently has one producer (`leak`) and one host (Stratabot, possibly multi-format). The trajectory is the same as Capsule's first phase: one producer, one host, spec at v0.1.x, validator pending, examples pending. As more domain investigations or specialized projects encounter similar heavy-artifact pressure, more Bundle producers will surface. The maintainer's explicit prediction: "there will be more situations like leak. tons more, across all sorts of domains." Each one will either confirm or pressure-test Bundle v0.1.0.
+
+**Implication for the project's research narrative.** The empirical-pressure-driven evolution principle (codified in the project's introduction) is now operating at two levels: rule-level within a spec (Capsule v0.1 → v0.3.8 evolution) and format-level within the project (Capsule alone → Capsule + Bundle). The mechanism is the same — real producer pressure surfaces what needs to exist; the spec catches up and writes it down. F31 is the first time the format-level evolution has happened.
+
+**Methodological note.** F31 was logged during the same conversation in which the Bundle-as-sibling decision was made. The conversation itself produced the artifact (decision + spec promotion + research record + cross-document updates) — the upstream-feedback-discipline pattern named in F28 continues to operate cross-conversation, including in conversations that span project boundaries (the conversation started in `/leak/` and concluded with changes to the public `/htmlcapsule/` project).
+
+**Related findings:**
+- [F8](#f8-the-atomic-unit-framing-explains-everything-weve-built) — the atomic-unit framing; Bundle is an atomic unit at a different scale than Capsule, same discipline
+- [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) — Mintel as Capsule's first independent producer; leak is the parallel for Bundle
+- [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin) — host-contract convergence for Capsules; Stratabot may converge with the same shape for Bundles
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — host vs registry distinction; carries forward into the Bundle family
+- [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — upstream feedback discipline; F31 extends it to cross-project format promotion
+- [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) — the formal Bundle spec promoted in this finding
+- [`leak/project/BUNDLE_SPEC.md`](https://github.com/) — the originating Bundle spec from the side project (not publicly available; included for trajectory reference)
+
 ## Open questions
 
 In rough priority:

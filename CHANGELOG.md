@@ -12,6 +12,53 @@ Nothing pending right now. v13 landing-cleanup queue from earlier was largely sa
 
 ---
 
+## [Project v0.4.0] — 2026-05-24 — Bundle introduced as sibling format
+
+**First sibling spec lands.** Project version bumps to v0.4.0 to mark the addition of a second spec to the family. No Capsule rule changes — the Capsule spec stays at v0.3.8. The project's scope expands from "the HTML Capsule format" to "the htmlcapsule family of portable preservation formats (Capsule + Bundle)."
+
+### Why this is project v0.4.0 and not Capsule v0.3.9
+
+This bump tracks the *project*, not any single spec. The Capsule spec is unchanged. The new thing is that Bundle joins the family at v0.1.0, and the project's overall scope, glossary, README, and trajectory documentation now cover both. Each spec keeps its own version (Capsule v0.3.8, Bundle v0.1.0); the project version moves when the family composition changes.
+
+### Added — spec (new sibling)
+
+- **`spec/BUNDLE_SPEC.md` (NEW)** — Bundle spec v0.1.0. Sibling format to Capsule. A Bundle is a manifested directory of files (rather than a single sealed HTML file), with the same three foundational principles Capsule established (identity / integrity / provenance) but with a relaxed network-boundary commitment (external dependencies allowed if declared). Eight sections: what makes a valid bundle, the manifest (required / recommended / file inventory / domain extensions), the boundary, packaging, hosting, integrity verification, versioning, and the producer / format / host pattern. Adapted from the originating spec drafted in the `leak` side project (see F31).
+
+### Added — research
+
+- **F31 in RESEARCH.md** — "Bundle emerges as sibling format — empirical pressure from a heavy-data investigation produces the project's first sibling spec; producer / format / host pattern named explicitly." Substantive multi-section finding documenting (1) Capsule's ceiling and how Bundle is what's above it; (2) the producer / format / host pattern as the now-named load-bearing project principle; (3) the scope expansion without renaming. Trajectory captured: leak (producer) → Bundle (format) → Stratabot (host), parallel to Mintel (producer) → Capsule (format) → MinDev (host).
+
+### Added — glossary
+
+- **`GLOSSARY.md`** — three new entries in Positioning terms (alongside *Sealed handoff format*, *Anti-context-loss*, *Document-first artifact*, *Capsule boundary*, etc.):
+  - **Bundle** — what the sibling format is, what discipline it shares with Capsule, what it trades, where the spec lives, what produced it
+  - **Sibling format** — the relationship descriptor; Bundle is the first declared sibling; future siblings could emerge via the same empirical-pressure pathway
+  - **Producer / format / host pattern** — the three-role split, named explicitly; instantiates twice in the project (Capsule family + Bundle family)
+- Glossary state line bumped to v0.4.0, now referencing both Capsule spec (v0.3.8) and Bundle spec (v0.1.0).
+
+### Changed — infrastructure
+
+- **`CITATION.cff`** — bumped from v0.3.8 to v0.4.0; date-released to 2026-05-24.
+- **`README.md`** — state line now reports both spec versions ("Core spec at v0.3.0, full Capsule spec at v0.3.8, Bundle spec at v0.1.0"); brief sentence acknowledging Bundle as the sibling format in the project description.
+- **`llms.txt`** — Bundle spec added as a discoverable entry alongside the Capsule specs; F-finding range bumped to F1–F31; project description acknowledges the family.
+- 8 markdown capsules rebuilt by `compiler/build_md_capsules.py` to pick up the spec / glossary / changelog content updates. All pass 26/26.
+
+### What was NOT changed
+
+- Capsule spec rules — Capsule stays at v0.3.8. No new rules; no rule reframes.
+- Validator — no new Bundle validator yet. Bundle's spec exists; the validator is a future addition once the format earns more empirical pressure (analogous to how Capsule's validator grew from F-findings, not from top-down design).
+- Worked examples — Bundle currently has one real example (the leak project's Loft 495 investigation), but it's not published in `spec/examples/` because that example contains real-world building data. A sanitized canonical example is future work.
+
+### Trajectory
+
+Bundle starts where Capsule was in its v0.1 phase: one producer (`leak`), one host (Stratabot), spec at v0.1.0, validator pending, examples pending. The project's prediction (per F31, captured from the maintainer): "there will be more situations like leak. tons more, across all sorts of domains." Each future heavy-data investigation will either confirm or pressure-test Bundle v0.1.0; the spec will evolve the same way Capsule's did, by absorbing empirical pressure rather than by top-down redesign.
+
+### Cross-project notes
+
+The `leak` side project remains the originating producer for Bundle. Stratabot remains the canonical first host. Both projects are private. The Bundle spec promoted into htmlcapsule is the public-facing reference document; producers in any domain can adopt it without needing access to leak or Stratabot.
+
+---
+
 ## [Spec v0.3.8] — 2026-05-22
 
 **Second documentation patch in 24 hours** — no normative schema changes, no validator changes, no compat surface added. Lands the technical thesis under the format: **a capsule is a document first, an app second.** *Apps when alive. Documents when dormant.* Plus the conceptual elevation of Rule 2 from constraintive (a rule capsules follow) to definitional (the line where capsules end and a different category of artifact begins). Plus the reader-side floor declaration pattern that closes the loop on the 5-tier framework. The slogan is the compression; the five-tier framework, the capsule boundary, and the floor declaration are the engineering substance underneath it.
