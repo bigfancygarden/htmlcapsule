@@ -1,6 +1,6 @@
 # Bundle Spec v0.1.0
 
-**Sibling format to Capsule.** A bundle is a portable, self-describing archive of related files — viewers, data, and assets — designed to be shared, hosted, or stored as a single unit when a single sealed HTML file is not the right shape for the artifact.
+**Sibling format to Capsule.** A Bundle is a portable, self-describing archive of related files — viewers, data, and assets — designed to be shared, hosted, or stored as a single unit when a single sealed HTML file is not the right shape for the artifact.
 
 Bundle is the second format in the htmlcapsule family. It emerged from real producer pressure (the strata leak investigation; see [F31 in RESEARCH.md](../RESEARCH.md)) when a working artifact carried too much heavy data — large georeferenced rasters, LiDAR point clouds, multiple viewer HTMLs — to fit comfortably inside a Capsule's sealed-singleton commitment.
 
@@ -12,17 +12,28 @@ Bundle borrows three principles from the [Capsule spec](CAPSULE_SPEC.md):
 
 Where a Capsule is a single sealed HTML file with everything inlined and no network, a Bundle is a **directory of files with a manifest at root** that may carry declared external dependencies. Bundles are for projects that exceed what a single file can reasonably contain — heavy assets, multiple viewers, binary data formats, working substrates that will eventually have sealed Capsule reports derived from them.
 
+**A Bundle is not a relaxed Capsule.** It is a sibling format with a different boundary. If the artifact fits in one offline HTML file, publish a Capsule. If the artifact needs a directory of files, multiple viewers, heavy binary assets, or declared network libraries, publish a Bundle. The distinction is semantic, not just packaging: a Capsule's promise is "the whole thing is in this one HTML file"; a Bundle's promise is "the whole project is in this manifest-described set of files."
+
 ---
 
-## 1. What makes a valid bundle
+## 1. What makes a valid Bundle
 
-A bundle is a zip archive (or directory) containing:
+A Bundle is a zip archive (or directory) containing:
 
 1. A `manifest.json` at the root
 2. At least one entry HTML file declared in the manifest
-3. All files referenced by the entry HTML(s) as relative paths
+3. All payload files listed in `manifest.files[]`
+4. All local files referenced by the entry HTML(s), CSS, or other viewers as relative paths inside the bundle
 
-That's it. Everything else in this spec is convention, not requirement.
+That's the validity floor. Everything else in this spec is convention until real producers and hosts make it load-bearing.
+
+### 1.1 Quick choice rule
+
+Use a **Capsule** when the deliverable is a sealed document or small interactive archive that can stand alone as one `.html` file with no network dependency.
+
+Use a **Bundle** when the artifact is a project-shaped object: multiple files, heavy assets, multiple viewer entry points, binary data formats, or declared external libraries.
+
+If you're unsure, start with Capsule. Move to Bundle only when Capsule's sealed-singleton boundary would force you to lie: external assets, hidden sidecar files, a 100 MB HTML file, or multiple viewers pretending to be one page.
 
 ## 2. The manifest
 
@@ -33,8 +44,8 @@ That's it. Everything else in this spec is convention, not requirement.
 | `bundle_version` | string | Spec version. Currently `"0.1.0"` |
 | `uuid` | string | UUID v4, minted by the author at seal time |
 | `title` | string | Human-readable title |
-| `entry` | string | Relative path to the primary entry HTML |
-| `files` | array | File inventory (see §2.3) |
+| `entry` | string | Relative path to the primary entry HTML. Must point inside the bundle and appear in `files[]` |
+| `files` | array | Complete payload-file inventory (see §2.3). Excludes `manifest.json` itself |
 
 ### 2.2 Recommended fields
 
@@ -53,7 +64,7 @@ That's it. Everything else in this spec is convention, not requirement.
 
 ### 2.3 File inventory
 
-Each item in the `files` array:
+Each item in the `files` array describes one payload file. The manifest file is not listed in `files[]`, because it cannot contain a stable hash of itself without a second hashing protocol.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -66,7 +77,85 @@ Each item in the `files` array:
 
 Additional fields (like `floor`, `pixels`, `pixel_scale_m`) are allowed and encouraged when they help a consumer understand the file without opening it.
 
-### 2.4 Domain-specific extensions
+Path rules:
+
+- Paths MUST be relative to the bundle root.
+- Paths MUST NOT begin with `/`, contain `..` segments, or use a URI scheme (`file:`, `http:`, `https:`).
+- Directory entries are not listed; only files are listed.
+- Symbolic links MUST NOT appear in a distributed Bundle.
+- Every non-manifest file in the bundle SHOULD appear exactly once in `files[]`.
+- Every local file referenced by entry HTML/CSS MUST appear in `files[]`.
+
+### 2.4 External dependencies
+
+Bundles may reference external libraries or services. They must be declared so a recipient can tell whether the bundle will work offline, partially offline, or only with network access.
+
+Recommended shape:
+
+```json
+"external_dependencies": [
+  {
+    "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+    "kind": "script",
+    "purpose": "2D map viewer",
+    "required": true
+  },
+  {
+    "url": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+    "kind": "script",
+    "purpose": "3D point-cloud viewer",
+    "required": true
+  }
+]
+```
+
+String entries are also accepted in v0.1.0 for simple manifests:
+
+```json
+"external_dependencies": [
+  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+]
+```
+
+The declaration is not permission to hide live state outside the bundle. A CDN library is a dependency; the point cloud, GeoJSON, rasters, notes, and other artifact substance belong inside the bundle.
+
+### 2.5 Minimal manifest example
+
+```json
+{
+  "bundle_version": "0.1.0",
+  "uuid": "4c64bd22-9573-4b47-9a6f-9f7a685e86a1",
+  "title": "Example Investigation Bundle",
+  "description": "A small public example showing one viewer, one stylesheet, and one data file.",
+  "created_at": "2026-05-24T00:00:00Z",
+  "sealed_at": "2026-05-24T00:00:00Z",
+  "created_by": {
+    "name": "htmlcapsule reference example",
+    "kind": "human"
+  },
+  "domain": "example",
+  "entry": "viewer/index.html",
+  "files": [
+    {
+      "path": "viewer/index.html",
+      "sha256": "sha256:...",
+      "size": 1234,
+      "role": "entry",
+      "format": "html"
+    },
+    {
+      "path": "data/summary.json",
+      "sha256": "sha256:...",
+      "size": 456,
+      "role": "data",
+      "format": "json"
+    }
+  ],
+  "external_dependencies": []
+}
+```
+
+### 2.6 Domain-specific extensions
 
 The manifest can include domain-specific blocks at the top level, similar to Capsule's domain extensions in [`DOMAIN_CAPSULES.md`](DOMAIN_CAPSULES.md). For spatial bundles, a `spatial` block is recommended:
 
@@ -96,6 +185,8 @@ The spec does not prescribe these shapes — they're conventions that emerge per
 
 ## 3. The boundary
 
+A Capsule boundary is the HTML file. A Bundle boundary is the root directory plus `manifest.json`.
+
 ### 3.1 What's inside the bundle
 
 - Entry HTML files and their relative-path dependencies
@@ -115,20 +206,46 @@ Unlike a Capsule, **a Bundle is allowed to have external dependencies**. The man
 
 This is the **load-bearing difference** between the two formats. Capsule's Rule 2 ([`CAPSULE_CORE.md`](../CAPSULE_CORE.md)) elevates "no network" to a definitional boundary — an artifact that depends on external services is a different category, not a degraded Capsule. Bundle relaxes that commitment in exchange for handling heavy artifacts and multi-viewer setups that Capsule's ~20 MB practical ceiling can't realistically contain. Both formats share the rest of the discipline (identity, integrity, provenance); they trade only on the network-boundary question.
 
-### 3.3 Capsule vs. Bundle
+### 3.3 Boundary anti-patterns
+
+These are signs the artifact is neither a good Capsule nor a good Bundle yet:
+
+- A "Capsule" that has sibling `data/` or `assets/` folders. That's a Bundle-shaped object; give it a manifest and call it a Bundle.
+- A Bundle whose entry HTML fetches undeclared remote data at runtime. Declare the dependency if it's a library; put the data inside the bundle if it's part of the artifact.
+- A Bundle that relies on absolute local paths like `/Users/alex/project/data.geojson`. Bundle paths are relative to the root so the archive can move.
+- A Bundle that omits large referenced files from `files[]` because they are "obvious." The manifest is the inventory; if it isn't listed, a host or recipient cannot verify it.
+- A Bundle used as a workaround for sloppy Capsule production. If the artifact is one HTML file with inline assets and no network, it should remain a Capsule.
+
+### 3.4 Capsule vs. Bundle
 
 | | Capsule | Bundle |
 |---|---|---|
 | Container | Single `.html` file | Zip archive / directory |
+| Boundary promise | Everything needed is in the HTML file | Everything local is in the manifest-described file set; external deps are declared |
 | Network | No external requests | External deps allowed (declared) |
 | Size | Practical limit ~10–20 MB | No hard limit |
 | Data | Inline JSON block | Separate files, any format |
 | Viewers | Built into the HTML | Separate HTML files |
-| Use case | Sealed deliverables, reports | Working projects, heavy data, multi-viewer |
+| Use case | Sealed deliverables, reports, small interactive archives | Working projects, heavy data, multi-viewer artifacts |
 | Offline | Always works offline | Works offline if no CDN deps |
+| Integrity | Optional/required content hash depending on producer kind | Per-file SHA-256 hashes in manifest |
+| Best mental model | Portable document | Portable project |
 | Spec | [CAPSULE_SPEC.md](CAPSULE_SPEC.md) | This document |
 
-**Composition.** A Capsule can be *derived from* a Bundle (a compiler reads the bundle manifest, extracts data, and emits a sealed HTML report). The bundle UUID goes into the capsule's `parents[]` field as provenance. The reverse composition is also valid: a Bundle can be unpacked from a Capsule's data block + inlined assets when the working substrate is needed for further editing.
+**Composition.** A Capsule can be *derived from* a Bundle: a compiler reads the bundle manifest, extracts a bounded view of the data, and emits a sealed HTML report. Because Capsule `parents[]` is strict Capsule-to-Capsule lineage, a source Bundle belongs in the Capsule manifest's `derived_from[]` array, for example:
+
+```json
+"derived_from": [
+  {
+    "type": "bundle",
+    "title": "Loft 495 leak investigation bundle",
+    "reference": "urn:uuid:4c64bd22-9573-4b47-9a6f-9f7a685e86a1",
+    "role": "source project"
+  }
+]
+```
+
+The reverse composition is also valid: a Bundle can be unpacked from a Capsule's data block and inlined assets when the working substrate is needed for further editing.
 
 **Choosing between them.** A producer reaches for:
 
@@ -167,6 +284,10 @@ The zip filename is not standardized. The `uuid` in the manifest is the canonica
 
 Standard zip deflate. No special requirements.
 
+### 4.4 Directory form
+
+During local development, a Bundle may be an ordinary directory. The same root rules apply: `manifest.json` at the directory root, paths relative to that root, and no file references that escape the directory. Zip is the distribution form; directory is the authoring and verification form.
+
 ## 5. Hosting
 
 A host that receives a bundle (Stratabot is the canonical first host; see [HOSTING.md](HOSTING.md) for the equivalent host-contract pattern Capsule hosts follow):
@@ -184,7 +305,7 @@ The sharing layer (ACLs, share tokens, access logs) attaches to the bundle UUID,
 
 ## 6. Integrity verification
 
-To verify a bundle's integrity:
+To verify a Bundle's integrity, check every file listed in `manifest.files[]` against its declared size and SHA-256 hash:
 
 ```python
 import json, hashlib
@@ -197,6 +318,13 @@ print("All files verified.")
 ```
 
 The manifest itself is not self-hashing (it can't contain its own hash). A host MAY compute and store a hash of the manifest separately for tamper detection.
+
+A reference validator lives at [`../compiler/validate_bundle.py`](../compiler/validate_bundle.py). It accepts either a bundle directory or a zip archive:
+
+```bash
+python3 compiler/validate_bundle.py spec/examples/minimal_bundle
+python3 compiler/validate_bundle.py /tmp/example.bundle.zip
+```
 
 ## 7. Versioning
 

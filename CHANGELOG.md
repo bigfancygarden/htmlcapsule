@@ -8,7 +8,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
-Nothing pending right now. v13 landing-cleanup queue from earlier was largely satisfied by the v13.1 framing recovery + v13.2 on-site rendering work. Idea queue (`spec/DOMAIN_CAPSULES.md`) and voices queue (`voices/README.md`) hold candidates that haven't met the empirical-pressure bar.
+### Added — Bundle tooling
+
+- **`compiler/validate_bundle.py`** — initial stdlib-only Bundle validator. Accepts a Bundle directory or zip archive; checks root `manifest.json`, required fields, recognized `bundle_version`, UUIDv4, per-file size + SHA-256 verification, payload inventory completeness, entry HTML existence, unsafe paths/symlinks, local viewer references, and declared external dependencies.
+- **`spec/bundle.schema.json`** — JSON Schema for Bundle `manifest.json` v0.1.0.
+- **`spec/examples/minimal_bundle/`** — tiny public Bundle fixture with one HTML viewer, one stylesheet, one JSON data payload, complete manifest inventory, and no external dependencies.
+
+### Changed — Bundle spec/docs
+
+- **`spec/BUNDLE_SPEC.md`** — tightened the Capsule-vs-Bundle distinction: Bundle is a sibling format, not a relaxed Capsule. Added quick choice rules, path rules, external dependency declaration shape, minimal manifest example, boundary anti-patterns, directory-form guidance, validator usage, and clarified that a Capsule derived from a Bundle should record the source Bundle under `derived_from[]` (`type: "bundle"`) rather than `parents[]`, because Capsule `parents[]` remains strict Capsule-to-Capsule lineage.
+- **`README.md`, `GLOSSARY.md`, `llms.txt`** — updated Bundle positioning and implementation pointers.
 
 ---
 

@@ -1,0 +1,6 @@
+{
+  "summary": "This is a small data file included in the minimal Bundle example.",
+  "files": 3,
+  "external_dependencies": 0,
+  "note": "A Bundle may include separate data files instead of inlining JSON into one HTML document."
+}

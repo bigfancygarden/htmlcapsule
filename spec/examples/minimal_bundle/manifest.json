@@ -1,0 +1,45 @@
+{
+  "bundle_version": "0.1.0",
+  "uuid": "4c64bd22-9573-4b47-9a6f-9f7a685e86a1",
+  "title": "Minimal Bundle Example",
+  "description": "A tiny public Bundle fixture with one HTML viewer, one stylesheet, and one JSON data file.",
+  "created_at": "2026-05-24T00:00:00Z",
+  "sealed_at": "2026-05-24T00:00:00Z",
+  "created_by": {
+    "name": "htmlcapsule reference example",
+    "kind": "human"
+  },
+  "domain": "example",
+  "entry": "viewer/index.html",
+  "files": [
+    {
+      "path": "viewer/index.html",
+      "sha256": "sha256:7d84d5f6e70b68e0d4b9ddd5aa8653c1e2e865dc0f49f4be0c12d668fbb036d6",
+      "size": 1035,
+      "role": "entry",
+      "format": "html",
+      "description": "Static viewer for the fixture."
+    },
+    {
+      "path": "viewer/style.css",
+      "sha256": "sha256:4aeba86c9ec1a1b0c04a34af3af349243c37255185a36fd8b594f989750467b5",
+      "size": 841,
+      "role": "asset",
+      "format": "css",
+      "description": "Viewer stylesheet."
+    },
+    {
+      "path": "data/summary.json",
+      "sha256": "sha256:3fa9ab6a6782d70ff69e71a3f0c24d97975cc4f67d83a9d01413939a912792cd",
+      "size": 232,
+      "role": "data",
+      "format": "json",
+      "description": "Small structured data payload."
+    }
+  ],
+  "integrity": {
+    "algorithm": "sha256",
+    "scope": "files"
+  },
+  "external_dependencies": []
+}

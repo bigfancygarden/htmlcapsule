@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://htmlcapsule.org/spec/bundle.schema.json",
+  "title": "Bundle Manifest v0.1.0",
+  "description": "Schema for manifest.json at the root of a Bundle.",
+  "type": "object",
+  "required": ["bundle_version", "uuid", "title", "entry", "files"],
+  "properties": {
+    "bundle_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sealed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "domain": {
+      "type": "string"
+    },
+    "entry": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary entry HTML path, relative to bundle root."
+    },
+    "entries": {
+      "type": "object",
+      "description": "Additional named entry points. Values may be path strings or objects with a path field.",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "required": ["path"],
+            "properties": {
+              "path": { "type": "string" },
+              "title": { "type": "string" },
+              "description": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        ]
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "size"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Relative path from bundle root. Must not be absolute or escape the bundle root."
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "role": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "const": "sha256"
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["files"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "external_dependencies": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "required": ["url"],
+            "properties": {
+              "url": { "type": "string" },
+              "kind": { "type": "string" },
+              "purpose": { "type": "string" },
+              "required": { "type": "boolean" }
+            },
+            "additionalProperties": true
+          }
+        ]
+      }
+    },
+    "parents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["uuid", "title"],
+        "properties": {
+          "uuid": { "type": "string", "format": "uuid" },
+          "title": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "enum": ["capsule", "bundle"] }
+        },
+        "additionalProperties": true
+      }
+    },
+    "derived_from": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "title"],
+        "properties": {
+          "type": { "type": "string" },
+          "title": { "type": "string", "minLength": 1 },
+          "reference": { "type": ["string", "null"] },
+          "role": { "type": "string" },
+          "hash": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "date": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1458,7 +1458,7 @@ These are recognized needs that fit the format but require more design work. The
 
 - **Encryption**: capsules that require a key to open
 - **Digital signatures**: cryptographic proof of authorship
-- **Multi-capsule bundles**: packaging several capsules in a zip/archive
+- **Capsule collections**: packaging several Capsules together remains outside Capsule itself. Project-level Bundle now covers manifested multi-file artifacts, but a dedicated profile for "collection of Capsules" has not yet earned its own rules.
 - **Custom themes**: a theme system for consistent branding across capsules
 - **Internationalization**: multi-language support within a single capsule
 - **Record-level integrity verification**: hash chains for tamper detection beyond `_content_hash`

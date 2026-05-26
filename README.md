@@ -4,7 +4,7 @@
 
 **Spec home: [htmlcapsule.org](https://htmlcapsule.org)** — landing page is itself a valid Capsule.
 
-`htmlcapsule` is a **research project** that produces an open specification, reference implementation, example corpus, and research log for **Capsule** — a profile of HTML for versioned, self-contained, provenance-bearing snapshots of work, data, or information worth preserving.
+`htmlcapsule` is a **research project** that produces open specifications, reference implementations, example corpora, and research logs for the htmlcapsule family: **Capsule** — a profile of HTML for versioned, self-contained, provenance-bearing snapshots of work, data, or information worth preserving — and **Bundle**, the sibling format for manifested multi-file artifacts that exceed Capsule's single-file boundary.
 
 The hypothesis: the substrate (HTML) has already won as the universal display layer for AI-generated work; what's missing is *discipline* — a contract, manifest, integrity guarantees, capability honesty, and pre-rendered content — so that artifacts from LLMs, deterministic compilers, and human authors all carry the same envelope shape. The strongest claim the format makes is **multi-producer interop**: LLMs (Claude, ChatGPT, Gemini, Codex), deterministic compilers (Python/Node build scripts), and human authors all produce the same envelope shape. Empirically validated as of v0.3.4 with Mintel as the first independent compiler-kind producer (see [F20](RESEARCH.md)).
 
@@ -14,12 +14,13 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 
-**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.8**, Bundle spec at **v0.1.0** (the new sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference validator at 26 checks (Capsule only; Bundle validator pending). Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
+**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.8**, Bundle spec at **v0.1.0** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator at 26 checks; initial Bundle validator at 11 checks. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
 
 ## Start here
 
 - **For the format in one page:** [CAPSULE_CORE.md](CAPSULE_CORE.md) — twelve rules, pasteable into any LLM prompt.
 - **For the full specification:** [spec/CAPSULE_SPEC.md](spec/CAPSULE_SPEC.md) — formal definition, validation rules, security model, response protocol, integrity-hash recipe.
+- **For the sibling format above Capsule's ceiling:** [spec/BUNDLE_SPEC.md](spec/BUNDLE_SPEC.md) — manifested directories/zips for heavy or multi-viewer artifacts.
 - **For working examples:** [`examples/`](examples/) (JSON inputs for the compiler) and [`spec/examples/`](spec/examples/) (canonical example capsules).
 - **For domain schemas:** [`spec/DOMAIN_CAPSULES.md`](spec/DOMAIN_CAPSULES.md) — `implementation_notes`, `design_system`, `exploration_map`.
 - **For the research narrative:** [RESEARCH.md](RESEARCH.md) — what we're investigating, findings F1–F31, open questions, methodology.
@@ -46,6 +47,7 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
 - **Not a knowledge graph, second brain, or notes app.** This is the most common misread, so it's worth saying directly: capsules are *atomic outputs, not collected inputs.* The manifest, the UUIDs, and the `parents[]` lineage exist so a single capsule can stand alone with full provenance — *not* so you can traverse from one capsule to a graph of related ones. We deliberately have not built (and likely won't build) a network layer, an importer, a vault format, a graph viewer, or anything that turns a folder of capsules into a navigable wiki. If you're looking for "everything I know, queryable, in one place," the right tools are Roam, Obsidian, Notion, Anytype, TiddlyWiki — capsules are what you might *publish out of* one of those, not what they become.
 - **Not a version-control system.** The `parents[]` field is provenance lineage (where this capsule came from), not a version chain to manage. Capsules don't replace git, don't replace your tool's edit history, and don't try to be the place where iterative editing happens. If you need versioning, edit in your working tool and emit a new capsule. A folder of `v1.html` / `v2.html` / `v3-final.html` is the failure mode the format is designed to *avoid*, not its expected workflow.
 - **Not competing with Canvas/Artifacts/MCP.** Capsules are the *sealed* layer downstream of working canvases — complementary, not competing.
+- **Not a Bundle.** A Capsule's boundary is one sealed `.html` file with no network dependency. A Bundle's boundary is a root `manifest.json` plus an inventory of files, with external dependencies allowed when declared. If your artifact needs sidecar files, heavy rasters, LiDAR, video, or multiple entry viewers, that's Bundle territory.
 
 ## Reference implementation
 
@@ -55,6 +57,8 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
   - **URL mode** (added in v0.3.4): `python3 compiler/validate.py <https://host/path/raw>` — fetches the body via the host's `/raw` endpoint, cross-checks any `x-capsule-content-hash` and `x-capsule-uuid` response headers against the manifest, then runs the standard checks. Per the host-contract pattern documented in [`spec/HOSTING.md`](spec/HOSTING.md).
 - [`templates/decision_board/`](templates/decision_board/) and [`templates/news_capsule/`](templates/news_capsule/) — two compiler templates demonstrating the compile path
 - [`examples/`](examples/) — sanitized JSON inputs you can compile yourself
+- [`compiler/validate_bundle.py`](compiler/validate_bundle.py) — initial Bundle validator for directories or zip archives
+- [`spec/bundle.schema.json`](spec/bundle.schema.json) and [`spec/examples/minimal_bundle/`](spec/examples/minimal_bundle/) — Bundle manifest schema plus a tiny public fixture
 
 Quick check:
 
@@ -122,8 +126,8 @@ See [`CITATION.cff`](CITATION.cff). GitHub auto-detects this file and renders a 
 
 | Phase | Name | State |
 |---|---|---|
-| 1 | Format | Exists (Core v0.3.0, full spec v0.3.8) |
-| 2 | Compiler | Half-built — reference compiler + validator (local file mode + URL mode) + growing corpus across producer kinds. First independent compiler-kind producer (Mintel) shipped + validated (F20) |
+| 1 | Format | Exists (Capsule Core v0.3.0, full Capsule spec v0.3.8; Bundle spec v0.1.0) |
+| 2 | Compiler / validators | Half-built — Capsule compiler + validator (local file mode + URL mode), initial Bundle validator + schema + minimal fixture. First independent Capsule compiler-kind producer (Mintel) shipped + validated (F20) |
 | 3 | Domain capsules | Partial — `domain.implementation_notes`, `domain.design_system`, `domain.exploration_map`, `domain.briefing` documented. `domain.music_stems` in the Idea queue |
 | 4 | Network layer | Not built; possibly never. Capsule registry, lineage graph, importers all deferred. Trust-log primitive sketched in Appendix E.6 but not built. |
 

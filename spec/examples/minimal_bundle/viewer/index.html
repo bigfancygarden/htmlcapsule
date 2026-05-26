@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minimal Bundle Example</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Bundle fixture</p>
+    <h1>Minimal Bundle Example</h1>
+    <p>
+      This viewer is deliberately ordinary HTML with a relative stylesheet and a
+      linked JSON payload. It demonstrates the Bundle boundary: the project is
+      the root directory plus <code>manifest.json</code>, not one sealed HTML file.
+    </p>
+    <section aria-labelledby="contents-title">
+      <h2 id="contents-title">Bundled files</h2>
+      <ul>
+        <li><code>viewer/index.html</code> — primary entry viewer</li>
+        <li><code>viewer/style.css</code> — local stylesheet</li>
+        <li><code>data/summary.json</code> — local structured data</li>
+      </ul>
+      <p><a href="../data/summary.json">Open the bundled JSON payload</a></p>
+    </section>
+  </main>
+</body>
+</html>
