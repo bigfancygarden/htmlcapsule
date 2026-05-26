@@ -12,7 +12,7 @@ Bundle borrows three principles from the [Capsule spec](CAPSULE_SPEC.md):
 
 Where a Capsule is a single sealed HTML file with everything inlined and no network, a Bundle is a **directory of files with a manifest at root** that may carry declared external dependencies. Bundles are for projects that exceed what a single file can reasonably contain — heavy assets, multiple viewers, binary data formats, working substrates that will eventually have sealed Capsule reports derived from them.
 
-**A Bundle is not a relaxed Capsule.** It is a sibling format with a different boundary. If the artifact fits in one offline HTML file, publish a Capsule. If the artifact needs a directory of files, multiple viewers, heavy binary assets, or declared network libraries, publish a Bundle. The distinction is semantic, not just packaging: a Capsule's promise is "the whole thing is in this one HTML file"; a Bundle's promise is "the whole project is in this manifest-described set of files."
+**A Bundle is not a relaxed Capsule.** It is a sibling format with a different boundary. If the artifact fits in one offline HTML file, publish a Capsule. If the artifact needs a directory of files, multiple viewers, heavy binary assets, or declared external libraries/resources with primary artifact data local, publish a Bundle. The distinction is semantic, not just packaging: a Capsule's promise is "the whole thing is in this one HTML file"; a Bundle's promise is "the whole project is in this manifest-described set of files."
 
 ---
 
@@ -35,6 +35,28 @@ Use a **Bundle** when the artifact is a project-shaped object: multiple files, h
 
 If you're unsure, start with Capsule. Move to Bundle only when Capsule's sealed-singleton boundary would force you to lie: external assets, hidden sidecar files, a 100 MB HTML file, or multiple viewers pretending to be one page.
 
+### 1.2 What Bundle inherits from Capsule
+
+Bundle inherits the htmlcapsule family's discipline, not Capsule's exact mechanics.
+
+**Inherited at the family level:**
+
+- Stable identity: one UUID minted at seal time
+- Manifest-first description: a recipient can inspect the artifact before trusting or opening every file
+- Integrity: declared hashes let a host or recipient verify the payload
+- Provenance: the manifest says who/what created the artifact and what it came from
+- Portability: the artifact can move as a zip/directory without losing its meaning
+- Dependency honesty: anything outside the boundary is declared, not hidden
+
+**Not inherited from Capsule:**
+
+- The five inline Capsule blocks (`capsule-manifest`, `capsule-data`, `capsule-style`, `capsule-root`, `capsule-runtime`)
+- The no-network rule as a hard render-time boundary
+- The requirement that all readable content be pre-rendered into one HTML root
+- Capsule's capability vocabulary and response envelope
+
+A Bundle entry viewer may itself be a valid Capsule, but it does not become one merely by living inside a Bundle. Conversely, a Bundle can contain ordinary HTML viewers that are not Capsules, as long as the Bundle manifest honestly inventories the files and dependencies.
+
 ## 2. The manifest
 
 ### 2.1 Required fields
@@ -52,6 +74,7 @@ If you're unsure, start with Capsule. Move to Bundle only when Capsule's sealed-
 | Field | Type | Description |
 |---|---|---|
 | `description` | string | One-paragraph summary of the bundle |
+| `revision` | string | Optional human-facing instance/revision label. This is the Bundle's content revision; `bundle_version` is the spec version |
 | `created_at` | string | ISO 8601 timestamp |
 | `sealed_at` | string | ISO 8601 timestamp of when hashes were computed |
 | `created_by` | object | Author identification (flexible shape) |
@@ -88,7 +111,7 @@ Path rules:
 
 ### 2.4 External dependencies
 
-Bundles may reference external libraries or services. They must be declared so a recipient can tell whether the bundle will work offline, partially offline, or only with network access.
+Bundles may reference external libraries or runtime resources needed by a viewer. They must be declared so a recipient can tell whether the bundle will work offline, partially offline, or only with network access.
 
 Recommended shape:
 
@@ -117,7 +140,9 @@ String entries are also accepted in v0.1.0 for simple manifests:
 ]
 ```
 
-The declaration is not permission to hide live state outside the bundle. A CDN library is a dependency; the point cloud, GeoJSON, rasters, notes, and other artifact substance belong inside the bundle.
+The declaration is not permission to hide live state outside the bundle. A CDN library, basemap service, or rendering helper can be an external dependency; the point cloud, GeoJSON, rasters, notes, reports, and other artifact substance belong inside the bundle.
+
+If the entry viewer fetches the artifact's primary evidence or source data from a live API at view time, the object is no longer a sealed Bundle. It is a connected project or hosted application with a manifest. Useful, but a different category.
 
 ### 2.5 Minimal manifest example
 
@@ -126,6 +151,7 @@ The declaration is not permission to hide live state outside the bundle. A CDN l
   "bundle_version": "0.1.0",
   "uuid": "4c64bd22-9573-4b47-9a6f-9f7a685e86a1",
   "title": "Example Investigation Bundle",
+  "revision": "1.0.0",
   "description": "A small public example showing one viewer, one stylesheet, and one data file.",
   "created_at": "2026-05-24T00:00:00Z",
   "sealed_at": "2026-05-24T00:00:00Z",
@@ -183,6 +209,15 @@ For investigation bundles, a `data_summary` block:
 
 The spec does not prescribe these shapes — they're conventions that emerge per domain, the same way Capsule's domain schemas earn their slot when a real producer ships a domain capsule.
 
+### 2.7 Lineage fields
+
+Bundle uses two lineage fields, mirroring Capsule's split between hard family provenance and broader source provenance:
+
+- `parents[]` records upstream Capsules or Bundles this Bundle was forked from or directly derived from. Each entry SHOULD include `uuid`, `title`, and `type` (`"capsule"` or `"bundle"`).
+- `derived_from[]` records non-Capsule / non-Bundle sources: datasets, documents, plans, surveys, photographs, chats, or other materials that informed the artifact. Use the same entry shape described in [`CAPSULE_SPEC.md`](CAPSULE_SPEC.md) §11.2.
+
+This differs slightly from Capsule. Capsule `parents[]` is strict Capsule-to-Capsule lineage; when a Capsule is derived from a Bundle, the Bundle belongs in the Capsule's `derived_from[]` array with `type: "bundle"` rather than in `parents[]`.
+
 ## 3. The boundary
 
 A Capsule boundary is the HTML file. A Bundle boundary is the root directory plus `manifest.json`.
@@ -198,13 +233,13 @@ A Capsule boundary is the HTML file. A Bundle boundary is the root directory plu
 ### 3.2 What's outside the bundle
 
 - CDN-hosted libraries (Leaflet, Three.js, mapping stacks, etc.)
-- Live API endpoints
+- Live API endpoints that supply artifact substance
 - Authentication / session state
 - Databases
 
 Unlike a Capsule, **a Bundle is allowed to have external dependencies**. The manifest SHOULD declare them in `external_dependencies` so a consumer knows what network access is needed. A Bundle without external dependencies is strictly better (works offline), but the spec does not require it.
 
-This is the **load-bearing difference** between the two formats. Capsule's Rule 2 ([`CAPSULE_CORE.md`](../CAPSULE_CORE.md)) elevates "no network" to a definitional boundary — an artifact that depends on external services is a different category, not a degraded Capsule. Bundle relaxes that commitment in exchange for handling heavy artifacts and multi-viewer setups that Capsule's ~20 MB practical ceiling can't realistically contain. Both formats share the rest of the discipline (identity, integrity, provenance); they trade only on the network-boundary question.
+This is a **load-bearing difference** between the two formats, but it should not be misread as "Bundle can put the real artifact somewhere else." Capsule's Rule 2 ([`CAPSULE_CORE.md`](../CAPSULE_CORE.md)) elevates "no network" to a definitional boundary — an artifact that depends on external services is a different category, not a degraded Capsule. Bundle relaxes the no-network commitment in exchange for handling heavy artifacts and multi-viewer setups that Capsule's ~20 MB practical ceiling can't realistically contain. It does not relax the provenance and inventory commitment: the files that make the artifact what it is belong in `files[]`.
 
 ### 3.3 Boundary anti-patterns
 
@@ -222,7 +257,7 @@ These are signs the artifact is neither a good Capsule nor a good Bundle yet:
 |---|---|---|
 | Container | Single `.html` file | Zip archive / directory |
 | Boundary promise | Everything needed is in the HTML file | Everything local is in the manifest-described file set; external deps are declared |
-| Network | No external requests | External deps allowed (declared) |
+| Network | No external requests | Declared external libraries/resources allowed; primary artifact data stays local |
 | Size | Practical limit ~10–20 MB | No hard limit |
 | Data | Inline JSON block | Separate files, any format |
 | Viewers | Built into the HTML | Separate HTML files |
@@ -245,7 +280,7 @@ These are signs the artifact is neither a good Capsule nor a good Bundle yet:
 ]
 ```
 
-The reverse composition is also valid: a Bundle can be unpacked from a Capsule's data block and inlined assets when the working substrate is needed for further editing.
+The reverse relationship is usually containment, not conversion: a Bundle may include one or more Capsules as sealed reports inside its `files[]` inventory, alongside the heavier data and viewers that produced them. Those report files remain independently valid Capsules; the Bundle manifest simply accounts for their file integrity and places them in a project-shaped context.
 
 **Choosing between them.** A producer reaches for:
 
@@ -328,14 +363,16 @@ python3 compiler/validate_bundle.py /tmp/example.bundle.zip
 
 ## 7. Versioning
 
+`bundle_version` is the version of this specification, not the version of one Bundle instance. If a producer needs a human-facing instance version, use the optional `revision` field. The validity floor remains `sealed_at` plus the per-file hashes.
+
 When a bundle is updated (new features added, plans revised), the author SHOULD:
 
 1. Update `sealed_at` to the new seal time
 2. Recompute all file hashes
 3. Keep the same `uuid` (it's the same project)
-4. Increment a version field if desired (the spec does not currently mandate one)
+4. Increment `revision` if recipients need a human-facing version label
 
-The previous sealed state can be preserved by keeping the old zip. The manifest does not currently support internal version history — that's a future extension if real producer pressure surfaces.
+If the update is a true fork rather than a revision of the same project, mint a new UUID and record the prior Bundle in `parents[]`. The previous sealed state can also be preserved by keeping the old zip. The manifest does not currently support internal version history — that's a future extension if real producer pressure surfaces.
 
 ---
 

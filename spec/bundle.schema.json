@@ -19,6 +19,11 @@
       "minLength": 1,
       "maxLength": 200
     },
+    "revision": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional human-facing instance/revision label for this Bundle's content. Not the spec version; bundle_version is the spec version."
+    },
     "description": {
       "type": "string",
       "maxLength": 2000

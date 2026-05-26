@@ -987,6 +987,8 @@ The 15 MB threshold is a **soft warning for distribution-channel compatibility**
 
 These limits apply to the **total file size** of the compiled capsule. In practice, structured JSON data is compact — size limits are almost always hit by embedded binary assets (images, audio, fonts) or, for visualization capsules, by raw GeoJSON / coordinate data in the data block. A capsule with 100,000 records of textual JSON and no images will typically stay well under 2 MB.
 
+If a legitimate artifact crosses the 20 MB boundary because it needs heavy rasters, LiDAR, video, multiple entry viewers, or separate binary files, do not weaken Capsule's single-file / no-network rules to make it fit. Use the sibling [Bundle spec](BUNDLE_SPEC.md): a Bundle preserves the same family discipline (identity, integrity, provenance) for manifest-described file sets, while leaving Capsule's sealed-singleton promise intact.
+
 ### 6.4 Fallback Behavior
 
 If an asset cannot be embedded (size, format, encoding failure), the compiler must:
@@ -1476,10 +1478,10 @@ These are not deferred features. They are places where the project would stop be
 - **Live collaboration** between multiple recipients on the same capsule. A capsule is one author → one or more recipients with async response. Real-time multi-user state is a SaaS problem, not a file problem.
 - **Bidirectional editing** of the source database from inside the capsule. The capsule is a snapshot. If recipients can edit the source, you're building a remote client, not a portable artifact.
 - **Automatic background sync** with the source database. Capsules are offline-first. Network sync turns them into thin clients.
-- **Unbounded media sizes**. Past the 20 MB hard cap (raised from 15 MB in v0.3.3), the single-file model breaks down for normal distribution. Use a different format.
+- **Unbounded media sizes**. Past the 20 MB hard cap (raised from 15 MB in v0.3.3), the single-file model breaks down for normal distribution. Use [Bundle](BUNDLE_SPEC.md) when the object is a project-shaped file set; use a different delivery architecture when the object is streaming or live.
 - **General-purpose web archival replay**. That's WACZ's job. Capsules are authored deliverables, not faithful captures of arbitrary websites.
 - **Plugin runtime** for arbitrary third-party scripts inside capsules. This breaks the security model — the runtime can only run vetted, inlined code.
-- **Streaming or live-updating data**. Capsules are snapshots. Live data requires a different architecture.
+- **Streaming or live-updating data**. Capsules are snapshots. Bundle may declare external libraries/resources for viewing a file set, but it does not turn live API data into sealed capsule content. Live data requires a different architecture.
 - **Full semantic-web provenance modeling** (RO-Crate / PROV-O complete ontology). Capsules use a pragmatic subset; full RDF/OWL integration is RO-Crate's job.
 
 The split matters because the deferred list invites expansion, and the boundary list invites restraint. If a use case requires something from the boundary list, the right answer is usually "use a different tool for that part" — not "extend the capsule spec."
