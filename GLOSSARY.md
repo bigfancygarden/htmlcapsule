@@ -10,7 +10,7 @@ If you find a term missing, ambiguous, or used inconsistently in a capsule, that
 
 ### Capsule
 
-A single-file HTML document with a manifest, data block, rendered content, styling, and a small runtime — packaging a bounded snapshot for sharing, archiving, and re-loading. A profile of HTML, not a new file format. The format was previously called "Artifact Capsule"; the shortened name lands the *sealed* metaphor and avoids collision with Claude's "artifact" (which means a working canvas, not a sealed snapshot).
+A single-file HTML document with a manifest, data block, rendered content, styling, and a small runtime — packaging a bounded snapshot for sharing, archiving, and re-loading. A profile of HTML, not a new file format. Every Capsule keeps the same five-block envelope; optional Capsule profiles are validation overlays, not alternate structures. The format was previously called "Artifact Capsule"; the shortened name lands the *sealed* metaphor and avoids collision with Claude's "artifact" (which means a working canvas, not a sealed snapshot).
 
 ### Conversation Capsule
 
@@ -95,6 +95,10 @@ An AI platform that can read many file types and connect to many sources directl
 
 A capsule with runtime tools — measure, filter, search, annotate, sort, export, print, domain-specific affordances like `map.measure` — layered on top of pre-rendered content. The operational litmus is the **JavaScript-off test**: if JS doesn't run, the substance of the artifact is still there (the tools are just gone). Tools query the content; tools never produce it. Contrast with an "app," where the substance itself depends on JS to exist — forbidden by Core rule 12. Named in spec v0.3.4 (§2.3) to head off the recurring misreading that "archives, not apps" means "no interactive features at all." Mintel's `domain.exploration_map` capsules are the canonical example: click-to-measure and click-to-find-coordinates on top of static map content (rendered chrome plus image fallback for geometry).
 
+### Capsule profile
+
+A validation overlay declared in the manifest as `profile`, currently `static`, `interactive`, or `data`. Profiles describe how the fixed five-block envelope is used; they do not make any block optional and they do not turn Bundle into a Capsule subtype. `static` means the document layer is the primary experience; `interactive` means runtime tools enhance an already-understandable document layer; `data` means the structured data block is first-class while `capsule-root` still carries a meaningful summary/fallback view.
+
 ---
 
 ## The four layers
@@ -138,7 +142,7 @@ Authoritative source verification performed at capsule-compile time, beyond what
 
 ### Manifest
 
-The required JSON block (`<script id="capsule-manifest">`) carrying identity, provenance, capabilities, and privacy metadata. Required fields per Core v0.3.0: `spec_version`, `capsule_version`, `uuid`, `title`, `description`, `type`, `created_at`, `generator`, `source`, `privacy`, `capabilities`. Optional: `parents[]` (provenance — UUIDs of upstream capsules this one was forked from). The v0.1 legacy names `artifact_id` and `artifact_version` are still accepted under v0.2/v0.3 compatibility; `capsule_id` (the slug) was deprecated in v0.3 and is slated for removal in v0.4.
+The required JSON block (`<script id="capsule-manifest">`) carrying identity, provenance, capabilities, profile, and privacy metadata. Required fields per Core v0.3.0: `spec_version`, `capsule_version`, `uuid`, `title`, `description`, `type`, `created_at`, `generator`, `source`, `privacy`, `capabilities`. Optional: `profile` (validation overlay), `parents[]` (provenance — UUIDs of upstream capsules this one was forked from). The v0.1 legacy names `artifact_id` and `artifact_version` are still accepted under v0.2/v0.3 compatibility; `capsule_id` (the slug) was deprecated in v0.3 and is slated for removal in v0.4.
 
 ### Data block
 
@@ -156,7 +160,7 @@ The minimum structural contract per Core v0.3.0 rule 3:
 
 ### Capabilities
 
-Declared affordances the capsule must implement. Required minimum: `about` plus at least one export.
+Declared affordances the capsule must implement. Required minimum: `about` plus at least one export. Capabilities are declarations, not permissions.
 
 Standard capabilities:
 - `about` — a panel showing the manifest (usually a `<details>` block)
@@ -167,6 +171,12 @@ Standard capabilities:
 - `export_response` — produces a structured response payload (for interactive capsules)
 
 **Capabilities don't lie.** Every capability declared in the manifest must have a working implementation.
+
+Capability classes:
+- Core — controlled names the base spec understands (`about`, exports, `search`, `filter`, `media.*`, etc.)
+- Restricted — known declarations a host or reader may deny by default (`storage.local`, `native_bridge`, `ai_context.export`)
+- Extension — namespaced/domain names (`x-mining.map`, `org.example.feature`)
+- Prohibited — invalid in Capsules (`network.request`)
 
 ### Provenance
 

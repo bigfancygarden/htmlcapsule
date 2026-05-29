@@ -8,6 +8,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
+### Added — Capsule profiles and capability classes
+
+- **Capsule profiles** — `profile` is now documented as an optional manifest validation overlay (`static`, `interactive`, `data`) while the five required blocks remain fixed for every Capsule.
+- **Capability classes** — core, restricted, extension, and prohibited capabilities are now documented. Restricted declarations are not permissions; `network.request` is explicitly prohibited for Capsules.
+- **`compiler/validate.py`** — reference Capsule validator now checks profile validity and capability classes, bringing the local validator to 28 checks. The Rule 12 heuristic now looks for visible text plus headings/structural/media markers in `capsule-root`.
+- **`compiler/compile.py` and `compiler/build_md_capsules.py`** — generated manifests now declare `profile` (`interactive` for template-compiled capsules by default, `static` for Markdown reading capsules).
+
+### Changed — Capsule rendering model
+
+- **`CAPSULE_CORE.md` and `spec/CAPSULE_SPEC.md`** — tightened the runtime-as-enhancement rule: `capsule-root` must expose primary meaning without JavaScript through title/summary/key sections or equivalent fallback content; `capsule-data` may be richer, and `capsule-runtime` may hydrate enhanced views, but runtime must not be the only path to understanding the artifact.
+
 ### Added — Bundle tooling
 
 - **`compiler/validate_bundle.py`** — initial stdlib-only Bundle validator. Accepts a Bundle directory or zip archive; checks root `manifest.json`, required fields, recognized `bundle_version`, UUIDv4, per-file size + SHA-256 verification, payload inventory completeness, entry HTML existence, unsafe paths/symlinks, local viewer references, and declared external dependencies.

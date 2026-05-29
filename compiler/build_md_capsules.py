@@ -8,7 +8,7 @@ text/markdown rather than rendering them, so visitors clicking "Research" /
 script generates a Capsule per markdown file at the repo root + spec/, each
 served at a clean URL (/core, /research, /glossary, ...). Each generated
 capsule is itself a valid Core-spec Capsule (5 blocks, manifest, integrity,
-declared capabilities), passes the reference validator at 26/26.
+declared capabilities), and passes the reference validator.
 
 Generator kind: "compiler" (deterministic transform of an input file).
 UUIDs are derived deterministically via v5 from a project namespace + the
@@ -356,6 +356,7 @@ def build_capsule(src: Path, out: Path, title: str, type_: str, lead: str, bread
             f"Source markdown lives at the same path in the GitHub repo if you want raw."
         ),
         "type": type_,
+        "profile": "static",
         "created_at": now,
         "generator": {
             "name": "compiler/build_md_capsules.py",

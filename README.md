@@ -14,7 +14,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 
-**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.8**, Bundle spec at **v0.1.0** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator at 26 checks; initial Bundle validator at 11 checks. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
+**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.8**, Bundle spec at **v0.1.0** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator at 28 checks, including profile overlay and capability-class checks; initial Bundle validator at 11 checks. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
 
 ## Start here
 
@@ -52,7 +52,7 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
 ## Reference implementation
 
 - [`compiler/compile.py`](compiler/compile.py) — produces capsules from JSON + template directories
-- [`compiler/validate.py`](compiler/validate.py) — reference validator with 26 conformance checks. Two modes:
+- [`compiler/validate.py`](compiler/validate.py) — reference validator with 28 conformance checks. Two modes:
   - **Local file mode**: `python3 compiler/validate.py path/to/capsule.html`
   - **URL mode** (added in v0.3.4): `python3 compiler/validate.py <https://host/path/raw>` — fetches the body via the host's `/raw` endpoint, cross-checks any `x-capsule-content-hash` and `x-capsule-uuid` response headers against the manifest, then runs the standard checks. Per the host-contract pattern documented in [`spec/HOSTING.md`](spec/HOSTING.md).
 - [`templates/decision_board/`](templates/decision_board/) and [`templates/news_capsule/`](templates/news_capsule/) — two compiler templates demonstrating the compile path
@@ -71,7 +71,7 @@ python3 compiler/validate.py /tmp/test.html
 
 # Or validate a hosted capsule by URL (fetches /raw, cross-checks any
 # x-capsule-* host-attestation headers against the manifest before
-# running the standard 26 checks)
+# running the standard 28 checks)
 python3 compiler/validate.py https://mindev.ca/api/c/9357a933-7ce1-4061-9488-2ca61d81bded/raw
 ```
 

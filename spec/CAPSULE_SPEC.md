@@ -2,7 +2,7 @@
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
-> **Inspecting a served capsule.** To review or validate a capsule hosted at a URL: prefer the **in-capsule "Download capsule" button** if the capsule declares the `download_capsule` capability (§5.1.1) — that's the author's intended export path. Otherwise, fetch the raw file directly: `curl -O <url>` or, in a browser, right-click the link → **Save Link As**. **Do not use Save Page As → Webpage, Single File (.mhtml)** — Chrome and other Chromium browsers wrap the artifact in an MHTML envelope and extract inline `<style>` and `<script>` blocks into separate MIME parts (look for `cid:...@mhtml.blink` URLs in the result). This produces a degraded copy that fails Rules 1, 2, and 3 even when the underlying capsule is fully spec-compliant. A directory listing also isn't the capsule — the capsule is the linked `.html` file itself.
+> **Inspecting a served capsule.** To review or validate a capsule hosted at a URL: prefer the **in-capsule "Download capsule" button** if the capsule declares the `download_capsule` capability (§5.2.1) — that's the author's intended export path. Otherwise, fetch the raw file directly: `curl -O <url>` or, in a browser, right-click the link → **Save Link As**. **Do not use Save Page As → Webpage, Single File (.mhtml)** — Chrome and other Chromium browsers wrap the artifact in an MHTML envelope and extract inline `<style>` and `<script>` blocks into separate MIME parts (look for `cid:...@mhtml.blink` URLs in the result). This produces a degraded copy that fails Rules 1, 2, and 3 even when the underlying capsule is fully spec-compliant. A directory listing also isn't the capsule — the capsule is the linked `.html` file itself.
 
 > **Naming note (v0.2).** This format was previously called "Artifact Capsule." It was shortened to "Capsule" in 2026-05 to avoid collision with Anthropic's product term ("artifact" = a working canvas in Claude) and to land the sealing metaphor in one word. The schema field names were renamed to match: `capsule_id` and `capsule_version` are the canonical v0.2 names. The legacy v0.1 names `artifact_id` (with `artifact:` prefix) and `artifact_version` remain accepted by the validator under v0.2 compatibility — new capsules should use the canonical names. See [`../EXPLORATION.md`](../EXPLORATION.md#naming) for the full reasoning.
 
@@ -10,7 +10,7 @@
 
 > **v0.3.1 changes (2026-05-19).** Doc-only patch. No schema or validator changes. Tightened §9.1.1 into a normative "Content Hash Recipe" with a verifiable test vector — `sha256:3dcff3f89736e2554b3f077dbff063f5400c682d470ffa5125fa4bdd3c652ef8` for the documented minimal manifest+data, so a new compiler can confirm its implementation by re-derivation. Added an "Inspecting a served capsule" preamble flagging that Chrome's Save Page As → MHTML destroys the capsule contract. Cross-reference added from §3.2 Integrity to §9.1.1.
 
-> **v0.3.2 changes (2026-05-19).** Added the `download_capsule` standard capability — an in-capsule button that DOM-serializes the document and triggers a `.html` download, giving recipients a clean export path that doesn't rely on Chrome's broken Save Page As flow. New §5.1.1 spells out the implementation pattern (no network, rule-2 clean) and the one subtle caveat: browsers normalize HTML during DOM serialization, so capsules declaring `download_capsule` SHOULD pair it with `hash_scope: "data+manifest"` or `"data_only"` rather than `"full_document"`. Validator capability marker updated.
+> **v0.3.2 changes (2026-05-19).** Added the `download_capsule` standard capability — an in-capsule button that DOM-serializes the document and triggers a `.html` download, giving recipients a clean export path that doesn't rely on Chrome's broken Save Page As flow. New §5.2.1 spells out the implementation pattern (no network, rule-2 clean) and the one subtle caveat: browsers normalize HTML during DOM serialization, so capsules declaring `download_capsule` SHOULD pair it with `hash_scope: "data+manifest"` or `"data_only"` rather than `"full_document"`. Validator capability marker updated.
 
 ## 1. Overview
 
@@ -179,9 +179,18 @@ Every capsule is a single `.html` file. Internal sections are identified by `id`
 >
 > Rule 12 is the format's enforcement of that thesis at the rendering layer. The interactivity tiers built on top (see §2.3.2) compound progressively — but they all rest on a base of pre-rendered HTML that survives when scripts don't run.
 
-The `<main id="capsule-root">` body **must already contain the full readable artifact when the file is opened.** Title, prose, embedded media (`<img src="data:...">`, `<audio src="data:...">`, `<video src="data:...">`), tables, lists, metadata — all rendered into the HTML at build time. Runtime JavaScript may *enhance* the capsule (wire up export buttons, dynamic UI, copy-to-clipboard) but must not be required to produce the readable content.
+The `<main id="capsule-root">` body **must already contain the full readable artifact when the file is opened.** Title, summary, key sections, prose, embedded media (`<img src="data:...">`, `<audio src="data:...">`, `<video src="data:...">`), tables, lists, metadata, or other human-readable fallback content appropriate to the artifact — all rendered into the HTML at build time. Runtime JavaScript may *enhance* the capsule (wire up export buttons, dynamic UI, copy-to-clipboard, search, filter, visualization) but must not be required to produce the readable content. `capsule-data` may contain richer structured data; `capsule-runtime` may hydrate enhanced views from it. Runtime code must not be the only path by which a reader can understand the artifact's primary content.
 
 **Why:** Capsules are archives, not apps. They must remain readable in environments that don't execute inline scripts — iOS Files / QuickLook previews, email client previews, screen readers, search indexers, archive viewers, and future browsers whose JavaScript support has drifted from today's APIs. A capsule whose `capsule-root` is mostly empty `<div id="...">` containers will render as a blank page in any of those environments.
+
+**Primary-meaning floor.** "Primary meaning" is necessarily domain-specific, so validators cannot prove it perfectly. Producers can make it testable enough by ensuring the no-JS layer includes, at minimum:
+
+- the capsule title or equivalent heading
+- a summary or purpose statement
+- the key sections, records, media, tables, or fallback renderings a reader needs to understand the artifact
+- visible labels/metadata that explain what richer runtime controls add
+
+The data block can be more complete than the static view, and the runtime can provide better navigation, transformation, filtering, search, or visualization. What it cannot do is make an otherwise empty shell become the only understandable version of the artifact.
 
 **WRONG** — empty placeholders waiting for JS to render content:
 ```html
@@ -245,7 +254,7 @@ The image-fallback escape hatch is the principled resolution to the long-standin
 - **Interactive archive (permitted).** With JS off, the user still sees the document — text, tables, lists, embedded media, the rendered chrome of any visualization, the image fallback for geometry. The runtime tools (filter, sort, search, annotate, highlight, rank, group, compare, measure, find-coordinates, export buttons, print) are absent, but the *substance* is intact. Tools query the content; tools never produce it.
 - **App (forbidden).** With JS off, the user sees nothing meaningful — only a husk of containers waiting for the runtime to populate them. The substance of the artifact is generated by JS, not present in the HTML.
 
-The standard interactive capabilities listed in §5.1 (`filter`, `sort`, `search`, `annotate`, `highlight`, `rank`, `group`, `compare`) and any domain capabilities under the `<domain>.<action>` convention (e.g., `map.measure`, `map.find_coords`, `map.zoom_to_layer`, `dataset.aggregate`) are all archive-side affordances — they help a recipient interrogate sealed content. They do not move a capsule past Rule 12.
+The standard interactive capabilities listed in §5.2 (`filter`, `sort`, `search`, `annotate`, `highlight`, `rank`, `group`, `compare`) and any domain capabilities under the `<domain>.<action>` convention (e.g., `map.measure`, `map.find_coords`, `map.zoom_to_layer`, `dataset.aggregate`) are all archive-side affordances — they help a recipient interrogate sealed content. They do not move a capsule past Rule 12.
 
 Examples drawn from the corpus:
 
@@ -550,6 +559,7 @@ The manifest is the machine-readable contract. It answers: what is this, who is 
 | `title`            | string   | yes      | Human-readable title.                                               |
 | `description`      | string   | yes      | One-paragraph summary of the capsule's purpose.                    |
 | `type`             | string   | yes      | Capsule type. Recommended values in Section 3.3; free-form string allowed for cases the canonical types don't cover (e.g., LLMs naturally reach for `"summary"` or `"briefing"`). |
+| `profile`          | string   | no       | Validation overlay for how the fixed five-block envelope is used. Recommended values: `"static"`, `"interactive"`, `"data"`. See §3.2.2. |
 | `created_at`       | string   | yes      | ISO 8601 timestamp.                                                 |
 | `generator`        | object   | yes      | What produced the HTML. See *Generator* table below.                |
 | `synthesis`        | object   | no       | Present when an LLM or other process *synthesized the data* (extraction, summarization). See *Synthesis* table below. Null or omitted means the data came directly from a structured source. |
@@ -650,6 +660,26 @@ Declarative metadata about what JS-off representations the capsule bundles. The 
 **Producers SHOULD include this section** when they've gone to the trouble of bundling a meaningful JS-off fallback. **Producers MAY omit this section** when the capsule is naturally document-shaped (the static HTML IS the substance — a notes essay, a briefing, an implementation-notes capsule) and there's nothing extra to declare. The validator does not require the section; absence is not a failure.
 
 **Why this is recommended, not required.** The principle that Rule 12 content exists in the HTML *is* required (per Rule 12 + the JS-off litmus in §2.3). The `fallbacks` section is metadata *about* the fallbacks for the convenience of consumers — it doesn't change the static HTML. A capsule that omits the section but still has a working `<audio controls>` fallback is fine; a capsule that declares `preview_audio_present: true` but ships no audio in the static HTML has lied. Producer-side honesty applies; the validator may eventually grow a heuristic that cross-checks the declaration against the static HTML (see [v0.4 candidate E.12](#e-12) if this lands; currently parked).
+
+#### 3.2.2 Capsule profiles (validation overlays)
+
+Capsule profiles describe how a capsule uses the fixed five-block envelope. They do **not** create alternate envelope shapes. A Static Capsule, Interactive Capsule, and Data Capsule all still contain `capsule-manifest`, `capsule-data`, `capsule-style`, `capsule-root`, and `capsule-runtime`.
+
+Recommended manifest field:
+
+```json
+"profile": "static"
+```
+
+| Profile | Meaning | Validation overlay |
+|---|---|---|
+| `static` | The document layer is the primary experience. Runtime, if present, is limited to generic affordances such as about/export/print/copy. | `capsule-root` carries the complete human-readable artifact; runtime is optional enhancement only. |
+| `interactive` | The document layer is understandable, and runtime adds tools such as filter, search, sort, annotation, measurement, transport, or visualization. | `capsule-root` carries the primary meaning plus labels/fallbacks for what the runtime adds. Declared capabilities must match visible controls or implementation markers. |
+| `data` | The structured data block is a first-class payload, often richer than the static reading layer. | `capsule-root` carries a summary, key sections, schema/record orientation, representative rows, media fallback, or another meaningful no-JS view of the data. Runtime may hydrate richer views from `capsule-data`. |
+
+If `profile` is absent, consumers should treat the capsule as an unprofiled legacy Capsule and apply the base rules. New producers SHOULD declare a profile because it gives validators, hosts, search tools, and UIs cleaner vocabulary without weakening the envelope.
+
+Profiles are not sibling formats. Bundle remains the sibling multi-file container for artifacts that exceed the single-file Capsule boundary.
 
 ### 3.3 Artifact Types
 
@@ -810,9 +840,27 @@ If the capsule includes derived or aggregated data, it should be in a separate k
 
 ## 5. Capabilities
 
-Capabilities are declared in the manifest and implemented in the runtime. A capsule must implement every capability it declares.
+Capabilities are declared in the manifest and implemented in the rendered HTML and runtime. A capsule must implement every capability it declares.
 
-### 5.1 Standard Capabilities
+Capabilities are **declarations, not permissions**. A capsule can say what affordances it contains or requests; it cannot grant itself host privileges. Readers and hosts may deny restricted affordances by default.
+
+### 5.1 Capability classes
+
+| Class | Meaning | Validator stance |
+|---|---|---|
+| Core | Controlled names the base spec understands. | Known safe when implemented and compatible with Rule 2. |
+| Restricted | Names that may require host or reader cooperation outside ordinary in-file HTML. | Known restricted; deny by default unless the host explicitly allows them. |
+| Extension | Domain or organization names outside the core set. | Allowed when namespaced; generic validators check syntax and implementation markers where possible, domain validators handle semantics. |
+| Prohibited | Capabilities incompatible with Capsule's boundary. | Invalid for Capsule. Use Bundle or another artifact category. |
+
+Recommended naming:
+
+- Core names use stable strings such as `about`, `search`, `copy_as_json`, and documented core families such as `media.play`.
+- Restricted names use dotted names such as `storage.local`, `native_bridge`, and `ai_context.export`.
+- Extension names use either `x-*` or reverse-DNS/dotted form such as `x-mining.map` or `org.example.domain_feature`.
+- `network.request` is prohibited in Capsules because Capsule Rule 2 forbids network dependency.
+
+### 5.2 Core Capabilities
 
 | Capability          | Description                                              |
 |---------------------|----------------------------------------------------------|
@@ -830,12 +878,12 @@ Capabilities are declared in the manifest and implemented in the runtime. A caps
 | `copy_as_prompt`    | Copy a pre-formatted prompt to clipboard                  |
 | `download_json`     | Download data or response as `.json` file                 |
 | `download_csv`      | Download data as `.csv` file                              |
-| `download_capsule`  | Download the capsule itself as a `.html` file (DOM-serialized; see §5.1.1) |
+| `download_capsule`  | Download the capsule itself as a `.html` file (DOM-serialized; see §5.2.1) |
 | `print_to_pdf`      | Print-optimized layout via browser print                  |
 | `export_response`   | Generate and download a structured response file          |
 | `about`             | Collapsible "About this artifact" section showing manifest |
 
-#### 5.1.1 The `download_capsule` capability
+#### 5.2.1 The `download_capsule` capability
 
 Solves a real recurring failure mode: recipients who want to save a hosted capsule reach for **Save Page As → Webpage, Single File** in Chrome, which wraps the artifact in an MHTML envelope that destroys the capsule contract (see the "Inspecting a served capsule" preamble at the top of this document). A `download_capsule` button gives the author an in-capsule export path that doesn't rely on the browser's broken save flow.
 
@@ -857,7 +905,7 @@ function downloadCapsule() {
 
 **Recommended scope pairing.** Browsers normalize HTML during `outerHTML` serialization (attribute order, quote style, void-tag form, whitespace inside `<style>`). So the downloaded copy is *functionally* identical to the source but not *byte*-identical. Capsules that declare `download_capsule` SHOULD use `hash_scope: "data+manifest"` or `hash_scope: "data_only"` for `integrity.content_hash` — those scopes hash only the JSON inside `<script type="application/json">` raw-text elements, which browsers don't normalize. Capsules using `hash_scope: "full_document"` will hand recipients a copy whose hash doesn't verify against the original; if `full_document` integrity is essential, omit `download_capsule` and direct recipients to `curl -O` instead.
 
-#### 5.1.2 The `media.*` capability family (added v0.3.6)
+#### 5.2.2 The `media.*` capability family (added v0.3.6)
 
 Domain-namespaced capability vocabulary for capsules that bundle playable media — symbolic (MIDI), audio (rendered songs / podcasts), or multi-stem (mixed audio + symbolic). Formalized in v0.3.6 under empirical pressure from the `capsule-midi` producer (which exercises every entry below) and the Shasta producer (audio songs, in progress). Naming follows the `<domain>.<action>` convention from Core rule 7 with `.<subdomain>` permitted when an action targets a specific sub-resource (e.g. a single stem of a multi-stem capsule).
 
@@ -883,7 +931,7 @@ Domain-namespaced capability vocabulary for capsules that bundle playable media 
 
 **Why a namespace, not a flat list.** Multi-track media capsules need per-component control distinct from whole-capsule transport. The `.stems.*` sub-namespace makes the scope visible in the capability name (a consumer reading the manifest sees `media.stems.mute` and knows it's per-stem) and lets the validator's Rule 7 heuristic match the scoped marker pattern cleanly.
 
-#### 5.1.3 The `export.fragment_provenance` capability (added v0.3.6)
+#### 5.2.3 The `export.fragment_provenance` capability (added v0.3.6)
 
 Universal-envelope capability for **exporting a reference to a fragment of this capsule for use in a downstream capsule's `parents[]` chain**. Formalized in v0.3.6 under empirical pressure from `capsule-midi`'s DAW use case — where the load-bearing primitive of a remix workflow is *"cite the source: component X, bars Y-Z of capsule UUID W."* The same shape applies across the producer family: a remix capsule cites a fragment of a song; a derived map cites a tagged region of a parent map; a clipped photo cites a rectangle of a parent photo.
 
@@ -919,14 +967,32 @@ Domain schemas in `DOMAIN_CAPSULES.md` SHOULD specify the recommended `fragment`
 
 **Note on the relationship to `parents[]` and `derived_from[]`.** `export.fragment_provenance` produces an entry suitable for `parents[]` (when the target capsule is itself a Capsule with a UUID). For non-Capsule fragment sources (rare but possible — e.g., a region of a non-Capsule reference image), the consumer may route the same envelope into `derived_from[]` with the `from_capsule` field renamed to `reference` and the entry's `type` populated. The export capability is agnostic about which lineage field the consumer chooses; it produces the data, the consumer routes it.
 
-### 5.2 Minimum Required Capabilities
+### 5.3 Restricted and prohibited capabilities
+
+Restricted capabilities are honest declarations that the capsule wants an affordance a generic file viewer may deny:
+
+| Capability | Meaning |
+|---|---|
+| `storage.local` | Persistent browser-local state. Use sparingly; Capsule's default state model is in-memory until explicit export. |
+| `native_bridge` | Host-provided native integration outside ordinary browser APIs. |
+| `ai_context.export` | Host-mediated export of capsule context into an AI tool. |
+
+Prohibited capabilities are invalid in Capsules:
+
+| Capability | Reason |
+|---|---|
+| `network.request` | Violates the no-network boundary. A network-dependent artifact is a web app, connected document, capture, or Bundle workflow, not a Capsule. |
+
+This list can grow only under empirical pressure. Until then, unknown bare names should be treated as suspect; unknown namespaced capabilities should be treated as extensions.
+
+### 5.4 Minimum Required Capabilities
 
 Every capsule must implement at least:
 
 1. `about` — self-documenting manifest display
 2. One **export** capability: `copy_as_json`, `download_json`, `copy_as_markdown`, `print_to_pdf`, or `export_response`
 
-### 5.3 Implementation Honesty
+### 5.5 Implementation Honesty
 
 A capsule must implement every capability it declares. Declaring `sort` without a sort UI, or `copy_as_json` without a working button, violates the spec. The validator (Section 14) should detect declared-but-unimplemented capabilities.
 
@@ -1426,12 +1492,15 @@ A capsule is **valid** if:
 3. The manifest parses as valid JSON
 4. All required manifest fields are present and correctly typed
 5. `spec_version` matches a known spec version
-6. `privacy.external_dependencies` is `false`
-7. `integrity.content_hash` matches the computed hash of the specified scope (per the protocol in Section 9.1.1)
-8. Every declared capability has a corresponding implementation in the runtime
-9. No external resource references exist in HTML, CSS, or JavaScript
-10. The data section parses as valid JSON
-11. The file size is under 20 MB (with a soft warning between 15 MB and 20 MB for email-attachment compatibility — see §6.3)
+6. `profile`, when present, is a known validation overlay (`static`, `interactive`, or `data`)
+7. `privacy.external_dependencies` is `false`
+8. `integrity.content_hash` matches the computed hash of the specified scope (per the protocol in Section 9.1.1)
+9. Every declared capability is a known core capability, a known restricted declaration, or a syntactically valid namespaced extension; prohibited capabilities fail
+10. Every declared capability has a corresponding implementation in the runtime or rendered HTML where the core validator can check it
+11. No external resource references exist in HTML, CSS, or JavaScript
+12. The data section parses as valid JSON
+13. `capsule-root` exposes the capsule's primary meaning without JavaScript (heuristic: visible text, headings, sections, media/table/list/fallback presence)
+14. The file size is under 20 MB (with a soft warning between 15 MB and 20 MB for email-attachment compatibility — see §6.3)
 
 A validator tool should produce a report listing pass/fail for each check.
 
@@ -1791,7 +1860,7 @@ This resolves both the legacy-template case (those templates could either retire
 - `content_hash` — canonical(manifest) + LF + canonical(data), already specified in §9.1.1. Survives DOM round-trip (the JSON blocks are raw-text script-tag content browsers don't normalize). Answers: *is the meaningful payload intact?*
 - `file_hash` — SHA-256 of the raw `.html` file bytes (with the hash field placeholder-substituted per the existing recipe — same protocol as `hash_scope: "full_document"`). Does NOT survive DOM round-trip. Answers: *is this byte-identical to the file the author originally published?*
 
-The current `hash_scope` enum collapses these two questions into one choice per integrity block. The two-hash split would let a capsule carry both simultaneously and resolve the tension we already documented in §5.1.1 between `download_capsule` and `full_document` integrity. The integrity block would grow to `{ content_hash, file_hash?, hash_scope, signature?, log_entry_uuid? }`.
+The current `hash_scope` enum collapses these two questions into one choice per integrity block. The two-hash split would let a capsule carry both simultaneously and resolve the tension we already documented in §5.2.1 between `download_capsule` and `full_document` integrity. The integrity block would grow to `{ content_hash, file_hash?, hash_scope, signature?, log_entry_uuid? }`.
 
 **Verification model: out-of-band, capsule stays mute.**
 

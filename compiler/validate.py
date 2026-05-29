@@ -72,6 +72,7 @@ REQUIRED_PRIVACY_FIELDS = {"visibility", "contains_private_data", "redaction_app
 REQUIRED_INTEGRITY_FIELDS = {"content_hash", "hash_scope"}
 REQUIRED_GENERATOR_FIELDS = {"name", "version", "kind"}
 VALID_GENERATOR_KINDS = {"compiler", "llm", "human", "hybrid"}
+VALID_CAPSULE_PROFILES = {"static", "interactive", "data"}
 
 # Heuristic markers for capability implementation.
 # Each capability declared must have at least one matching marker in the runtime.
@@ -121,6 +122,32 @@ CAPABILITY_MARKERS = {
     # New domain capabilities should use the dotted form (e.g., media.play_audio).
     "play_audio":      [r'<audio\b', r'audio[-_]?(?:player|element|controls)', r'\.play\(\)'],
 }
+
+CORE_CAPABILITIES = set(CAPABILITY_MARKERS.keys()) | {
+    "media.play",
+    "media.pause",
+    "media.stop",
+    "media.seek",
+    "media.tempo_scale",
+    "media.loop_bar",
+    "media.midi.download",
+    "media.audio.download_mix",
+    "media.audio.download_stem",
+    "media.stems.mute",
+    "media.stems.solo",
+    "media.stems.set_patch",
+    "media.stems.set_volume",
+    "export.fragment_provenance",
+}
+RESTRICTED_CAPABILITIES = {
+    "storage.local",
+    "native_bridge",
+    "ai_context.export",
+}
+PROHIBITED_CAPABILITIES = {
+    "network.request",
+}
+CAPABILITY_NAME_FORMAT = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$")
 
 # Patterns split by where they're meaningful — scope-aware to avoid false
 # positives on rendered documentation that mentions these APIs as text.
@@ -352,6 +379,12 @@ def check_manifest(html: str, result: ValidationResult):
             "" if agree else
             f"spec_version={spec_version!r} but source.spec_received parses to {received_ver!r}. "
             f"These should match — likely cargo-culted from an old example block.")
+    else:
+        result.add(
+            "spec_version agrees with source.spec_received",
+            "pass",
+            "source.spec_received not declared; cross-check not applicable.",
+        )
 
     # external_dependencies must be false
     ext_dep = manifest.get("privacy", {}).get("external_dependencies")
@@ -384,6 +417,27 @@ def check_data(html: str, result: ValidationResult):
         return None
     result.add("Data section parseable", True)
     return data
+
+
+def check_profile_overlay(manifest: dict, result: ValidationResult):
+    if manifest is None:
+        return
+    profile = manifest.get("profile")
+    if profile is None:
+        result.add(
+            "Capsule profile is valid",
+            "pass",
+            "No profile declared; treating as unprofiled legacy Capsule.",
+        )
+        return
+    if not isinstance(profile, str):
+        result.add("Capsule profile is valid", "fail", f"profile must be a string, got {type(profile).__name__}")
+        return
+    result.add(
+        "Capsule profile is valid",
+        profile in VALID_CAPSULE_PROFILES,
+        "" if profile in VALID_CAPSULE_PROFILES else f"Got {profile!r}; valid: {sorted(VALID_CAPSULE_PROFILES)}",
+    )
 
 
 def _strip_data_blocks(html: str) -> str:
@@ -542,6 +596,10 @@ def check_capability_truthfulness(manifest: dict, html: str, result: ValidationR
     unsupported = []
     unimplemented = []
     for cap in capabilities:
+        if not isinstance(cap, str):
+            continue
+        if cap in RESTRICTED_CAPABILITIES or cap in PROHIBITED_CAPABILITIES:
+            continue
         # Dotted-namespace capabilities (e.g., 'media.play_audio',
         # 'map.zoom_to_layer') are domain-specific by convention (Core v0.1.4
         # rule 7). The validator can't be expected to have markers for every
@@ -581,6 +639,65 @@ def check_capability_truthfulness(manifest: dict, html: str, result: ValidationR
                    f"Unrecognized capabilities (validator does not know markers for): {', '.join(unsupported)}. "
                    f"Domain capabilities should follow the '<domain>.<action>' naming convention so the validator can skip them gracefully (Core v0.1.4 rule 7).",
                    heuristic=True)
+
+
+def check_capability_classes(manifest: dict, result: ValidationResult):
+    if manifest is None:
+        return
+    capabilities = manifest.get("capabilities", [])
+    if not isinstance(capabilities, list):
+        result.add("Capability names are valid/classes known", "fail", "capabilities must be an array")
+        return
+
+    invalid = []
+    prohibited = []
+    restricted = []
+    unknown_bare = []
+    extensions = []
+
+    for cap in capabilities:
+        if not isinstance(cap, str):
+            invalid.append(f"{cap!r} is {type(cap).__name__}, expected string")
+            continue
+        if not CAPABILITY_NAME_FORMAT.match(cap):
+            invalid.append(cap)
+            continue
+        if cap in PROHIBITED_CAPABILITIES:
+            prohibited.append(cap)
+        elif cap in RESTRICTED_CAPABILITIES:
+            restricted.append(cap)
+        elif cap in CORE_CAPABILITIES:
+            continue
+        elif "." in cap or cap.startswith("x-"):
+            extensions.append(cap)
+        else:
+            unknown_bare.append(cap)
+
+    details = []
+    if prohibited:
+        details.append("Prohibited in Capsules: " + ", ".join(sorted(prohibited)))
+    if invalid:
+        details.append("Invalid capability names: " + ", ".join(sorted(invalid)))
+    if restricted:
+        details.append("Restricted declarations (not permissions; host/reader may deny): " + ", ".join(sorted(restricted)))
+    if unknown_bare:
+        details.append("Unknown bare capabilities should be core names or namespaced extensions: " + ", ".join(sorted(unknown_bare)))
+    if extensions and not (prohibited or invalid or restricted or unknown_bare):
+        details.append("Namespaced extension capabilities: " + ", ".join(sorted(extensions)))
+
+    if prohibited or invalid:
+        level = "fail"
+    elif restricted or unknown_bare:
+        level = "warn"
+    else:
+        level = "pass"
+
+    result.add(
+        "Capability names are valid/classes known",
+        level,
+        "; ".join(details),
+        heuristic=bool(restricted or unknown_bare or extensions),
+    )
 
 
 HASH_FORMAT = re.compile(r'^(sha256|sha384|sha512):[a-f0-9]+$')
@@ -718,9 +835,8 @@ _TAG_RE = re.compile(r"<[^>]+>")
 _WHITESPACE_RE = re.compile(r"\s+")
 
 
-def _capsule_root_text(html: str) -> str:
-    """Return the visible text inside <main id="capsule-root">, with
-    <script> and <style> blocks removed."""
+def _capsule_root_inner(html: str) -> str:
+    """Return inner HTML for <main id="capsule-root">."""
     # Find the capsule-root opening tag and matching close
     m = re.search(r'<main[^>]+id=["\']capsule-root["\'][^>]*>', html, re.IGNORECASE)
     if not m:
@@ -740,19 +856,25 @@ def _capsule_root_text(html: str) -> str:
         if is_close:
             depth -= 1
             if depth == 0:
-                inner = rest[: i - nxt.end() + nxt.start()]
-                # Strip <script>...</script> and <style>...</style>
-                inner = re.sub(r"<script\b[^>]*>.*?</script>", "",
-                               inner, flags=re.IGNORECASE | re.DOTALL)
-                inner = re.sub(r"<style\b[^>]*>.*?</style>", "",
-                               inner, flags=re.IGNORECASE | re.DOTALL)
-                # Strip remaining tags, collapse whitespace
-                text = _TAG_RE.sub(" ", inner)
-                text = _WHITESPACE_RE.sub(" ", text).strip()
-                return text
+                return rest[: i - nxt.end() + nxt.start()]
         else:
             depth += 1
     return ""
+
+
+def _capsule_root_text(html: str) -> str:
+    """Return the visible text inside <main id="capsule-root">, with
+    <script> and <style> blocks removed."""
+    inner = _capsule_root_inner(html)
+    if not inner:
+        return ""
+    inner = re.sub(r"<script\b[^>]*>.*?</script>", "",
+                   inner, flags=re.IGNORECASE | re.DOTALL)
+    inner = re.sub(r"<style\b[^>]*>.*?</style>", "",
+                   inner, flags=re.IGNORECASE | re.DOTALL)
+    text = _TAG_RE.sub(" ", inner)
+    text = _WHITESPACE_RE.sub(" ", text).strip()
+    return text
 
 
 PROGRESSIVE_ENHANCEMENT_MIN_TEXT = 200  # chars; below this, warn
@@ -790,17 +912,46 @@ def check_progressive_enhancement(manifest: dict, html: str, result: ValidationR
         )
         return
 
+    root_inner = _capsule_root_inner(html)
     text = _capsule_root_text(html)
     n = len(text)
-    ok = n >= PROGRESSIVE_ENHANCEMENT_MIN_TEXT
+    has_heading = bool(re.search(r"<h[1-6]\b", root_inner, re.IGNORECASE))
+    key_markup_count = sum(
+        1 for pattern in (
+            r"<section\b",
+            r"<article\b",
+            r"<table\b",
+            r"<ul\b",
+            r"<ol\b",
+            r"<dl\b",
+            r"<figure\b",
+            r"<img\b",
+            r"<audio\b",
+            r"<video\b",
+            r"<details\b",
+        )
+        if re.search(pattern, root_inner, re.IGNORECASE)
+    )
+    ok = n >= PROGRESSIVE_ENHANCEMENT_MIN_TEXT and (has_heading or key_markup_count > 0)
     if ok:
-        detail = f"{n} chars of visible text in <main id=\"capsule-root\">"
+        markers = []
+        if has_heading:
+            markers.append("heading")
+        if key_markup_count:
+            markers.append(f"{key_markup_count} structural/media marker(s)")
+        detail = f"{n} chars of visible text in <main id=\"capsule-root\">; " + ", ".join(markers)
     else:
+        missing = []
+        if n < PROGRESSIVE_ENHANCEMENT_MIN_TEXT:
+            missing.append(f"visible text below {PROGRESSIVE_ENHANCEMENT_MIN_TEXT} chars")
+        if not has_heading and key_markup_count == 0:
+            missing.append("no heading, structural section, table/list, or media/fallback marker detected")
         detail = (
-            f"Only {n} chars of visible text in <main id=\"capsule-root\"> — "
-            f"this capsule likely relies on runtime JavaScript to render its "
-            f"content. Per Core rule 12, capsules should pre-render "
-            f"their content in the HTML so they remain readable in "
+            f"{n} chars of visible text in <main id=\"capsule-root\">; "
+            f"{'; '.join(missing)}. This capsule may rely on runtime JavaScript "
+            f"to render its primary meaning. Per Core rule 12, capsules should "
+            f"pre-render title/summary/key sections or equivalent fallback content "
+            f"in the HTML so they remain readable in "
             f"environments that don't run inline scripts (iOS Files / "
             f"QuickLook, email previews, screen readers, search indexers, "
             f"archive viewers). Use runtime JS for enhancement (export "
@@ -826,8 +977,10 @@ def validate(path: Path, strict: bool = False) -> ValidationResult:
     check_no_external_references(html, result)
     manifest = check_manifest(html, result)
     data = check_data(html, result)
+    check_profile_overlay(manifest, result)
     check_integrity_hash(manifest, data, html, result, html_source_path=str(path))
     check_field_formats(manifest, result)
+    check_capability_classes(manifest, result)
     check_capability_truthfulness(manifest, html, result)
     check_runtime_js_string_literals(html, result)
     check_progressive_enhancement(manifest, html, result)

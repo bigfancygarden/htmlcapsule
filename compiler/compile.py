@@ -249,6 +249,7 @@ def build_manifest(source: dict, template_config: dict, record_count: int) -> di
         "title": source["title"],
         "description": source["description"],
         "type": template_config.get("capsule_type") or template_config.get("artifact_type"),
+        "profile": template_config.get("profile", "interactive"),
         "created_at": created_at,
         "generator": {
             "name": COMPILER_NAME,

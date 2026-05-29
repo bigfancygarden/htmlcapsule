@@ -2,7 +2,7 @@
 
 > An open specification, reference implementation, and example corpus for the htmlcapsule family: Capsule, a profile of HTML for sealed, self-contained, provenance-bearing snapshots of work worth preserving, and Bundle, the sibling format for manifested multi-file artifacts.
 
-HTML Capsule addresses the gap between AI tools producing HTML artifacts by default (LLM canvases, agent outputs, design-tool exports like Claude Design) and the lack of discipline around making those artifacts durable, inspectable, and shareable beyond the platform that produced them. Capsule is one sealed `.html` file with five required inline blocks (manifest, data, style, root, runtime), twelve normative rules, and no network dependencies. Bundle is a manifested directory/zip for heavy or multi-viewer artifacts that do not fit Capsule's single-file boundary. Producers include LLMs given the Core spec, deterministic compilers, and humans — multi-producer interop is the load-bearing claim.
+HTML Capsule addresses the gap between AI tools producing HTML artifacts by default (LLM canvases, agent outputs, design-tool exports like Claude Design) and the lack of discipline around making those artifacts durable, inspectable, and shareable beyond the platform that produced them. Capsule is one sealed `.html` file with five required inline blocks (manifest, data, style, root, runtime), twelve normative rules, optional profile overlays (`static`, `interactive`, `data`), and no network dependencies. Bundle is a manifested directory/zip for heavy or multi-viewer artifacts that do not fit Capsule's single-file boundary. Producers include LLMs given the Core spec, deterministic compilers, and humans — multi-producer interop is the load-bearing claim.
 
 This project is research-led with an empirical-pressure-driven spec discipline: rules emerge from observed production failures across multiple producer kinds, recorded as numbered F-findings in the research log. The format itself is hosting-agnostic; hosts (MinDev, htmlbin.dev) compose with the format optionally.
 
@@ -28,9 +28,9 @@ This project is research-led with an empirical-pressure-driven spec discipline: 
 
 ## Implementation
 
-- [Reference Python compiler + validators](https://github.com/bigfancygarden/htmlcapsule/tree/main/compiler): Stdlib-only (no pip deps). Capsule compiler renders JSON+templates to capsules; Capsule validator runs 26 conformance checks and supports both local files and URLs (URL mode cross-checks any `x-capsule-*` host-attestation headers). Bundle validator checks directory or zip manifests, file hashes, entry files, and local/external references.
+- [Reference Python compiler + validators](https://github.com/bigfancygarden/htmlcapsule/tree/main/compiler): Stdlib-only (no pip deps). Capsule compiler renders JSON+templates to capsules; Capsule validator runs 28 conformance checks and supports both local files and URLs (URL mode cross-checks any `x-capsule-*` host-attestation headers). Bundle validator checks directory or zip manifests, file hashes, entry files, and local/external references.
 - [Compiler templates](https://github.com/bigfancygarden/htmlcapsule/tree/main/templates): `decision_board`, `news_capsule`.
-- [Worked examples](https://github.com/bigfancygarden/htmlcapsule/tree/main/spec/examples): Canonical example capsules — `briefing_example.html`, `implementation_notes_example.html`. Each validates at 26/26 strict against the reference validator.
+- [Worked examples](https://github.com/bigfancygarden/htmlcapsule/tree/main/spec/examples): Canonical example capsules — `briefing_example.html`, `implementation_notes_example.html`. Each validates cleanly against the reference validator.
 - [GitHub repository](https://github.com/bigfancygarden/htmlcapsule): Source of truth. Apache 2.0 licensed.
 
 ## Project trajectory

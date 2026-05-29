@@ -65,6 +65,11 @@
       "type": "string",
       "description": "Free-form artifact type. Recommended values: interactive_report, decision_board, assessment, reference, dashboard, learning_object, collection, form, narrative, summary, briefing, custom. LLMs producing capsules in the wild often reach for 'summary' or 'briefing' which are now recommended values."
     },
+    "profile": {
+      "type": "string",
+      "enum": ["static", "interactive", "data"],
+      "description": "Optional validation overlay for how the fixed five-block envelope is used. Profiles do not make any required block optional."
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -224,11 +229,11 @@
       "minItems": 2,
       "items": {
         "type": "string",
-        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)?$",
-        "description": "Either a core capability (e.g., 'about', 'copy_as_json') or a domain-namespaced capability following '<domain>.<action>' (e.g., 'media.play_audio', 'map.zoom_to_layer'). Core capabilities reserved by the spec: filter, sort, search, annotate, highlight, rank, group, compare, copy_as_json, copy_as_markdown, copy_as_csv, copy_as_prompt, download_json, download_csv, print_to_pdf, export_response, about. Domain capabilities are open under the dotted naming convention."
+        "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+        "description": "Core capability, restricted declaration, or namespaced extension. Capabilities are declarations, not permissions. network.request is prohibited by the Capsule validator because Capsules have no network dependency."
       },
       "contains": { "const": "about" },
-      "description": "Must include 'about' and at least one export capability. Core capabilities are reserved single words; domain capabilities use '<domain>.<action>' namespacing."
+      "description": "Must include 'about' and at least one export capability. Core capabilities are controlled names; restricted declarations are host-denied unless explicitly allowed; extension capabilities use x-* or dotted/reverse-DNS namespacing."
     },
     "expires_at": {
       "type": ["string", "null"],
