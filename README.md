@@ -14,7 +14,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 
-**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.8**, Bundle spec at **v0.1.0** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator at 28 checks, including profile overlay and capability-class checks; initial Bundle validator at 11 checks. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
+**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.8**, Bundle spec at **v0.1.1** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator at 28 checks, including profile overlay and capability-class checks; initial Bundle validator at 12 checks, including `bundle_profile` recognition. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
 
 ## Start here
 
@@ -126,7 +126,7 @@ See [`CITATION.cff`](CITATION.cff). GitHub auto-detects this file and renders a 
 
 | Phase | Name | State |
 |---|---|---|
-| 1 | Format | Exists (Capsule Core v0.3.0, full Capsule spec v0.3.8; Bundle spec v0.1.0) |
+| 1 | Format | Exists (Capsule Core v0.3.0, full Capsule spec v0.3.8; Bundle spec v0.1.1) |
 | 2 | Compiler / validators | Half-built — Capsule compiler + validator (local file mode + URL mode), initial Bundle validator + schema + minimal fixture. First independent Capsule compiler-kind producer (Mintel) shipped + validated (F20) |
 | 3 | Domain capsules | Partial — `domain.implementation_notes`, `domain.design_system`, `domain.exploration_map`, `domain.briefing` documented. `domain.music_stems` in the Idea queue |
 | 4 | Network layer | Not built; possibly never. Capsule registry, lineage graph, importers all deferred. Trust-log primitive sketched in Appendix E.6 but not built. |

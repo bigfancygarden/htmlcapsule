@@ -8,6 +8,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
+### Added — Bundle profiles
+
+- **`bundle_profile`** — Bundle v0.1.1 now documents a recommended manifest field for the top-level file-set pattern: `viewer`, `data_package`, `multi_entry`, or `project_archive`. This is deliberately separate from Capsule `profile`: Capsule profile describes one sealed HTML envelope; Bundle profile describes what kind of manifested file set the Bundle contains.
+- **Bundle profile adoption plan** — v0.1.1 establishes the vocabulary and validator recognition, keeps existing v0.1.0 Bundles valid, and defers profile-specific heuristics until real producers need them.
+
+### Changed — Bundle tooling
+
+- **`compiler/validate_bundle.py`** — recognizes Bundle v0.1.1, validates declared `bundle_profile` values, and warns when `bundle_profile` is missing.
+- **`spec/bundle.schema.json` and `spec/examples/minimal_bundle/`** — schema title and minimal fixture updated for Bundle v0.1.1; the fixture now declares `bundle_profile: "viewer"`.
+
 ### Added — Capsule profiles and capability classes
 
 - **Capsule profiles** — `profile` is now documented as an optional manifest validation overlay (`static`, `interactive`, `data`) while the five required blocks remain fixed for every Capsule.

@@ -1,4 +1,4 @@
-# Bundle Spec v0.1.0
+# Bundle Spec v0.1.1
 
 **Sibling format to Capsule.** A Bundle is a portable, self-describing archive of related files — viewers, data, and assets — designed to be shared, hosted, or stored as a single unit when a single sealed HTML file is not the right shape for the artifact.
 
@@ -63,7 +63,7 @@ A Bundle entry viewer may itself be a valid Capsule, but it does not become one 
 
 | Field | Type | Description |
 |---|---|---|
-| `bundle_version` | string | Spec version. Currently `"0.1.0"` |
+| `bundle_version` | string | Spec version. Currently `"0.1.1"` |
 | `uuid` | string | UUID v4, minted by the author at seal time |
 | `title` | string | Human-readable title |
 | `entry` | string | Relative path to the primary entry HTML. Must point inside the bundle and appear in `files[]` |
@@ -79,11 +79,35 @@ A Bundle entry viewer may itself be a valid Capsule, but it does not become one 
 | `sealed_at` | string | ISO 8601 timestamp of when hashes were computed |
 | `created_by` | object | Author identification (flexible shape) |
 | `domain` | string | Subject domain (e.g. `"building_investigation"`, `"design_system"`) |
+| `bundle_profile` | string | Top-level shape of the manifested file set. Recommended values: `viewer`, `data_package`, `multi_entry`, `project_archive` |
 | `entries` | object | Additional entry points beyond the primary one |
 | `integrity` | object | Hash algorithm and scope declaration |
 | `external_dependencies` | array | CDN libraries or other runtime network deps |
 | `parents` | array | UUIDs of parent Capsules or Bundles this was forked or derived from |
 | `derived_from` | array | Non-Capsule / non-Bundle sources (same shape as Capsule's `derived_from[]`; see CAPSULE_SPEC.md §11.2) |
+
+### 2.2.1 Bundle profiles
+
+Capsule uses `profile` to describe how one fixed HTML envelope is used. Bundle uses `bundle_profile` to describe the shape of the manifested file set. The field answers a different question: *what kind of project-shaped object is this?*
+
+`bundle_profile` is recommended, not required, in Bundle v0.1.1. If absent, consumers should treat the object as an unprofiled legacy Bundle and apply the base rules.
+
+Initial values:
+
+| Value | Meaning | Typical shape |
+|---|---|---|
+| `viewer` | The primary experience is an HTML viewer over inventoried local files. | One `entry` HTML file, local data/assets in `files[]`, optional declared external libraries |
+| `data_package` | The primary artifact is the manifest-described dataset/file set; the viewer is explanatory or optional. | Data-first inventory with `role: "data"` / domain roles; entry page summarizes the package |
+| `multi_entry` | The Bundle has multiple meaningful entry points. | Primary `entry` plus named `entries` for alternate viewers, reports, or modes |
+| `project_archive` | The Bundle preserves a bounded working/output folder with provenance. | Source assets, plans, scripts, generated outputs, and one or more viewers/reports |
+
+Do not use `bundle_profile` as a substitute for `domain`. `domain` says what subject area the Bundle is about; `bundle_profile` says what container pattern the Bundle uses. Do not use it as an interactivity tier either. Whether a viewer is mostly static or highly interactive is an implementation detail inside the entry HTML; the Bundle-level profile is about the file set.
+
+#### Adoption plan
+
+1. v0.1.1 establishes `bundle_profile` as recommended manifest vocabulary and adds validator recognition.
+2. Existing v0.1.0 Bundles remain valid; missing `bundle_profile` is a warning, not a failure.
+3. Profile-specific heuristics should stay conservative until real producers need them. For now, the validator checks only that a declared profile is one of the known values.
 
 ### 2.3 File inventory
 
@@ -132,7 +156,7 @@ Recommended shape:
 ]
 ```
 
-String entries are also accepted in v0.1.0 for simple manifests:
+String entries are also accepted for simple manifests:
 
 ```json
 "external_dependencies": [
@@ -148,7 +172,7 @@ If the entry viewer fetches the artifact's primary evidence or source data from 
 
 ```json
 {
-  "bundle_version": "0.1.0",
+  "bundle_version": "0.1.1",
   "uuid": "4c64bd22-9573-4b47-9a6f-9f7a685e86a1",
   "title": "Example Investigation Bundle",
   "revision": "1.0.0",
@@ -160,6 +184,7 @@ If the entry viewer fetches the artifact's primary evidence or source data from 
     "kind": "human"
   },
   "domain": "example",
+  "bundle_profile": "viewer",
   "entry": "viewer/index.html",
   "files": [
     {
@@ -393,6 +418,6 @@ Both follow the same shape. Future producers and hosts can be added to either fa
 
 ---
 
-*This spec is v0.1.0. It will evolve as real bundles get shared and hosted. The goal is to stay minimal: a manifest, file hashes, and an entry point. Everything else is convention.*
+*This spec is v0.1.1. It will evolve as real bundles get shared and hosted. The goal is to stay minimal: a manifest, file hashes, profile vocabulary, and an entry point. Everything else is convention.*
 
 *Bundle joined the htmlcapsule family in project v0.4.0 (2026-05-24). See [F31 in RESEARCH.md](../RESEARCH.md) for the empirical pressure and trajectory that produced it.*

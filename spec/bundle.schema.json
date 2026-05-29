@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://htmlcapsule.org/spec/bundle.schema.json",
-  "title": "Bundle Manifest v0.1.0",
+  "title": "Bundle Manifest v0.1.1",
   "description": "Schema for manifest.json at the root of a Bundle.",
   "type": "object",
   "required": ["bundle_version", "uuid", "title", "entry", "files"],
@@ -42,6 +42,11 @@
     },
     "domain": {
       "type": "string"
+    },
+    "bundle_profile": {
+      "type": "string",
+      "enum": ["viewer", "data_package", "multi_entry", "project_archive"],
+      "description": "Top-level shape of the manifested file set. Recommended in Bundle v0.1.1."
     },
     "entry": {
       "type": "string",

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Bundle Validator v0.1.0
+Bundle Validator v0.1.1
 
-Validates a Bundle directory or zip archive against spec/BUNDLE_SPEC.md v0.1.0.
+Validates a Bundle directory or zip archive against spec/BUNDLE_SPEC.md v0.1.x.
 
 Usage:
   validate_bundle.py <bundle_dir_or_zip> [--quiet]
@@ -29,7 +29,8 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 
-BUNDLE_VERSION_KNOWN = {"0.1.0"}
+BUNDLE_VERSION_KNOWN = {"0.1.0", "0.1.1"}
+BUNDLE_PROFILE_KNOWN = {"viewer", "data_package", "multi_entry", "project_archive"}
 SHA256_FORMAT = re.compile(r"^sha256:[a-f0-9]{64}$")
 UUID_FORMAT = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
@@ -195,6 +196,22 @@ def check_manifest_shape(manifest: dict | None, result: ValidationResult):
     uuid_value = manifest.get("uuid")
     result.add("uuid is valid UUIDv4", isinstance(uuid_value, str) and bool(UUID_FORMAT.match(uuid_value)),
                "" if isinstance(uuid_value, str) and UUID_FORMAT.match(uuid_value) else f"Got {uuid_value!r}")
+
+    bundle_profile = manifest.get("bundle_profile")
+    if bundle_profile is None:
+        result.add(
+            "bundle_profile is declared and recognized",
+            "warn",
+            f"Missing bundle_profile; recommended values: {sorted(BUNDLE_PROFILE_KNOWN)}",
+        )
+    elif isinstance(bundle_profile, str) and bundle_profile in BUNDLE_PROFILE_KNOWN:
+        result.add("bundle_profile is declared and recognized", True, bundle_profile)
+    else:
+        result.add(
+            "bundle_profile is declared and recognized",
+            False,
+            f"Got {bundle_profile!r}; known: {sorted(BUNDLE_PROFILE_KNOWN)}",
+        )
 
 
 def listed_files(manifest: dict | None):

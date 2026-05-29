@@ -1,5 +1,5 @@
 {
-  "bundle_version": "0.1.0",
+  "bundle_version": "0.1.1",
   "uuid": "4c64bd22-9573-4b47-9a6f-9f7a685e86a1",
   "title": "Minimal Bundle Example",
   "description": "A tiny public Bundle fixture with one HTML viewer, one stylesheet, and one JSON data file.",
@@ -10,6 +10,7 @@
     "kind": "human"
   },
   "domain": "example",
+  "bundle_profile": "viewer",
   "entry": "viewer/index.html",
   "files": [
     {
