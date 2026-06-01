@@ -16,6 +16,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 - **Adaptive Presentation Capsule pattern** — optional named producer pattern for one Capsule with `reader`, `mobile`, `reel`, and `slides` presentations derived from the same canonical content model. This adds guidance, not a new required rule or schema field. The spec now recommends adaptive sets for deterministic compilers, hybrid producer flows, or manually reviewed capsules; LLM-only producers should not attempt them unless explicitly asked and able to follow the exact declaration shape.
 - **Presentation fixtures** — added valid fixtures for reader-only, reader + print-letter, reader + slides, reader + mobile, reader + interactive-with-pre-rendered-root, and adaptive presentation; added invalid fixtures for runtime-only required reader, missing required entry, unknown bare profile, duplicate presentation ids, and legacy `name`/`selector` presentation shape.
 - **Reference presentation renderers** — documented `demos/presentation-surfaces/stories.html` and `slides.html` as informative skeletons for compiler/host defaults. These are examples for renderer ergonomics, not byte-for-byte conformance requirements.
+- **Presentation study** — added `design/PRESENTATION_STUDY.md` to focus the project around the 2x2 desktop/mobile x scroll/one-screen model and the proposed `sections -> cards -> renderers` source structure for compiler-generated views.
+- **Presentation identity rules** — clarified that multiple presentations generated together belong inside one Capsule UUID, while post-hoc compiled/enhanced packages should mint a new UUID with provenance back to the source.
+- **Asset deduplication guidance** — documented that multi-view Capsules should share heavy media through stable embedded asset ids; presentation count alone is not a Bundle trigger.
 
 ### Changed — Capsule validation/docs
 

@@ -24,6 +24,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 - **For working examples:** [`examples/`](examples/) (JSON inputs for the compiler) and [`spec/examples/`](spec/examples/) (canonical example capsules).
 - **For domain schemas:** [`spec/DOMAIN_CAPSULES.md`](spec/DOMAIN_CAPSULES.md) — `implementation_notes`, `design_system`, `exploration_map`.
 - **For the research narrative:** [RESEARCH.md](RESEARCH.md) — what we're investigating, findings F1–F31, open questions, methodology.
+- **For presentation research:** [`design/PRESENTATION_STUDY.md`](design/PRESENTATION_STUDY.md) — the 2x2 desktop/mobile x scroll/one-screen model and the proposed section/card source structure for compiler-generated views.
 - **For the glossary:** [`GLOSSARY.md`](GLOSSARY.md).
 - **For positioning vs. related work:** [`PRECEDENTS.md`](PRECEDENTS.md).
 

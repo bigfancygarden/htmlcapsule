@@ -17,6 +17,7 @@ Claude Design then redid the proposal in the modern-sans direction. That second 
 |---|---|
 | `proposal.html` | **canonical** — modern-sans direction, all Geist (300→800), cool fog paper, five semantic hues mapped to section kinds |
 | `proposal-v1-editorial.html` | **rejected** — editorial-archival direction, preserved for record |
+| `PRESENTATION_STUDY.md` | **active study** — 2x2 desktop/mobile x scroll/one-screen presentation model and the section/card source structure for compiler-generated views |
 
 ## The system
 
@@ -113,6 +114,7 @@ Capsules must follow Core rule 2 (no network dependencies). To use this design s
 - `proposal.html` — **canonical** design memo from Claude Design with mockups of all four target pages. Contains the design's CSS in context. Uses Google Fonts directly — *not Capsule-compliant on its own*; this is a design tool output, not a Capsule.
 - `proposal-v1-editorial.html` — **rejected** first version (editorial-archival direction). Preserved for record.
 - `tokens.css` — extracted CSS variables for copy-paste into Capsule `<style>` blocks. System-font fallback only; no network calls; Capsule-compliant.
+- `PRESENTATION_STUDY.md` — active study of how one reader-first Capsule can compile into desktop/mobile scroll and one-screen presentation surfaces.
 - `README.md` — this file.
 
 ## Provenance

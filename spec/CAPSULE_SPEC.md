@@ -855,6 +855,7 @@ Recommended card fields:
 | `title` | yes | Short human-readable heading for the screen, slide, or print block. |
 | `body` | yes | Short readable text derived from the canonical content. |
 | `source_sections` | recommended | Array of section ids from `capsule-root` / `capsule-data` that this card condenses. |
+| `asset_refs` | no | Array of stable ids for shared embedded assets used by the card. |
 | `media_ref` | no | Reference to an embedded local media item already present in the Capsule data or HTML. |
 | `duration_ms` | no | Suggested timing for sequence/reel renderers. Hosts may override for accessibility or policy. |
 | `action` | no | Suggested terminal action, e.g. `restart`, `open_reader`, `export`, or a namespaced extension. |
@@ -865,6 +866,15 @@ surface MAY use runtime behavior for timing, pause/resume, tap/swipe navigation,
 or replay, but the Capsule must still expose its primary meaning in
 `capsule-root` without JavaScript. The card model is source material for derived
 views, not a substitute for the readable document layer.
+
+Multi-view Capsules SHOULD share heavy substance rather than duplicating it per
+presentation. Images, audio, video, and other meaningful media should live once
+as embedded assets with stable ids, media types, alt text, and optional
+provenance/hash metadata. Presentations can then render those assets differently:
+semantic figures in the reader, backgrounds or figures in slides, and card
+visuals in reels. Presentation count alone is not a reason to use Bundle; Bundle
+is for artifacts whose substance or file-set shape exceeds the single-file
+Capsule boundary.
 
 #### 3.2.6 Reference presentation renderers
 
@@ -1347,7 +1357,36 @@ Both use [Semantic Versioning](https://semver.org/):
 | Same capsule, UI redesign        | New     | Major bump       |
 | Forked from another capsule      | New     | `1.0.0`          |
 
-Every compilation produces a new UUID. The `capsule_version` tracks evolution of a logical capsule. (Prior to v0.3, the optional `capsule_id` slug was the logical-capsule identifier across versions; it is now deprecated. Logical-capsule identity is left to the consumer — typically `title` + the producer's filing system.)
+Every sealed output package gets its own UUID. If a compiler generates reader,
+mobile, slides, reel, or print presentations together as part of one export, they
+belong to that one Capsule UUID because they are views of the same sealed
+package. If a tool later compiles an already-sealed Capsule into a new enhanced
+Capsule, the result is a new sealed package and SHOULD mint a new UUID with
+provenance pointing back to the source.
+
+The `capsule_version` tracks evolution of a logical capsule. (Prior to v0.3, the optional `capsule_id` slug was the logical-capsule identifier across versions; it is now deprecated. Logical-capsule identity is left to the consumer — typically `title` + the producer's filing system.)
+
+### 8.2.1 Presentation Identity
+
+A presentation is a view over the same declared substance, not a separate
+artifact identity. Use one Capsule UUID when multiple presentations are packaged
+together and share the same `capsule-data`, source sections, assets, and
+provenance.
+
+Mint a new Capsule UUID when presentation work creates a new sealed package:
+post-hoc compilation in a vault/workshop, a public deck derived from a longer
+private report, a reel that introduces new editorial claims, or any output whose
+generator/trust story differs from the source artifact. Link that output back to
+the source using `parents[]` when the source is a Capsule, or `derived_from[]`
+when the source is a non-Capsule artifact or file set.
+
+The practical distinction:
+
+```text
+same package, many views      -> one Capsule UUID
+new package from old package  -> new Capsule UUID + provenance
+multi-file project            -> Bundle UUID
+```
 
 ### 8.3 Staleness Indicator
 
