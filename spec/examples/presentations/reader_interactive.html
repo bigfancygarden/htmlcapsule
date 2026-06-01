@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reader And Interactive Fixture</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "55555555-5555-4555-8555-555555555555",
+  "title": "Reader And Interactive Fixture",
+  "description": "Valid fixture declaring an interactive presentation while keeping a useful pre-rendered root.",
+  "type": "interactive_report",
+  "profile": "interactive",
+  "presentations": [
+    {"id": "reader", "profile": "reader", "entry": "#capsule-root", "required": true},
+    {"id": "interactive", "profile": "interactive", "entry": "#capsule-interactive"}
+  ],
+  "created_at": "2026-06-01T00:00:00Z",
+  "generator": {"name": "presentation-fixture", "version": "1.0.0", "kind": "human"},
+  "source": {"origin": "spec_example", "snapshot_type": "fixture", "snapshot_id": "snapshot:presentation_reader_interactive", "included_records": 3, "spec_received": "v0.3.0 - 2026-05-19"},
+  "privacy": {"visibility": "public", "contains_private_data": false, "redaction_applied": false, "external_dependencies": false},
+  "capabilities": ["about", "copy_as_json", "filter"]
+}</script>
+<script id="capsule-data" type="application/json">{"fixture":"reader_interactive","items":[{"name":"Alpha","status":"open"},{"name":"Beta","status":"closed"},{"name":"Gamma","status":"open"}]}</script>
+<style id="capsule-style">body{font-family:system-ui,sans-serif;margin:2rem;line-height:1.5}.panel{border:1px solid #ddd;padding:1rem;margin-top:1rem}</style>
+</head>
+<body>
+<main id="capsule-root">
+  <h1>Reader And Interactive Fixture</h1>
+  <section>
+    <h2>Pre-rendered Meaning</h2>
+    <p>This interactive capsule is still understandable with JavaScript disabled. The reader can see the item count, the purpose of the filter panel, and representative records before any runtime code runs.</p>
+    <ul><li>Alpha: open</li><li>Beta: closed</li><li>Gamma: open</li></ul>
+  </section>
+  <section id="capsule-interactive" class="panel">
+    <h2>Interactive Filter</h2>
+    <label for="filter-select">Status</label>
+    <select id="filter-select" data-capsule-action="filter"><option>all</option><option>open</option><option>closed</option></select>
+    <p>The runtime may filter this list, but the same records are visible above as static HTML.</p>
+  </section>
+  <details id="about"><summary>About</summary><pre id="manifest-view"></pre></details>
+  <button data-capsule-action="copy_as_json">Copy JSON</button>
+</main>
+<script id="capsule-runtime">const filterSelect = document.getElementById("filter-select"); if (filterSelect) filterSelect.addEventListener("change", function () {});</script>
+</body>
+</html>

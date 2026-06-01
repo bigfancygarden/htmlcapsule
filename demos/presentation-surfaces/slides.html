@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desktop Slides Surface Demo</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #151923;
+    --muted: #5b6472;
+    --paper: #fbfcfd;
+    --panel: #ffffff;
+    --line: #d8e0e8;
+    --teal: #08786f;
+    --rose: #c64b5f;
+    --gold: #efb847;
+    --blue: #dcecf8;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #202532;
+    color: var(--ink);
+  }
+
+  .stage {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .topbar,
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: #e7ebf2;
+    font-size: 0.92rem;
+  }
+
+  .topbar strong {
+    color: #ffffff;
+    font-weight: 750;
+  }
+
+  .deck {
+    position: relative;
+    width: min(92vw, calc((100vh - 8rem) * 16 / 9));
+    aspect-ratio: 16 / 9;
+    align-self: center;
+    justify-self: center;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 0.72fr;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    padding: clamp(2rem, 5vw, 5rem);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ffffff 0%, #eef8f5 58%, #f9efd8 100%);
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateX(2rem) scale(0.98);
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+    overflow: hidden;
+  }
+
+  .slide.is-active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .slide::before {
+    content: "";
+    position: absolute;
+    width: 28%;
+    aspect-ratio: 1;
+    right: 7%;
+    bottom: 10%;
+    border-radius: 999px;
+    background: rgba(8, 120, 111, 0.12);
+  }
+
+  .slide::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 34%;
+    height: 36%;
+    background: var(--blue);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  }
+
+  .copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  .kicker {
+    margin: 0 0 0.75rem;
+    font-size: clamp(0.72rem, 1.1vw, 0.9rem);
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--teal);
+    font-weight: 850;
+  }
+
+  h1,
+  h2 {
+    margin: 0;
+    max-width: 11ch;
+    font-size: clamp(3rem, 7vw, 6.75rem);
+    line-height: 0.95;
+    letter-spacing: 0;
+  }
+
+  p {
+    max-width: 34rem;
+    margin: 1.25rem 0 0;
+    color: #303846;
+    font-size: clamp(1.05rem, 1.8vw, 1.55rem);
+    line-height: 1.35;
+  }
+
+  .visual {
+    position: relative;
+    z-index: 1;
+    align-self: stretch;
+    display: grid;
+    align-content: center;
+    min-width: 0;
+  }
+
+  .stat-card {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(21, 25, 35, 0.12);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: 4.8rem 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    font-weight: 700;
+    color: #343d4c;
+  }
+
+  .bar {
+    height: 1rem;
+    border-radius: 999px;
+    background: #d9e1ea;
+    overflow: hidden;
+  }
+
+  .bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--rose);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  button {
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .dots {
+    display: flex;
+    gap: 0.45rem;
+  }
+
+  .dot {
+    width: 2.2rem;
+    height: 0.32rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.28);
+    padding: 0;
+  }
+
+  .dot.is-active {
+    background: var(--gold);
+  }
+
+  .footer-note {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  @media (max-width: 760px) {
+    body {
+      overflow: auto;
+    }
+
+    .stage {
+      min-height: auto;
+    }
+
+    .deck {
+      width: 100%;
+      aspect-ratio: auto;
+      min-height: 72vh;
+    }
+
+    .slide {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      min-height: 72vh;
+      padding: 2rem;
+    }
+
+    h1,
+    h2 {
+      font-size: 3.6rem;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <header class="topbar">
+    <span><strong>Desktop slide surface</strong> / dummy content</span>
+    <span id="counter">1 / 5</span>
+  </header>
+
+  <main class="deck" aria-live="polite">
+    <section class="slide is-active" data-title="Start">
+      <div class="copy">
+        <div>
+          <p class="kicker">Slide 01</p>
+          <h1>Start with one claim</h1>
+          <p>The deck surface should feel like a real presentation, not a document with cards stacked inside it.</p>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="stat-card">
+          <div class="stat-row"><span>Signal</span><div class="bar"><span style="width:82%"></span></div></div>
+          <div class="stat-row"><span>Noise</span><div class="bar"><span style="width:28%;background:var(--gold)"></span></div></div>
+          <div class="stat-row"><span>Focus</span><div class="bar"><span style="width:94%;background:var(--teal)"></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Shape">
+      <div class="copy">
+        <div>
+          <p class="kicker">Slide 02</p>
+          <h2>Use a true frame</h2>
+          <p>A desktop deck wants a single 16:9 canvas, large type, and one visible idea at a time.</p>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="stat-card">
+          <div class="stat-row"><span>Canvas</span><div class="bar"><span style="width:100%;background:var(--teal)"></span></div></div>
+          <div class="stat-row"><span>Text</span><div class="bar"><span style="width:58%"></span></div></div>
+          <div class="stat-row"><span>Clutter</span><div class="bar"><span style="width:18%;background:var(--gold)"></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Source">
+      <div class="copy">
+        <div>
+          <p class="kicker">Slide 03</p>
+          <h2>Same content model</h2>
+          <p>Each slide can be derived from canonical sections, so the presentation stays tied to the readable document.</p>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="stat-card">
+          <div class="stat-row"><span>Root</span><div class="bar"><span style="width:90%;background:var(--teal)"></span></div></div>
+          <div class="stat-row"><span>Slide</span><div class="bar"><span style="width:64%"></span></div></div>
+          <div class="stat-row"><span>Trace</span><div class="bar"><span style="width:86%;background:var(--gold)"></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Host">
+      <div class="copy">
+        <div>
+          <p class="kicker">Slide 04</p>
+          <h2>Let Vault own the chrome</h2>
+          <p>The artifact provides the sequence. Vault can provide full-screen controls, inspector context, and custody state.</p>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="stat-card">
+          <div class="stat-row"><span>View</span><div class="bar"><span style="width:75%"></span></div></div>
+          <div class="stat-row"><span>Trust</span><div class="bar"><span style="width:88%;background:var(--teal)"></span></div></div>
+          <div class="stat-row"><span>Tools</span><div class="bar"><span style="width:68%;background:var(--gold)"></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Finish">
+      <div class="copy">
+        <div>
+          <p class="kicker">Slide 05</p>
+          <h2>Compile the view</h2>
+          <p>For LLM content, this is probably a compiler target: clean, consistent, and generated from structured source.</p>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="stat-card">
+          <div class="stat-row"><span>LLM</span><div class="bar"><span style="width:54%;background:var(--gold)"></span></div></div>
+          <div class="stat-row"><span>Model</span><div class="bar"><span style="width:78%"></span></div></div>
+          <div class="stat-row"><span>Deck</span><div class="bar"><span style="width:96%;background:var(--teal)"></span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="controls">
+    <div class="nav">
+      <button type="button" id="prev" aria-label="Previous slide">‹</button>
+      <button type="button" id="next" aria-label="Next slide">›</button>
+    </div>
+    <div class="dots" aria-label="Slide navigation"></div>
+    <span class="footer-note">Use arrow keys</span>
+  </footer>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const dots = document.querySelector(".dots");
+  const counter = document.getElementById("counter");
+  let index = 0;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement("button");
+    dot.className = "dot";
+    dot.type = "button";
+    dot.setAttribute("aria-label", `Go to slide ${i + 1}`);
+    dot.addEventListener("click", () => show(i));
+    dots.appendChild(dot);
+  });
+
+  function show(nextIndex) {
+    index = (nextIndex + slides.length) % slides.length;
+    slides.forEach((slide, i) => slide.classList.toggle("is-active", i === index));
+    Array.from(dots.children).forEach((dot, i) => dot.classList.toggle("is-active", i === index));
+    counter.textContent = `${index + 1} / ${slides.length}`;
+  }
+
+  document.getElementById("prev").addEventListener("click", () => show(index - 1));
+  document.getElementById("next").addEventListener("click", () => show(index + 1));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") show(index - 1);
+    if (event.key === "ArrowRight" || event.key === " ") show(index + 1);
+  });
+  show(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Slides Capsule</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "51ef36a9-7965-4b18-8db7-55215a27f6b1",
+  "title": "Demo Slides Capsule",
+  "description": "Dummy Capsule showing a declared desktop slides presentation with readable root content.",
+  "type": "briefing",
+  "profile": "static",
+  "presentations": [
+    {"id": "reader", "profile": "reader", "entry": "#capsule-root", "navigation": "scroll", "required": true},
+    {"id": "desktop_slides", "profile": "slides", "entry": "#capsule-slides", "navigation": "paged", "required": true}
+  ],
+  "created_at": "2026-06-01T00:00:00Z",
+  "generator": {"name": "demo-presentation-fixture", "version": "1.0.0", "kind": "human"},
+  "source": {"origin": "spec_example", "snapshot_type": "fixture", "snapshot_id": "snapshot:demo_slides_capsule", "included_records": 4, "spec_received": "v0.3.0 - 2026-05-19"},
+  "privacy": {"visibility": "public", "contains_private_data": false, "redaction_applied": false, "external_dependencies": false},
+  "capabilities": ["about", "copy_as_json"]
+}</script>
+<script id="capsule-data" type="application/json">{
+  "content_model": [
+    {"id": "setup", "title": "Set up the idea", "body": "Capsules can declare a slide presentation without making slides the only readable content."},
+    {"id": "shape", "title": "Keep a slide shape", "body": "The slide surface uses a stable 16:9 frame and paged navigation semantics."},
+    {"id": "meaning", "title": "Preserve meaning", "body": "The reader layer keeps the primary meaning available without JavaScript."},
+    {"id": "handoff", "title": "Let hosts choose", "body": "Vault or another host can offer this view because it is declared in the manifest."}
+  ]
+}</script>
+<style id="capsule-style">
+  :root{color-scheme:light;--ink:#1a1f2b;--muted:#5b6472;--line:#d6dde6;--paper:#ffffff;--accent:#0f7b6c;--gold:#f0b83e;--sky:#d9edf7}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#f5f7fa;line-height:1.55}
+  main{max-width:72rem;margin:0 auto;padding:2rem 1rem 3rem}
+  header{margin-bottom:1.25rem}
+  h1{font-size:clamp(2rem,4vw,3.8rem);line-height:1.02;margin:.25rem 0 .75rem;letter-spacing:0}
+  h2{font-size:1.15rem;margin:0 0 .5rem}
+  p{margin:.4rem 0;color:var(--muted)}
+  .summary{max-width:52rem;font-size:1.05rem}
+  .reader-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;margin:1.25rem 0 2rem}
+  .reader-grid article{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:1rem;min-height:9rem}
+  .deck-shell{background:#202532;padding:1rem;border-radius:8px}
+  .deck-meta{display:flex;justify-content:space-between;gap:1rem;margin:0 0 .75rem;color:#d8dde8;font-size:.9rem}
+  #capsule-slides{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.5rem}
+  .slide{position:relative;flex:0 0 min(100%,58rem);aspect-ratio:16/9;scroll-snap-align:start;background:linear-gradient(135deg,#ffffff 0%,#eef8f5 55%,#f8f0db 100%);border-radius:8px;padding:clamp(1.25rem,4vw,3.25rem);display:grid;grid-template-rows:auto 1fr auto;box-shadow:0 1rem 3rem rgba(0,0,0,.25);overflow:hidden}
+  .slide::after{content:"";position:absolute;right:0;bottom:0;width:30%;height:34%;background:var(--sky);clip-path:polygon(100% 0,100% 100%,0 100%);opacity:.8}
+  .slide-kicker{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700}
+  .slide h3{font-size:clamp(2rem,6vw,4.2rem);line-height:1;margin:.35rem 0 1rem;letter-spacing:0;max-width:13ch}
+  .slide p{font-size:clamp(1.05rem,2vw,1.45rem);color:#303846;max-width:34rem}
+  .slide footer{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;font-size:.86rem;color:#566070}
+  .dot{width:2.2rem;height:.35rem;border-radius:99px;background:var(--gold);display:inline-block}
+  details{margin-top:1.5rem}
+  pre{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:1rem;overflow:auto}
+  @media (max-width:52rem){
+    main{padding:1.25rem .75rem 2rem}
+    .reader-grid{grid-template-columns:1fr}
+    .deck-shell{border-radius:0;margin-inline:-.75rem}
+    .slide{flex-basis:calc(100vw - 1.5rem)}
+  }
+</style>
+</head>
+<body>
+<main id="capsule-root">
+  <header>
+    <p class="slide-kicker">Dummy presentation capsule</p>
+    <h1>One Capsule, Declared Slides</h1>
+    <p class="summary">This demo keeps the primary meaning in the reader layer and also declares a paged desktop slide presentation at <code>#capsule-slides</code>. The slide deck is not inferred from layout; it is advertised by the manifest.</p>
+  </header>
+  <section class="reader-grid" aria-label="Readable summary">
+    <article data-source-section="setup"><h2>Set up the idea</h2><p>Capsules can declare a slide presentation without making slides the only readable content.</p></article>
+    <article data-source-section="shape"><h2>Keep a slide shape</h2><p>The slide surface uses a stable 16:9 frame and paged navigation semantics.</p></article>
+    <article data-source-section="meaning"><h2>Preserve meaning</h2><p>The reader layer keeps the primary meaning available without JavaScript.</p></article>
+    <article data-source-section="handoff"><h2>Let hosts choose</h2><p>Vault or another host can offer this view because it is declared in the manifest.</p></article>
+  </section>
+  <section class="deck-shell" aria-label="Desktop slides presentation">
+    <div class="deck-meta"><span>Desktop slides</span><span>Scroll horizontally</span></div>
+    <div id="capsule-slides">
+      <article class="slide" data-source-section="setup">
+        <div>
+          <span class="slide-kicker">Slide 01</span>
+          <h3>Declare the surface</h3>
+          <p>The manifest says this Capsule owns a <strong>slides</strong> presentation, so a host can expose it as a deck.</p>
+        </div>
+        <footer><span class="dot"></span><span>1 / 4</span></footer>
+      </article>
+      <article class="slide" data-source-section="shape">
+        <div>
+          <span class="slide-kicker">Slide 02</span>
+          <h3>Use a stable frame</h3>
+          <p>The deck has a 16:9 reading surface and paged navigation semantics, even when rendered as ordinary HTML.</p>
+        </div>
+        <footer><span class="dot"></span><span>2 / 4</span></footer>
+      </article>
+      <article class="slide" data-source-section="meaning">
+        <div>
+          <span class="slide-kicker">Slide 03</span>
+          <h3>Keep the root useful</h3>
+          <p>The same core claims are visible above in normal document form, with JavaScript disabled.</p>
+        </div>
+        <footer><span class="dot"></span><span>3 / 4</span></footer>
+      </article>
+      <article class="slide" data-source-section="handoff">
+        <div>
+          <span class="slide-kicker">Slide 04</span>
+          <h3>Let Vault present it</h3>
+          <p>The Capsule declares the view; Vault decides whether and how to show the slide-mode control.</p>
+        </div>
+        <footer><span class="dot"></span><span>4 / 4</span></footer>
+      </article>
+    </div>
+  </section>
+  <button data-capsule-action="copy_as_json" hidden>Copy JSON</button>
+  <details id="about"><summary>About this Capsule</summary><pre>Static demo fixture. No network, no external dependencies, no runtime required.</pre></details>
+</main>
+<script id="capsule-runtime"></script>
+</body>
+</html>

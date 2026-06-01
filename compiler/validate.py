@@ -73,6 +73,15 @@ REQUIRED_INTEGRITY_FIELDS = {"content_hash", "hash_scope"}
 REQUIRED_GENERATOR_FIELDS = {"name", "version", "kind"}
 VALID_GENERATOR_KINDS = {"compiler", "llm", "human", "hybrid"}
 VALID_CAPSULE_PROFILES = {"static", "interactive", "data"}
+VALID_PRESENTATION_PROFILES = {
+    "reader",
+    "mobile",
+    "print-letter",
+    "slides",
+    "reel",
+    "interactive",
+}
+VALID_PRESENTATION_NAVIGATION = {"scroll", "paged", "step", "sequence"}
 
 # Heuristic markers for capability implementation.
 # Each capability declared must have at least one matching marker in the runtime.
@@ -148,6 +157,8 @@ PROHIBITED_CAPABILITIES = {
     "network.request",
 }
 CAPABILITY_NAME_FORMAT = re.compile(r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$")
+PRESENTATION_ID_FORMAT = re.compile(r"^[a-z][a-z0-9_-]*$")
+PRESENTATION_ENTRY_FORMAT = re.compile(r"^#[A-Za-z][A-Za-z0-9_.:-]*$")
 
 # Patterns split by where they're meaningful — scope-aware to avoid false
 # positives on rendered documentation that mentions these APIs as text.
@@ -967,6 +978,136 @@ def check_progressive_enhancement(manifest: dict, html: str, result: ValidationR
     )
 
 
+def _html_id_exists(html: str, element_id: str) -> bool:
+    pattern = r'\bid\s*=\s*(["\'])' + re.escape(element_id) + r'\1'
+    return re.search(pattern, html, re.IGNORECASE) is not None
+
+
+def _is_extension_name(name: str) -> bool:
+    return name.startswith("x-") or "." in name
+
+
+def check_presentations(manifest: dict, html: str, result: ValidationResult):
+    if manifest is None:
+        return
+
+    presentations = manifest.get("presentations")
+    if presentations is None:
+        result.add(
+            "Presentation declarations are valid/resolvable",
+            "pass",
+            "No presentations declared; consumers must not infer capsule-owned views from layout.",
+        )
+        return
+
+    if not isinstance(presentations, list):
+        result.add(
+            "Presentation declarations are valid/resolvable",
+            "fail",
+            f"presentations must be an array, got {type(presentations).__name__}",
+        )
+        return
+
+    failures = []
+    warnings = []
+    seen_ids = set()
+
+    for i, presentation in enumerate(presentations):
+        label = f"presentations[{i}]"
+        if not isinstance(presentation, dict):
+            failures.append(f"{label} must be an object, got {type(presentation).__name__}")
+            continue
+
+        presentation_id = presentation.get("id")
+        profile = presentation.get("profile")
+        entry = presentation.get("entry")
+        required = presentation.get("required", False)
+
+        if "required" in presentation and not isinstance(required, bool):
+            failures.append(f"{label}.required must be boolean when present")
+            required = False
+
+        if not isinstance(presentation_id, str) or not PRESENTATION_ID_FORMAT.match(presentation_id):
+            failures.append(f"{label}.id is required and must match {PRESENTATION_ID_FORMAT.pattern}")
+        elif presentation_id in seen_ids:
+            failures.append(f"{label}.id duplicates {presentation_id!r}")
+        else:
+            seen_ids.add(presentation_id)
+
+        if not isinstance(profile, str) or not CAPABILITY_NAME_FORMAT.match(profile):
+            failures.append(f"{label}.profile is required and must be a valid name")
+        elif profile not in VALID_PRESENTATION_PROFILES and not _is_extension_name(profile):
+            message = (
+                f"{label}.profile={profile!r} is not a core profile and is not namespaced; "
+                f"core profiles: {sorted(VALID_PRESENTATION_PROFILES)}"
+            )
+            if required:
+                failures.append(message)
+            else:
+                warnings.append(message)
+
+        if not isinstance(entry, str) or not PRESENTATION_ENTRY_FORMAT.match(entry):
+            failures.append(f"{label}.entry is required and must be a fragment selector like #capsule-root")
+        else:
+            target_id = entry[1:]
+            if not _html_id_exists(html, target_id):
+                message = f"{label}.entry={entry!r} does not resolve to an element id in this Capsule"
+                if required:
+                    failures.append(message)
+                else:
+                    warnings.append(message)
+            elif required and profile == "reader" and entry == "#capsule-root":
+                text_len = len(_capsule_root_text(html))
+                if text_len < PROGRESSIVE_ENHANCEMENT_MIN_TEXT:
+                    failures.append(
+                        f"{label} is required reader view but capsule-root has only {text_len} "
+                        f"chars of visible text; primary meaning must be readable without JavaScript"
+                    )
+
+        media = presentation.get("media")
+        if media is not None and not isinstance(media, str):
+            failures.append(f"{label}.media must be a string when present")
+
+        navigation = presentation.get("navigation")
+        if navigation is not None:
+            if not isinstance(navigation, str):
+                failures.append(f"{label}.navigation must be a string when present")
+            elif navigation not in VALID_PRESENTATION_NAVIGATION:
+                message = (
+                    f"{label}.navigation={navigation!r} is not recognized; "
+                    f"known values: {sorted(VALID_PRESENTATION_NAVIGATION)}"
+                )
+                if required:
+                    failures.append(message)
+                else:
+                    warnings.append(message)
+
+        for text_field in ("title", "description"):
+            value = presentation.get(text_field)
+            if value is not None and not isinstance(value, str):
+                failures.append(f"{label}.{text_field} must be a string when present")
+
+    if failures:
+        result.add(
+            "Presentation declarations are valid/resolvable",
+            "fail",
+            "; ".join(failures + warnings),
+        )
+    elif warnings:
+        result.add(
+            "Presentation declarations are valid/resolvable",
+            "warn",
+            "; ".join(warnings),
+            heuristic=True,
+        )
+    else:
+        result.add(
+            "Presentation declarations are valid/resolvable",
+            "pass",
+            f"{len(presentations)} declared presentation(s); entries resolve.",
+        )
+
+
 def validate(path: Path, strict: bool = False) -> ValidationResult:
     result = ValidationResult()
     html = path.read_text(encoding="utf-8")
@@ -984,6 +1125,7 @@ def validate(path: Path, strict: bool = False) -> ValidationResult:
     check_capability_truthfulness(manifest, html, result)
     check_runtime_js_string_literals(html, result)
     check_progressive_enhancement(manifest, html, result)
+    check_presentations(manifest, html, result)
     check_file_size(file_size, result)
 
     return result

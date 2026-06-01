@@ -70,6 +70,53 @@
       "enum": ["static", "interactive", "data"],
       "description": "Optional validation overlay for how the fixed five-block envelope is used. Profiles do not make any required block optional."
     },
+    "presentations": {
+      "type": "array",
+      "description": "Declared capsule-owned presentation views. Hosts may surface these views, but should not infer undeclared views from layout or styling. Capsule presentation entries are fragment selectors that resolve to element ids inside the same HTML file.",
+      "items": {
+        "type": "object",
+        "required": ["id", "profile", "entry"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]*$",
+            "description": "Unique stable id for this declared presentation."
+          },
+          "profile": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "description": "Core presentation profile (reader, mobile, print-letter, slides, reel, interactive) or namespaced extension such as x-domain.view or org.example.view."
+          },
+          "entry": {
+            "type": "string",
+            "pattern": "^#[A-Za-z][A-Za-z0-9_.:-]*$",
+            "description": "Fragment selector resolving to an element id in this Capsule. Relative file paths belong to Bundle, not single-file Capsule."
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether this presentation is part of the capsule's required contract. Broken required presentations fail validation."
+          },
+          "media": {
+            "type": "string",
+            "description": "Optional media context, e.g. print."
+          },
+          "navigation": {
+            "type": "string",
+            "enum": ["scroll", "paged", "step", "sequence"],
+            "description": "Optional navigation model for this presentation."
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"

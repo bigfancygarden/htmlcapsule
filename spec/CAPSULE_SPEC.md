@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.8 (Core currently v0.3.0)
+# Capsule Spec v0.3.9 (Core currently v0.3.0)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -11,6 +11,8 @@
 > **v0.3.1 changes (2026-05-19).** Doc-only patch. No schema or validator changes. Tightened §9.1.1 into a normative "Content Hash Recipe" with a verifiable test vector — `sha256:3dcff3f89736e2554b3f077dbff063f5400c682d470ffa5125fa4bdd3c652ef8` for the documented minimal manifest+data, so a new compiler can confirm its implementation by re-derivation. Added an "Inspecting a served capsule" preamble flagging that Chrome's Save Page As → MHTML destroys the capsule contract. Cross-reference added from §3.2 Integrity to §9.1.1.
 
 > **v0.3.2 changes (2026-05-19).** Added the `download_capsule` standard capability — an in-capsule button that DOM-serializes the document and triggers a `.html` download, giving recipients a clean export path that doesn't rely on Chrome's broken Save Page As flow. New §5.2.1 spells out the implementation pattern (no network, rule-2 clean) and the one subtle caveat: browsers normalize HTML during DOM serialization, so capsules declaring `download_capsule` SHOULD pair it with `hash_scope: "data+manifest"` or `"data_only"` rather than `"full_document"`. Validator capability marker updated.
+
+> **v0.3.9 changes (2026-06-01).** Added optional `presentations[]` manifest declarations for capsule-owned views (`reader`, `mobile`, `print-letter`, `slides`, `reel`, `interactive`). Presentation declarations are separate from Capsule `profile` overlays and from app-owned custody views such as Safe Preview or Source. The validator checks declaration shape and fragment-entry resolution. Rule 12 is restated here as the normative guardrail: runtime code may enhance, filter, search, transform, export, or visualize, but must not be the only path by which a reader can understand the capsule's primary meaning.
 
 ## 1. Overview
 
@@ -560,6 +562,7 @@ The manifest is the machine-readable contract. It answers: what is this, who is 
 | `description`      | string   | yes      | One-paragraph summary of the capsule's purpose.                    |
 | `type`             | string   | yes      | Capsule type. Recommended values in Section 3.3; free-form string allowed for cases the canonical types don't cover (e.g., LLMs naturally reach for `"summary"` or `"briefing"`). |
 | `profile`          | string   | no       | Validation overlay for how the fixed five-block envelope is used. Recommended values: `"static"`, `"interactive"`, `"data"`. See §3.2.2. |
+| `presentations`    | array    | no       | Capsule-owned presentation views declared by the artifact, not inferred by hosts. See §3.2.3. |
 | `created_at`       | string   | yes      | ISO 8601 timestamp.                                                 |
 | `generator`        | object   | yes      | What produced the HTML. See *Generator* table below.                |
 | `synthesis`        | object   | no       | Present when an LLM or other process *synthesized the data* (extraction, summarization). See *Synthesis* table below. Null or omitted means the data came directly from a structured source. |
@@ -680,6 +683,188 @@ Recommended manifest field:
 If `profile` is absent, consumers should treat the capsule as an unprofiled legacy Capsule and apply the base rules. New producers SHOULD declare a profile because it gives validators, hosts, search tools, and UIs cleaner vocabulary without weakening the envelope.
 
 Profiles are not sibling formats. Bundle remains the sibling multi-file container for artifacts that exceed the single-file Capsule boundary.
+
+#### 3.2.3 Presentation declarations (added v0.3.9)
+
+Capsules may declare their own presentation views in an optional `presentations[]` manifest field. These are **views the capsule owns**: reader layout, print layout, slides, mobile layout, an interactive surface, and so on. Hosts and custody apps may also offer app-owned views such as Safe Preview, Source, Inspector, Quarantine, or Graph; those are not capsule presentations and must not be mixed into this field.
+
+The rule is declarations over inference: a consumer SHOULD surface a capsule-owned presentation only when the manifest declares it. A host MUST NOT infer "this has slides" or "this has a mobile view" from visual vibes, CSS class names, viewport breakpoints, or layout structure alone.
+
+Producer default: if a producer, including an LLM, is simply asked to "make a Capsule according to this spec," it SHOULD build one canonical readable content layer first and either omit `presentations[]` or declare a single required `reader` presentation pointing at `#capsule-root`. Additional presentations are opt-in: declare `mobile`, `print-letter`, `slides`, `reel`, or `interactive` only when the corresponding entry exists and carries a real alternate view derived from the same content layer. Do not declare `desktop`; the `reader` presentation is the normal browser/desktop view. LLM producers SHOULD prioritize validity, readability, and provenance over multi-view polish.
+
+Example:
+
+```json
+{
+  "presentations": [
+    {
+      "id": "reader",
+      "profile": "reader",
+      "entry": "#capsule-root",
+      "required": true
+    },
+    {
+      "id": "letter",
+      "profile": "print-letter",
+      "media": "print",
+      "entry": "#capsule-print"
+    },
+    {
+      "id": "slides",
+      "profile": "slides",
+      "entry": "#capsule-slides",
+      "navigation": "paged"
+    }
+  ]
+}
+```
+
+**Field shape per entry:**
+
+| Field | Required | Meaning |
+|---|---:|---|
+| `id` | yes | Stable lowercase id unique within the capsule's presentation list. Pattern: `^[a-z][a-z0-9_-]*$`. |
+| `profile` | yes | Presentation profile. Core values are listed below; extensions use `x-*` or reverse-DNS/dotted names. |
+| `entry` | yes | Fragment selector resolving to an element id in the same Capsule, e.g. `#capsule-root` or `#capsule-slides`. |
+| `required` | no | Boolean. Default `false`. Broken required presentations fail validation; broken optional presentations should be clearly reported. |
+| `media` | no | Optional media context, e.g. `"print"`. |
+| `navigation` | no | Optional navigation model: `"scroll"`, `"paged"`, `"step"`, or `"sequence"`. |
+| `title` / `description` | no | Human-readable labels for inspector UIs. |
+
+**Core presentation profiles:**
+
+| Profile | Meaning |
+|---|---|
+| `reader` | The canonical reading view. Usually `#capsule-root`; SHOULD expose title, summary, key sections, and human-readable fallback content. |
+| `mobile` | A capsule-owned mobile-optimized view derived from the same content layer, not a separate artifact. Responsive CSS alone does not require a mobile presentation declaration. |
+| `print-letter` | A print-oriented letter-page view, usually paired with `media: "print"`. |
+| `slides` | A paged or stepped slide presentation view. |
+| `reel` | A short sequence/timeline/story view for review surfaces. |
+| `interactive` | An enhanced interactive view. It must build on pre-rendered content, not replace it as the only meaningful path. |
+
+Extension profiles are allowed when namespaced: `x-domain.deck`, `x-mining.map`, `org.example.review_board`. Unknown bare names such as `desktop` or `dashboard` are suspect because generic validators cannot tell whether they are proposed core names, typos, or private conventions. `desktop` is intentionally not a core presentation profile.
+
+For single-file Capsules, `entry` is a fragment selector only. Relative paths, multiple HTML entry files, and file inventories belong to the sibling Bundle format, not to `presentations[]`.
+
+**Runtime-as-enhancement rule.** A conforming Capsule MUST expose its primary meaning in `capsule-root` without JavaScript. Runtime code MAY enhance, transform, filter, search, copy, export, or visualize that meaning. Runtime code MUST NOT be the only path by which a reader can understand the artifact's primary content. In testable terms, `capsule-root` SHOULD contain title, summary, key sections, and human-readable fallback content; `capsule-data` MAY contain richer structured data; and `capsule-runtime` MAY hydrate enhanced views from that data.
+
+#### 3.2.4 Adaptive Presentation Capsule pattern
+
+An **Adaptive Presentation Capsule** is an optional producer pattern for a "unicorn" document: one UUID, one sealed HTML file, one canonical content layer, and multiple declared surfaces for different reading contexts. It is still a normal Capsule. It does not change the five-block envelope, does not make Bundle unnecessary for multi-file artifacts, and does not make alternate views mandatory for ordinary capsules.
+
+The default remains reader-only. Use this pattern when the user explicitly asks for a document that should work as a desktop reader, mobile reader, mobile story/reel, and desktop slide deck.
+
+**Producer fit.** Adaptive presentation sets are recommended for deterministic compilers, hybrid producer flows, or manually reviewed capsules. LLM-only producers SHOULD NOT attempt an adaptive presentation set unless the user explicitly asks for it and the producer can follow the exact `presentations[]` declaration shape below. A valid reader-only Capsule is preferable to an invalid adaptive Capsule.
+
+Recommended declaration:
+
+```json
+{
+  "presentations": [
+    {
+      "id": "reader",
+      "profile": "reader",
+      "entry": "#capsule-root",
+      "navigation": "scroll",
+      "required": true
+    },
+    {
+      "id": "mobile",
+      "profile": "mobile",
+      "entry": "#capsule-mobile",
+      "navigation": "scroll"
+    },
+    {
+      "id": "mobile_story",
+      "profile": "reel",
+      "entry": "#capsule-reel",
+      "navigation": "sequence"
+    },
+    {
+      "id": "desktop_slides",
+      "profile": "slides",
+      "entry": "#capsule-slides",
+      "navigation": "paged"
+    }
+  ]
+}
+```
+
+**Producer guidance:**
+
+- Build the canonical content model first, preferably with stable section ids in `capsule-data` (`summary`, `bottom_line`, `timeline`, `evidence`, `open_questions`, etc.).
+- Render `#capsule-root` as the required readable document layer. It must stand alone when JavaScript is off.
+- Derive alternate presentations from the same content sections. Do not introduce facts in mobile, reel, slides, or print views that are absent from `capsule-data` or the reader layer.
+- Use `profile: "mobile"` for compact mobile scrolling, `profile: "reel"` for phone/story-style one-screen-at-a-time sequences, and `profile: "slides"` for desktop/paged deck views.
+- Prefer source traceability on generated screens or slides, e.g. `data-source-section="bottom_line"`, so consumers can relate condensed views back to canonical sections.
+- Do not declare `desktop`; use `reader` for the normal desktop/browser reading view and `slides` for a desktop deck.
+
+#### 3.2.5 Presentation model source shape
+
+For compiler and hybrid producer flows, Capsules MAY include an optional
+`presentation_model` object in `capsule-data`. This is not required for ordinary
+reader-first Capsules, and validators should not require it. It is a recommended
+source shape for deterministic presentation compilers that generate `slides`,
+`reel`, `mobile`, or `print-letter` views from one canonical content layer.
+
+The goal is to let LLMs and humans provide the semantic beats while compilers
+provide the exact presentation mechanics. A producer should not ask an LLM to
+hand-author polished story timers, swipe thresholds, print pagination, or deck
+navigation when a deterministic compiler can generate those surfaces from stable
+cards.
+
+Recommended shape:
+
+```json
+{
+  "presentation_model": {
+    "cards": [
+      {
+        "id": "cover",
+        "role": "cover",
+        "title": "Example Briefing",
+        "body": "A short opening frame for the presentation.",
+        "source_sections": ["summary"]
+      },
+      {
+        "id": "point_1",
+        "role": "story",
+        "title": "One idea",
+        "body": "One condensed idea suitable for a single story screen or slide.",
+        "source_sections": ["section_1"]
+      },
+      {
+        "id": "end",
+        "role": "end",
+        "title": "End",
+        "body": "Closing frame or next action.",
+        "action": "restart",
+        "source_sections": ["summary"]
+      }
+    ]
+  }
+}
+```
+
+Recommended card fields:
+
+| Field | Required | Meaning |
+|---|---:|---|
+| `id` | yes | Stable lowercase card id unique within `presentation_model.cards[]`. |
+| `role` | no | Recommended values: `cover`, `story`, `section`, `quote`, `data`, `image`, `end`. |
+| `title` | yes | Short human-readable heading for the screen, slide, or print block. |
+| `body` | yes | Short readable text derived from the canonical content. |
+| `source_sections` | recommended | Array of section ids from `capsule-root` / `capsule-data` that this card condenses. |
+| `media_ref` | no | Reference to an embedded local media item already present in the Capsule data or HTML. |
+| `duration_ms` | no | Suggested timing for sequence/reel renderers. Hosts may override for accessibility or policy. |
+| `action` | no | Suggested terminal action, e.g. `restart`, `open_reader`, `export`, or a namespaced extension. |
+
+For a `reel` presentation, a compiler SHOULD treat `cards[]` as a sequence:
+cover card, one or more story cards, and an optional end card. The generated
+surface MAY use runtime behavior for timing, pause/resume, tap/swipe navigation,
+or replay, but the Capsule must still expose its primary meaning in
+`capsule-root` without JavaScript. The card model is source material for derived
+views, not a substitute for the readable document layer.
 
 ### 3.3 Artifact Types
 
@@ -1432,11 +1617,36 @@ When a capsule is built from sources that are **not themselves Capsules** — co
 
 Prior to v0.3 the schema reserved a `related` array for soft associations between capsules (`parent`, `sibling`, `supersedes`, `related`). It was unused in practice and is **deprecated in v0.3**, planned for removal in v0.4. Hard provenance now lives in `parents` (above). Soft associations — "this capsule is thematically similar to that one" — belong in the capsule's prose, not in structured metadata, because schema fields invite producers to fabricate edges that aren't load-bearing. The validator emits an informational note when it encounters a `related` array on a v0.3 capsule; the field still passes validation for v0.2 backward compatibility.
 
-### 11.4 Index Capsule
+### 11.4 Relationship vocabulary and ownership
+
+Graph views and custody apps need relationship vocabulary, but not every useful edge belongs in the Capsule manifest. The manifest should carry relationships that are intrinsic to the artifact's provenance. Local vaults and registries should carry relationships discovered or asserted during custody.
+
+**Manifest-owned now:**
+
+| Term | Field | Ownership |
+|---|---|---|
+| `parent` | `parents[]` | Hard Capsule-to-Capsule lineage: this capsule was forked from, continued from, compared with, or merged from another Capsule the producer actually used. |
+| `derived_from` | `derived_from[]` | Non-Capsule provenance: datasets, documents, chats, screenshots, Bundles, photographs, surveys, and other sources the capsule depends on or references. |
+
+**Vault/registry-owned unless a future spec promotes them:**
+
+| Term | Why local |
+|---|---|
+| `child` | Usually discovered by indexing other capsules that cite this one as a parent; the child edge belongs to the index, not the source capsule. |
+| `sibling` | Often a graph inference from shared parent/source, not a claim the artifact should make about itself. |
+| `reference` | Too broad for core provenance; use prose or `derived_from[]` only when the reference materially informed the artifact. |
+| `same_object` | Custody deduplication / entity-resolution claim; should carry local evidence and may change over time. |
+| `same_source` | Import/capture correlation; useful locally, but often depends on source filenames, URLs, or importer heuristics. |
+| `shared_tag` | Browsing taxonomy, not artifact provenance. |
+| `duplicate` | Local hash/content judgement; registries can compute it. |
+
+**Edge provenance.** Sidecar or registry edges SHOULD record how they were made: `explicit`, `derived`, `imported`, `ai_suggested`, or `user_authored`, plus timestamp/tool metadata where practical. This keeps graph views useful without asking the portable artifact to fabricate knowledge it does not own.
+
+### 11.5 Index Capsule
 
 An index capsule is a capsule of type `collection` whose data records are references to other capsules. It allows a recipient to see all artifacts shared with them in one view.
 
-### 11.5 Registration and the Three Production Paths
+### 11.6 Registration and the Three Production Paths
 
 A capsule is *valid* by virtue of meeting this spec, regardless of what produced it. The registry is a *personal tracking layer*, not a gate. Capsules from any source can be registered:
 
@@ -1497,10 +1707,11 @@ A capsule is **valid** if:
 8. `integrity.content_hash` matches the computed hash of the specified scope (per the protocol in Section 9.1.1)
 9. Every declared capability is a known core capability, a known restricted declaration, or a syntactically valid namespaced extension; prohibited capabilities fail
 10. Every declared capability has a corresponding implementation in the runtime or rendered HTML where the core validator can check it
-11. No external resource references exist in HTML, CSS, or JavaScript
-12. The data section parses as valid JSON
-13. `capsule-root` exposes the capsule's primary meaning without JavaScript (heuristic: visible text, headings, sections, media/table/list/fallback presence)
-14. The file size is under 20 MB (with a soft warning between 15 MB and 20 MB for email-attachment compatibility — see §6.3)
+11. Declared `presentations[]`, when present, use known core profiles or namespaced extension profiles, and their Capsule entries resolve to element ids; broken required presentations fail, while broken optional presentations are clearly reported
+12. No external resource references exist in HTML, CSS, or JavaScript
+13. The data section parses as valid JSON
+14. `capsule-root` exposes the capsule's primary meaning without JavaScript (heuristic: visible text, headings, sections, media/table/list/fallback presence)
+15. The file size is under 20 MB (with a soft warning between 15 MB and 20 MB for email-attachment compatibility — see §6.3)
 
 A validator tool should produce a report listing pass/fail for each check.
 

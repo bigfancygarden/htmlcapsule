@@ -8,6 +8,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
+### Added — Capsule presentation declarations
+
+- **`presentations[]`** — Capsule spec v0.3.9 now documents optional manifest declarations for capsule-owned views. Core profiles are `reader`, `mobile`, `print-letter`, `slides`, `reel`, and `interactive`; extension profiles must be namespaced (`x-*` or reverse-DNS/dotted).
+- **Declarations over inference** — hosts and custody apps should surface capsule-owned views only when declared. App-owned views such as Safe Preview, Source, Inspector, Quarantine, and Graph remain separate from `presentations[]`.
+- **LLM producer default** — the Core and full spec now say that a generic "make me a Capsule according to this spec" prompt should produce the canonical readable layer first, default to `reader`, and prioritize validity/readability/provenance over multi-view polish. `desktop` is intentionally not a presentation profile.
+- **Adaptive Presentation Capsule pattern** — optional named producer pattern for one Capsule with `reader`, `mobile`, `reel`, and `slides` presentations derived from the same canonical content model. This adds guidance, not a new required rule or schema field. The spec now recommends adaptive sets for deterministic compilers, hybrid producer flows, or manually reviewed capsules; LLM-only producers should not attempt them unless explicitly asked and able to follow the exact declaration shape.
+- **Presentation fixtures** — added valid fixtures for reader-only, reader + print-letter, reader + slides, reader + mobile, reader + interactive-with-pre-rendered-root, and adaptive presentation; added invalid fixtures for runtime-only required reader, missing required entry, unknown bare profile, duplicate presentation ids, and legacy `name`/`selector` presentation shape.
+
+### Changed — Capsule validation/docs
+
+- **`compiler/validate.py`** — validates declared presentation shape, id uniqueness, profile vocabulary/namespacing, fragment-entry resolution, and required reader roots that are too sparse to satisfy the no-JavaScript primary-meaning rule.
+- **`spec/manifest.schema.json`** — adds the `presentations[]` manifest field.
+- **`CAPSULE_CORE.md`, `README.md`, `GLOSSARY.md`, and `llms.txt`** — clarify the distinction between Capsule profiles, Capsule presentation declarations, host-owned views, and Bundle as the sibling multi-file container.
+
 ### Added — Bundle profiles
 
 - **`bundle_profile`** — Bundle v0.1.1 now documents a recommended manifest field for the top-level file-set pattern: `viewer`, `data_package`, `multi_entry`, or `project_archive`. This is deliberately separate from Capsule `profile`: Capsule profile describes one sealed HTML envelope; Bundle profile describes what kind of manifested file set the Bundle contains.

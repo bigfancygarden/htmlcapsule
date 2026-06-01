@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Stories Capsule</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "9df4217e-cc9c-4b6a-a5f9-df614c337e4b",
+  "title": "Demo Stories Capsule",
+  "description": "Dummy Capsule showing a declared mobile story/reel presentation with readable root content.",
+  "type": "briefing",
+  "profile": "static",
+  "presentations": [
+    {"id": "reader", "profile": "reader", "entry": "#capsule-root", "navigation": "scroll", "required": true},
+    {"id": "mobile_story", "profile": "reel", "entry": "#capsule-reel", "navigation": "sequence", "required": true}
+  ],
+  "created_at": "2026-06-01T00:00:00Z",
+  "generator": {"name": "demo-presentation-fixture", "version": "1.0.0", "kind": "human"},
+  "source": {"origin": "spec_example", "snapshot_type": "fixture", "snapshot_id": "snapshot:demo_stories_capsule", "included_records": 7, "spec_received": "v0.3.0 - 2026-05-19"},
+  "privacy": {"visibility": "public", "contains_private_data": false, "redaction_applied": false, "external_dependencies": false},
+  "capabilities": ["about", "copy_as_json"]
+}</script>
+<script id="capsule-data" type="application/json">{
+  "content_model": [
+    {"id": "hook", "title": "Start with a hook", "body": "A reel view turns the same content into short sequential screens."},
+    {"id": "one_point", "title": "One point per screen", "body": "Each card should be legible without pinching, hovering, or reading a dense page."},
+    {"id": "same_source", "title": "Same source material", "body": "Story cards should point back to sections in the reader layer."},
+    {"id": "host", "title": "Host controls chrome", "body": "The Capsule provides the sequence; Vault can provide navigation and custody UI."},
+    {"id": "fallback", "title": "Readable fallback", "body": "The root still carries the whole meaning as a normal document."}
+  ],
+  "presentation_model": {
+    "cards": [
+      {"id": "cover", "role": "cover", "title": "One Capsule, Declared Stories", "body": "A native mobile sequence derived from the same readable document.", "source_sections": ["hook"]},
+      {"id": "hook", "role": "story", "title": "Short screens", "body": "A reel presentation is a sequence of compact cards derived from the same content.", "source_sections": ["hook"]},
+      {"id": "one_point", "role": "story", "title": "One beat", "body": "Each screen carries one idea, sized for a phone and quick sequential reading.", "source_sections": ["one_point"]},
+      {"id": "same_source", "role": "story", "title": "Same facts", "body": "The card does not invent a new argument; it traces back to reader content.", "source_sections": ["same_source"]},
+      {"id": "host", "role": "story", "title": "Host chrome", "body": "Vault can wrap this sequence with buttons, gestures, or inspection panels.", "source_sections": ["host"]},
+      {"id": "fallback", "role": "story", "title": "Still a doc", "body": "The readable Capsule root remains the durable source of meaning.", "source_sections": ["fallback"]},
+      {"id": "end", "role": "end", "title": "End", "body": "Replay the story or return to the reader view.", "action": "restart", "source_sections": ["fallback"]}
+    ]
+  }
+}</script>
+<style id="capsule-style">
+  :root{color-scheme:light;--ink:#17191f;--muted:#606977;--line:#dde3ea;--paper:#ffffff;--rose:#c64b5f;--teal:#08786f;--lime:#d8e877;--night:#202230}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f4f6f1;color:var(--ink);line-height:1.55}
+  main{max-width:68rem;margin:0 auto;padding:2rem 1rem 3rem}
+  header{max-width:48rem;margin-bottom:1.4rem}
+  h1{font-size:clamp(2rem,5vw,4rem);line-height:1.02;margin:.3rem 0 .75rem;letter-spacing:0}
+  h2{font-size:1.1rem;margin:0 0 .4rem}
+  p{margin:.35rem 0;color:var(--muted)}
+  .kicker{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:var(--rose)}
+  .reader-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.65rem;margin:1.2rem 0 2rem}
+  .reader-list article{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:.85rem;min-height:8rem}
+  .phone-stage{display:flex;justify-content:center;background:var(--night);padding:1rem;border-radius:8px}
+  #capsule-reel{width:min(100%,25rem);height:min(43.5rem,calc(100vh - 2rem));min-height:36rem;overflow-y:auto;scroll-snap-type:y mandatory;border-radius:2rem;background:#11131a;padding:.75rem;box-shadow:0 1rem 3rem rgba(0,0,0,.35)}
+  .story{position:relative;min-height:100%;scroll-snap-align:start;border-radius:1.35rem;padding:1.1rem;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;background:#fff}
+  .story + .story{margin-top:.75rem}
+  .story:nth-child(1){background:linear-gradient(160deg,#fff,#ffe8ed)}
+  .story:nth-child(2){background:linear-gradient(160deg,#fff,#e0f4ef)}
+  .story:nth-child(3){background:linear-gradient(160deg,#fff,#f3f6d1)}
+  .story:nth-child(4){background:linear-gradient(160deg,#fff,#e9eef8)}
+  .story:nth-child(5){background:linear-gradient(160deg,#fff,#f8eadf)}
+  .bars{display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem;margin-bottom:1rem}
+  .bars span{height:.25rem;border-radius:99px;background:rgba(0,0,0,.18)}
+  .bars span.active{background:var(--ink)}
+  .story h3{font-size:clamp(2.35rem,11vw,4.2rem);line-height:.98;margin:.25rem 0 .75rem;letter-spacing:0;max-width:8ch}
+  .story p{font-size:1.28rem;line-height:1.3;color:#252a35;max-width:16rem}
+  .story-number{align-self:end;display:flex;justify-content:space-between;gap:1rem;align-items:center;font-size:.85rem;color:#4f5866}
+  .pill{display:inline-block;background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.12);border-radius:99px;padding:.35rem .55rem}
+  details{margin-top:1.5rem}
+  pre{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:1rem;overflow:auto}
+  @media (max-width:58rem){
+    main{padding:1.25rem .75rem 2rem}
+    .reader-list{grid-template-columns:1fr}
+    .phone-stage{border-radius:0;margin-inline:-.75rem}
+    #capsule-reel{height:calc(100vh - 2rem);min-height:34rem;border-radius:1.4rem}
+  }
+</style>
+</head>
+<body>
+<main id="capsule-root">
+  <header>
+    <p class="kicker">Dummy story capsule</p>
+    <h1>One Capsule, Declared Stories</h1>
+    <p>This demo keeps a readable root summary and declares a mobile story-style sequence at <code>#capsule-reel</code>. The reel is an alternate presentation of the same material, not a replacement for the document.</p>
+  </header>
+  <section class="reader-list" aria-label="Readable summary">
+    <article data-source-section="hook"><h2>Start with a hook</h2><p>A reel view turns the same content into short sequential screens.</p></article>
+    <article data-source-section="one_point"><h2>One point per screen</h2><p>Each card should be legible without pinching, hovering, or reading a dense page.</p></article>
+    <article data-source-section="same_source"><h2>Same source material</h2><p>Story cards should point back to sections in the reader layer.</p></article>
+    <article data-source-section="host"><h2>Host controls chrome</h2><p>The Capsule provides the sequence; Vault can provide navigation and custody UI.</p></article>
+    <article data-source-section="fallback"><h2>Readable fallback</h2><p>The root still carries the whole meaning as a normal document.</p></article>
+  </section>
+  <section class="phone-stage" aria-label="Mobile story presentation">
+    <div id="capsule-reel">
+      <article class="story" data-source-section="hook">
+        <div><div class="bars"><span class="active"></span><span></span><span></span><span></span><span></span></div><span class="kicker">Story 01</span></div>
+        <div><h3>Short screens</h3><p>A reel presentation is a sequence of compact cards derived from the same content.</p></div>
+        <div class="story-number"><span class="pill">Scroll down</span><span>1 / 5</span></div>
+      </article>
+      <article class="story" data-source-section="one_point">
+        <div><div class="bars"><span class="active"></span><span class="active"></span><span></span><span></span><span></span></div><span class="kicker">Story 02</span></div>
+        <div><h3>One beat</h3><p>Each screen carries one idea, sized for a phone and quick sequential reading.</p></div>
+        <div class="story-number"><span class="pill">Sequence</span><span>2 / 5</span></div>
+      </article>
+      <article class="story" data-source-section="same_source">
+        <div><div class="bars"><span class="active"></span><span class="active"></span><span class="active"></span><span></span><span></span></div><span class="kicker">Story 03</span></div>
+        <div><h3>Same facts</h3><p>The card does not invent a new argument; it traces back to reader content.</p></div>
+        <div class="story-number"><span class="pill">Linked</span><span>3 / 5</span></div>
+      </article>
+      <article class="story" data-source-section="host">
+        <div><div class="bars"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span></span></div><span class="kicker">Story 04</span></div>
+        <div><h3>Host chrome</h3><p>Vault can wrap this sequence with buttons, gestures, or inspection panels.</p></div>
+        <div class="story-number"><span class="pill">Declared</span><span>4 / 5</span></div>
+      </article>
+      <article class="story" data-source-section="fallback">
+        <div><div class="bars"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div><span class="kicker">Story 05</span></div>
+        <div><h3>Still a doc</h3><p>The readable Capsule root remains the durable source of meaning.</p></div>
+        <div class="story-number"><span class="pill">Complete</span><span>5 / 5</span></div>
+      </article>
+    </div>
+  </section>
+  <button data-capsule-action="copy_as_json" hidden>Copy JSON</button>
+  <details id="about"><summary>About this Capsule</summary><pre>Static demo fixture. No network, no external dependencies, no runtime required.</pre></details>
+</main>
+<script id="capsule-runtime"></script>
+</body>
+</html>

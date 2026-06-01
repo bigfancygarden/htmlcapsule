@@ -103,6 +103,10 @@ A capsule with runtime tools — measure, filter, search, annotate, sort, export
 
 A validation overlay declared in the manifest as `profile`, currently `static`, `interactive`, or `data`. Profiles describe how the fixed five-block envelope is used; they do not make any block optional and they do not turn Bundle into a Capsule subtype. `static` means the document layer is the primary experience; `interactive` means runtime tools enhance an already-understandable document layer; `data` means the structured data block is first-class while `capsule-root` still carries a meaningful summary/fallback view.
 
+### Presentation declaration
+
+An optional manifest entry in `presentations[]` that declares a capsule-owned view such as `reader`, `mobile`, `print-letter`, `slides`, `reel`, or `interactive`. Presentation declarations are not Capsule profiles: `profile` answers how the five-block envelope behaves; `presentations[]` answers which artifact-owned views a host may surface. They are also not Vault or host custody views: Safe Preview, Source, Inspector, Quarantine, and Graph remain app-owned. For single-file Capsules, presentation entries are fragment selectors that resolve inside the same HTML file; file paths and multi-entry viewers belong to Bundle.
+
 ---
 
 ## The four layers
@@ -146,7 +150,7 @@ Authoritative source verification performed at capsule-compile time, beyond what
 
 ### Manifest
 
-The required JSON block (`<script id="capsule-manifest">`) carrying identity, provenance, capabilities, profile, and privacy metadata. Required fields per Core v0.3.0: `spec_version`, `capsule_version`, `uuid`, `title`, `description`, `type`, `created_at`, `generator`, `source`, `privacy`, `capabilities`. Optional: `profile` (validation overlay), `parents[]` (provenance — UUIDs of upstream capsules this one was forked from). The v0.1 legacy names `artifact_id` and `artifact_version` are still accepted under v0.2/v0.3 compatibility; `capsule_id` (the slug) was deprecated in v0.3 and is slated for removal in v0.4.
+The required JSON block (`<script id="capsule-manifest">`) carrying identity, provenance, capabilities, profile, declared presentations, and privacy metadata. Required fields per Core v0.3.0: `spec_version`, `capsule_version`, `uuid`, `title`, `description`, `type`, `created_at`, `generator`, `source`, `privacy`, `capabilities`. Optional: `profile` (validation overlay), `presentations[]` (capsule-owned views), `parents[]` (provenance — UUIDs of upstream capsules this one was forked from), and `derived_from[]` (non-Capsule provenance). The v0.1 legacy names `artifact_id` and `artifact_version` are still accepted under v0.2/v0.3 compatibility; `capsule_id` (the slug) was deprecated in v0.3 and is slated for removal in v0.4.
 
 ### Data block
 
@@ -264,4 +268,4 @@ References that have come up in discussion (positioned, not endorsed). Longer wr
 
 ---
 
-*Glossary v0.4.0 · 2026-05-24. Lives alongside [`CAPSULE_CORE.md`](CAPSULE_CORE.md) (currently v0.3.0), [`spec/CAPSULE_SPEC.md`](spec/CAPSULE_SPEC.md) (currently v0.3.8), and [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) (currently v0.1.1 — the sibling format).*
+*Glossary v0.4.0 · 2026-05-24. Lives alongside [`CAPSULE_CORE.md`](CAPSULE_CORE.md) (currently v0.3.0), [`spec/CAPSULE_SPEC.md`](spec/CAPSULE_SPEC.md) (currently v0.3.9), and [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) (currently v0.1.1 — the sibling format).*

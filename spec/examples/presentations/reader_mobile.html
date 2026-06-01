@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reader And Mobile Fixture</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "44444444-4444-4444-8444-444444444444",
+  "title": "Reader And Mobile Fixture",
+  "description": "Valid fixture declaring reader and mobile presentations.",
+  "type": "reference",
+  "profile": "static",
+  "presentations": [
+    {"id": "reader", "profile": "reader", "entry": "#capsule-root", "required": true},
+    {"id": "mobile", "profile": "mobile", "entry": "#capsule-mobile"}
+  ],
+  "created_at": "2026-06-01T00:00:00Z",
+  "generator": {"name": "presentation-fixture", "version": "1.0.0", "kind": "human"},
+  "source": {"origin": "spec_example", "snapshot_type": "fixture", "snapshot_id": "snapshot:presentation_reader_mobile", "included_records": 1, "spec_received": "v0.3.0 - 2026-05-19"},
+  "privacy": {"visibility": "public", "contains_private_data": false, "redaction_applied": false, "external_dependencies": false},
+  "capabilities": ["about", "copy_as_json"]
+}</script>
+<script id="capsule-data" type="application/json">{"fixture":"reader_mobile","presentations":["reader","mobile"]}</script>
+<style id="capsule-style">body{font-family:system-ui,sans-serif;margin:2rem;line-height:1.5}.mobile-view{max-width:24rem;border:1px solid #ddd;padding:1rem}</style>
+</head>
+<body>
+<main id="capsule-root">
+  <h1>Reader And Mobile Fixture</h1>
+  <section>
+    <h2>Reader View</h2>
+    <p>The mobile view is declared because it is an intentional capsule-owned surface. A host should not invent mobile presentation status just because responsive CSS exists; responsive CSS is ordinary styling.</p>
+    <p>This fixture keeps the full meaning in the root while also exposing a compact mobile entry for consumers that support it.</p>
+  </section>
+  <section id="capsule-mobile" class="mobile-view">
+    <h2>Mobile Summary</h2>
+    <p>Compact view: declare presentations, keep root readable, and let the host choose whether to surface this entry.</p>
+  </section>
+  <details id="about"><summary>About</summary><pre id="manifest-view"></pre></details>
+  <button data-capsule-action="copy_as_json">Copy JSON</button>
+</main>
+<script id="capsule-runtime"></script>
+</body>
+</html>

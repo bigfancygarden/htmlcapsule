@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invalid Unknown Bare Profile Fixture</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "88888888-8888-4888-8888-888888888888",
+  "title": "Invalid Unknown Bare Profile Fixture",
+  "description": "Invalid fixture: required presentation uses an unknown bare profile name.",
+  "type": "reference",
+  "profile": "static",
+  "presentations": [
+    {"id": "reader", "profile": "reader", "entry": "#capsule-root", "required": true},
+    {"id": "desktop", "profile": "desktop", "entry": "#capsule-desktop", "required": true}
+  ],
+  "created_at": "2026-06-01T00:00:00Z",
+  "generator": {"name": "presentation-fixture", "version": "1.0.0", "kind": "human"},
+  "source": {"origin": "spec_example", "snapshot_type": "fixture", "snapshot_id": "snapshot:presentation_invalid_unknown_bare", "included_records": 1, "spec_received": "v0.3.0 - 2026-05-19"},
+  "privacy": {"visibility": "public", "contains_private_data": false, "redaction_applied": false, "external_dependencies": false},
+  "capabilities": ["about", "copy_as_json"]
+}</script>
+<script id="capsule-data" type="application/json">{"fixture":"invalid_unknown_bare_profile"}</script>
+<style id="capsule-style">body{font-family:system-ui,sans-serif;margin:2rem;line-height:1.5}</style>
+</head>
+<body>
+<main id="capsule-root">
+  <h1>Invalid Unknown Bare Profile Fixture</h1>
+  <section id="capsule-desktop"><h2>Desktop View</h2><p>This capsule is readable, and the declared desktop entry exists. The failure is the profile vocabulary: desktop is an unknown bare presentation profile rather than a core profile or a namespaced extension.</p><p>A producer should use a core profile when one applies, or an extension such as x-example.desktop when the view is intentionally private or experimental.</p></section>
+  <details id="about"><summary>About</summary><pre id="manifest-view"></pre></details>
+  <button data-capsule-action="copy_as_json">Copy JSON</button>
+</main>
+<script id="capsule-runtime"></script>
+</body>
+</html>

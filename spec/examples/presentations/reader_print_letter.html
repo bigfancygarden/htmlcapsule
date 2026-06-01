@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reader And Print Letter Fixture</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "22222222-2222-4222-8222-222222222222",
+  "title": "Reader And Print Letter Fixture",
+  "description": "Valid fixture declaring reader and print-letter presentations.",
+  "type": "briefing",
+  "profile": "static",
+  "presentations": [
+    {"id": "reader", "profile": "reader", "entry": "#capsule-root", "required": true},
+    {"id": "letter", "profile": "print-letter", "media": "print", "entry": "#capsule-print"}
+  ],
+  "created_at": "2026-06-01T00:00:00Z",
+  "generator": {"name": "presentation-fixture", "version": "1.0.0", "kind": "human"},
+  "source": {"origin": "spec_example", "snapshot_type": "fixture", "snapshot_id": "snapshot:presentation_reader_print_letter", "included_records": 1, "spec_received": "v0.3.0 - 2026-05-19"},
+  "privacy": {"visibility": "public", "contains_private_data": false, "redaction_applied": false, "external_dependencies": false},
+  "capabilities": ["about", "copy_as_json"]
+}</script>
+<script id="capsule-data" type="application/json">{"fixture":"reader_print_letter","presentations":["reader","print-letter"]}</script>
+<style id="capsule-style">body{font-family:system-ui,sans-serif;margin:2rem;line-height:1.5}.letter{border:1px solid #ccc;padding:1rem;margin-top:1rem}@media print{.letter{border:0}}</style>
+</head>
+<body>
+<main id="capsule-root">
+  <h1>Reader And Print Letter Fixture</h1>
+  <section>
+    <h2>Reader View</h2>
+    <p>The reader presentation is the canonical human-readable artifact. It summarizes the fixture and points to a print-letter presentation that is explicitly declared rather than inferred from CSS media rules.</p>
+    <p>Because both views share this same document, a custody app can list the declared print view while keeping its own source and safe-preview tools separate.</p>
+  </section>
+  <section id="capsule-print" class="letter">
+    <h2>Letter View</h2>
+    <p>This section is the print-letter entry. It is suitable for printing, but it remains ordinary HTML in the same capsule file and is discoverable from the manifest.</p>
+  </section>
+  <details id="about"><summary>About</summary><pre id="manifest-view"></pre></details>
+  <button data-capsule-action="copy_as_json">Copy JSON</button>
+</main>
+<script id="capsule-runtime"></script>
+</body>
+</html>

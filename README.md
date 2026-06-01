@@ -14,7 +14,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 
-**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.8**, Bundle spec at **v0.1.1** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator at 28 checks, including profile overlay and capability-class checks; initial Bundle validator at 12 checks, including `bundle_profile` recognition. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
+**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.9**, Bundle spec at **v0.1.1** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator has 28 base checks, including profile overlay, capability-class checks, and declared presentation validation; optional informational checks may appear for legacy fields. Initial Bundle validator has 12 checks, including `bundle_profile` recognition. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
 
 ## Start here
 
@@ -52,7 +52,7 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
 ## Reference implementation
 
 - [`compiler/compile.py`](compiler/compile.py) — produces capsules from JSON + template directories
-- [`compiler/validate.py`](compiler/validate.py) — reference validator with 28 conformance checks. Two modes:
+- [`compiler/validate.py`](compiler/validate.py) — reference validator with 28 base conformance checks. Two modes:
   - **Local file mode**: `python3 compiler/validate.py path/to/capsule.html`
   - **URL mode** (added in v0.3.4): `python3 compiler/validate.py <https://host/path/raw>` — fetches the body via the host's `/raw` endpoint, cross-checks any `x-capsule-content-hash` and `x-capsule-uuid` response headers against the manifest, then runs the standard checks. Per the host-contract pattern documented in [`spec/HOSTING.md`](spec/HOSTING.md).
 - [`templates/decision_board/`](templates/decision_board/) and [`templates/news_capsule/`](templates/news_capsule/) — two compiler templates demonstrating the compile path
@@ -71,7 +71,7 @@ python3 compiler/validate.py /tmp/test.html
 
 # Or validate a hosted capsule by URL (fetches /raw, cross-checks any
 # x-capsule-* host-attestation headers against the manifest before
-# running the standard 28 checks)
+# running the standard checks)
 python3 compiler/validate.py https://mindev.ca/api/c/9357a933-7ce1-4061-9488-2ca61d81bded/raw
 ```
 
@@ -90,7 +90,7 @@ All three pass the reference validator. All three carry the same manifest shape 
 Two versions move semi-independently:
 
 - **Core spec** (`CAPSULE_CORE.md`): the short, pasteable-into-an-LLM-prompt version. Currently **v0.3.0**.
-- **Full spec** (`spec/CAPSULE_SPEC.md`): the implementer-grade version. Currently **v0.3.8** (doc-and-validator patches on top of v0.3.0; see [CHANGELOG.md](CHANGELOG.md) for the per-patch trajectory).
+- **Full spec** (`spec/CAPSULE_SPEC.md`): the implementer-grade version. Currently **v0.3.9** (doc-and-validator patches on top of v0.3.0; see [CHANGELOG.md](CHANGELOG.md) for the per-patch trajectory).
 
 Core spec versions are tagged in git: `core-v0.1.0` … `core-v0.3.0`. Retrieve any historical version via `git show core-vX.Y.Z:CAPSULE_CORE.md`.
 
@@ -102,6 +102,8 @@ Capsules currently answer:
 - *Where does it claim to come from?* (manifest fields: `generator`, `source`, `synthesis`, `parents[]`)
 - *Is the payload intact?* (manifest field: `integrity.content_hash` with a normative canonicalization recipe in §9.1.1)
 - *What actions does it support?* (manifest field: `capabilities`, with Rule 7: declared = implemented)
+- *What capsule-owned views does it declare?* (manifest field: `presentations[]`; hosts should not infer undeclared reader/mobile/print/slides/interactive views)
+- *Can a compiler derive presentations from it?* (optional `capsule-data.presentation_model.cards[]` gives stable cover/story/end cards or slide beats linked back to canonical sections)
 
 What the format deliberately doesn't yet answer: *did the claimed author actually publish these exact bytes?* That's the trust-model gap. The design sketch for a future Sigstore-shaped transparency log is parked in [`spec/CAPSULE_SPEC.md`](spec/CAPSULE_SPEC.md) Appendix E.6, awaiting empirical pressure to build.
 
@@ -126,7 +128,7 @@ See [`CITATION.cff`](CITATION.cff). GitHub auto-detects this file and renders a 
 
 | Phase | Name | State |
 |---|---|---|
-| 1 | Format | Exists (Capsule Core v0.3.0, full Capsule spec v0.3.8; Bundle spec v0.1.1) |
+| 1 | Format | Exists (Capsule Core v0.3.0, full Capsule spec v0.3.9; Bundle spec v0.1.1) |
 | 2 | Compiler / validators | Half-built — Capsule compiler + validator (local file mode + URL mode), initial Bundle validator + schema + minimal fixture. First independent Capsule compiler-kind producer (Mintel) shipped + validated (F20) |
 | 3 | Domain capsules | Partial — `domain.implementation_notes`, `domain.design_system`, `domain.exploration_map`, `domain.briefing` documented. `domain.music_stems` in the Idea queue |
 | 4 | Network layer | Not built; possibly never. Capsule registry, lineage graph, importers all deferred. Trust-log primitive sketched in Appendix E.6 but not built. |
