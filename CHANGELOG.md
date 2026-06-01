@@ -15,6 +15,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 - **LLM producer default** — the Core and full spec now say that a generic "make me a Capsule according to this spec" prompt should produce the canonical readable layer first, default to `reader`, and prioritize validity/readability/provenance over multi-view polish. `desktop` is intentionally not a presentation profile.
 - **Adaptive Presentation Capsule pattern** — optional named producer pattern for one Capsule with `reader`, `mobile`, `reel`, and `slides` presentations derived from the same canonical content model. This adds guidance, not a new required rule or schema field. The spec now recommends adaptive sets for deterministic compilers, hybrid producer flows, or manually reviewed capsules; LLM-only producers should not attempt them unless explicitly asked and able to follow the exact declaration shape.
 - **Presentation fixtures** — added valid fixtures for reader-only, reader + print-letter, reader + slides, reader + mobile, reader + interactive-with-pre-rendered-root, and adaptive presentation; added invalid fixtures for runtime-only required reader, missing required entry, unknown bare profile, duplicate presentation ids, and legacy `name`/`selector` presentation shape.
+- **Reference presentation renderers** — documented `demos/presentation-surfaces/stories.html` and `slides.html` as informative skeletons for compiler/host defaults. These are examples for renderer ergonomics, not byte-for-byte conformance requirements.
 
 ### Changed — Capsule validation/docs
 

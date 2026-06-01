@@ -57,6 +57,7 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
   - **URL mode** (added in v0.3.4): `python3 compiler/validate.py <https://host/path/raw>` — fetches the body via the host's `/raw` endpoint, cross-checks any `x-capsule-content-hash` and `x-capsule-uuid` response headers against the manifest, then runs the standard checks. Per the host-contract pattern documented in [`spec/HOSTING.md`](spec/HOSTING.md).
 - [`templates/decision_board/`](templates/decision_board/) and [`templates/news_capsule/`](templates/news_capsule/) — two compiler templates demonstrating the compile path
 - [`examples/`](examples/) — sanitized JSON inputs you can compile yourself
+- [`demos/presentation-surfaces/`](demos/presentation-surfaces/) — informative renderer skeletons for presentation defaults, including a mobile story/reel surface and desktop slides surface. These are examples for compilers and hosts, not extra conformance requirements.
 - [`compiler/validate_bundle.py`](compiler/validate_bundle.py) — initial Bundle validator for directories or zip archives
 - [`spec/bundle.schema.json`](spec/bundle.schema.json) and [`spec/examples/minimal_bundle/`](spec/examples/minimal_bundle/) — Bundle manifest schema plus a tiny public fixture
 

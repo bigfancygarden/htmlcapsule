@@ -866,6 +866,30 @@ or replay, but the Capsule must still expose its primary meaning in
 `capsule-root` without JavaScript. The card model is source material for derived
 views, not a substitute for the readable document layer.
 
+#### 3.2.6 Reference presentation renderers
+
+The spec defines presentation **contracts**, not one mandatory visual renderer.
+However, this repository may carry informative reference renderers and skeletons
+for common defaults. These examples are useful for compilers, LLM prompt authors,
+and host apps because they show the expected ergonomics without making a
+particular CSS/JS implementation part of conformance.
+
+Current reference examples:
+
+| Surface | Informative example | Purpose |
+|---|---|---|
+| Mobile story / reel | `demos/presentation-surfaces/stories.html` | Instagram/Snapchat-style one-screen sequence with progress, tap/swipe navigation, hold-to-pause, replay/end behavior, and iOS-safe viewport handling. |
+| Desktop slides | `demos/presentation-surfaces/slides.html` | Full-frame 16:9 paged deck surface for `profile: "slides"` renderers. |
+| Valid reel Capsule fixture | `spec/examples/presentations/demo_stories_capsule.html` | Declares `profile: "reel"` and includes `presentation_model.cards[]` source material. |
+| Valid slides Capsule fixture | `spec/examples/presentations/demo_slides_capsule.html` | Declares `profile: "slides"` and keeps the reader layer useful. |
+
+These examples are **not normative defaults**. A Capsule validates because it
+follows the manifest, data, presentation, no-network, and runtime-as-enhancement
+rules, not because it copied the reference renderer byte-for-byte. Hosts may
+ship different native or web renderers for the same `reel` or `slides`
+presentation as long as they honor the declared entry and the Capsule remains
+understandable as a document.
+
 ### 3.3 Artifact Types
 
 The `type` field is free-form. The values below are recommended for common cases — but if your capsule is honestly described by a word not in this list (LLMs naturally reach for `"summary"` or `"briefing"`), use that word. Recipients use type for orientation; honesty matters more than enum conformance.
