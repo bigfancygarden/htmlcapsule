@@ -19,6 +19,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 - **Presentation study** — added `design/PRESENTATION_STUDY.md` to focus the project around the 2x2 desktop/mobile x scroll/one-screen model and the proposed `sections -> cards -> renderers` source structure for compiler-generated views.
 - **Presentation identity rules** — clarified that multiple presentations generated together belong inside one Capsule UUID, while post-hoc compiled/enhanced packages should mint a new UUID with provenance back to the source.
 - **Asset deduplication guidance** — documented that multi-view Capsules should share heavy media through stable embedded asset ids; presentation count alone is not a Bundle trigger.
+- **Multi-view compiler experiment** — added `examples/multiview_chat_summary.json`, `examples/multiview_directory_demo.json`, `examples/multiview_essay_demo.json`, `examples/multiview_release_notes_demo.json`, `compiler/compile_multiview_demo.py`, and generated presentation fixtures to test one source model compiling into `reader`, mobile snap, mobile feed, `slides`, and `reel` presentations inside a single Capsule.
 
 ### Changed — Capsule validation/docs
 

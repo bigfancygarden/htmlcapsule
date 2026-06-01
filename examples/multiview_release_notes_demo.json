@@ -1,0 +1,80 @@
+{
+  "uuid": "e94c39df-2519-42ee-881b-1294cba1a441",
+  "title": "Capsule Renderer Notes",
+  "description": "A release-note fixture for testing grouped changes across mobile snap, mobile feed, desktop slides, and mobile story views.",
+  "type": "release_notes",
+  "created_at": "2026-06-01T00:00:00Z",
+  "snapshot_id": "snapshot:multiview_release_notes_demo",
+  "visibility": "public",
+  "sections": [
+    {
+      "id": "added",
+      "title": "Added",
+      "body": "The compiler now emits a mobile feed surface alongside the scroll-snap reader, desktop slides, and mobile story sequence."
+    },
+    {
+      "id": "changed",
+      "title": "Changed",
+      "body": "Mobile snap sections now occupy the full viewport and keep their fragment ids without adding visible section-jump controls."
+    },
+    {
+      "id": "fixed",
+      "title": "Fixed",
+      "body": "The story view now uses the native-feeling renderer pattern with progress bars, timing, pause, replay, and full-height mobile layout."
+    },
+    {
+      "id": "next",
+      "title": "Next",
+      "body": "The remaining question is which content shapes should default to reader, snap, feed, story, slides, or no alternate presentation at all."
+    }
+  ],
+  "assets": [
+    {
+      "id": "flow",
+      "media_type": "image/svg+xml",
+      "alt": "Four presentation surfaces derived from one Capsule data model.",
+      "fragment": "#asset-flow"
+    }
+  ],
+  "presentation_model": {
+    "cards": [
+      {
+        "id": "cover",
+        "role": "cover",
+        "title": "Renderer Notes",
+        "body": "A changelog wants grouped scanning and quick review.",
+        "asset_refs": ["flow"],
+        "source_sections": ["added"]
+      },
+      {
+        "id": "added",
+        "role": "story",
+        "title": "Added",
+        "body": "A feed surface joined snap, slides, and story.",
+        "source_sections": ["added"]
+      },
+      {
+        "id": "changed",
+        "role": "story",
+        "title": "Changed",
+        "body": "Snap sections now fill the viewport without extra jump buttons.",
+        "source_sections": ["changed"]
+      },
+      {
+        "id": "fixed",
+        "role": "story",
+        "title": "Fixed",
+        "body": "The story renderer now behaves like a native mobile sequence.",
+        "source_sections": ["fixed"]
+      },
+      {
+        "id": "end",
+        "role": "end",
+        "title": "Next",
+        "body": "Use fixtures to choose defaults by content shape.",
+        "action": "restart",
+        "source_sections": ["next"]
+      }
+    ]
+  }
+}

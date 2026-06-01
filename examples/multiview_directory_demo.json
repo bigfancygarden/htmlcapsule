@@ -1,0 +1,85 @@
+{
+  "uuid": "eba4a254-3fb2-4b42-b371-3feb096df5d7",
+  "title": "Birthday Directory Sample",
+  "description": "A directory-shaped fixture for testing whether mobile feed views work better than snap or story views for peer records.",
+  "type": "directory",
+  "created_at": "2026-06-01T00:00:00Z",
+  "snapshot_id": "snapshot:multiview_directory_demo",
+  "visibility": "public",
+  "sections": [
+    {
+      "id": "jan",
+      "title": "January",
+      "body": "Ada Lovelace, Zora Neale Hurston, and Martin Luther King Jr. make January a useful test month for dense biographical cards."
+    },
+    {
+      "id": "feb",
+      "title": "February",
+      "body": "Frederick Douglass, Rosa Parks, and Toni Morrison create a second set of records with short summaries and easy comparison."
+    },
+    {
+      "id": "mar",
+      "title": "March",
+      "body": "Albert Einstein, Ruth Bader Ginsburg, and Cesar Chavez are grouped as another peer set rather than a narrative sequence."
+    },
+    {
+      "id": "apr",
+      "title": "April",
+      "body": "Maya Angelou, Leonardo da Vinci, and Ella Fitzgerald help test how a feed handles varied domains and longer names."
+    },
+    {
+      "id": "may",
+      "title": "May",
+      "body": "Audrey Hepburn, Malcolm X, and Rachel Carson close the sample with enough items to make the card-feed rhythm obvious."
+    }
+  ],
+  "assets": [
+    {
+      "id": "flow",
+      "media_type": "image/svg+xml",
+      "alt": "Four presentation surfaces derived from one Capsule data model.",
+      "fragment": "#asset-flow"
+    }
+  ],
+  "presentation_model": {
+    "cards": [
+      {
+        "id": "cover",
+        "role": "cover",
+        "title": "Birthday Directory",
+        "body": "A record set wants browsing, not a forced story.",
+        "asset_refs": ["flow"],
+        "source_sections": ["jan"]
+      },
+      {
+        "id": "peer-records",
+        "role": "story",
+        "title": "Peer items",
+        "body": "Each month is a comparable card, so feed should beat snap for quick scanning.",
+        "source_sections": ["feb"]
+      },
+      {
+        "id": "scan",
+        "role": "story",
+        "title": "Scan first",
+        "body": "The reader should see multiple options and choose where to slow down.",
+        "source_sections": ["mar"]
+      },
+      {
+        "id": "compare",
+        "role": "story",
+        "title": "Compare easily",
+        "body": "Repeated card structure makes names, months, and notes easy to compare.",
+        "source_sections": ["apr"]
+      },
+      {
+        "id": "end",
+        "role": "end",
+        "title": "Feed wins",
+        "body": "Directory content is the natural home for the mobile feed style.",
+        "action": "restart",
+        "source_sections": ["may"]
+      }
+    ]
+  }
+}

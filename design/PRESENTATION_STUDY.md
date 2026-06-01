@@ -352,6 +352,35 @@ reader Capsule + cards
 Measure whether the cards are enough or whether we need richer hints such as
 `emphasis`, `media_ref`, `duration_ms`, `layout`, or `quote`.
 
+Current experiment:
+
+```text
+examples/multiview_chat_summary.json
+  -> compiler/compile_multiview_demo.py
+  -> spec/examples/presentations/multiview_compiled_capsule.html
+```
+
+The current corpus compiles one source model shape with `sections[]`,
+`assets[]`, and `presentation_model.cards[]` into one Capsule with five declared
+presentations: `reader`, mobile snap, mobile feed, `slides`, and `reel`.
+Each generated fixture keeps one UUID across those views, resolves all five
+presentation entries, shares the embedded asset by id, and validates as a normal
+single-file Capsule.
+
+```text
+examples/multiview_chat_summary.json
+  -> spec/examples/presentations/multiview_compiled_capsule.html
+
+examples/multiview_directory_demo.json
+  -> spec/examples/presentations/multiview_directory_capsule.html
+
+examples/multiview_essay_demo.json
+  -> spec/examples/presentations/multiview_essay_capsule.html
+
+examples/multiview_release_notes_demo.json
+  -> spec/examples/presentations/multiview_release_notes_capsule.html
+```
+
 ### Phase 3: Evaluation
 
 For each derived view, check:

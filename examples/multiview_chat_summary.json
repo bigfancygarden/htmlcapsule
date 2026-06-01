@@ -1,0 +1,81 @@
+{
+  "uuid": "5a39aaef-f20c-4a71-b940-9b68b118021d",
+  "title": "HTML Interchange Briefing",
+  "description": "A compact fixture for testing one Capsule with reader, mobile, slides, and mobile story presentations generated from shared sections, cards, and assets.",
+  "type": "briefing",
+  "created_at": "2026-06-01T00:00:00Z",
+  "snapshot_id": "snapshot:multiview_chat_summary",
+  "visibility": "public",
+  "sections": [
+    {
+      "id": "summary",
+      "title": "The core idea",
+      "body": "HTML should become the default interchange surface for moving durable work out of LLM chats and app workflows. A Capsule is the sealed single-file form of that idea: readable by humans, structured for machines, and portable into future LLM contexts."
+    },
+    {
+      "id": "views",
+      "title": "One artifact, four useful views",
+      "body": "The same content snapshot can be read as a desktop page, a mobile page, a desktop slide deck, or a mobile story sequence. Those are presentations of one substance, not separate artifacts by default."
+    },
+    {
+      "id": "identity",
+      "title": "Identity follows the sealed package",
+      "body": "When the views are generated together at export time, they share one Capsule UUID. When Vault later compiles a new enhanced package from an already sealed Capsule, the new package gets a new UUID and provenance back to the source."
+    },
+    {
+      "id": "assets",
+      "title": "Assets live once",
+      "body": "Heavy media should be stored once and referenced by stable asset ids. Presentations can render the same media differently without duplicating the substance."
+    }
+  ],
+  "assets": [
+    {
+      "id": "flow",
+      "media_type": "image/svg+xml",
+      "alt": "Four presentation surfaces derived from one Capsule data model.",
+      "fragment": "#asset-flow"
+    }
+  ],
+  "presentation_model": {
+    "cards": [
+      {
+        "id": "cover",
+        "role": "cover",
+        "title": "HTML Interchange",
+        "body": "One sealed Capsule, multiple ways to read it.",
+        "asset_refs": ["flow"],
+        "source_sections": ["summary"]
+      },
+      {
+        "id": "idea",
+        "role": "story",
+        "title": "HTML is the handoff",
+        "body": "LLM chats and apps can export work as HTML that humans can inspect and future tools can parse.",
+        "source_sections": ["summary"]
+      },
+      {
+        "id": "views",
+        "role": "story",
+        "title": "Four views, one substance",
+        "body": "Reader, mobile, slides, and story can all render the same sections and cards.",
+        "asset_refs": ["flow"],
+        "source_sections": ["views"]
+      },
+      {
+        "id": "identity",
+        "role": "story",
+        "title": "UUIDs track packages",
+        "body": "Views generated together stay in one Capsule. Later enhanced packages get their own UUID.",
+        "source_sections": ["identity"]
+      },
+      {
+        "id": "end",
+        "role": "end",
+        "title": "Compiler-ready",
+        "body": "The LLM writes the meaning; the compiler builds the polished views.",
+        "action": "restart",
+        "source_sections": ["assets"]
+      }
+    ]
+  }
+}

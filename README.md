@@ -14,7 +14,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 
 **A note on terminology.** Claude's "artifacts," ChatGPT's "Canvas," and similar features are *working canvases* — editable, iterable, live next to the chat. Capsules are what those become when sealed for preservation, sharing, and archival. Different roles, complementary tools: capsule is the seal step that comes after the canvas step.
 
-**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.9**, Bundle spec at **v0.1.1** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator has 28 base checks, including profile overlay, capability-class checks, and declared presentation validation; optional informational checks may appear for legacy fields. Initial Bundle validator has 12 checks, including `bundle_profile` recognition. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
+**Current state (project v0.4.0):** Core spec at **v0.3.0**, full Capsule spec at **v0.3.9**, Bundle spec at **v0.1.1** (the sibling format — see [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) and [F31 in RESEARCH.md](RESEARCH.md)). Reference Capsule validator has 29 base checks, including profile overlay, capability-class checks, and declared presentation validation; optional informational checks may appear for legacy fields. Initial Bundle validator has 12 checks, including `bundle_profile` recognition. Research log at **F31**. Companion docs: [`spec/HOSTING.md`](spec/HOSTING.md) (descriptive host-contract pattern observed across MinDev + htmlbin), [`voices/`](voices/) (archived primary-source voices in the conversation Capsule is part of), [`CITATION.cff`](CITATION.cff) (formal citation), [`/llms.txt`](llms.txt) (site-discoverability index), [`CHANGELOG.md`](CHANGELOG.md) (project trajectory).
 
 ## Start here
 
@@ -53,11 +53,12 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
 ## Reference implementation
 
 - [`compiler/compile.py`](compiler/compile.py) — produces capsules from JSON + template directories
-- [`compiler/validate.py`](compiler/validate.py) — reference validator with 28 base conformance checks. Two modes:
+- [`compiler/validate.py`](compiler/validate.py) — reference validator with 29 base conformance checks. Two modes:
   - **Local file mode**: `python3 compiler/validate.py path/to/capsule.html`
   - **URL mode** (added in v0.3.4): `python3 compiler/validate.py <https://host/path/raw>` — fetches the body via the host's `/raw` endpoint, cross-checks any `x-capsule-content-hash` and `x-capsule-uuid` response headers against the manifest, then runs the standard checks. Per the host-contract pattern documented in [`spec/HOSTING.md`](spec/HOSTING.md).
 - [`templates/decision_board/`](templates/decision_board/) and [`templates/news_capsule/`](templates/news_capsule/) — two compiler templates demonstrating the compile path
 - [`examples/`](examples/) — sanitized JSON inputs you can compile yourself
+- [`compiler/compile_multiview_demo.py`](compiler/compile_multiview_demo.py) — narrow presentation experiment compiling `sections[] + assets[] + presentation_model.cards[]` sources into single Capsules with `reader`, mobile snap, mobile feed, `slides`, and `reel` views
 - [`demos/presentation-surfaces/`](demos/presentation-surfaces/) — informative renderer skeletons for presentation defaults, including a mobile story/reel surface and desktop slides surface. These are examples for compilers and hosts, not extra conformance requirements.
 - [`compiler/validate_bundle.py`](compiler/validate_bundle.py) — initial Bundle validator for directories or zip archives
 - [`spec/bundle.schema.json`](spec/bundle.schema.json) and [`spec/examples/minimal_bundle/`](spec/examples/minimal_bundle/) — Bundle manifest schema plus a tiny public fixture
