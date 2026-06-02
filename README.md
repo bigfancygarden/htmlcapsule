@@ -105,7 +105,7 @@ Capsules currently answer:
 - *Where does it claim to come from?* (manifest fields: `generator`, `source`, `synthesis`, `parents[]`)
 - *Is the payload intact?* (manifest field: `integrity.content_hash` with a normative canonicalization recipe in §9.1.1)
 - *What actions does it support?* (manifest field: `capabilities`, with Rule 7: declared = implemented)
-- *What capsule-owned views does it declare?* (manifest field: `presentations[]`; hosts should not infer undeclared reader/mobile/print/slides/interactive views)
+- *What capsule-owned views does it declare?* (manifest field: `presentations[]`; hosts should not infer undeclared reader/mobile/print/slides/interactive views, and `chrome` says whether the capsule or host owns presentation controls)
 - *Can a compiler derive presentations from it?* (optional `capsule-data.presentation_model.cards[]` gives stable cover/story/end cards or slide beats linked back to canonical sections)
 
 What the format deliberately doesn't yet answer: *did the claimed author actually publish these exact bytes?* That's the trust-model gap. The design sketch for a future Sigstore-shaped transparency log is parked in [`spec/CAPSULE_SPEC.md`](spec/CAPSULE_SPEC.md) Appendix E.6, awaiting empirical pressure to build.

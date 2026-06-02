@@ -105,6 +105,11 @@
             "enum": ["scroll", "paged", "step", "sequence"],
             "description": "Optional navigation model for this presentation."
           },
+          "chrome": {
+            "type": "string",
+            "enum": ["capsule", "host", "none"],
+            "description": "Optional control/chrome ownership hint. 'capsule' means the declared DOM owns its own controls and hosts should recede; 'host' means the host may supply presentation controls around the declared entry; 'none' means the entry is content-only."
+          },
           "title": {
             "type": "string",
             "maxLength": 200

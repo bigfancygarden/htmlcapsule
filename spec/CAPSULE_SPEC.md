@@ -729,6 +729,7 @@ Example:
 | `required` | no | Boolean. Default `false`. Broken required presentations fail validation; broken optional presentations should be clearly reported. |
 | `media` | no | Optional media context, e.g. `"print"`. |
 | `navigation` | no | Optional navigation model: `"scroll"`, `"paged"`, `"step"`, or `"sequence"`. |
+| `chrome` | no | Optional control/chrome ownership hint: `"capsule"`, `"host"`, or `"none"`. Use `"capsule"` when the declared entry owns controls such as progress, next/previous, play/pause, close, or replay and hosts should recede. Use `"host"` when the host may supply controls around the declared entry. Use `"none"` for content-only presentations. |
 | `title` / `description` | no | Human-readable labels for inspector UIs. |
 
 **Core presentation profiles:**
@@ -745,6 +746,8 @@ Example:
 Extension profiles are allowed when namespaced: `x-domain.deck`, `x-mining.map`, `org.example.review_board`. Unknown bare names such as `desktop` or `dashboard` are suspect because generic validators cannot tell whether they are proposed core names, typos, or private conventions. `desktop` is intentionally not a core presentation profile.
 
 For single-file Capsules, `entry` is a fragment selector only. Relative paths, multiple HTML entry files, and file inventories belong to the sibling Bundle format, not to `presentations[]`.
+
+**Chrome ownership.** Hosts and native apps SHOULD avoid double chrome. If a presentation declares `chrome: "capsule"`, the entry contains its own presentation controls and the host should show, at most, a minimal escape/back affordance outside the content surface. This is the normal choice for self-rendering `reel` story views and slide decks that include their own progress, play/pause, close/replay, or next/previous controls. If a presentation declares `chrome: "host"`, the host may provide presentation controls around the declared entry. If it declares `chrome: "none"`, the entry is content-only. When `chrome` is omitted, consumers should be conservative: do not duplicate obvious capsule-owned controls.
 
 **Runtime-as-enhancement rule.** A conforming Capsule MUST expose its primary meaning in `capsule-root` without JavaScript. Runtime code MAY enhance, transform, filter, search, copy, export, or visualize that meaning. Runtime code MUST NOT be the only path by which a reader can understand the artifact's primary content. In testable terms, `capsule-root` SHOULD contain title, summary, key sections, and human-readable fallback content; `capsule-data` MAY contain richer structured data; and `capsule-runtime` MAY hydrate enhanced views from that data.
 
@@ -778,13 +781,15 @@ Recommended declaration:
       "id": "mobile_story",
       "profile": "reel",
       "entry": "#capsule-reel",
-      "navigation": "sequence"
+      "navigation": "sequence",
+      "chrome": "capsule"
     },
     {
       "id": "desktop_slides",
       "profile": "slides",
       "entry": "#capsule-slides",
-      "navigation": "paged"
+      "navigation": "paged",
+      "chrome": "capsule"
     }
   ]
 }

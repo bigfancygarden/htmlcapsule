@@ -40,6 +40,7 @@
       "profile": "slides",
       "entry": "#capsule-slides",
       "navigation": "paged",
+      "chrome": "capsule",
       "required": true
     },
     {
@@ -47,6 +48,7 @@
       "profile": "reel",
       "entry": "#capsule-reel",
       "navigation": "sequence",
+      "chrome": "capsule",
       "required": true
     }
   ],
@@ -70,7 +72,7 @@
     "external_dependencies": false
   },
   "integrity": {
-    "content_hash": "sha256:841b1f5246d4b8728b8d76ed50760b2e2dc952542e56b2084735422798f1fbe5",
+    "content_hash": "sha256:3c880e704e3990f59e73ef93d8f79d0e23625743daff39363d45ada84ab0181a",
     "hash_scope": "data+manifest"
   },
   "capabilities": [
@@ -483,9 +485,9 @@ main { max-width: 74rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
 .story-asset { width: min(100%, 18rem); margin: 1.2rem 0 0; }
 .story-progress-shell {
   position: absolute;
-  top: .55rem;
-  right: .7rem;
-  left: .7rem;
+  top: max(.55rem, calc(env(safe-area-inset-top) + .35rem));
+  right: max(.7rem, env(safe-area-inset-right));
+  left: max(.7rem, env(safe-area-inset-left));
   z-index: 5;
   display: grid;
   grid-auto-flow: column;
@@ -510,9 +512,9 @@ main { max-width: 74rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
 }
 .story-header {
   position: absolute;
-  top: 1.25rem;
-  right: .85rem;
-  left: .95rem;
+  top: max(1.25rem, calc(env(safe-area-inset-top) + 1.05rem));
+  right: max(.85rem, env(safe-area-inset-right));
+  left: max(.95rem, env(safe-area-inset-left));
   z-index: 5;
   display: flex;
   align-items: center;
@@ -580,7 +582,7 @@ main { max-width: 74rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
 .story-screen.is-paused .story-pause-pill { opacity: 1; transform: translate(-50%,-50%) scale(1); }
 .story-replay {
   position: absolute;
-  bottom: 1.2rem;
+  bottom: max(1.2rem, calc(env(safe-area-inset-bottom) + .8rem));
   left: 50%;
   z-index: 6;
   padding: .7rem 1.2rem;
@@ -860,6 +862,7 @@ main { max-width: 74rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
     width: 100%;
     height: 100dvh;
     min-height: 0;
+    margin: 0;
     border-radius: 0;
   }
 }</style>

@@ -62,8 +62,8 @@ def build_manifest(source: dict) -> dict:
             {"id": "reader", "profile": "reader", "entry": "#capsule-root", "navigation": "scroll", "required": True},
             {"id": "mobile", "profile": "mobile", "entry": "#capsule-mobile", "navigation": "scroll", "required": True},
             {"id": "mobile_feed", "profile": "mobile", "entry": "#capsule-mobile-feed", "navigation": "scroll", "required": True},
-            {"id": "desktop_slides", "profile": "slides", "entry": "#capsule-slides", "navigation": "paged", "required": True},
-            {"id": "mobile_story", "profile": "reel", "entry": "#capsule-reel", "navigation": "sequence", "required": True},
+            {"id": "desktop_slides", "profile": "slides", "entry": "#capsule-slides", "navigation": "paged", "chrome": "capsule", "required": True},
+            {"id": "mobile_story", "profile": "reel", "entry": "#capsule-reel", "navigation": "sequence", "chrome": "capsule", "required": True},
         ],
         "created_at": source.get("created_at", "2026-06-01T00:00:00Z"),
         "generator": {"name": COMPILER_NAME, "version": COMPILER_VERSION, "kind": "compiler"},
@@ -585,9 +585,9 @@ main { max-width: 74rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
 .story-asset { width: min(100%, 18rem); margin: 1.2rem 0 0; }
 .story-progress-shell {
   position: absolute;
-  top: .55rem;
-  right: .7rem;
-  left: .7rem;
+  top: max(.55rem, calc(env(safe-area-inset-top) + .35rem));
+  right: max(.7rem, env(safe-area-inset-right));
+  left: max(.7rem, env(safe-area-inset-left));
   z-index: 5;
   display: grid;
   grid-auto-flow: column;
@@ -612,9 +612,9 @@ main { max-width: 74rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
 }
 .story-header {
   position: absolute;
-  top: 1.25rem;
-  right: .85rem;
-  left: .95rem;
+  top: max(1.25rem, calc(env(safe-area-inset-top) + 1.05rem));
+  right: max(.85rem, env(safe-area-inset-right));
+  left: max(.95rem, env(safe-area-inset-left));
   z-index: 5;
   display: flex;
   align-items: center;
@@ -682,7 +682,7 @@ main { max-width: 74rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
 .story-screen.is-paused .story-pause-pill { opacity: 1; transform: translate(-50%,-50%) scale(1); }
 .story-replay {
   position: absolute;
-  bottom: 1.2rem;
+  bottom: max(1.2rem, calc(env(safe-area-inset-bottom) + .8rem));
   left: 50%;
   z-index: 6;
   padding: .7rem 1.2rem;
@@ -962,6 +962,7 @@ main { max-width: 74rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
     width: 100%;
     height: 100dvh;
     min-height: 0;
+    margin: 0;
     border-radius: 0;
   }
 }

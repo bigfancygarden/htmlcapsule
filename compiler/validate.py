@@ -82,6 +82,7 @@ VALID_PRESENTATION_PROFILES = {
     "interactive",
 }
 VALID_PRESENTATION_NAVIGATION = {"scroll", "paged", "step", "sequence"}
+VALID_PRESENTATION_CHROME = {"capsule", "host", "none"}
 
 # Heuristic markers for capability implementation.
 # Each capability declared must have at least one matching marker in the runtime.
@@ -1076,6 +1077,20 @@ def check_presentations(manifest: dict, html: str, result: ValidationResult):
                 message = (
                     f"{label}.navigation={navigation!r} is not recognized; "
                     f"known values: {sorted(VALID_PRESENTATION_NAVIGATION)}"
+                )
+                if required:
+                    failures.append(message)
+                else:
+                    warnings.append(message)
+
+        chrome = presentation.get("chrome")
+        if chrome is not None:
+            if not isinstance(chrome, str):
+                failures.append(f"{label}.chrome must be a string when present")
+            elif chrome not in VALID_PRESENTATION_CHROME:
+                message = (
+                    f"{label}.chrome={chrome!r} is not recognized; "
+                    f"known values: {sorted(VALID_PRESENTATION_CHROME)}"
                 )
                 if required:
                     failures.append(message)

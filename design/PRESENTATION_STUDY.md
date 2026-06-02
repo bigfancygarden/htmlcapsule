@@ -259,6 +259,33 @@ Spec = what the artifact declares and preserves.
 Renderer = how a host/compiler presents declared content.
 ```
 
+## Chrome Ownership
+
+HTML Vault dogfooding on iOS exposed a real host/capsule failure mode: a mobile
+story Capsule can draw its own progress bars, title/avatar row, play/pause,
+close, and replay controls while the host app also draws back, title,
+presentation, play/pause, and menu controls. The result is double chrome.
+
+The `presentations[].chrome` hint exists to keep one owner for those controls:
+
+```text
+chrome: "capsule"
+  The declared entry owns its controls. Hosts should recede and provide at most
+  an escape/back affordance outside the content surface.
+
+chrome: "host"
+  The host may supply presentation controls around the declared entry.
+
+chrome: "none"
+  The entry is content-only.
+```
+
+Self-rendering story/reel views and slide decks that include their own progress,
+play/pause, close/replay, or next/previous controls should declare
+`chrome: "capsule"`. Host-native renderers can still enhance a Capsule from
+`presentation_model.cards[]`, but that should be a clearly host-rendered view,
+not a second control layer on top of a capsule-owned DOM renderer.
+
 ## LLM Role
 
 LLMs are good at:
