@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Feed Mode</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "1b8e6f32-8d55-4a9b-8c32-af4b2d1e6f21",
+  "title": "Feed Mode",
+  "description": "A single-presentation demo capsule that shows only the mobile Feed surface.",
+  "type": "briefing",
+  "profile": "static",
+  "presentations": [
+    {
+      "id": "feed",
+      "profile": "mobile",
+      "entry": "#capsule-mobile-feed",
+      "navigation": "scroll",
+      "title": "Feed",
+      "required": true
+    }
+  ],
+  "created_at": "2026-06-03T00:00:00Z",
+  "generator": {
+    "name": "compile_single_view_demo.py",
+    "version": "0.1.0",
+    "kind": "compiler"
+  },
+  "source": {
+    "origin": "spec_example",
+    "snapshot_type": "fixture",
+    "snapshot_id": "snapshot:single_feed_demo",
+    "included_records": 5,
+    "spec_received": "v0.3.0 - 2026-05-19"
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "integrity": {
+    "content_hash": "sha256:bf72e6f7f7fac2bd8c48b9111c1459cd416aa87de2fa151cfb3741c063eb8be0",
+    "hash_scope": "data+manifest"
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json"
+  ]
+}</script>
+<script id="capsule-data" type="application/json">{
+  "sections": [
+    {
+      "id": "intro",
+      "title": "Feed mode",
+      "body": "A scrollable column of cards. Skim top to bottom, the way you'd read a timeline."
+    },
+    {
+      "id": "glance",
+      "title": "Glanceable",
+      "body": "Each card is a self-contained beat. Good for updates, release notes, and digests you scan quickly."
+    },
+    {
+      "id": "derived",
+      "title": "Derived, not separate",
+      "body": "The feed is generated from the same sections as every other view. One source, many presentations."
+    },
+    {
+      "id": "calm",
+      "title": "Calm by default",
+      "body": "No autoplay, no network, no tracking. Just cards you scroll at your own pace."
+    },
+    {
+      "id": "end",
+      "title": "That's feed",
+      "body": "Everything here is sealed inside a single portable HTML capsule."
+    }
+  ]
+}</script>
+<style id="capsule-style">:root {
+  color-scheme: light;
+  --ink: #111827;
+  --muted: #5b6472;
+  --line: #d7dee8;
+  --paper: #f7f8f5;
+  --teal: #0f766e;
+  --rose: #be123c;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+#capsule-root { display: block; }
+.eyebrow {
+  margin: 0 0 .55rem;
+  color: var(--teal);
+  font-size: .76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.utility {
+  padding: 1.25rem 1.15rem 2.5rem;
+  color: var(--muted);
+  font-size: .82rem;
+  background: var(--paper);
+}
+.utility summary { cursor: pointer; width: fit-content; }
+.about-panel { display: flex; gap: .6rem; align-items: flex-start; margin-top: .65rem; }
+.utility button {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  padding: .35rem .55rem;
+  font: inherit;
+  cursor: pointer;
+}
+.utility pre {
+  max-width: 100%;
+  max-height: 12rem;
+  overflow: auto;
+  margin: 0;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.feed-view {
+  display: block;
+  padding: max(1.25rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
+}
+.feed-head {
+  padding: 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fff, #f3fbf8);
+}
+.feed-head h1 {
+  margin: .1rem 0 .5rem;
+  font-size: clamp(2.1rem, 10vw, 3rem);
+  line-height: .96;
+  letter-spacing: -0.01em;
+}
+.feed-head > p:not(.eyebrow) { margin: 0; color: #303846; font-size: .98rem; line-height: 1.35; }
+.feed-list { display: grid; gap: .8rem; margin-top: .85rem; }
+.feed-card {
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.feed-index {
+  display: inline-flex;
+  margin-bottom: .55rem;
+  padding: .25rem .5rem;
+  border-radius: 999px;
+  background: rgba(15,118,110,.1);
+  color: var(--teal);
+  font-size: .74rem;
+  font-weight: 850;
+  line-height: 1;
+}
+.feed-card h2 { margin: 0 0 .35rem; font-size: 1.32rem; line-height: 1.12; letter-spacing: -0.01em; }
+.feed-card p { margin: 0; color: var(--muted); font-size: .98rem; line-height: 1.4; }</style>
+</head>
+<body>
+<main id="capsule-root" data-view-mode="feed" data-presentation="Feed">
+<section id="capsule-mobile-feed" class="feed-view" aria-label="Feed presentation"><header class="feed-head"><p class="eyebrow">Feed</p><h1>Feed Mode</h1><p>A single-presentation demo capsule that shows only the mobile Feed surface.</p></header><div class="feed-list"><article class="feed-card" data-source-section="intro"><span class="feed-index">01</span><h2>Feed mode</h2><p>A scrollable column of cards. Skim top to bottom, the way you&#x27;d read a timeline.</p></article><article class="feed-card" data-source-section="glance"><span class="feed-index">02</span><h2>Glanceable</h2><p>Each card is a self-contained beat. Good for updates, release notes, and digests you scan quickly.</p></article><article class="feed-card" data-source-section="derived"><span class="feed-index">03</span><h2>Derived, not separate</h2><p>The feed is generated from the same sections as every other view. One source, many presentations.</p></article><article class="feed-card" data-source-section="calm"><span class="feed-index">04</span><h2>Calm by default</h2><p>No autoplay, no network, no tracking. Just cards you scroll at your own pace.</p></article><article class="feed-card" data-source-section="end"><span class="feed-index">05</span><h2>That&#x27;s feed</h2><p>Everything here is sealed inside a single portable HTML capsule.</p></article></div></section>
+<section class="utility" aria-label="Capsule utilities">
+  <details id="about">
+    <summary>About this capsule</summary>
+    <div class="about-panel">
+      <button data-capsule-action="copy_as_json" type="button">Copy JSON</button>
+      <pre id="about-data"></pre>
+    </div>
+  </details>
+</section>
+</main>
+<script id="capsule-runtime">(function(){
+  var about = document.getElementById("about-data");
+  var data = JSON.parse(document.getElementById("capsule-data").textContent);
+  if (about) about.textContent = JSON.stringify(data, null, 2);
+  var copy = document.querySelector('[data-capsule-action="copy_as_json"]');
+  if (copy) copy.addEventListener("click", function(){
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+  });
+})();</script>
+</body>
+</html>

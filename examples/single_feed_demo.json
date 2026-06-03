@@ -1,0 +1,36 @@
+{
+  "uuid": "1b8e6f32-8d55-4a9b-8c32-af4b2d1e6f21",
+  "title": "Feed Mode",
+  "description": "A single-presentation demo capsule that shows only the mobile Feed surface.",
+  "type": "briefing",
+  "created_at": "2026-06-03T00:00:00Z",
+  "snapshot_id": "snapshot:single_feed_demo",
+  "visibility": "public",
+  "sections": [
+    {
+      "id": "intro",
+      "title": "Feed mode",
+      "body": "A scrollable column of cards. Skim top to bottom, the way you'd read a timeline."
+    },
+    {
+      "id": "glance",
+      "title": "Glanceable",
+      "body": "Each card is a self-contained beat. Good for updates, release notes, and digests you scan quickly."
+    },
+    {
+      "id": "derived",
+      "title": "Derived, not separate",
+      "body": "The feed is generated from the same sections as every other view. One source, many presentations."
+    },
+    {
+      "id": "calm",
+      "title": "Calm by default",
+      "body": "No autoplay, no network, no tracking. Just cards you scroll at your own pace."
+    },
+    {
+      "id": "end",
+      "title": "That's feed",
+      "body": "Everything here is sealed inside a single portable HTML capsule."
+    }
+  ]
+}

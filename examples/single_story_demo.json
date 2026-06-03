@@ -1,0 +1,41 @@
+{
+  "uuid": "2c7f7a43-9e66-4bac-9d43-bf5c3e2f7a32",
+  "title": "Story Mode",
+  "description": "A single-presentation demo capsule that shows only the immersive Story (reel) surface.",
+  "type": "briefing",
+  "created_at": "2026-06-03T00:00:00Z",
+  "snapshot_id": "snapshot:single_story_demo",
+  "visibility": "public",
+  "cards": [
+    {
+      "id": "cover",
+      "role": "cover",
+      "title": "Story mode",
+      "body": "Tap the right side to move forward. Tap the left side to go back."
+    },
+    {
+      "id": "fullscreen",
+      "role": "story",
+      "title": "Full screen",
+      "body": "Story fills the phone. The progress bars at the top show where you are in the sequence."
+    },
+    {
+      "id": "autoplay",
+      "role": "story",
+      "title": "It plays itself",
+      "body": "Each card advances on its own after a few seconds. Pause any time with the playback control."
+    },
+    {
+      "id": "readable",
+      "role": "story",
+      "title": "Readable underneath",
+      "body": "Even though it animates, every word is pre-rendered in the capsule's HTML — safe to read without scripts."
+    },
+    {
+      "id": "end",
+      "role": "end",
+      "title": "That's story",
+      "body": "Five cards, one sealed capsule. Tap the left side to replay from the start."
+    }
+  ]
+}

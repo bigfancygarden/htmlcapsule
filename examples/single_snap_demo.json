@@ -1,0 +1,36 @@
+{
+  "uuid": "0a9d5e21-7c44-4f8a-9b21-9f3a1c0d5e10",
+  "title": "Snap Mode",
+  "description": "A single-presentation demo capsule that shows only the mobile Snap reading surface.",
+  "type": "briefing",
+  "created_at": "2026-06-03T00:00:00Z",
+  "snapshot_id": "snapshot:single_snap_demo",
+  "visibility": "public",
+  "sections": [
+    {
+      "id": "intro",
+      "title": "Snap mode",
+      "body": "One screen at a time. Swipe up to move to the next panel — each one snaps fully into view."
+    },
+    {
+      "id": "thumbs",
+      "title": "Built for thumbs",
+      "body": "Snap turns a document into a vertical deck of full-screen panels: calm, focused, one idea per screen."
+    },
+    {
+      "id": "document",
+      "title": "Still a document",
+      "body": "Snap is a reading layout, not an app. The same words live in the capsule's readable HTML underneath this view."
+    },
+    {
+      "id": "nojs",
+      "title": "No JavaScript needed",
+      "body": "Snapping is pure CSS scroll-snap. It works even with scripts disabled, which keeps the capsule safe to preview."
+    },
+    {
+      "id": "end",
+      "title": "That's snap",
+      "body": "Scroll back up any time. Every panel is part of one sealed, portable HTML capsule."
+    }
+  ]
+}

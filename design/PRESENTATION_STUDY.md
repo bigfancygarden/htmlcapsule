@@ -286,6 +286,31 @@ play/pause, close/replay, or next/previous controls should declare
 `presentation_model.cards[]`, but that should be a clearly host-rendered view,
 not a second control layer on top of a capsule-owned DOM renderer.
 
+### Required exit hatch for capsule-owned full-screen views (2026-06-03)
+
+Dogfooding in HTML Vault surfaced the corollary: a capsule-owned full-screen view
+hides the host's chrome, so it must carry its own way back to the host's main
+view, or the reader gets trapped. The convention:
+
+```text
+A presentation with profile "reel" + chrome "capsule" MUST include a control
+marked data-capsule-action="exit". An X is enough.
+```
+
+The exit control's runtime should be host-neutral and degrade gracefully — try a
+host capability object, then a host message channel, then a parent-frame
+`postMessage({type:"capsule:exit"})`, then `history.back()` / `window.close()`
+when opened with no host. This keeps the capsule self-contained (works opened
+raw) while letting any host wire its "return" action to a standard hook rather
+than a vendor API.
+
+`compiler/validate.py` checks this as a WARN ("Capsule-owned full-screen view
+provides an exit hatch"); it can graduate to a hard failure once the multiview
+fixtures adopt the hatch. A conforming host may recede entirely when the hatch is
+present and supply its own minimal escape only when it is absent. See the
+companion host-side write-up in the HTML Vault repo
+(`docs/CAPSULE_PRESENTATION_HOST_CONTRACT.md`).
+
 ## LLM Role
 
 LLMs are good at:

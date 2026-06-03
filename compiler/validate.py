@@ -1123,6 +1123,46 @@ def check_presentations(manifest: dict, html: str, result: ValidationResult):
         )
 
 
+def check_fullscreen_exit(manifest: dict, html: str, result: ValidationResult):
+    """A capsule-owned mobile full-screen presentation (profile 'reel' with
+    chrome 'capsule') takes over the whole viewport and the host recedes its own
+    chrome, so the capsule must ship its own way back to the host's main view.
+    The convention is a control marked data-capsule-action="exit" — its runtime
+    requests the host to return (window.capsuleHost.exit() / a capsule:exit
+    message), falling back to history/close when opened with no host. An X is
+    enough. WARN, not fail: a compliant host can fall back to drawing its own
+    escape for capsules that omit it, so this stays advisory until the
+    convention is universal across the corpus."""
+    if manifest is None:
+        return
+    presentations = manifest.get("presentations")
+    if not isinstance(presentations, list):
+        return
+    needs_exit = any(
+        isinstance(p, dict) and p.get("profile") == "reel" and p.get("chrome") == "capsule"
+        for p in presentations
+    )
+    if not needs_exit:
+        result.add(
+            "Capsule-owned full-screen view provides an exit hatch",
+            "pass",
+            "No capsule-owned full-screen (reel + chrome:capsule) presentation declared.",
+        )
+        return
+    has_exit = re.search(r'data-capsule-action\s*=\s*["\']exit["\']', html, re.IGNORECASE) is not None
+    result.add(
+        "Capsule-owned full-screen view provides an exit hatch",
+        "pass" if has_exit else "warn",
+        "" if has_exit else (
+            "A presentation declares profile 'reel' with chrome 'capsule' but no control "
+            "marked data-capsule-action=\"exit\" was found. A capsule-owned full-screen view "
+            "hides host chrome, so it must include its own exit back to the host (an X is "
+            "enough); otherwise the host has to draw its own escape."
+        ),
+        heuristic=True,
+    )
+
+
 def validate(path: Path, strict: bool = False) -> ValidationResult:
     result = ValidationResult()
     html = path.read_text(encoding="utf-8")
@@ -1141,6 +1181,7 @@ def validate(path: Path, strict: bool = False) -> ValidationResult:
     check_runtime_js_string_literals(html, result)
     check_progressive_enhancement(manifest, html, result)
     check_presentations(manifest, html, result)
+    check_fullscreen_exit(manifest, html, result)
     check_file_size(file_size, result)
 
     return result
