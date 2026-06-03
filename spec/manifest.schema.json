@@ -313,6 +313,45 @@
         "additionalProperties": false
       }
     },
+    "derived_from": {
+      "type": "array",
+      "description": "Non-Capsule provenance: datasets, documents, chats, screenshots, photographs, Bundles, and other sources this Capsule depends on or references. Use parents[] only for Capsule-to-Capsule lineage.",
+      "items": {
+        "type": "object",
+        "required": ["type", "title"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Short source kind such as chat, dataset, document, screenshot, photograph, survey, webpage, book, article, or domain-specific values."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300,
+            "description": "Human-readable source label."
+          },
+          "reference": {
+            "type": ["string", "null"],
+            "description": "URL, URN, DOI, local/private reference, or null when the source has no stable identifier."
+          },
+          "role": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "How this source informed the Capsule."
+          },
+          "hash": {
+            "type": "string",
+            "pattern": "^(sha256|sha384|sha512):[a-f0-9]+$"
+          },
+          "date": {
+            "type": "string",
+            "description": "ISO 8601 date or datetime for the source when known."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "related": {
       "type": "array",
       "description": "DEPRECATED in v0.3.0 and planned for removal in v0.4. Was intended for soft associations between capsules (sibling, supersedes, related) but was unused in practice. Hard provenance now lives in `parents` (UUID-based). Soft associations belong in capsule prose, not in structured metadata — schema fields invite the AI to fabricate edges that aren't load-bearing.",

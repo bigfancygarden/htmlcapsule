@@ -1134,6 +1134,101 @@ This makes the project the second known case (after the four-producer family for
 - [`spec/BUNDLE_SPEC.md`](spec/BUNDLE_SPEC.md) — the formal Bundle spec promoted in this finding
 - [`leak/project/BUNDLE_SPEC.md`](https://github.com/) — the originating Bundle spec from the side project (not publicly available; included for trajectory reference)
 
+### F32: Codex Sites validates the hosted-runtime layer while strengthening the case for portable custody
+
+**Date:** 2026-06-03
+
+**Source.** OpenAI's Codex Sites documentation and ChatGPT Sites Terms were reviewed after the maintainer surfaced the feature as relevant to both HTML Capsule and HTML Vault. Sites is a Codex plugin for creating, saving, deploying, and inspecting hosted websites, web apps, and games from inside Codex. OpenAI describes every Sites deployment URL as a production deployment and recommends saving a version for review before deploying. The docs position Sites as preview availability for ChatGPT Business and Enterprise workspaces, with Enterprise enablement controlled through RBAC. The pricing page says Sites is free while in preview, with pricing still pending. The Terms make the user's ownership of website content explicit, but also grant OpenAI and hosting providers the license needed to host, store, reproduce, modify, display, and distribute the site content as needed to make the site available. The Terms also put responsibility for site content, end users, legal compliance, privacy, and functionality on the creator, with restrictions around security threats, malware, children under 13 / applicable digital-consent age, money / crypto / investment transactions, HIPAA PHI, and PCI-regulated payment-card data.
+
+Primary references:
+
+- <https://developers.openai.com/codex/sites>
+- <https://developers.openai.com/codex/pricing>
+- <https://developers.openai.com/showcase/sites>
+- <https://openai.com/policies/chatgpt-sites-terms/>
+
+**Finding — Sites occupies the hosted-runtime layer, not the sealed-artifact layer.** Codex Sites is not a Capsule replacement. It solves a different problem:
+
+```text
+Codex Sites publishes things.
+HTML Capsule preserves things.
+HTML Vault governs things.
+```
+
+Sites is an AI-native deployment surface: generated code becomes an OpenAI-hosted site/app. Capsule is a portable artifact format: generated or compiled HTML becomes a self-contained, provenance-bearing object that can survive outside the platform that produced or hosted it. Vault is the custody layer: artifacts arrive, get quarantined, inspected, scanned, validated, hashed, related, signed, exported, archived, and optionally published.
+
+The useful layer map is now:
+
+| Layer | Role | Examples |
+|---|---|---|
+| Live working canvas | Iterative creation and review before sealing | ChatGPT Canvas, Claude Artifacts, html-docs, Workplane |
+| Portable artifact | Self-contained or manifested object that preserves the work | Capsule, Bundle |
+| Custody system | Local-first review, quarantine, library, provenance, signing, publishing dispatch | HTML Vault |
+| Hosted runtime / publishing | Public or workspace-hosted live site/app | Codex Sites, htmlbin, MinDev, Vercel, Cloudflare, GitHub Pages |
+| Discovery | LLM / web index of where artifacts live | `llms.txt`, registry pages, site maps |
+
+The distinction matters because Sites produces useful live deployments, but a live deployment is not a durable record. A deployed site can change, disappear, depend on account state, depend on platform terms, collect end-user data, or carry operational responsibilities that the file alone does not express. Capsule's role is to preserve the reviewed artifact state; Vault's role is to decide whether and how it should move from local custody to a hosted surface.
+
+**Implication for Capsule.** No Capsule rule changes. If anything, Sites reinforces Capsule's sealed-boundary thesis:
+
+- Do not relax Capsule's no-network rule to accommodate hosted app assumptions.
+- Do not treat deployment as preservation.
+- Do not make Capsule a hosting protocol.
+- Do record hosted deployment provenance when relevant, either in `derived_from[]`, producer metadata, or future deployment/provenance sidecars once real consumers need that field.
+
+A Capsule can be the sealed record of a Sites-bound artifact at review time: "these are the bytes/content we approved before deployment" or "this is the offline record of what the deployment represented." If a Sites project is too project-shaped for one HTML file, Bundle is the right preservation target: source, build output, assets, storage exports, deployment metadata, and hashes in one manifest-described package.
+
+**Implication for Vault.** Sites makes Vault more important, not less. If AI tools can turn prompts into production deployments quickly, users need a local system of record for the generated web artifacts:
+
+```text
+Codex / ChatGPT / Claude / local agent
+        ↓
+generated HTML / app / report / dashboard / site candidate
+        ↓
+HTML Vault quarantine
+        ↓
+scan / validate / hash / preview / annotate / sign
+        ↓
+promote to Capsule or Bundle
+        ↓
+export / publish / archive / send to Codex Sites / send elsewhere
+```
+
+The key positioning line:
+
+> Publish anywhere. Preserve locally. Verify independently.
+
+Vault should eventually treat Codex Sites as one publishing endpoint among many, not as the canonical home. Useful future Vault features suggested by this finding:
+
+- import a generated site candidate into quarantine before deployment
+- save a sealed Capsule snapshot of the reviewed content
+- preserve a Bundle snapshot of a full Sites-style project, including source/build output and storage export metadata
+- record deployment URLs, deployment timestamps, access scope, and hosting provider in local provenance
+- compare a later downloaded/snapshotted deployment against the sealed local record
+- warn when a deployment candidate appears to collect sensitive or regulated data
+
+**Implication for Bundle.** Bundle gets a clearer preservation role for hosted projects. A worker-compatible app with D1/R2 state is not naturally a Capsule unless its meaningful artifact is one offline HTML file. A preserved Sites project may need:
+
+- source tree or build output
+- `manifest.json`
+- file hashes
+- environment-variable names without secret values
+- D1 schema and export snapshot when available
+- R2 object inventory and hashes when available
+- declared external services
+- deployment metadata
+- one or more entry viewers
+
+That shape is Bundle territory. The same rule from F31 holds: don't stretch Capsule above its ceiling; use the sibling format honestly.
+
+**Positioning update.** Codex Sites validates the broader premise that AI-generated HTML/web artifacts are becoming a normal output class. The more platforms make deployment easy, the more valuable the independent portable object and custody layers become. The project should not frame Sites defensively. Sites is evidence that the ecosystem is moving toward the problem Capsule and Vault already name.
+
+**Related findings:**
+- [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin) — independent convergence on lightweight HTML hosting; Codex Sites is the platform-integrated hosted-runtime version of the same broad pressure
+- [F22](#f22-independent-convergence-on-the-live-editing-layer-html-docs--workplane) — live editing layer; Sites sits downstream as a deployment surface
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — host vs registry distinction; Sites is host/runtime, not registry/commitment layer
+- [F31](#f31-bundle-emerges-as-sibling-format--empirical-pressure-from-a-heavy-data-investigation-produces-the-projects-first-sibling-spec-producer--format--host-pattern-named-explicitly) — producer / format / host pattern; Sites adds another hosted target while preserving the same producer/format/host separation
+
 ## Open questions
 
 In rough priority:
