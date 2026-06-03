@@ -406,7 +406,27 @@ examples/multiview_essay_demo.json
 
 examples/multiview_release_notes_demo.json
   -> spec/examples/presentations/multiview_release_notes_capsule.html
+
+examples/multiview_field_safety_demo.json
+  -> spec/examples/presentations/multiview_field_safety_capsule.html
+
+examples/multiview_market_watch_demo.json
+  -> spec/examples/presentations/multiview_market_watch_capsule.html
+
+examples/multiview_chrome_contract_demo.json
+  -> spec/examples/presentations/multiview_chrome_contract_capsule.html
+
+examples/multiview_chrome_contract_locked_demo.json
+  -> spec/examples/presentations/multiview_chrome_contract_locked_capsule.html
 ```
+
+The locked chrome-contract fixture adds `story_behavior: "locked"` to the source
+model. The compiler uses that as a rendering hint for mobile reel/story mode:
+the story viewport is fixed, page scroll is disabled, pinch/drag-dismiss
+gestures are suppressed, and taps/swipes remain available for story navigation.
+This is intentionally a presentation behavior of the standalone Capsule, not a
+host-only workaround. Hosts such as HTML Vault can then align their chrome and
+scroll policy with the declared presentation instead of guessing.
 
 ### Phase 3: Evaluation
 

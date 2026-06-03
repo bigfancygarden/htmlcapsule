@@ -1,0 +1,98 @@
+{
+  "uuid": "e4a64e9b-18ea-4fa1-82cc-7a482c8a5c3a",
+  "title": "Capsule Chrome Contract Locked Demo",
+  "description": "A dogfood capsule for testing a locked, host-friendly story presentation without losing standalone Capsule behavior.",
+  "type": "spec_demo",
+  "created_at": "2026-06-02T00:00:00Z",
+  "snapshot_id": "snapshot:multiview_chrome_contract_locked_demo",
+  "visibility": "public",
+  "story_behavior": "locked",
+  "sections": [
+    {
+      "id": "principle",
+      "title": "One content layer first",
+      "body": "The capsule-root reader view remains the primary meaning. Alternate views are declared presentations derived from that same substance."
+    },
+    {
+      "id": "chrome",
+      "title": "Chrome has one owner",
+      "body": "When a reel or slide deck declares capsule-owned chrome, a host should recede and show only a minimal escape or back affordance."
+    },
+    {
+      "id": "locked",
+      "title": "Story can lock the viewport",
+      "body": "A declared locked story disables scroll, pinch, and drag-dismiss gestures inside the presentation so taps, swipes, and playback controls remain predictable."
+    },
+    {
+      "id": "browser",
+      "title": "Standalone still works",
+      "body": "Opening the capsule in a normal browser should show the same controls and presentation behavior because the artifact carries its own runtime."
+    },
+    {
+      "id": "vault",
+      "title": "Vault can enhance",
+      "body": "HTML Vault may add custody views, validation, search, tags, lineage, and safe preview, but those app views are not capsule presentations."
+    },
+    {
+      "id": "dogfood",
+      "title": "Dogfood outcome",
+      "body": "A successful test has no double chrome, a useful JS-off reader layer, declared entries that resolve, and no accidental zoom or vertical wobble."
+    }
+  ],
+  "assets": [
+    {
+      "id": "flow",
+      "media_type": "image/svg+xml",
+      "alt": "Four presentation surfaces derived from one Capsule data model.",
+      "fragment": "#asset-flow"
+    }
+  ],
+  "presentation_model": {
+    "cards": [
+      {
+        "id": "cover",
+        "role": "cover",
+        "title": "Locked Chrome Contract",
+        "body": "One capsule can stand alone and still let Vault host it without scroll wobble.",
+        "asset_refs": ["flow"],
+        "source_sections": ["principle"]
+      },
+      {
+        "id": "owner",
+        "role": "story",
+        "title": "One owner",
+        "body": "If the capsule owns controls, the host should not wrap it with a second control system.",
+        "source_sections": ["chrome"]
+      },
+      {
+        "id": "lock",
+        "role": "story",
+        "title": "Lock the reel",
+        "body": "Story mode is a fixed viewport. Swipe advances, tap navigates, and the page itself does not drift.",
+        "source_sections": ["locked"]
+      },
+      {
+        "id": "standalone",
+        "role": "story",
+        "title": "Browser ready",
+        "body": "The same reel and slides should work when opened directly from the file system.",
+        "source_sections": ["browser"]
+      },
+      {
+        "id": "host",
+        "role": "story",
+        "title": "Vault enhances",
+        "body": "Custody, validation, search, tags, and lineage are host features around the artifact.",
+        "source_sections": ["vault"]
+      },
+      {
+        "id": "end",
+        "role": "end",
+        "title": "No wobble",
+        "body": "That is the acceptance test for the locked presentation contract.",
+        "action": "restart",
+        "source_sections": ["dogfood"]
+      }
+    ]
+  }
+}

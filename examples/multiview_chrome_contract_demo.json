@@ -1,0 +1,85 @@
+{
+  "uuid": "fd3f28e4-6b3d-410b-b0b0-1112f4d4295c",
+  "title": "Capsule Chrome Contract Demo",
+  "description": "A dogfood capsule for testing the new presentation chrome contract between standalone Capsule rendering and HTML Vault hosts.",
+  "type": "spec_demo",
+  "created_at": "2026-06-02T00:00:00Z",
+  "snapshot_id": "snapshot:multiview_chrome_contract_demo",
+  "visibility": "public",
+  "sections": [
+    {
+      "id": "principle",
+      "title": "One content layer first",
+      "body": "The capsule-root reader view remains the primary meaning. Alternate views are declared presentations derived from that same substance."
+    },
+    {
+      "id": "chrome",
+      "title": "Chrome has one owner",
+      "body": "When a reel or slide deck declares capsule-owned chrome, a host should recede and show only a minimal escape or back affordance."
+    },
+    {
+      "id": "browser",
+      "title": "Standalone still works",
+      "body": "Opening the capsule in a normal browser should show the same controls and presentation behavior because the artifact carries its own runtime."
+    },
+    {
+      "id": "vault",
+      "title": "Vault can enhance",
+      "body": "HTML Vault may add custody views, validation, search, tags, lineage, and safe preview, but those app views are not capsule presentations."
+    },
+    {
+      "id": "dogfood",
+      "title": "Dogfood outcome",
+      "body": "A successful test has no double chrome, a useful JS-off reader layer, declared entries that resolve, and no new facts introduced by the alternate views."
+    }
+  ],
+  "assets": [
+    {
+      "id": "flow",
+      "media_type": "image/svg+xml",
+      "alt": "Four presentation surfaces derived from one Capsule data model.",
+      "fragment": "#asset-flow"
+    }
+  ],
+  "presentation_model": {
+    "cards": [
+      {
+        "id": "cover",
+        "role": "cover",
+        "title": "Chrome Contract",
+        "body": "One capsule can stand alone and still let Vault host it beautifully.",
+        "asset_refs": ["flow"],
+        "source_sections": ["principle"]
+      },
+      {
+        "id": "owner",
+        "role": "story",
+        "title": "One owner",
+        "body": "If the capsule owns controls, the host should not wrap it with a second control system.",
+        "source_sections": ["chrome"]
+      },
+      {
+        "id": "standalone",
+        "role": "story",
+        "title": "Browser ready",
+        "body": "The same reel and slides should work when opened directly from the file system.",
+        "source_sections": ["browser"]
+      },
+      {
+        "id": "host",
+        "role": "story",
+        "title": "Vault enhances",
+        "body": "Custody, validation, search, tags, and lineage are host features around the artifact.",
+        "source_sections": ["vault"]
+      },
+      {
+        "id": "end",
+        "role": "end",
+        "title": "No double chrome",
+        "body": "That is the acceptance test for the new presentation contract.",
+        "action": "restart",
+        "source_sections": ["dogfood"]
+      }
+    ]
+  }
+}

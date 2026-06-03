@@ -1,0 +1,85 @@
+{
+  "uuid": "f58ffe29-10a3-4c0f-b86a-c9f7babc616f",
+  "title": "Golden Ears Field Safety Brief",
+  "description": "A practical reader-first safety capsule for testing checklist content across reader, mobile, slides, and reel presentations.",
+  "type": "field_brief",
+  "created_at": "2026-06-02T00:00:00Z",
+  "snapshot_id": "snapshot:multiview_field_safety_demo",
+  "visibility": "public",
+  "sections": [
+    {
+      "id": "bottom_line",
+      "title": "Bottom line",
+      "body": "Pack for damp, cool, variable weather and assume cell coverage may be unreliable. The core plan is simple meals, warm sleep, clean water, and a clear return time."
+    },
+    {
+      "id": "must_pack",
+      "title": "Must-pack items",
+      "body": "Bring layered clothing, rain shell, headlamp, stove and fuel, water jug, bear-aware food storage, first-aid kit, paper map, battery bank, and dry socks."
+    },
+    {
+      "id": "arrival",
+      "title": "Arrival routine",
+      "body": "Set shelter before cooking, identify water and wash stations, store food away from the tent, and confirm the morning route before dark."
+    },
+    {
+      "id": "risk",
+      "title": "Risk controls",
+      "body": "Avoid relying on a campfire for cooking, keep wet cotton out of the sleep system, and set a hard turn-back time for any side trip."
+    },
+    {
+      "id": "handoff",
+      "title": "Handoff note",
+      "body": "Share the itinerary, trailhead, campsite, vehicle plate, and return window with one person who is not on the trip."
+    }
+  ],
+  "assets": [
+    {
+      "id": "flow",
+      "media_type": "image/svg+xml",
+      "alt": "Four presentation surfaces derived from one Capsule data model.",
+      "fragment": "#asset-flow"
+    }
+  ],
+  "presentation_model": {
+    "cards": [
+      {
+        "id": "cover",
+        "role": "cover",
+        "title": "Field Safety",
+        "body": "One practical trip brief, packaged for reading, scanning, slides, and story review.",
+        "asset_refs": ["flow"],
+        "source_sections": ["bottom_line"]
+      },
+      {
+        "id": "pack",
+        "role": "story",
+        "title": "Pack the basics",
+        "body": "Warm sleep, dry layers, light, water, food storage, and stove reliability matter more than gear novelty.",
+        "source_sections": ["must_pack"]
+      },
+      {
+        "id": "arrive",
+        "role": "story",
+        "title": "Set camp first",
+        "body": "Shelter, water, food storage, and route confirmation should be done before dark.",
+        "source_sections": ["arrival"]
+      },
+      {
+        "id": "control",
+        "role": "story",
+        "title": "Control the risks",
+        "body": "Do not depend on fire, do not let wet clothes enter the sleep system, and keep a turn-back time.",
+        "source_sections": ["risk"]
+      },
+      {
+        "id": "end",
+        "role": "end",
+        "title": "Tell someone",
+        "body": "The most useful safety feature is a clear external handoff before you leave.",
+        "action": "restart",
+        "source_sections": ["handoff"]
+      }
+    ]
+  }
+}

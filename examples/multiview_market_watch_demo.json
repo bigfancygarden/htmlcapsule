@@ -1,0 +1,85 @@
+{
+  "uuid": "61c7a8c1-24ac-4282-8767-ca56fe6da275",
+  "title": "Critical Minerals Watch Capsule",
+  "description": "A compact market-watch fixture for testing whether investment-style highlights work as reader, mobile feed, slides, and reel surfaces.",
+  "type": "market_watch",
+  "created_at": "2026-06-02T00:00:00Z",
+  "snapshot_id": "snapshot:multiview_market_watch_demo",
+  "visibility": "public",
+  "sections": [
+    {
+      "id": "thesis",
+      "title": "Watch thesis",
+      "body": "The artifact tracks early-stage critical minerals themes where land position, permitting path, infrastructure, and technical evidence matter more than promotional claims."
+    },
+    {
+      "id": "signals",
+      "title": "Signals to monitor",
+      "body": "Look for drill-ready targets, coherent geophysical signatures, credible sampling, nearby infrastructure, aligned management incentives, and repeatable disclosure quality."
+    },
+    {
+      "id": "risks",
+      "title": "Risk frame",
+      "body": "The main risks are dilution, weak field execution, unclear metallurgy, inaccessible terrain, over-promoted analogies, and limited capital-market attention."
+    },
+    {
+      "id": "workflow",
+      "title": "Vault workflow",
+      "body": "Each new company capsule should preserve the original source bytes, extract plain text, attach tags, and link siblings by project, commodity, region, and source registry."
+    },
+    {
+      "id": "decision",
+      "title": "Decision use",
+      "body": "Use the capsule as a watchlist memory object, not as a buy signal. It should make follow-up questions clearer and keep provenance visible."
+    }
+  ],
+  "assets": [
+    {
+      "id": "flow",
+      "media_type": "image/svg+xml",
+      "alt": "Four presentation surfaces derived from one Capsule data model.",
+      "fragment": "#asset-flow"
+    }
+  ],
+  "presentation_model": {
+    "cards": [
+      {
+        "id": "cover",
+        "role": "cover",
+        "title": "Critical Minerals",
+        "body": "A watch capsule should summarize the signal without pretending to be a recommendation.",
+        "asset_refs": ["flow"],
+        "source_sections": ["thesis"]
+      },
+      {
+        "id": "signals",
+        "role": "story",
+        "title": "Look for signals",
+        "body": "Targets, infrastructure, sampling, management, and disclosure quality all belong in the same memory object.",
+        "source_sections": ["signals"]
+      },
+      {
+        "id": "risks",
+        "role": "story",
+        "title": "Name the risk",
+        "body": "Dilution, execution, metallurgy, terrain, hype, and attention risk should stay visible.",
+        "source_sections": ["risks"]
+      },
+      {
+        "id": "vault",
+        "role": "story",
+        "title": "Make it linkable",
+        "body": "Vault can connect sibling capsules by project, commodity, region, source, and registry.",
+        "source_sections": ["workflow"]
+      },
+      {
+        "id": "end",
+        "role": "end",
+        "title": "Memory, not advice",
+        "body": "The capsule helps you remember and compare. It does not replace judgment.",
+        "action": "restart",
+        "source_sections": ["decision"]
+      }
+    ]
+  }
+}
