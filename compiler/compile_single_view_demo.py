@@ -43,8 +43,8 @@ VIEWS = {
         "entry": "#capsule-mobile",
         "profile": "mobile",
         "navigation": "scroll",
-        "chrome": None,
-        "capsule_profile": "static",
+        "chrome": "capsule",
+        "capsule_profile": "interactive",
         "label": "Snap",
         "source_key": "sections",
     },
@@ -52,8 +52,8 @@ VIEWS = {
         "entry": "#capsule-mobile-feed",
         "profile": "mobile",
         "navigation": "scroll",
-        "chrome": None,
-        "capsule_profile": "static",
+        "chrome": "capsule",
+        "capsule_profile": "interactive",
         "label": "Feed",
         "source_key": "sections",
     },
@@ -236,6 +236,30 @@ UTILITY_BLOCK = """
 """.strip()
 
 
+def render_capsule_controls() -> str:
+    """Reusable capsule-side controls: a single gear (bottom-right) that opens a
+    small menu holding the standard exit hatch (data-capsule-action="exit") and
+    the "About this capsule" panel. Capsules that include this own their own
+    custody affordances, so a conforming host (e.g. HTML Vault) recedes entirely.
+    A template for future capsules — keep the gear visible and the exit present."""
+    return (
+        '<div class="cap-controls" data-cap-controls>'
+        '<div class="cap-menu" role="menu" hidden>'
+        '<button class="cap-menu-item" data-capsule-action="exit" type="button" role="menuitem">'
+        '<span aria-hidden="true">&#8617;</span> Back to vault</button>'
+        '<details class="cap-about">'
+        '<summary>About this capsule</summary>'
+        '<div class="cap-about-body">'
+        '<button class="cap-copy" data-capsule-action="copy_as_json" type="button">Copy JSON</button>'
+        '<pre id="about-data"></pre>'
+        '</div></details>'
+        '</div>'
+        '<button class="cap-gear" type="button" aria-haspopup="true" aria-expanded="false" '
+        'aria-label="Capsule controls">&#9881;</button>'
+        '</div>'
+    )
+
+
 # ----------------------------------------------------------------------------
 # Style
 # ----------------------------------------------------------------------------
@@ -294,6 +318,93 @@ body {
   border-radius: 7px;
   background: #fff;
 }
+.cap-controls {
+  position: fixed;
+  right: max(1rem, calc(env(safe-area-inset-right) + .5rem));
+  bottom: max(1.1rem, calc(env(safe-area-inset-bottom) + .8rem));
+  z-index: 50;
+}
+.cap-gear {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(17,24,39,.62);
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  touch-action: manipulation;
+}
+.cap-menu {
+  position: absolute;
+  right: 0;
+  bottom: 52px;
+  width: min(78vw, 20rem);
+  padding: .4rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 14px 44px rgba(0,0,0,.28);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.cap-menu[hidden] { display: none; }
+.cap-menu-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  padding: .7rem .75rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+.cap-menu-item:active { background: rgba(17,24,39,.07); }
+.cap-about { margin-top: .15rem; border-top: 1px solid var(--line); }
+.cap-about > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: .7rem .75rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+.cap-about > summary::-webkit-details-marker { display: none; }
+.cap-about > summary::after { content: " \\203A"; color: var(--muted); }
+.cap-about[open] > summary::after { content: " \\2304"; }
+.cap-about-body { padding: 0 .75rem .55rem; }
+.cap-about-body .cap-copy {
+  margin-bottom: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: .35rem .6rem;
+  font: inherit;
+  cursor: pointer;
+}
+.cap-about-body pre {
+  max-height: 11rem;
+  overflow: auto;
+  margin: 0;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font-size: .72rem;
+  line-height: 1.4;
+}
 """
 
 STYLE_SNAP = """
@@ -342,43 +453,79 @@ html { scroll-snap-type: y mandatory; }
 """
 
 STYLE_FEED = """
+body { background: #eef1f6; }
 .feed-view {
   display: block;
-  padding: max(1.25rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: max(2.2rem, calc(env(safe-area-inset-top) + 1.2rem)) 1.15rem max(6rem, calc(env(safe-area-inset-bottom) + 5rem));
 }
 .feed-head {
-  padding: 1.1rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: linear-gradient(160deg, #fff, #f3fbf8);
+  margin-bottom: 1.4rem;
+  padding: 0 .2rem;
 }
 .feed-head h1 {
-  margin: .1rem 0 .5rem;
-  font-size: clamp(2.1rem, 10vw, 3rem);
-  line-height: .96;
-  letter-spacing: -0.01em;
+  margin: .2rem 0 .55rem;
+  font-size: clamp(2.5rem, 11vw, 3.3rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
-.feed-head > p:not(.eyebrow) { margin: 0; color: #303846; font-size: .98rem; line-height: 1.35; }
-.feed-list { display: grid; gap: .8rem; margin-top: .85rem; }
+.feed-head > p:not(.eyebrow) {
+  margin: 0;
+  max-width: 28rem;
+  color: var(--muted);
+  font-size: 1.04rem;
+  line-height: 1.45;
+}
+.feed-list { display: grid; gap: .9rem; }
 .feed-card {
-  padding: 1rem 1.05rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  position: relative;
+  padding: 1.2rem 1.25rem 1.3rem;
+  border-radius: 20px;
   background: #fff;
+  box-shadow: 0 1px 2px rgba(16,24,40,.06), 0 10px 28px rgba(16,24,40,.08);
+  overflow: hidden;
 }
+.feed-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+.feed-card:nth-child(5n+1)::before { background: #0f766e; }
+.feed-card:nth-child(5n+2)::before { background: #e8a33d; }
+.feed-card:nth-child(5n+3)::before { background: #4f46e5; }
+.feed-card:nth-child(5n+4)::before { background: #be123c; }
+.feed-card:nth-child(5n+5)::before { background: #0891b2; }
 .feed-index {
   display: inline-flex;
-  margin-bottom: .55rem;
-  padding: .25rem .5rem;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  margin-bottom: .75rem;
+  padding: 0 .55rem;
   border-radius: 999px;
-  background: rgba(15,118,110,.1);
+  background: rgba(15,118,110,.12);
   color: var(--teal);
-  font-size: .74rem;
-  font-weight: 850;
-  line-height: 1;
+  font-size: .82rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
-.feed-card h2 { margin: 0 0 .35rem; font-size: 1.32rem; line-height: 1.12; letter-spacing: -0.01em; }
-.feed-card p { margin: 0; color: var(--muted); font-size: .98rem; line-height: 1.4; }
+.feed-card h2 {
+  margin: 0 0 .4rem;
+  font-size: 1.42rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.feed-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.46;
+}
 """
 
 STYLE_STORY = """
@@ -632,10 +779,44 @@ RUNTIME_STORY = """
 """
 
 
+RUNTIME_EXIT = """
+  function requestExit(){
+    try { if (window.capsuleHost && typeof window.capsuleHost.exit === "function") { window.capsuleHost.exit(); return; } } catch (e) {}
+    try { if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.capsuleHost) { window.webkit.messageHandlers.capsuleHost.postMessage({ type: "exit" }); return; } } catch (e) {}
+    try { if (window.parent && window.parent !== window) { window.parent.postMessage({ type: "capsule:exit" }, "*"); return; } } catch (e) {}
+    if (window.history.length > 1) { window.history.back(); return; }
+    try { window.close(); } catch (e) {}
+  }
+  Array.prototype.slice.call(document.querySelectorAll('[data-capsule-action="exit"]')).forEach(function(button){
+    button.addEventListener("click", function(event){ event.preventDefault(); event.stopPropagation(); requestExit(); });
+  });
+"""
+
+RUNTIME_CONTROLS = """
+  var capControls = document.querySelector("[data-cap-controls]");
+  if (capControls) {
+    var gear = capControls.querySelector(".cap-gear");
+    var menu = capControls.querySelector(".cap-menu");
+    function setMenu(open){
+      if (!menu || !gear) return;
+      menu.hidden = !open;
+      gear.setAttribute("aria-expanded", String(open));
+    }
+    if (gear) gear.addEventListener("click", function(event){ event.stopPropagation(); setMenu(menu.hidden); });
+    document.addEventListener("click", function(event){
+      if (menu && !menu.hidden && !capControls.contains(event.target)) setMenu(false);
+    });
+    document.addEventListener("keydown", function(event){ if (event.key === "Escape") setMenu(false); });
+  }
+"""
+
+
 def render_runtime(view: str) -> str:
     body = RUNTIME_ABOUT
     if view == "story":
         body = body + RUNTIME_STORY
+    else:
+        body = body + RUNTIME_EXIT + RUNTIME_CONTROLS
     return "(function(){" + body + "})();"
 
 
@@ -653,6 +834,10 @@ def render_html(view: str, manifest: dict, data: dict, source: dict) -> str:
         "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; "
         "img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'"
     )
+    # Story draws its own in-surface controls (progress / pause / exit); scroll
+    # surfaces (snap / feed) use the reusable capsule-side gear that holds the
+    # exit hatch + About instead of an inline "About this capsule" block.
+    controls = UTILITY_BLOCK if view == "story" else render_capsule_controls()
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -667,7 +852,7 @@ def render_html(view: str, manifest: dict, data: dict, source: dict) -> str:
 <body>
 <main id="capsule-root" data-view-mode="{default_mode}" data-presentation="{spec['label']}">
 {render_surface(view, source)}
-{UTILITY_BLOCK}
+{controls}
 </main>
 <script id="capsule-runtime">{render_runtime(view)}</script>
 </body>

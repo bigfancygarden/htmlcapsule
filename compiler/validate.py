@@ -1124,22 +1124,22 @@ def check_presentations(manifest: dict, html: str, result: ValidationResult):
 
 
 def check_fullscreen_exit(manifest: dict, html: str, result: ValidationResult):
-    """A capsule-owned mobile full-screen presentation (profile 'reel' with
-    chrome 'capsule') takes over the whole viewport and the host recedes its own
-    chrome, so the capsule must ship its own way back to the host's main view.
-    The convention is a control marked data-capsule-action="exit" — its runtime
-    requests the host to return (window.capsuleHost.exit() / a capsule:exit
-    message), falling back to history/close when opened with no host. An X is
-    enough. WARN, not fail: a compliant host can fall back to drawing its own
-    escape for capsules that omit it, so this stays advisory until the
-    convention is universal across the corpus."""
+    """A capsule-owned presentation (chrome 'capsule') draws its own controls and
+    a conforming host recedes its own chrome, so the capsule must ship its own way
+    back to the host's main view. The convention is a control marked
+    data-capsule-action="exit" — its runtime requests the host to return
+    (window.capsuleHost.exit() / a capsule:exit message), falling back to
+    history/close when opened with no host. An X is enough. WARN, not fail: a
+    compliant host can fall back to drawing its own escape for capsules that omit
+    it, so this stays advisory until the convention is universal across the
+    corpus."""
     if manifest is None:
         return
     presentations = manifest.get("presentations")
     if not isinstance(presentations, list):
         return
     needs_exit = any(
-        isinstance(p, dict) and p.get("profile") == "reel" and p.get("chrome") == "capsule"
+        isinstance(p, dict) and p.get("chrome") == "capsule"
         for p in presentations
     )
     if not needs_exit:

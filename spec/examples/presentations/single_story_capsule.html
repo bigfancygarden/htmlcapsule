@@ -139,6 +139,93 @@ body {
   border-radius: 7px;
   background: #fff;
 }
+.cap-controls {
+  position: fixed;
+  right: max(1rem, calc(env(safe-area-inset-right) + .5rem));
+  bottom: max(1.1rem, calc(env(safe-area-inset-bottom) + .8rem));
+  z-index: 50;
+}
+.cap-gear {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(17,24,39,.62);
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  touch-action: manipulation;
+}
+.cap-menu {
+  position: absolute;
+  right: 0;
+  bottom: 52px;
+  width: min(78vw, 20rem);
+  padding: .4rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 14px 44px rgba(0,0,0,.28);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.cap-menu[hidden] { display: none; }
+.cap-menu-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  padding: .7rem .75rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+.cap-menu-item:active { background: rgba(17,24,39,.07); }
+.cap-about { margin-top: .15rem; border-top: 1px solid var(--line); }
+.cap-about > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: .7rem .75rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+.cap-about > summary::-webkit-details-marker { display: none; }
+.cap-about > summary::after { content: " \203A"; color: var(--muted); }
+.cap-about[open] > summary::after { content: " \2304"; }
+.cap-about-body { padding: 0 .75rem .55rem; }
+.cap-about-body .cap-copy {
+  margin-bottom: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: .35rem .6rem;
+  font: inherit;
+  cursor: pointer;
+}
+.cap-about-body pre {
+  max-height: 11rem;
+  overflow: auto;
+  margin: 0;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font-size: .72rem;
+  line-height: 1.4;
+}
 
 .reel { display: block; background: #05060a; color: #fff; }
 .story-progress { display: none; }

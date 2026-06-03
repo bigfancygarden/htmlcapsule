@@ -12,7 +12,7 @@
   "title": "Snap Mode",
   "description": "A single-presentation demo capsule that shows only the mobile Snap reading surface.",
   "type": "briefing",
-  "profile": "static",
+  "profile": "interactive",
   "presentations": [
     {
       "id": "snap",
@@ -20,7 +20,8 @@
       "entry": "#capsule-mobile",
       "navigation": "scroll",
       "title": "Snap",
-      "required": true
+      "required": true,
+      "chrome": "capsule"
     }
   ],
   "created_at": "2026-06-03T00:00:00Z",
@@ -43,7 +44,7 @@
     "external_dependencies": false
   },
   "integrity": {
-    "content_hash": "sha256:1d4a8a949ec9c727edeab70083d1427ca3f774c4c2d736e533015391922f83ea",
+    "content_hash": "sha256:902db4052a433b41584043f0ce1f1149bd17ded9f0d1d735187c5f135abb3b4c",
     "hash_scope": "data+manifest"
   },
   "capabilities": [
@@ -133,6 +134,93 @@ body {
   border-radius: 7px;
   background: #fff;
 }
+.cap-controls {
+  position: fixed;
+  right: max(1rem, calc(env(safe-area-inset-right) + .5rem));
+  bottom: max(1.1rem, calc(env(safe-area-inset-bottom) + .8rem));
+  z-index: 50;
+}
+.cap-gear {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(17,24,39,.62);
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  touch-action: manipulation;
+}
+.cap-menu {
+  position: absolute;
+  right: 0;
+  bottom: 52px;
+  width: min(78vw, 20rem);
+  padding: .4rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 14px 44px rgba(0,0,0,.28);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.cap-menu[hidden] { display: none; }
+.cap-menu-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  padding: .7rem .75rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+.cap-menu-item:active { background: rgba(17,24,39,.07); }
+.cap-about { margin-top: .15rem; border-top: 1px solid var(--line); }
+.cap-about > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: .7rem .75rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+.cap-about > summary::-webkit-details-marker { display: none; }
+.cap-about > summary::after { content: " \203A"; color: var(--muted); }
+.cap-about[open] > summary::after { content: " \2304"; }
+.cap-about-body { padding: 0 .75rem .55rem; }
+.cap-about-body .cap-copy {
+  margin-bottom: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: .35rem .6rem;
+  font: inherit;
+  cursor: pointer;
+}
+.cap-about-body pre {
+  max-height: 11rem;
+  overflow: auto;
+  margin: 0;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font-size: .72rem;
+  line-height: 1.4;
+}
 
 html { scroll-snap-type: y mandatory; }
 .snap-view { display: block; }
@@ -180,15 +268,7 @@ html { scroll-snap-type: y mandatory; }
 <body>
 <main id="capsule-root" data-view-mode="scroll" data-presentation="Snap">
 <section id="capsule-mobile" class="snap-view" aria-label="Snap reading presentation"><article class="snap-panel" data-source-section="intro"><span class="snap-index">01 / 05</span><h2>Snap mode</h2><p>One screen at a time. Swipe up to move to the next panel — each one snaps fully into view.</p></article><article class="snap-panel" data-source-section="thumbs"><span class="snap-index">02 / 05</span><h2>Built for thumbs</h2><p>Snap turns a document into a vertical deck of full-screen panels: calm, focused, one idea per screen.</p></article><article class="snap-panel" data-source-section="document"><span class="snap-index">03 / 05</span><h2>Still a document</h2><p>Snap is a reading layout, not an app. The same words live in the capsule&#x27;s readable HTML underneath this view.</p></article><article class="snap-panel" data-source-section="nojs"><span class="snap-index">04 / 05</span><h2>No JavaScript needed</h2><p>Snapping is pure CSS scroll-snap. It works even with scripts disabled, which keeps the capsule safe to preview.</p></article><article class="snap-panel" data-source-section="end"><span class="snap-index">05 / 05</span><h2>That&#x27;s snap</h2><p>Scroll back up any time. Every panel is part of one sealed, portable HTML capsule.</p></article></section>
-<section class="utility" aria-label="Capsule utilities">
-  <details id="about">
-    <summary>About this capsule</summary>
-    <div class="about-panel">
-      <button data-capsule-action="copy_as_json" type="button">Copy JSON</button>
-      <pre id="about-data"></pre>
-    </div>
-  </details>
-</section>
+<div class="cap-controls" data-cap-controls><div class="cap-menu" role="menu" hidden><button class="cap-menu-item" data-capsule-action="exit" type="button" role="menuitem"><span aria-hidden="true">&#8617;</span> Back to vault</button><details class="cap-about"><summary>About this capsule</summary><div class="cap-about-body"><button class="cap-copy" data-capsule-action="copy_as_json" type="button">Copy JSON</button><pre id="about-data"></pre></div></details></div><button class="cap-gear" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Capsule controls">&#9881;</button></div>
 </main>
 <script id="capsule-runtime">(function(){
   var about = document.getElementById("about-data");
@@ -198,6 +278,33 @@ html { scroll-snap-type: y mandatory; }
   if (copy) copy.addEventListener("click", function(){
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
   });
+
+  function requestExit(){
+    try { if (window.capsuleHost && typeof window.capsuleHost.exit === "function") { window.capsuleHost.exit(); return; } } catch (e) {}
+    try { if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.capsuleHost) { window.webkit.messageHandlers.capsuleHost.postMessage({ type: "exit" }); return; } } catch (e) {}
+    try { if (window.parent && window.parent !== window) { window.parent.postMessage({ type: "capsule:exit" }, "*"); return; } } catch (e) {}
+    if (window.history.length > 1) { window.history.back(); return; }
+    try { window.close(); } catch (e) {}
+  }
+  Array.prototype.slice.call(document.querySelectorAll('[data-capsule-action="exit"]')).forEach(function(button){
+    button.addEventListener("click", function(event){ event.preventDefault(); event.stopPropagation(); requestExit(); });
+  });
+
+  var capControls = document.querySelector("[data-cap-controls]");
+  if (capControls) {
+    var gear = capControls.querySelector(".cap-gear");
+    var menu = capControls.querySelector(".cap-menu");
+    function setMenu(open){
+      if (!menu || !gear) return;
+      menu.hidden = !open;
+      gear.setAttribute("aria-expanded", String(open));
+    }
+    if (gear) gear.addEventListener("click", function(event){ event.stopPropagation(); setMenu(menu.hidden); });
+    document.addEventListener("click", function(event){
+      if (menu && !menu.hidden && !capControls.contains(event.target)) setMenu(false);
+    });
+    document.addEventListener("keydown", function(event){ if (event.key === "Escape") setMenu(false); });
+  }
 })();</script>
 </body>
 </html>
