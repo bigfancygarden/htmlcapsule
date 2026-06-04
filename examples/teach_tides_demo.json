@@ -1,0 +1,47 @@
+{
+  "uuid": "5e9c1a7d-3b42-4f6a-9c81-2d7e4a1b6f33",
+  "title": "How Tides Work",
+  "description": "A short, swipeable lesson on why the sea rises and falls twice a day.",
+  "type": "explainer",
+  "created_at": "2026-06-03T00:00:00Z",
+  "snapshot_id": "snapshot:teach_tides_demo",
+  "visibility": "public",
+  "cards": [
+    {
+      "id": "cover",
+      "role": "cover",
+      "title": "How tides work",
+      "body": "Twice a day the sea climbs up the beach and slides back. The reason is simple — and most people get one part of it wrong."
+    },
+    {
+      "id": "moon-pull",
+      "role": "story",
+      "title": "The moon pulls the ocean",
+      "body": "The moon's gravity tugs Earth's water toward it, raising a bulge of ocean on the side facing the moon. Stand under that bulge and the sea rises: high tide."
+    },
+    {
+      "id": "two-bulges",
+      "role": "story",
+      "title": "Why two high tides?",
+      "body": "Here's the twist: there's a second bulge on the far side of Earth, where the moon's pull is weakest and the water is effectively left behind. So most coasts get two high tides a day, not one."
+    },
+    {
+      "id": "sun",
+      "role": "story",
+      "title": "The sun joins in",
+      "body": "The sun tugs too. When sun and moon line up at new and full moon, the bulges add into big 'spring' tides. When they sit at right angles, they partly cancel into gentle 'neap' tides."
+    },
+    {
+      "id": "timing",
+      "role": "story",
+      "title": "Why it's later each day",
+      "body": "The moon is also orbiting while Earth spins, so it takes about 24 hours and 50 minutes to return overhead. That's why high tide slips roughly 50 minutes later every day."
+    },
+    {
+      "id": "end",
+      "role": "end",
+      "title": "That's tides",
+      "body": "Two bulges, chasing the moon, nudged by the sun. Next time a tide table looks random, it's just the moon running about 50 minutes late."
+    }
+  ]
+}

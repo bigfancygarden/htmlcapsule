@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
-<title>Story Mode</title>
+<title>How Tides Work</title>
 <script id="capsule-manifest" type="application/json">{
   "spec_version": "0.3.0",
   "capsule_version": "1.0.0",
-  "uuid": "2c7f7a43-9e66-4bac-9d43-bf5c3e2f7a32",
-  "title": "Story Mode",
-  "description": "A single-presentation demo capsule that shows only the immersive Story (reel) surface.",
-  "type": "briefing",
+  "uuid": "5e9c1a7d-3b42-4f6a-9c81-2d7e4a1b6f33",
+  "title": "How Tides Work",
+  "description": "A short, swipeable lesson on why the sea rises and falls twice a day.",
+  "type": "explainer",
   "profile": "interactive",
   "presentations": [
     {
@@ -33,8 +33,8 @@
   "source": {
     "origin": "spec_example",
     "snapshot_type": "fixture",
-    "snapshot_id": "snapshot:single_story_demo",
-    "included_records": 5,
+    "snapshot_id": "snapshot:teach_tides_demo",
+    "included_records": 6,
     "spec_received": "v0.3.0 - 2026-05-19"
   },
   "privacy": {
@@ -44,7 +44,7 @@
     "external_dependencies": false
   },
   "integrity": {
-    "content_hash": "sha256:3243bad27ceec960d065ce92894ab476bfe4c78ef3254ba491fef993396faf02",
+    "content_hash": "sha256:68a5ce40706943ad138257b133be8cf5fa25366b55e6f90f195778fc09bc0a2a",
     "hash_scope": "data+manifest"
   },
   "capabilities": [
@@ -57,32 +57,38 @@
     {
       "id": "cover",
       "role": "cover",
-      "title": "Story mode",
-      "body": "Tap the right side to move forward. Tap the left side to go back."
+      "title": "How tides work",
+      "body": "Twice a day the sea climbs up the beach and slides back. The reason is simple \u2014 and most people get one part of it wrong."
     },
     {
-      "id": "fullscreen",
+      "id": "moon-pull",
       "role": "story",
-      "title": "Full screen",
-      "body": "Story fills the phone. The progress bars at the top show where you are in the sequence."
+      "title": "The moon pulls the ocean",
+      "body": "The moon's gravity tugs Earth's water toward it, raising a bulge of ocean on the side facing the moon. Stand under that bulge and the sea rises: high tide."
     },
     {
-      "id": "autoplay",
+      "id": "two-bulges",
       "role": "story",
-      "title": "It plays itself",
-      "body": "Each card advances on its own after a few seconds. Pause any time with the playback control."
+      "title": "Why two high tides?",
+      "body": "Here's the twist: there's a second bulge on the far side of Earth, where the moon's pull is weakest and the water is effectively left behind. So most coasts get two high tides a day, not one."
     },
     {
-      "id": "readable",
+      "id": "sun",
       "role": "story",
-      "title": "Readable underneath",
-      "body": "Even though it animates, every word is pre-rendered in the capsule's HTML \u2014 safe to read without scripts."
+      "title": "The sun joins in",
+      "body": "The sun tugs too. When sun and moon line up at new and full moon, the bulges add into big 'spring' tides. When they sit at right angles, they partly cancel into gentle 'neap' tides."
+    },
+    {
+      "id": "timing",
+      "role": "story",
+      "title": "Why it's later each day",
+      "body": "The moon is also orbiting while Earth spins, so it takes about 24 hours and 50 minutes to return overhead. That's why high tide slips roughly 50 minutes later every day."
     },
     {
       "id": "end",
       "role": "end",
-      "title": "That's story",
-      "body": "Five cards, one sealed capsule. Tap the left side to replay from the start."
+      "title": "That's tides",
+      "body": "Two bulges, chasing the moon, nudged by the sun. Next time a tide table looks random, it's just the moon running about 50 minutes late."
     }
   ]
 }</script>
@@ -394,7 +400,7 @@ body {
 </head>
 <body>
 <main id="capsule-root" data-view-mode="present" data-presentation="Story">
-<section id="capsule-reel" class="reel" aria-label="Story presentation"><div class="story-progress" id="story-progress" aria-hidden="true"></div><div class="story-controls"><button id="story-pause" type="button" class="story-ctl" aria-label="Pause story">&#10074;&#10074;</button><span class="story-controls-spacer"></span><button data-capsule-action="exit" type="button" class="story-ctl story-exit" aria-label="Close and return to vault">&#10005;</button></div><div class="story-deck"><article class="story is-active" data-card-id="cover"><div class="story-content"><p class="story-kicker">cover</p><h1 class="story-headline">Story mode</h1><p class="story-body">Tap the right side to move forward. Tap the left side to go back.</p></div></article><article class="story" data-card-id="fullscreen"><div class="story-content"><p class="story-kicker">story</p><h2 class="story-headline">Full screen</h2><p class="story-body">Story fills the phone. The progress bars at the top show where you are in the sequence.</p></div></article><article class="story" data-card-id="autoplay"><div class="story-content"><p class="story-kicker">story</p><h2 class="story-headline">It plays itself</h2><p class="story-body">Each card advances on its own after a few seconds. Pause any time with the playback control.</p></div></article><article class="story" data-card-id="readable"><div class="story-content"><p class="story-kicker">story</p><h2 class="story-headline">Readable underneath</h2><p class="story-body">Even though it animates, every word is pre-rendered in the capsule&#x27;s HTML — safe to read without scripts.</p></div></article><article class="story" data-card-id="end"><div class="story-content"><p class="story-kicker">end</p><h2 class="story-headline">That&#x27;s story</h2><p class="story-body">Five cards, one sealed capsule. Tap the left side to replay from the start.</p></div></article></div><button id="story-replay" class="story-replay" type="button">&#8634; Back to start</button></section>
+<section id="capsule-reel" class="reel" aria-label="Story presentation"><div class="story-progress" id="story-progress" aria-hidden="true"></div><div class="story-controls"><button id="story-pause" type="button" class="story-ctl" aria-label="Pause story">&#10074;&#10074;</button><span class="story-controls-spacer"></span><button data-capsule-action="exit" type="button" class="story-ctl story-exit" aria-label="Close and return to vault">&#10005;</button></div><div class="story-deck"><article class="story is-active" data-card-id="cover"><div class="story-content"><p class="story-kicker">cover</p><h1 class="story-headline">How tides work</h1><p class="story-body">Twice a day the sea climbs up the beach and slides back. The reason is simple — and most people get one part of it wrong.</p></div></article><article class="story" data-card-id="moon-pull"><div class="story-content"><p class="story-kicker">story</p><h2 class="story-headline">The moon pulls the ocean</h2><p class="story-body">The moon&#x27;s gravity tugs Earth&#x27;s water toward it, raising a bulge of ocean on the side facing the moon. Stand under that bulge and the sea rises: high tide.</p></div></article><article class="story" data-card-id="two-bulges"><div class="story-content"><p class="story-kicker">story</p><h2 class="story-headline">Why two high tides?</h2><p class="story-body">Here&#x27;s the twist: there&#x27;s a second bulge on the far side of Earth, where the moon&#x27;s pull is weakest and the water is effectively left behind. So most coasts get two high tides a day, not one.</p></div></article><article class="story" data-card-id="sun"><div class="story-content"><p class="story-kicker">story</p><h2 class="story-headline">The sun joins in</h2><p class="story-body">The sun tugs too. When sun and moon line up at new and full moon, the bulges add into big &#x27;spring&#x27; tides. When they sit at right angles, they partly cancel into gentle &#x27;neap&#x27; tides.</p></div></article><article class="story" data-card-id="timing"><div class="story-content"><p class="story-kicker">story</p><h2 class="story-headline">Why it&#x27;s later each day</h2><p class="story-body">The moon is also orbiting while Earth spins, so it takes about 24 hours and 50 minutes to return overhead. That&#x27;s why high tide slips roughly 50 minutes later every day.</p></div></article><article class="story" data-card-id="end"><div class="story-content"><p class="story-kicker">end</p><h2 class="story-headline">That&#x27;s tides</h2><p class="story-body">Two bulges, chasing the moon, nudged by the sun. Next time a tide table looks random, it&#x27;s just the moon running about 50 minutes late.</p></div></article></div><button id="story-replay" class="story-replay" type="button">&#8634; Back to start</button></section>
 <section class="utility" aria-label="Capsule utilities">
   <details id="about">
     <summary>About this capsule</summary>

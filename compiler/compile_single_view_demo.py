@@ -220,7 +220,9 @@ def render_story(source: dict) -> str:
         '<span class="story-controls-spacer"></span>'
         '<button data-capsule-action="exit" type="button" class="story-ctl story-exit" aria-label="Close and return to vault">&#10005;</button>'
         '</div>'
-        f'<div class="story-deck">{"".join(stories)}</div></section>'
+        f'<div class="story-deck">{"".join(stories)}</div>'
+        '<button id="story-replay" class="story-replay" type="button">&#8634; Back to start</button>'
+        '</section>'
     )
 
 
@@ -720,6 +722,28 @@ STYLE_STORY = """
   touch-action: manipulation;
 }
 .story-ctl:active { background: rgba(255,255,255,.3); }
+.story-replay {
+  position: absolute;
+  left: 50%;
+  bottom: max(2.2rem, calc(var(--safe-bottom) + 1.6rem));
+  z-index: 7;
+  display: none;
+  align-items: center;
+  gap: .45rem;
+  padding: .85rem 1.45rem;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #11151c;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 750;
+  cursor: pointer;
+  transform: translateX(-50%);
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  touch-action: manipulation;
+}
+.reel.story-enhanced.is-ended .story-replay { display: inline-flex; }
 @media (prefers-reduced-motion: reduce) {
   .reel.story-enhanced .story.is-active .story-kicker,
   .reel.story-enhanced .story.is-active .story-headline,
@@ -922,10 +946,12 @@ RUNTIME_STORY = """
   var progress = document.getElementById("story-progress");
   var pauseBtn = document.getElementById("story-pause");
   var exitBtn = reel.querySelector('[data-capsule-action="exit"]');
+  var replayBtn = document.getElementById("story-replay");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var DURATION = 5000;
   var idx = 0, elapsed = 0, last = 0, paused = false, ended = false, raf = 0;
   var fills = [];
+  var down = null, holdTimer = 0, isHolding = false;
 
   stories.forEach(function(){
     var span = document.createElement("span");
@@ -950,12 +976,14 @@ RUNTIME_STORY = """
   function activate(n){
     idx = Math.max(0, Math.min(n, stories.length - 1));
     elapsed = 0; last = 0; ended = false;
+    reel.classList.remove("is-ended");
     stories.forEach(function(story, i){ story.classList.toggle("is-active", i === idx); });
     paint(); syncPauseIcon();
   }
   function finish(){
     ended = true; paused = true;
     setFill(stories.length - 1, 1);
+    reel.classList.add("is-ended");
     if (raf) cancelAnimationFrame(raf);
     raf = 0; syncPauseIcon();
   }
@@ -963,7 +991,7 @@ RUNTIME_STORY = """
   function prev(){ if (idx > 0) activate(idx - 1); else activate(0); }
   function frame(now){
     raf = requestAnimationFrame(frame);
-    if (paused){ last = now; return; }
+    if (paused || ended){ last = now; return; }
     var delta = last ? now - last : 0;
     last = now;
     elapsed += delta;
@@ -976,12 +1004,16 @@ RUNTIME_STORY = """
     if (!raf) raf = requestAnimationFrame(frame);
     syncPauseIcon();
   }
-  function toggle(){
-    if (ended){ activate(0); play(); return; }
-    paused = !paused;
-    if (!paused && !raf) raf = requestAnimationFrame(frame);
+  // Pause/resume WITHOUT advancing — shared by the visible control, the keyboard,
+  // and the press-and-hold gesture.
+  function setPaused(value){
+    if (ended) return;
+    paused = value;
+    last = 0;
     syncPauseIcon();
+    if (!paused && !raf) raf = requestAnimationFrame(frame);
   }
+  function restart(){ activate(0); play(); }
 
   // Standard host-neutral exit hatch. Tries, in order: a host capability object,
   // a WebKit message channel, a parent-frame postMessage, then a standalone
@@ -994,24 +1026,63 @@ RUNTIME_STORY = """
     try { window.close(); } catch (e) {}
   }
 
-  if (pauseBtn) pauseBtn.addEventListener("click", function(event){ event.stopPropagation(); toggle(); });
-  if (exitBtn) exitBtn.addEventListener("click", function(event){ event.stopPropagation(); requestExit(); });
-  reel.addEventListener("click", function(event){
-    if (event.target.closest('#story-pause, [data-capsule-action="exit"]')) return;
+  function isControl(target){
+    return target.closest('#story-pause, #story-replay, [data-capsule-action="exit"]');
+  }
+  // A quick tap navigates (left third = back, the rest = forward); a swipe moves
+  // a card; a press-and-hold pauses the timer and releasing resumes it.
+  function onDown(event){
+    if (isControl(event.target)) return;
+    down = { x: event.clientX, y: event.clientY };
+    isHolding = false;
+    holdTimer = window.setTimeout(function(){ isHolding = true; setPaused(true); }, 180);
+  }
+  function onMove(event){
+    if (!down) return;
+    if (!isHolding && (Math.abs(event.clientX - down.x) > 12 || Math.abs(event.clientY - down.y) > 12)) {
+      window.clearTimeout(holdTimer);
+    }
+  }
+  function onUp(event){
+    if (!down) return;
+    window.clearTimeout(holdTimer);
+    var dx = event.clientX - down.x;
+    var dy = event.clientY - down.y;
+    var wasHolding = isHolding;
     var rect = reel.getBoundingClientRect();
     var relativeX = (event.clientX - rect.left) / rect.width;
+    down = null; isHolding = false;
+    if (wasHolding) { setPaused(false); return; }
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) { if (dx < 0) next(); else prev(); return; }
+    if (ended) { if (relativeX < 0.33) { prev(); play(); } return; }
     if (relativeX < 0.33) prev(); else next();
-  });
+  }
+  function onCancel(){
+    if (!down) return;
+    window.clearTimeout(holdTimer);
+    var wasHolding = isHolding;
+    down = null; isHolding = false;
+    if (wasHolding) setPaused(false);
+  }
+
+  if (pauseBtn) pauseBtn.addEventListener("click", function(event){ event.stopPropagation(); if (ended) restart(); else setPaused(!paused); });
+  if (exitBtn) exitBtn.addEventListener("click", function(event){ event.stopPropagation(); requestExit(); });
+  if (replayBtn) replayBtn.addEventListener("click", function(event){ event.stopPropagation(); restart(); });
+  reel.addEventListener("pointerdown", onDown);
+  window.addEventListener("pointermove", onMove, { passive: true });
+  window.addEventListener("pointerup", onUp);
+  window.addEventListener("pointercancel", onCancel);
+
   document.addEventListener("keydown", function(event){
     if (event.key === "ArrowLeft") prev();
     else if (event.key === "ArrowRight") next();
-    else if (event.key === " "){ event.preventDefault(); toggle(); }
+    else if (event.key === " "){ event.preventDefault(); if (ended) restart(); else setPaused(!paused); }
     else if (event.key === "Escape") requestExit();
   });
-  document.addEventListener("visibilitychange", function(){ if (document.hidden) paused = true; });
+  document.addEventListener("visibilitychange", function(){ if (document.hidden) setPaused(true); });
 
   activate(0);
-  if (reduce) { paused = true; syncPauseIcon(); } else play();
+  if (reduce) { setPaused(true); } else play();
 """
 
 
