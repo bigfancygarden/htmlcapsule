@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Slides Mode</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "3d8a8b54-af77-4cbd-ae54-cf6d4f3a8b43",
+  "title": "Slides Mode",
+  "description": "A single-presentation demo capsule that shows only the desktop Slides deck.",
+  "type": "briefing",
+  "profile": "interactive",
+  "presentations": [
+    {
+      "id": "slides",
+      "profile": "slides",
+      "entry": "#capsule-slides",
+      "navigation": "paged",
+      "title": "Slides",
+      "required": true,
+      "chrome": "capsule"
+    }
+  ],
+  "created_at": "2026-06-03T00:00:00Z",
+  "generator": {
+    "name": "compile_single_view_demo.py",
+    "version": "0.1.0",
+    "kind": "compiler"
+  },
+  "source": {
+    "origin": "spec_example",
+    "snapshot_type": "fixture",
+    "snapshot_id": "snapshot:single_slides_demo",
+    "included_records": 5,
+    "spec_received": "v0.3.0 - 2026-05-19"
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "integrity": {
+    "content_hash": "sha256:5f2d1d8930553707e63b93cb30b3a98655bfa8a8238f7da7612c11cd7e79d49c",
+    "hash_scope": "data+manifest"
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json"
+  ]
+}</script>
+<script id="capsule-data" type="application/json">{
+  "cards": [
+    {
+      "id": "cover",
+      "role": "slides",
+      "title": "Slides mode",
+      "body": "A one-screen-at-a-time deck, built for a desktop window or a phone held sideways."
+    },
+    {
+      "id": "navigate",
+      "role": "slide",
+      "title": "Click or arrow",
+      "body": "Advance with the on-screen arrows, the keyboard arrow keys, space, or a swipe."
+    },
+    {
+      "id": "wide",
+      "role": "slide",
+      "title": "Made for wide",
+      "body": "Each slide fills the screen. On a phone, turn to landscape to give the deck room to breathe."
+    },
+    {
+      "id": "derived",
+      "role": "slide",
+      "title": "One source",
+      "body": "These slides are generated from the same cards a story or reader would use. One source, many surfaces."
+    },
+    {
+      "id": "end",
+      "role": "end",
+      "title": "That's slides",
+      "body": "Five slides, one sealed capsule. Use the gear to head back to the vault."
+    }
+  ]
+}</script>
+<style id="capsule-style">:root {
+  color-scheme: light;
+  --ink: #111827;
+  --muted: #5b6472;
+  --line: #d7dee8;
+  --paper: #f7f8f5;
+  --teal: #0f766e;
+  --rose: #be123c;
+  /* Prefer the real CSS safe-area inset; fall back to the host-injected value
+     when a full-bleed host zeroes env() (HTML Vault sets --htmlvault-host-safe-*).
+     Use these for anything anchored to a screen edge so controls clear the
+     notch / home indicator in every host. */
+  --safe-top: max(env(safe-area-inset-top), var(--htmlvault-host-safe-top, 0px));
+  --safe-bottom: max(env(safe-area-inset-bottom), var(--htmlvault-host-safe-bottom, 0px));
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+/* Horizontal-shuffle prevention is left to the host scroll view
+   (alwaysBounceHorizontal = false). Do NOT set overflow-x/overflow on the
+   root here: it reassigns the root scroll container and disables the
+   scroll-snap-type:y used by snap mode. */
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+#capsule-root { display: block; }
+.eyebrow {
+  margin: 0 0 .55rem;
+  color: var(--teal);
+  font-size: .76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.utility {
+  padding: 1.25rem 1.15rem 2.5rem;
+  color: var(--muted);
+  font-size: .82rem;
+  background: var(--paper);
+}
+.utility summary { cursor: pointer; width: fit-content; }
+.about-panel { display: flex; gap: .6rem; align-items: flex-start; margin-top: .65rem; }
+.utility button {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  padding: .35rem .55rem;
+  font: inherit;
+  cursor: pointer;
+}
+.utility pre {
+  max-width: 100%;
+  max-height: 12rem;
+  overflow: auto;
+  margin: 0;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+.cap-controls {
+  position: fixed;
+  right: max(1rem, calc(env(safe-area-inset-right) + .5rem));
+  bottom: max(1.2rem, calc(var(--safe-bottom) + .7rem));
+  z-index: 50;
+}
+.cap-gear {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(17,24,39,.62);
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  touch-action: manipulation;
+}
+.cap-menu {
+  position: absolute;
+  right: 0;
+  bottom: 52px;
+  width: min(78vw, 20rem);
+  padding: .4rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 14px 44px rgba(0,0,0,.28);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.cap-menu[hidden] { display: none; }
+.cap-menu-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  margin-top: .2rem;
+  padding: .8rem .75rem .7rem;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+.cap-menu-item:active { background: rgba(17,24,39,.07); }
+.cap-about { margin-bottom: .1rem; }
+.cap-about > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: .7rem .75rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+.cap-about > summary::-webkit-details-marker { display: none; }
+.cap-about > summary::after { content: " \203A"; color: var(--muted); }
+.cap-about[open] > summary::after { content: " \2304"; }
+.cap-about-body { padding: 0 .75rem .55rem; }
+.cap-about-body .cap-copy {
+  margin-bottom: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: .35rem .6rem;
+  font: inherit;
+  cursor: pointer;
+}
+.cap-about-body pre {
+  max-height: 11rem;
+  overflow: auto;
+  margin: 0;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font-size: .72rem;
+  line-height: 1.4;
+}
+
+body { background: #0b0e14; }
+.slides {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #0b0e14;
+  color: #f6f7fb;
+}
+.slide-stage { position: absolute; inset: 0; overflow: hidden; }
+.slide-track {
+  display: flex;
+  height: 100%;
+  transform: translateX(calc(var(--slide, 0) * -100%));
+  transition: transform .42s cubic-bezier(.22,.61,.36,1);
+}
+.slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: #0b0e14;
+}
+/* The slide canvas is a true 16:9 rectangle (PowerPoint widescreen) contained
+   within the viewport: height-bound and pillarboxed on wide screens,
+   width-bound and letterboxed on narrow ones. Content uses container-query
+   units so a slide scales proportionally on any screen. */
+.slide-canvas {
+  position: relative;
+  container-type: size;
+  width: min(96%, calc(92dvh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1.4dvh 5dvh rgba(0,0,0,.55);
+}
+.slide:nth-child(7n+1) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #155049, #0c1118 72%); }
+.slide:nth-child(7n+2) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #463a16, #0c1118 72%); }
+.slide:nth-child(7n+3) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #2a2363, #0c1118 72%); }
+.slide:nth-child(7n+4) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #59162e, #0c1118 72%); }
+.slide:nth-child(7n+5) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #0f4651, #0c1118 72%); }
+.slide:nth-child(7n+6) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #1b3e20, #0c1118 72%); }
+.slide:nth-child(7n+7) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #46193b, #0c1118 72%); }
+.slide-inner { width: 100%; padding: 0 9cqw; }
+.slide-kicker {
+  margin: 0 0 4cqh;
+  color: rgba(246,247,251,.62);
+  font-size: 2.4cqh;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+.slide-title {
+  margin: 0;
+  font-size: 8.5cqh;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+.slide-body {
+  margin: 4cqh 0 0;
+  max-width: 72cqw;
+  color: rgba(246,247,251,.85);
+  font-size: 3.4cqh;
+  line-height: 1.38;
+}
+.slide-foot {
+  position: absolute;
+  right: 5cqw;
+  bottom: 4.5cqh;
+  color: rgba(246,247,251,.5);
+  font-size: 2.2cqh;
+  font-variant-numeric: tabular-nums;
+}
+.slide-nav {
+  position: absolute;
+  left: 50%;
+  bottom: max(1.2rem, calc(var(--safe-bottom) + .6rem));
+  transform: translateX(-50%);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .3rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.slide-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font-size: 1.45rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.slide-btn:disabled { opacity: .35; cursor: default; }
+.slide-status {
+  min-width: 3.4rem;
+  text-align: center;
+  color: rgba(255,255,255,.85);
+  font-size: .85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.slide-hint { display: none; }
+/* Phone held upright: keep the deck fully usable, just float a brief toast
+   nudging landscape that fades out on its own. Desktop / wide / landscape
+   screens never show it. */
+@media (orientation: portrait) and (max-width: 60rem) {
+  .slide-hint {
+    position: absolute;
+    top: max(1rem, calc(var(--safe-top) + .6rem));
+    left: 50%;
+    z-index: 7;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    max-width: calc(100% - 2rem);
+    padding: .55rem .9rem;
+    border-radius: 999px;
+    background: rgba(20,24,33,.78);
+    color: #f6f7fb;
+    font-size: .92rem;
+    font-weight: 600;
+    white-space: nowrap;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transform: translateX(-50%);
+    pointer-events: none;
+    animation: slide-hint-fade 3.4s ease forwards;
+  }
+  .slide-hint-icon { animation: slide-hint-tip 2s ease-in-out 2; }
+}
+@keyframes slide-hint-fade {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  12% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+}
+@keyframes slide-hint-tip { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-18deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .slide-track { transition: none; }
+  .slide-hint { animation: none; opacity: .9; }
+  .slide-hint-icon { animation: none; }
+}</style>
+</head>
+<body>
+<main id="capsule-root" data-view-mode="present" data-presentation="Slides">
+<section id="capsule-slides" class="slides" aria-label="Slides presentation" tabindex="-1" style="--slide:0;"><div class="slide-hint" aria-hidden="true"><span class="slide-hint-icon">&#128241;</span><span>Rotate to landscape for the full view</span></div><div class="slide-stage"><div class="slide-track"><article class="slide" data-card-id="cover"><div class="slide-canvas"><div class="slide-inner"><p class="slide-kicker">slides</p><h1 class="slide-title">Slides mode</h1><p class="slide-body">A one-screen-at-a-time deck, built for a desktop window or a phone held sideways.</p></div><footer class="slide-foot">1 / 5</footer></div></article><article class="slide" data-card-id="navigate"><div class="slide-canvas"><div class="slide-inner"><p class="slide-kicker">slide</p><h2 class="slide-title">Click or arrow</h2><p class="slide-body">Advance with the on-screen arrows, the keyboard arrow keys, space, or a swipe.</p></div><footer class="slide-foot">2 / 5</footer></div></article><article class="slide" data-card-id="wide"><div class="slide-canvas"><div class="slide-inner"><p class="slide-kicker">slide</p><h2 class="slide-title">Made for wide</h2><p class="slide-body">Each slide fills the screen. On a phone, turn to landscape to give the deck room to breathe.</p></div><footer class="slide-foot">3 / 5</footer></div></article><article class="slide" data-card-id="derived"><div class="slide-canvas"><div class="slide-inner"><p class="slide-kicker">slide</p><h2 class="slide-title">One source</h2><p class="slide-body">These slides are generated from the same cards a story or reader would use. One source, many surfaces.</p></div><footer class="slide-foot">4 / 5</footer></div></article><article class="slide" data-card-id="end"><div class="slide-canvas"><div class="slide-inner"><p class="slide-kicker">end</p><h2 class="slide-title">That&#x27;s slides</h2><p class="slide-body">Five slides, one sealed capsule. Use the gear to head back to the vault.</p></div><footer class="slide-foot">5 / 5</footer></div></article></div></div><div class="slide-nav" aria-label="Slide navigation"><button class="slide-btn" id="slide-prev" type="button" aria-label="Previous slide">&#8249;</button><span id="slide-status" class="slide-status">1 / 5</span><button class="slide-btn" id="slide-next" type="button" aria-label="Next slide">&#8250;</button></div></section>
+<div class="cap-controls" data-cap-controls><div class="cap-menu" role="menu" hidden><details class="cap-about"><summary>About this capsule</summary><div class="cap-about-body"><button class="cap-copy" data-capsule-action="copy_as_json" type="button">Copy JSON</button><pre id="about-data"></pre></div></details><button class="cap-menu-item" data-capsule-action="exit" type="button" role="menuitem"><span aria-hidden="true">&#8617;</span> Back to vault</button></div><button class="cap-gear" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Capsule controls">&#9881;</button></div>
+</main>
+<script id="capsule-runtime">(function(){
+  var about = document.getElementById("about-data");
+  var data = JSON.parse(document.getElementById("capsule-data").textContent);
+  if (about) about.textContent = JSON.stringify(data, null, 2);
+  var copy = document.querySelector('[data-capsule-action="copy_as_json"]');
+  if (copy) copy.addEventListener("click", function(){
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+  });
+
+  function requestExit(){
+    try { if (window.capsuleHost && typeof window.capsuleHost.exit === "function") { window.capsuleHost.exit(); return; } } catch (e) {}
+    try { if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.capsuleHost) { window.webkit.messageHandlers.capsuleHost.postMessage({ type: "exit" }); return; } } catch (e) {}
+    try { if (window.parent && window.parent !== window) { window.parent.postMessage({ type: "capsule:exit" }, "*"); return; } } catch (e) {}
+    if (window.history.length > 1) { window.history.back(); return; }
+    try { window.close(); } catch (e) {}
+  }
+  Array.prototype.slice.call(document.querySelectorAll('[data-capsule-action="exit"]')).forEach(function(button){
+    button.addEventListener("click", function(event){ event.preventDefault(); event.stopPropagation(); requestExit(); });
+  });
+
+  var capControls = document.querySelector("[data-cap-controls]");
+  if (capControls) {
+    var gear = capControls.querySelector(".cap-gear");
+    var menu = capControls.querySelector(".cap-menu");
+    function setMenu(open){
+      if (!menu || !gear) return;
+      menu.hidden = !open;
+      gear.setAttribute("aria-expanded", String(open));
+    }
+    if (gear) gear.addEventListener("click", function(event){ event.stopPropagation(); setMenu(menu.hidden); });
+    document.addEventListener("click", function(event){
+      if (menu && !menu.hidden && !capControls.contains(event.target)) setMenu(false);
+    });
+    document.addEventListener("keydown", function(event){ if (event.key === "Escape") setMenu(false); });
+  }
+
+  var deck = document.getElementById("capsule-slides");
+  if (deck) {
+    var slides = Array.prototype.slice.call(deck.querySelectorAll(".slide"));
+    var prevBtn = document.getElementById("slide-prev");
+    var nextBtn = document.getElementById("slide-next");
+    var status = document.getElementById("slide-status");
+    var index = 0;
+    function sync(){
+      index = Math.max(0, Math.min(index, slides.length - 1));
+      deck.style.setProperty("--slide", String(index));
+      if (status) status.textContent = (index + 1) + " / " + slides.length;
+      if (prevBtn) prevBtn.disabled = index === 0;
+      if (nextBtn) nextBtn.disabled = index === slides.length - 1;
+    }
+    function go(delta){ index += delta; sync(); }
+    if (prevBtn) prevBtn.addEventListener("click", function(event){ event.stopPropagation(); go(-1); });
+    if (nextBtn) nextBtn.addEventListener("click", function(event){ event.stopPropagation(); go(1); });
+    document.addEventListener("keydown", function(event){
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") { event.preventDefault(); go(1); }
+      else if (event.key === "ArrowLeft" || event.key === "PageUp") { event.preventDefault(); go(-1); }
+      else if (event.key === "Home") { event.preventDefault(); index = 0; sync(); }
+      else if (event.key === "End") { event.preventDefault(); index = slides.length - 1; sync(); }
+    });
+    var startX = null;
+    deck.addEventListener("pointerdown", function(event){
+      if (event.target.closest(".slide-nav, .cap-controls")) return;
+      startX = event.clientX;
+    });
+    deck.addEventListener("pointerup", function(event){
+      if (startX === null) return;
+      var dx = event.clientX - startX;
+      startX = null;
+      if (Math.abs(dx) > 45) { go(dx < 0 ? 1 : -1); return; }
+      // A tap (not a swipe) advances: left third goes back, the rest goes forward.
+      var rect = deck.getBoundingClientRect();
+      var rel = (event.clientX - rect.left) / rect.width;
+      go(rel < 0.33 ? -1 : 1);
+    });
+    sync();
+  }
+})();</script>
+</body>
+</html>

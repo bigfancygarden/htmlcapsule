@@ -1,0 +1,41 @@
+{
+  "uuid": "3d8a8b54-af77-4cbd-ae54-cf6d4f3a8b43",
+  "title": "Slides Mode",
+  "description": "A single-presentation demo capsule that shows only the desktop Slides deck.",
+  "type": "briefing",
+  "created_at": "2026-06-03T00:00:00Z",
+  "snapshot_id": "snapshot:single_slides_demo",
+  "visibility": "public",
+  "cards": [
+    {
+      "id": "cover",
+      "role": "slides",
+      "title": "Slides mode",
+      "body": "A one-screen-at-a-time deck, built for a desktop window or a phone held sideways."
+    },
+    {
+      "id": "navigate",
+      "role": "slide",
+      "title": "Click or arrow",
+      "body": "Advance with the on-screen arrows, the keyboard arrow keys, space, or a swipe."
+    },
+    {
+      "id": "wide",
+      "role": "slide",
+      "title": "Made for wide",
+      "body": "Each slide fills the screen. On a phone, turn to landscape to give the deck room to breathe."
+    },
+    {
+      "id": "derived",
+      "role": "slide",
+      "title": "One source",
+      "body": "These slides are generated from the same cards a story or reader would use. One source, many surfaces."
+    },
+    {
+      "id": "end",
+      "role": "end",
+      "title": "That's slides",
+      "body": "Five slides, one sealed capsule. Use the gear to head back to the vault."
+    }
+  ]
+}

@@ -89,9 +89,19 @@
   --paper: #f7f8f5;
   --teal: #0f766e;
   --rose: #be123c;
+  /* Prefer the real CSS safe-area inset; fall back to the host-injected value
+     when a full-bleed host zeroes env() (HTML Vault sets --htmlvault-host-safe-*).
+     Use these for anything anchored to a screen edge so controls clear the
+     notch / home indicator in every host. */
+  --safe-top: max(env(safe-area-inset-top), var(--htmlvault-host-safe-top, 0px));
+  --safe-bottom: max(env(safe-area-inset-bottom), var(--htmlvault-host-safe-bottom, 0px));
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Horizontal-shuffle prevention is left to the host scroll view
+   (alwaysBounceHorizontal = false). Do NOT set overflow-x/overflow on the
+   root here: it reassigns the root scroll container and disables the
+   scroll-snap-type:y used by snap mode. */
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--paper);
@@ -137,7 +147,7 @@ body {
 .cap-controls {
   position: fixed;
   right: max(1rem, calc(env(safe-area-inset-right) + .5rem));
-  bottom: max(1.1rem, calc(env(safe-area-inset-bottom) + .8rem));
+  bottom: max(1.2rem, calc(var(--safe-bottom) + .7rem));
   z-index: 50;
 }
 .cap-gear {
@@ -175,8 +185,10 @@ body {
   align-items: center;
   gap: .5rem;
   width: 100%;
-  padding: .7rem .75rem;
+  margin-top: .2rem;
+  padding: .8rem .75rem .7rem;
   border: 0;
+  border-top: 1px solid var(--line);
   border-radius: 10px;
   background: transparent;
   color: var(--ink);
@@ -187,7 +199,7 @@ body {
   cursor: pointer;
 }
 .cap-menu-item:active { background: rgba(17,24,39,.07); }
-.cap-about { margin-top: .15rem; border-top: 1px solid var(--line); }
+.cap-about { margin-bottom: .1rem; }
 .cap-about > summary {
   list-style: none;
   cursor: pointer;
@@ -227,7 +239,7 @@ body { background: #eef1f6; }
   display: block;
   max-width: 34rem;
   margin: 0 auto;
-  padding: max(2.2rem, calc(env(safe-area-inset-top) + 1.2rem)) 1.15rem max(6rem, calc(env(safe-area-inset-bottom) + 5rem));
+  padding: max(2.2rem, calc(var(--safe-top) + 1.2rem)) 1.15rem max(6rem, calc(var(--safe-bottom) + 5rem));
 }
 .feed-head {
   margin-bottom: 1.4rem;
@@ -299,7 +311,7 @@ body { background: #eef1f6; }
 <body>
 <main id="capsule-root" data-view-mode="feed" data-presentation="Feed">
 <section id="capsule-mobile-feed" class="feed-view" aria-label="Feed presentation"><header class="feed-head"><p class="eyebrow">Feed</p><h1>Feed Mode</h1><p>A single-presentation demo capsule that shows only the mobile Feed surface.</p></header><div class="feed-list"><article class="feed-card" data-source-section="intro"><span class="feed-index">01</span><h2>Feed mode</h2><p>A scrollable column of cards. Skim top to bottom, the way you&#x27;d read a timeline.</p></article><article class="feed-card" data-source-section="glance"><span class="feed-index">02</span><h2>Glanceable</h2><p>Each card is a self-contained beat. Good for updates, release notes, and digests you scan quickly.</p></article><article class="feed-card" data-source-section="derived"><span class="feed-index">03</span><h2>Derived, not separate</h2><p>The feed is generated from the same sections as every other view. One source, many presentations.</p></article><article class="feed-card" data-source-section="calm"><span class="feed-index">04</span><h2>Calm by default</h2><p>No autoplay, no network, no tracking. Just cards you scroll at your own pace.</p></article><article class="feed-card" data-source-section="end"><span class="feed-index">05</span><h2>That&#x27;s feed</h2><p>Everything here is sealed inside a single portable HTML capsule.</p></article></div></section>
-<div class="cap-controls" data-cap-controls><div class="cap-menu" role="menu" hidden><button class="cap-menu-item" data-capsule-action="exit" type="button" role="menuitem"><span aria-hidden="true">&#8617;</span> Back to vault</button><details class="cap-about"><summary>About this capsule</summary><div class="cap-about-body"><button class="cap-copy" data-capsule-action="copy_as_json" type="button">Copy JSON</button><pre id="about-data"></pre></div></details></div><button class="cap-gear" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Capsule controls">&#9881;</button></div>
+<div class="cap-controls" data-cap-controls><div class="cap-menu" role="menu" hidden><details class="cap-about"><summary>About this capsule</summary><div class="cap-about-body"><button class="cap-copy" data-capsule-action="copy_as_json" type="button">Copy JSON</button><pre id="about-data"></pre></div></details><button class="cap-menu-item" data-capsule-action="exit" type="button" role="menuitem"><span aria-hidden="true">&#8617;</span> Back to vault</button></div><button class="cap-gear" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Capsule controls">&#9881;</button></div>
 </main>
 <script id="capsule-runtime">(function(){
   var about = document.getElementById("about-data");

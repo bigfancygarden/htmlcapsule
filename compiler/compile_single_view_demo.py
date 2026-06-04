@@ -66,6 +66,15 @@ VIEWS = {
         "label": "Story",
         "source_key": "cards",
     },
+    "slides": {
+        "entry": "#capsule-slides",
+        "profile": "slides",
+        "navigation": "paged",
+        "chrome": "capsule",
+        "capsule_profile": "interactive",
+        "label": "Slides",
+        "source_key": "cards",
+    },
 }
 
 
@@ -215,11 +224,49 @@ def render_story(source: dict) -> str:
     )
 
 
+def render_slides(source: dict) -> str:
+    cards = source["cards"]
+    total = len(cards)
+    slides = []
+    for index, card in enumerate(cards, start=1):
+        heading = "h1" if index == 1 else "h2"
+        slides.append(
+            f'<article class="slide" data-card-id="{e(card["id"])}">'
+            f'<div class="slide-canvas">'
+            f'<div class="slide-inner">'
+            f'<p class="slide-kicker">{e(card.get("role", "slide"))}</p>'
+            f'<{heading} class="slide-title">{e(card["title"])}</{heading}>'
+            f'<p class="slide-body">{e(card["body"])}</p>'
+            f'</div>'
+            f'<footer class="slide-foot">{index} / {total}</footer>'
+            f'</div>'
+            f'</article>'
+        )
+    return (
+        '<section id="capsule-slides" class="slides" aria-label="Slides presentation" tabindex="-1" style="--slide:0;">'
+        '<div class="slide-hint" aria-hidden="true">'
+        '<span class="slide-hint-icon">&#128241;</span>'
+        '<span>Rotate to landscape for the full view</span>'
+        '</div>'
+        '<div class="slide-stage">'
+        f'<div class="slide-track">{"".join(slides)}</div>'
+        '</div>'
+        '<div class="slide-nav" aria-label="Slide navigation">'
+        '<button class="slide-btn" id="slide-prev" type="button" aria-label="Previous slide">&#8249;</button>'
+        f'<span id="slide-status" class="slide-status">1 / {total}</span>'
+        '<button class="slide-btn" id="slide-next" type="button" aria-label="Next slide">&#8250;</button>'
+        '</div>'
+        '</section>'
+    )
+
+
 def render_surface(view: str, source: dict) -> str:
     if view == "snap":
         return render_snap(source)
     if view == "feed":
         return render_feed(source)
+    if view == "slides":
+        return render_slides(source)
     return render_story(source)
 
 
@@ -245,14 +292,14 @@ def render_capsule_controls() -> str:
     return (
         '<div class="cap-controls" data-cap-controls>'
         '<div class="cap-menu" role="menu" hidden>'
-        '<button class="cap-menu-item" data-capsule-action="exit" type="button" role="menuitem">'
-        '<span aria-hidden="true">&#8617;</span> Back to vault</button>'
         '<details class="cap-about">'
         '<summary>About this capsule</summary>'
         '<div class="cap-about-body">'
         '<button class="cap-copy" data-capsule-action="copy_as_json" type="button">Copy JSON</button>'
         '<pre id="about-data"></pre>'
         '</div></details>'
+        '<button class="cap-menu-item" data-capsule-action="exit" type="button" role="menuitem">'
+        '<span aria-hidden="true">&#8617;</span> Back to vault</button>'
         '</div>'
         '<button class="cap-gear" type="button" aria-haspopup="true" aria-expanded="false" '
         'aria-label="Capsule controls">&#9881;</button>'
@@ -273,9 +320,19 @@ STYLE_COMMON = """
   --paper: #f7f8f5;
   --teal: #0f766e;
   --rose: #be123c;
+  /* Prefer the real CSS safe-area inset; fall back to the host-injected value
+     when a full-bleed host zeroes env() (HTML Vault sets --htmlvault-host-safe-*).
+     Use these for anything anchored to a screen edge so controls clear the
+     notch / home indicator in every host. */
+  --safe-top: max(env(safe-area-inset-top), var(--htmlvault-host-safe-top, 0px));
+  --safe-bottom: max(env(safe-area-inset-bottom), var(--htmlvault-host-safe-bottom, 0px));
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Horizontal-shuffle prevention is left to the host scroll view
+   (alwaysBounceHorizontal = false). Do NOT set overflow-x/overflow on the
+   root here: it reassigns the root scroll container and disables the
+   scroll-snap-type:y used by snap mode. */
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--paper);
@@ -321,7 +378,7 @@ body {
 .cap-controls {
   position: fixed;
   right: max(1rem, calc(env(safe-area-inset-right) + .5rem));
-  bottom: max(1.1rem, calc(env(safe-area-inset-bottom) + .8rem));
+  bottom: max(1.2rem, calc(var(--safe-bottom) + .7rem));
   z-index: 50;
 }
 .cap-gear {
@@ -359,8 +416,10 @@ body {
   align-items: center;
   gap: .5rem;
   width: 100%;
-  padding: .7rem .75rem;
+  margin-top: .2rem;
+  padding: .8rem .75rem .7rem;
   border: 0;
+  border-top: 1px solid var(--line);
   border-radius: 10px;
   background: transparent;
   color: var(--ink);
@@ -371,7 +430,7 @@ body {
   cursor: pointer;
 }
 .cap-menu-item:active { background: rgba(17,24,39,.07); }
-.cap-about { margin-top: .15rem; border-top: 1px solid var(--line); }
+.cap-about { margin-bottom: .1rem; }
 .cap-about > summary {
   list-style: none;
   cursor: pointer;
@@ -409,46 +468,54 @@ body {
 
 STYLE_SNAP = """
 html { scroll-snap-type: y mandatory; }
+body { background: #f4f6fa; }
 .snap-view { display: block; }
 .snap-panel {
+  position: relative;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: .9rem;
-  padding: max(4rem, env(safe-area-inset-top)) 1.4rem max(2.5rem, env(safe-area-inset-bottom));
+  gap: 1.1rem;
+  padding: max(5rem, calc(var(--safe-top) + 4rem)) 1.6rem max(6rem, calc(var(--safe-bottom) + 5rem));
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  border-bottom: 1px solid var(--line);
 }
-.snap-panel:nth-child(5n+1) { background: linear-gradient(165deg, #ffffff, #eaf8f5); }
-.snap-panel:nth-child(5n+2) { background: linear-gradient(165deg, #ffffff, #fff1cf); }
-.snap-panel:nth-child(5n+3) { background: linear-gradient(165deg, #ffffff, #ecebff); }
-.snap-panel:nth-child(5n+4) { background: linear-gradient(165deg, #ffffff, #ffe4eb); }
-.snap-panel:nth-child(5n+5) { background: linear-gradient(165deg, #ffffff, #e3f0ff); }
+.snap-panel:nth-child(5n+1) { background: linear-gradient(180deg, #effbf8, #f4f6fa 56%); }
+.snap-panel:nth-child(5n+2) { background: linear-gradient(180deg, #fdf6e9, #f4f6fa 56%); }
+.snap-panel:nth-child(5n+3) { background: linear-gradient(180deg, #f0effe, #f4f6fa 56%); }
+.snap-panel:nth-child(5n+4) { background: linear-gradient(180deg, #fdedf1, #f4f6fa 56%); }
+.snap-panel:nth-child(5n+5) { background: linear-gradient(180deg, #e9f7fb, #f4f6fa 56%); }
 .snap-index {
-  width: fit-content;
-  padding: .3rem .5rem;
+  align-self: flex-start;
+  padding: .34rem .74rem;
   border-radius: 999px;
-  background: rgba(15,118,110,.12);
-  color: var(--teal);
-  font-size: .76rem;
-  font-weight: 850;
+  color: #fff;
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: .02em;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
+.snap-panel:nth-child(5n+1) .snap-index { background: #0f766e; }
+.snap-panel:nth-child(5n+2) .snap-index { background: #d9921f; }
+.snap-panel:nth-child(5n+3) .snap-index { background: #4f46e5; }
+.snap-panel:nth-child(5n+4) .snap-index { background: #be123c; }
+.snap-panel:nth-child(5n+5) .snap-index { background: #0891b2; }
 .snap-panel h2 {
-  max-width: 12ch;
+  max-width: 13ch;
   margin: 0;
-  font-size: clamp(2.4rem, 12vw, 3.8rem);
-  line-height: .96;
-  letter-spacing: -0.01em;
+  font-size: clamp(2.8rem, 13.5vw, 4.4rem);
+  line-height: .95;
+  letter-spacing: -0.025em;
+  color: var(--ink);
 }
 .snap-panel p {
-  max-width: 26rem;
+  max-width: 28rem;
   margin: 0;
-  color: #303846;
-  font-size: clamp(1.05rem, 4.6vw, 1.3rem);
-  line-height: 1.34;
+  color: var(--muted);
+  font-size: clamp(1.12rem, 4.8vw, 1.42rem);
+  line-height: 1.42;
 }
 """
 
@@ -458,7 +525,7 @@ body { background: #eef1f6; }
   display: block;
   max-width: 34rem;
   margin: 0 auto;
-  padding: max(2.2rem, calc(env(safe-area-inset-top) + 1.2rem)) 1.15rem max(6rem, calc(env(safe-area-inset-bottom) + 5rem));
+  padding: max(2.2rem, calc(var(--safe-top) + 1.2rem)) 1.15rem max(6rem, calc(var(--safe-bottom) + 5rem));
 }
 .feed-head {
   margin-bottom: 1.4rem;
@@ -575,7 +642,7 @@ STYLE_STORY = """
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: max(5rem, calc(env(safe-area-inset-top) + 4.5rem)) 1.5rem max(4rem, calc(env(safe-area-inset-bottom) + 3.5rem));
+  padding: max(5rem, calc(var(--safe-top) + 4.5rem)) 1.5rem max(4rem, calc(var(--safe-bottom) + 3.5rem));
   border: 0;
   opacity: 0;
   visibility: hidden;
@@ -583,18 +650,23 @@ STYLE_STORY = """
   transition: opacity .32s ease;
 }
 .reel.story-enhanced .story.is-active { opacity: 1; visibility: visible; pointer-events: auto; }
-.reel.story-enhanced .story:nth-child(5n+1) { background: linear-gradient(165deg, #1d2233, #3b1d2b); }
-.reel.story-enhanced .story:nth-child(5n+2) { background: linear-gradient(165deg, #112a2b, #1d3b36); }
-.reel.story-enhanced .story:nth-child(5n+3) { background: linear-gradient(165deg, #2a2440, #1d1f3b); }
-.reel.story-enhanced .story:nth-child(5n+4) { background: linear-gradient(165deg, #3b2740, #2b1d3b); }
-.reel.story-enhanced .story:nth-child(5n+5) { background: linear-gradient(165deg, #3b3320, #2b2a1d); }
+.reel.story-enhanced .story:nth-child(5n+1) { background: radial-gradient(130% 90% at 22% 16%, #0f5f57, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+2) { background: radial-gradient(130% 90% at 22% 16%, #6b4a12, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+3) { background: radial-gradient(130% 90% at 22% 16%, #322c84, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+4) { background: radial-gradient(130% 90% at 22% 16%, #7a1838, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+5) { background: radial-gradient(130% 90% at 22% 16%, #0d5663, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+1) .story-kicker { color: #5eead4; }
+.reel.story-enhanced .story:nth-child(5n+2) .story-kicker { color: #fcd34d; }
+.reel.story-enhanced .story:nth-child(5n+3) .story-kicker { color: #c4b5fd; }
+.reel.story-enhanced .story:nth-child(5n+4) .story-kicker { color: #fda4af; }
+.reel.story-enhanced .story:nth-child(5n+5) .story-kicker { color: #67e8f9; }
 .reel.story-enhanced .story.is-active .story-kicker { animation: story-rise .5s 40ms both; }
 .reel.story-enhanced .story.is-active .story-headline { animation: story-rise .55s 110ms both; }
 .reel.story-enhanced .story.is-active .story-body { animation: story-rise .6s 190ms both; }
 @keyframes story-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .reel.story-enhanced .story-progress {
   position: absolute;
-  top: max(.6rem, calc(env(safe-area-inset-top) + .35rem));
+  top: max(.6rem, calc(var(--safe-top) + .35rem));
   left: max(.7rem, env(safe-area-inset-left));
   right: max(.7rem, env(safe-area-inset-right));
   z-index: 5;
@@ -621,7 +693,7 @@ STYLE_STORY = """
 }
 .reel.story-enhanced .story-controls {
   position: absolute;
-  top: max(1.4rem, calc(env(safe-area-inset-top) + 1rem));
+  top: max(1.4rem, calc(var(--safe-top) + 1rem));
   left: max(.8rem, env(safe-area-inset-left));
   right: max(.8rem, env(safe-area-inset-right));
   z-index: 6;
@@ -657,8 +729,172 @@ STYLE_STORY = """
 """
 
 
+STYLE_SLIDES = """
+body { background: #0b0e14; }
+.slides {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #0b0e14;
+  color: #f6f7fb;
+}
+.slide-stage { position: absolute; inset: 0; overflow: hidden; }
+.slide-track {
+  display: flex;
+  height: 100%;
+  transform: translateX(calc(var(--slide, 0) * -100%));
+  transition: transform .42s cubic-bezier(.22,.61,.36,1);
+}
+.slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: #0b0e14;
+}
+/* The slide canvas is a true 16:9 rectangle (PowerPoint widescreen) contained
+   within the viewport: height-bound and pillarboxed on wide screens,
+   width-bound and letterboxed on narrow ones. Content uses container-query
+   units so a slide scales proportionally on any screen. */
+.slide-canvas {
+  position: relative;
+  container-type: size;
+  width: min(96%, calc(92dvh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1.4dvh 5dvh rgba(0,0,0,.55);
+}
+.slide:nth-child(7n+1) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #155049, #0c1118 72%); }
+.slide:nth-child(7n+2) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #463a16, #0c1118 72%); }
+.slide:nth-child(7n+3) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #2a2363, #0c1118 72%); }
+.slide:nth-child(7n+4) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #59162e, #0c1118 72%); }
+.slide:nth-child(7n+5) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #0f4651, #0c1118 72%); }
+.slide:nth-child(7n+6) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #1b3e20, #0c1118 72%); }
+.slide:nth-child(7n+7) .slide-canvas { background: radial-gradient(120% 120% at 12% 16%, #46193b, #0c1118 72%); }
+.slide-inner { width: 100%; padding: 0 9cqw; }
+.slide-kicker {
+  margin: 0 0 4cqh;
+  color: rgba(246,247,251,.62);
+  font-size: 2.4cqh;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+.slide-title {
+  margin: 0;
+  font-size: 8.5cqh;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+.slide-body {
+  margin: 4cqh 0 0;
+  max-width: 72cqw;
+  color: rgba(246,247,251,.85);
+  font-size: 3.4cqh;
+  line-height: 1.38;
+}
+.slide-foot {
+  position: absolute;
+  right: 5cqw;
+  bottom: 4.5cqh;
+  color: rgba(246,247,251,.5);
+  font-size: 2.2cqh;
+  font-variant-numeric: tabular-nums;
+}
+.slide-nav {
+  position: absolute;
+  left: 50%;
+  bottom: max(1.2rem, calc(var(--safe-bottom) + .6rem));
+  transform: translateX(-50%);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .3rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.slide-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font-size: 1.45rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.slide-btn:disabled { opacity: .35; cursor: default; }
+.slide-status {
+  min-width: 3.4rem;
+  text-align: center;
+  color: rgba(255,255,255,.85);
+  font-size: .85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.slide-hint { display: none; }
+/* Phone held upright: keep the deck fully usable, just float a brief toast
+   nudging landscape that fades out on its own. Desktop / wide / landscape
+   screens never show it. */
+@media (orientation: portrait) and (max-width: 60rem) {
+  .slide-hint {
+    position: absolute;
+    top: max(1rem, calc(var(--safe-top) + .6rem));
+    left: 50%;
+    z-index: 7;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    max-width: calc(100% - 2rem);
+    padding: .55rem .9rem;
+    border-radius: 999px;
+    background: rgba(20,24,33,.78);
+    color: #f6f7fb;
+    font-size: .92rem;
+    font-weight: 600;
+    white-space: nowrap;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transform: translateX(-50%);
+    pointer-events: none;
+    animation: slide-hint-fade 3.4s ease forwards;
+  }
+  .slide-hint-icon { animation: slide-hint-tip 2s ease-in-out 2; }
+}
+@keyframes slide-hint-fade {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  12% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+}
+@keyframes slide-hint-tip { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-18deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .slide-track { transition: none; }
+  .slide-hint { animation: none; opacity: .9; }
+  .slide-hint-icon { animation: none; }
+}
+"""
+
+
 def render_style(view: str) -> str:
-    per_view = {"snap": STYLE_SNAP, "feed": STYLE_FEED, "story": STYLE_STORY}[view]
+    per_view = {
+        "snap": STYLE_SNAP,
+        "feed": STYLE_FEED,
+        "story": STYLE_STORY,
+        "slides": STYLE_SLIDES,
+    }[view]
     return (STYLE_COMMON + per_view).strip()
 
 
@@ -811,10 +1047,56 @@ RUNTIME_CONTROLS = """
 """
 
 
+RUNTIME_SLIDES = """
+  var deck = document.getElementById("capsule-slides");
+  if (deck) {
+    var slides = Array.prototype.slice.call(deck.querySelectorAll(".slide"));
+    var prevBtn = document.getElementById("slide-prev");
+    var nextBtn = document.getElementById("slide-next");
+    var status = document.getElementById("slide-status");
+    var index = 0;
+    function sync(){
+      index = Math.max(0, Math.min(index, slides.length - 1));
+      deck.style.setProperty("--slide", String(index));
+      if (status) status.textContent = (index + 1) + " / " + slides.length;
+      if (prevBtn) prevBtn.disabled = index === 0;
+      if (nextBtn) nextBtn.disabled = index === slides.length - 1;
+    }
+    function go(delta){ index += delta; sync(); }
+    if (prevBtn) prevBtn.addEventListener("click", function(event){ event.stopPropagation(); go(-1); });
+    if (nextBtn) nextBtn.addEventListener("click", function(event){ event.stopPropagation(); go(1); });
+    document.addEventListener("keydown", function(event){
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") { event.preventDefault(); go(1); }
+      else if (event.key === "ArrowLeft" || event.key === "PageUp") { event.preventDefault(); go(-1); }
+      else if (event.key === "Home") { event.preventDefault(); index = 0; sync(); }
+      else if (event.key === "End") { event.preventDefault(); index = slides.length - 1; sync(); }
+    });
+    var startX = null;
+    deck.addEventListener("pointerdown", function(event){
+      if (event.target.closest(".slide-nav, .cap-controls")) return;
+      startX = event.clientX;
+    });
+    deck.addEventListener("pointerup", function(event){
+      if (startX === null) return;
+      var dx = event.clientX - startX;
+      startX = null;
+      if (Math.abs(dx) > 45) { go(dx < 0 ? 1 : -1); return; }
+      // A tap (not a swipe) advances: left third goes back, the rest goes forward.
+      var rect = deck.getBoundingClientRect();
+      var rel = (event.clientX - rect.left) / rect.width;
+      go(rel < 0.33 ? -1 : 1);
+    });
+    sync();
+  }
+"""
+
+
 def render_runtime(view: str) -> str:
     body = RUNTIME_ABOUT
     if view == "story":
         body = body + RUNTIME_STORY
+    elif view == "slides":
+        body = body + RUNTIME_EXIT + RUNTIME_CONTROLS + RUNTIME_SLIDES
     else:
         body = body + RUNTIME_EXIT + RUNTIME_CONTROLS
     return "(function(){" + body + "})();"
@@ -826,7 +1108,7 @@ def render_runtime(view: str) -> str:
 
 def render_html(view: str, manifest: dict, data: dict, source: dict) -> str:
     spec = VIEWS[view]
-    default_mode = {"snap": "scroll", "feed": "feed", "story": "present"}[view]
+    default_mode = {"snap": "scroll", "feed": "feed", "story": "present", "slides": "present"}[view]
     viewport = "width=device-width, initial-scale=1.0, viewport-fit=cover"
     if view == "story":
         viewport = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"

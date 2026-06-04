@@ -94,9 +94,19 @@
   --paper: #f7f8f5;
   --teal: #0f766e;
   --rose: #be123c;
+  /* Prefer the real CSS safe-area inset; fall back to the host-injected value
+     when a full-bleed host zeroes env() (HTML Vault sets --htmlvault-host-safe-*).
+     Use these for anything anchored to a screen edge so controls clear the
+     notch / home indicator in every host. */
+  --safe-top: max(env(safe-area-inset-top), var(--htmlvault-host-safe-top, 0px));
+  --safe-bottom: max(env(safe-area-inset-bottom), var(--htmlvault-host-safe-bottom, 0px));
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Horizontal-shuffle prevention is left to the host scroll view
+   (alwaysBounceHorizontal = false). Do NOT set overflow-x/overflow on the
+   root here: it reassigns the root scroll container and disables the
+   scroll-snap-type:y used by snap mode. */
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--paper);
@@ -142,7 +152,7 @@ body {
 .cap-controls {
   position: fixed;
   right: max(1rem, calc(env(safe-area-inset-right) + .5rem));
-  bottom: max(1.1rem, calc(env(safe-area-inset-bottom) + .8rem));
+  bottom: max(1.2rem, calc(var(--safe-bottom) + .7rem));
   z-index: 50;
 }
 .cap-gear {
@@ -273,7 +283,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: max(5rem, calc(env(safe-area-inset-top) + 4.5rem)) 1.5rem max(4rem, calc(env(safe-area-inset-bottom) + 3.5rem));
+  padding: max(5rem, calc(var(--safe-top) + 4.5rem)) 1.5rem max(4rem, calc(var(--safe-bottom) + 3.5rem));
   border: 0;
   opacity: 0;
   visibility: hidden;
@@ -281,18 +291,23 @@ body {
   transition: opacity .32s ease;
 }
 .reel.story-enhanced .story.is-active { opacity: 1; visibility: visible; pointer-events: auto; }
-.reel.story-enhanced .story:nth-child(5n+1) { background: linear-gradient(165deg, #1d2233, #3b1d2b); }
-.reel.story-enhanced .story:nth-child(5n+2) { background: linear-gradient(165deg, #112a2b, #1d3b36); }
-.reel.story-enhanced .story:nth-child(5n+3) { background: linear-gradient(165deg, #2a2440, #1d1f3b); }
-.reel.story-enhanced .story:nth-child(5n+4) { background: linear-gradient(165deg, #3b2740, #2b1d3b); }
-.reel.story-enhanced .story:nth-child(5n+5) { background: linear-gradient(165deg, #3b3320, #2b2a1d); }
+.reel.story-enhanced .story:nth-child(5n+1) { background: radial-gradient(130% 90% at 22% 16%, #0f5f57, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+2) { background: radial-gradient(130% 90% at 22% 16%, #6b4a12, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+3) { background: radial-gradient(130% 90% at 22% 16%, #322c84, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+4) { background: radial-gradient(130% 90% at 22% 16%, #7a1838, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+5) { background: radial-gradient(130% 90% at 22% 16%, #0d5663, #0a0d14 72%); }
+.reel.story-enhanced .story:nth-child(5n+1) .story-kicker { color: #5eead4; }
+.reel.story-enhanced .story:nth-child(5n+2) .story-kicker { color: #fcd34d; }
+.reel.story-enhanced .story:nth-child(5n+3) .story-kicker { color: #c4b5fd; }
+.reel.story-enhanced .story:nth-child(5n+4) .story-kicker { color: #fda4af; }
+.reel.story-enhanced .story:nth-child(5n+5) .story-kicker { color: #67e8f9; }
 .reel.story-enhanced .story.is-active .story-kicker { animation: story-rise .5s 40ms both; }
 .reel.story-enhanced .story.is-active .story-headline { animation: story-rise .55s 110ms both; }
 .reel.story-enhanced .story.is-active .story-body { animation: story-rise .6s 190ms both; }
 @keyframes story-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .reel.story-enhanced .story-progress {
   position: absolute;
-  top: max(.6rem, calc(env(safe-area-inset-top) + .35rem));
+  top: max(.6rem, calc(var(--safe-top) + .35rem));
   left: max(.7rem, env(safe-area-inset-left));
   right: max(.7rem, env(safe-area-inset-right));
   z-index: 5;
@@ -319,7 +334,7 @@ body {
 }
 .reel.story-enhanced .story-controls {
   position: absolute;
-  top: max(1.4rem, calc(env(safe-area-inset-top) + 1rem));
+  top: max(1.4rem, calc(var(--safe-top) + 1rem));
   left: max(.8rem, env(safe-area-inset-left));
   right: max(.8rem, env(safe-area-inset-right));
   z-index: 6;
