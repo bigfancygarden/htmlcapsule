@@ -28,6 +28,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 - **`spec/manifest.schema.json`** — adds the `presentations[]` manifest field.
 - **`CAPSULE_CORE.md`, `README.md`, `GLOSSARY.md`, and `llms.txt`** — clarify the distinction between Capsule profiles, Capsule presentation declarations, host-owned views, and Bundle as the sibling multi-file container.
 
+### Added — compiler workflow
+
+- **`compiler/compile_multiview.py`** — user-facing command for the current multiview compiler experiment, keeping `compile_multiview_demo.py` as the implementation module while presentation research continues.
+- **`compiler/repair_integrity.py`** — deterministic integrity repair tool for Capsule candidates with provisional, stale, or incorrect `integrity.content_hash` values. This supports the Vault dogfood flow where LLM/chat-window candidates use an all-zero sentinel until an official tool computes the canonical hash.
+- **Chat-window compiler prompt and Vault dogfood notes** — updated to route source-model output through `compile_multiview.py`, `repair_integrity.py`, and `validate.py` rather than asking each chat to invent final assembly and hashing.
+
 ### Added — Bundle profiles
 
 - **`bundle_profile`** — Bundle v0.1.1 now documents a recommended manifest field for the top-level file-set pattern: `viewer`, `data_package`, `multi_entry`, or `project_archive`. This is deliberately separate from Capsule `profile`: Capsule profile describes one sealed HTML envelope; Bundle profile describes what kind of manifested file set the Bundle contains.

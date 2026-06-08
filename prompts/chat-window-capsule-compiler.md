@@ -11,7 +11,8 @@ Use this when you want to test whether an LLM can act as a "compiler in the chat
 3. Save the returned HTML as a `.html` file.
 4. Validate it with the reference validator.
 5. Feed any validation failures back with the repair prompt.
-6. Ingest the candidate into HTML Vault for dogfood review.
+6. If the only failure is the provisional integrity sentinel, repair it with `compiler/repair_integrity.py`.
+7. Ingest the candidate into HTML Vault for dogfood review.
 
 ## Tool-Use Note
 
@@ -19,9 +20,15 @@ Some chat systems may use Python, JavaScript, or another hidden/ad hoc tool whil
 
 - **Pure chat-window output**: `generator.kind` should be `"llm"`.
 - **LLM plus an ad hoc script**: `generator.kind` should be `"hybrid"`, and the manifest or source notes should honestly record that a non-canonical helper assembled the file.
-- **Reference compiler output**: `generator.kind` should be `"compiler"` when the official compiler produced or repaired the final HTML and canonical integrity hash.
+- **Reference compiler output**: `generator.kind` should be `"compiler"` when the official compiler owns final assembly. If an official tool only repairs `integrity.content_hash`, keep the original `"llm"` or `"hybrid"` producer kind and treat the repaired hash as a stronger verification signal, not a new authorship claim.
 
-Do not let each chat invent a permanent compiler. If a tool is available, the preferred path is Prompt C (source model only) followed by the reference compiler and validator.
+Do not let each chat invent a permanent compiler. If a tool is available, the preferred path is Prompt C (source model only) followed by the reference compiler, integrity repair when needed, and validator:
+
+```bash
+python3 compiler/compile_multiview.py source.json -o capsule.html
+python3 compiler/repair_integrity.py capsule.html -o capsule.repaired.html
+python3 compiler/validate.py capsule.repaired.html
+```
 
 ## Important Limitation
 

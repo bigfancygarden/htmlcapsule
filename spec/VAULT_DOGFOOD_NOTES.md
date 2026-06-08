@@ -177,14 +177,15 @@ These dogfood findings already produced concrete alignment work:
 Create a narrow, LLM-friendly command path:
 
 ```bash
-python3 compiler/compile_multiview_demo.py examples/source.json --out capsule.html
+python3 compiler/compile_multiview.py examples/source.json --output capsule.html
 python3 compiler/validate.py capsule.html
-python3 compiler/repair_integrity.py capsule.html --out capsule.repaired.html
+python3 compiler/repair_integrity.py capsule.html --output capsule.repaired.html
 ```
 
-The exact command names can change, but the product idea is stable: LLMs should
-feed structured source into an official compiler rather than reinvent final HTML
-assembly each time.
+`compile_multiview_demo.py` remains the implementation module for the current
+experiment, but `compile_multiview.py` is the user-facing command path. The
+product idea is stable: LLMs should feed structured source into an official
+compiler rather than reinvent final HTML assembly each time.
 
 ### Vault integration
 
@@ -225,4 +226,3 @@ These should start as template conventions, not required spec fields.
    passes through the reference compiler/repair path.
 6. Do not add more manifest fields for mobile-story behavior until there is
    repeated pressure across independent producers.
-

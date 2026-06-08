@@ -59,7 +59,8 @@ Designed to be opened, reviewed, interacted with, and shared without requiring a
   - **URL mode** (added in v0.3.4): `python3 compiler/validate.py <https://host/path/raw>` — fetches the body via the host's `/raw` endpoint, cross-checks any `x-capsule-content-hash` and `x-capsule-uuid` response headers against the manifest, then runs the standard checks. Per the host-contract pattern documented in [`spec/HOSTING.md`](spec/HOSTING.md).
 - [`templates/decision_board/`](templates/decision_board/) and [`templates/news_capsule/`](templates/news_capsule/) — two compiler templates demonstrating the compile path
 - [`examples/`](examples/) — sanitized JSON inputs you can compile yourself
-- [`compiler/compile_multiview_demo.py`](compiler/compile_multiview_demo.py) — narrow presentation experiment compiling `sections[] + assets[] + presentation_model.cards[]` sources into single Capsules with `reader`, mobile snap, mobile feed, `slides`, and `reel` views
+- [`compiler/compile_multiview.py`](compiler/compile_multiview.py) — current user-facing multiview compiler command for `sections[] + assets[] + presentation_model.cards[]` sources; implementation lives in `compile_multiview_demo.py` while presentation research is still active
+- [`compiler/repair_integrity.py`](compiler/repair_integrity.py) — deterministic integrity repair for Capsule candidates that carry a provisional or stale `integrity.content_hash`
 - [`demos/presentation-surfaces/`](demos/presentation-surfaces/) — informative renderer skeletons for presentation defaults, including a mobile story/reel surface and desktop slides surface. These are examples for compilers and hosts, not extra conformance requirements.
 - [`compiler/validate_bundle.py`](compiler/validate_bundle.py) — initial Bundle validator for directories or zip archives
 - [`spec/bundle.schema.json`](spec/bundle.schema.json) and [`spec/examples/minimal_bundle/`](spec/examples/minimal_bundle/) — Bundle manifest schema plus a tiny public fixture
@@ -72,6 +73,12 @@ python3 compiler/compile.py examples/ai_tool_selection.json templates/decision_b
 
 # Validate a local file
 python3 compiler/validate.py /tmp/test.html
+
+# Compile a multiview presentation capsule
+python3 compiler/compile_multiview.py examples/multiview_chat_summary.json -o /tmp/multiview.html
+
+# Repair a provisional or stale integrity hash
+python3 compiler/repair_integrity.py /tmp/multiview.html -o /tmp/multiview.repaired.html
 
 # Or validate a hosted capsule by URL (fetches /raw, cross-checks any
 # x-capsule-* host-attestation headers against the manifest before
