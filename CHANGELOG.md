@@ -38,6 +38,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 - **`bundle_profile`** — Bundle v0.1.1 now documents a recommended manifest field for the top-level file-set pattern: `viewer`, `data_package`, `multi_entry`, or `project_archive`. This is deliberately separate from Capsule `profile`: Capsule profile describes one sealed HTML envelope; Bundle profile describes what kind of manifested file set the Bundle contains.
 - **Bundle profile adoption plan** — v0.1.1 establishes the vocabulary and validator recognition, keeps existing v0.1.0 Bundles valid, and defers profile-specific heuristics until real producers need them.
+- **Design handoff bundle precedent** — added `spec/DESIGN_HANDOFF_BUNDLES.md` after inspecting a Claude Design export with root handoff instructions, source prototype entrypoints, asset-kit entrypoints, uploads/assets, and a compiled self-unpacking standalone HTML output. This is informative guidance for `project_archive` / `multi_entry` Bundle pressure, not a Capsule rule change.
 
 ### Changed — Bundle tooling
 

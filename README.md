@@ -21,6 +21,7 @@ Capsules are not a working format — you still edit in your tools of choice. Th
 - **For the format in one page:** [CAPSULE_CORE.md](CAPSULE_CORE.md) — twelve rules, pasteable into any LLM prompt.
 - **For the full specification:** [spec/CAPSULE_SPEC.md](spec/CAPSULE_SPEC.md) — formal definition, validation rules, security model, response protocol, integrity-hash recipe.
 - **For the sibling format above Capsule's ceiling:** [spec/BUNDLE_SPEC.md](spec/BUNDLE_SPEC.md) — manifested directories/zips for heavy or multi-viewer artifacts.
+- **For design-tool handoff bundles:** [spec/DESIGN_HANDOFF_BUNDLES.md](spec/DESIGN_HANDOFF_BUNDLES.md) — Claude Design export research and Bundle conventions worth adopting.
 - **For working examples:** [`examples/`](examples/) (JSON inputs for the compiler) and [`spec/examples/`](spec/examples/) (canonical example capsules).
 - **For domain schemas:** [`spec/DOMAIN_CAPSULES.md`](spec/DOMAIN_CAPSULES.md) — `implementation_notes`, `design_system`, `exploration_map`.
 - **For the research narrative:** [RESEARCH.md](RESEARCH.md) — what we're investigating, findings F1–F32, open questions, methodology.

@@ -103,6 +103,14 @@ Initial values:
 
 Do not use `bundle_profile` as a substitute for `domain`. `domain` says what subject area the Bundle is about; `bundle_profile` says what container pattern the Bundle uses. Do not use it as an interactivity tier either. Whether a viewer is mostly static or highly interactive is an implementation detail inside the entry HTML; the Bundle-level profile is about the file set.
 
+Design-tool exports are a useful emerging example of `project_archive` and
+`multi_entry` pressure: a root handoff file, editable source files, local assets,
+one or more viewer entrypoints, and sometimes a compiled standalone HTML output.
+See [`DESIGN_HANDOFF_BUNDLES.md`](DESIGN_HANDOFF_BUNDLES.md) for the current
+informative precedent note. This does not change the Capsule boundary: a
+runtime-required standalone HTML export is not a reader-first Capsule unless it
+also satisfies the Capsule envelope and fallback rules.
+
 #### Adoption plan
 
 1. v0.1.1 establishes `bundle_profile` as recommended manifest vocabulary and adds validator recognition.
