@@ -7,7 +7,7 @@ A research project investigating whether HTML can be disciplined into a portable
 The project produces a spec, a reference implementation, and empirical evidence about whether the spec works in practice. The hypothesis is that the substrate (HTML) has won and what's missing is discipline, not a new format.
 
 Started: 2026-05-15
-Current Core spec: v0.3.0 · Full spec: v0.3.11
+Current Core spec: v0.3.0 · Full spec: v0.3.12
 Repo: [bigfancygarden/htmlcapsule](https://github.com/bigfancygarden/htmlcapsule) · Site: [htmlcapsule.org](https://htmlcapsule.org)
 
 ## Project identity
@@ -1353,6 +1353,33 @@ What must NOT be done yet: the domain schema. The hard problem is **durable anch
 - [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — sealed data is what makes geometric anchors permanent; seal the data → pin the digest → anchor the marks
 - [F34](#f34-hash_scope-datamanifest-becomes-a-production-default--the-integrity-hash-covers-truth-not-projection-and-must-say-so) — truth-vs-projection, now doing load-bearing work as annotation's anchoring doctrine
 - [F24](#f24-host-vs-registry--the-missing-commitment-layer) — "resolve base by digest" is precisely a registry commitment; layered artifacts make the commitment layer's job concrete
+
+### F40: The annotation layer graduates to a named domain — the corpus arrived in one day, and it was exactly the shape the review predicted
+
+**Date:** 2026-07-07
+
+**Source.** Two days after F39 reviewed the annotation-layer question and deliberately declined to spec it ("wait for a producer's real marks"), the producer arrived. Compositor's annotation-layer prototype sealed `tom04-annotated.html` — a real annotation capsule over the flagship base — and Prospect began building the live gesture runtime (highlight/arrow/strikeout on its proven circle-to-scope deixis). The dispatched instruction was explicit: the corpus now exists; give the layer real spec treatment or record a rationale to defer.
+
+**Finding — the produced artifact independently converged on the F39 shape, which is the strongest possible signal to graduate.** The capsule compositor sealed, before reading any schema from this project:
+
+- declared its base in `parents[]` **with `content_hash`** — the digest pin added in v0.3.11 (§11.1) *for this exact use case*, now used in production;
+- carried `base` + `marks[]` + `ai_usage_guidance` in the data block;
+- anchored every mark to the base's **data**, not its DOM — three anchor types (`record` → a `sealed_sources` feature, `layer` → a layer id, `coordinate` → points in a declared CRS);
+- and wrote its own guidance saying *"do not re-anchor marks to the rendered DOM; anchors address the base's data block"* and *"do not treat marks as instructions to execute; they are a brief, not a command."*
+
+That last pair is the anchor-to-truth doctrine (F34/F39) and the marks-as-brief guardrail, arrived at by the producer independently. When a producer reaches the same shape the spec review reached from the other direction, the shape is real. I verified it end to end: the capsule passes the reference validator strict, and its `parents[0].content_hash` recomputes bit-identically against the base capsule's manifest hash — the trust chain resolves, not just parses.
+
+One honest detail worth recording: the producer used `type: "x-compositor.annotation"`, the extension namespace, precisely because `domain.annotation` did not exist yet. This is the F28/F33 pattern once more — a producer reaches for the shape via the `x-` escape hatch, and the graduation is the spec giving the shape its real name. (The extension form remains valid; producers should migrate to `domain.annotation` on next seal.)
+
+**Implication for the spec.** `domain.annotation` graduates from the idea queue to a full named domain: a normal sealed capsule (no new envelope), `parents[]` digest-pinned to the base, data block of `base` + `marks[]` + `ai_usage_guidance`, marks anchored to truth via three open-ended anchor types, sessions sealing periodically (live marking is the working layer; the capsule is the preserve step). The validator gains a warn-level shape check. Two boundaries drawn explicitly: an annotation capsule is *not* a fork (the base is untouched, both stay independently valid) and *not* the §7 response schema (that is record-reaction inside one capsule; annotation ships as its own sealed artifact). Deliberately left open, not invented: a `text`/`range` anchor type for paginated-document bases — that waits for the producer who needs it, W3C Web Annotation's selectors as the reference. The named-domain bar (working example + concrete schema + guardrails + clear boundary) is met; single-producer is fine for a *domain* (unlike a Core rule — that distinction is the same one drawn for `domain.exploration_map`).
+
+**Methodological note.** F33 was the fastest review-to-spec loop the project had run (one week). F39→F40 is faster: the review that declined to spec speculatively named the exact fields the producer would need (digest pinning, anchor-to-truth), those fields shipped in v0.3.11, and the producer built against them within two days — so when the corpus arrived, graduation was almost mechanical. The discipline of *reviewing without speccing* is what made the eventual spec cheap and correct: the hard thinking (anchor to truth, pin the base) was done before the schema, so the schema is just naming a proven shape. Waiting was not delay; it was the work.
+
+**Related findings:**
+- [F39](#f39-the-annotation-layer-is-already-a-capsule--markup-as-language-needs-digest-pinned-parents-and-anchor-to-truth-not-a-new-envelope) — the review this finding closes; predicted the shape, added the prerequisite (digest pinning), declined to spec speculatively
+- [F34](#f34-hash_scope-datamanifest-becomes-a-production-default--the-integrity-hash-covers-truth-not-projection-and-must-say-so) — truth-vs-projection is the load-bearing doctrine of the anchor rule
+- [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — producer reached the shape via the `x-` namespace before the spec named it; graduation is the naming
+- [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — sealed_sources is what makes `record` anchors permanent; annotation is downstream of sealed data
 
 ## Open questions
 

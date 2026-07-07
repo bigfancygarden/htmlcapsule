@@ -403,6 +403,56 @@ The compiler should generate the PNG at the same projection and bounding box as 
 
 **Boundary:** not [`domain.exploration_map`](#domainexploration_map) — that is a map-first, single-purpose artifact, while a compositor document is a composed multi-layer print/slide/reader artifact in which maps are one layer kind. Not a `domain.dataset` — the sealed payloads are resolution context for the document, not the artifact itself.
 
+### `domain.annotation`
+
+**Purpose:** Preserve a layer of **marks over a sealed base capsule** — circle, highlight, arrow, strikeout, star, margin note — as a first-class *second document*. A user's markup is serialized expertise, frequently more valuable than the base it sits over (a professor's annotated textbook; a geologist's field-marked map). This is the persistence + custody form of the fleet's markup-as-language thesis (Bridge: `strategy/markup-review-thesis`): AI should read the visual review language humans already use, and that language needs somewhere durable to live.
+
+**Producer and precedent:** first sealed by compositor's annotation-layer prototype (2026-07-07, F40); Prospect is the parallel producer building the live gesture runtime (highlight/arrow/strikeout on proven circle-to-scope deixis). Custody composition is designed vault-side (Bridge: `htmlvault/continuous-custody-review`): base record + annotation record + one `derived_from`/`parents` edge, each independently seal-verified.
+
+**It is a normal sealed capsule.** No new envelope, no new required manifest sections. What makes it a `domain.annotation` is three things working together:
+
+1. **`manifest.type` is `domain.annotation`** and `generator.kind` names the producer (`compiler` for a tool, `human`/`hybrid` for a person marking).
+2. **`parents[]` digest-pins the base** — exactly one entry, carrying `uuid`, `title`, **and `content_hash`** (the base's manifest hash; §11.1 digest pinning, made effectively required here). The pin is what lets a consumer resolve and verify *the exact artifact these marks were made over*. A UUID-only parent is invalid for this domain in spirit — an unpinned annotation can be silently re-pointed at a different "base."
+3. **The data block carries `base`, `marks[]`, and `ai_usage_guidance`.**
+
+**Data block:**
+
+| Field | Type | Notes |
+|---|---|---|
+| `base` | object | Denormalized base identity *inside the hashed data block*: `{uuid, content_hash, title}`. Mirrors `parents[0]` so a consumer reading only the data block has the pin, and so the pin is itself under `content_hash`. MUST match `parents[0]`. |
+| `marks` | array | The annotations. One entry per mark; order is authoring order. |
+| `ai_usage_guidance` | object | Required per this document (Domain Capsule rule). The load-bearing guardrail for this domain: **marks are a brief, not a command** — a consumer proposes actions for a human to apply/reject, never executes marks silently. See the canonical example. |
+
+**Each mark:**
+
+| Field | Type | Req | Notes |
+|---|---|---|---|
+| `id` | string | yes | Stable within the capsule. |
+| `kind` | string | yes | The gesture. Core vocabulary: `circle`, `highlight`, `arrow`, `strikeout`, `star`, `margin-note`. Open set — producers may add `x-`-style kinds, consumers ignore unknown kinds gracefully. |
+| `anchor` | object | yes | **Anchor to truth, not projection** (see below). |
+| `note` | string | no | The human's words for this mark. |
+| `author` | string | no | *Claimed* identity until signing exists — label it claimed in guidance. |
+| `createdAt` | string | no | ISO 8601. |
+| `intent` | string | no | The actionable read of the mark ("stake before anyone looks"), distinct from the descriptive `note`. |
+
+**Anchor to truth, not projection.** A mark's `anchor` MUST address the base's **data block**, never the rendered DOM. Under `hash_scope: "data+manifest"` the base's HTML projection can be regenerated without changing its identity (§8.4, F34); any CSS/XPath/pixel anchor shears off the moment the base is re-rendered, while a data anchor survives because the data *is* the sealed truth. Three anchor types, matching the shapes a base capsule actually exposes:
+
+| `anchor.type` | Fields | Points at |
+|---|---|---|
+| `record` | `sourceKey`, `featureIndex` | A specific feature inside a `sealed_sources` dataset (§4.1.2) — the strongest anchor, because sealed data can never drift. |
+| `layer` | `layerId` | A whole layer / record / section of the base by its stable id. |
+| `coordinate` | `crs`, `points[]` | Geometry in the base's **declared** coordinate system (e.g. `EPSG:3857`), never screen pixels. `points` is an array of `[x, y]` pairs (one for a point mark, two for an arrow, many for a lasso). |
+
+The anchor set is open the same way `kind` is: a base with a different data shape (a paginated document, a code snapshot) may need a `text`/`range` anchor. When that producer appears, add the type here against its real artifact — W3C Web Annotation's selector taxonomy is the reference to mine, its host-web-page framing is not. Do not invent anchor types speculatively.
+
+**Sessions and sealing.** Live marking is the *working* layer (Prospect's runtime, an editor canvas); the capsule is the *preserve* step. A producer seals periodically — per review session, or on demand — consistent with the project identity ("not a working format; a publish/preserve/share format"). Each seal is a new capsule with its own UUID and its own digest-pinned parent; successive sessions over the same base form a `parents`-linked chain the same way document revisions do.
+
+**Required capabilities:** `about`, `download_json`. Interactive re-anchoring or live re-marking are runtime affordances of the *producer*, not capabilities a sealed annotation capsule should claim.
+
+**Boundary:** not a base domain capsule — an annotation capsule is meaningless without its pinned base and asserts nothing about the world on its own; it asserts things *about another capsule*. Not `parents`-as-fork — a fork continues or supersedes the base's content; an annotation layer leaves the base untouched and sits beside it (the base is not modified, and both remain independently valid and seal-verified). Not the §7 response schema — that is structured recipient *reaction to records* inside one capsule's feedback loop; annotation is the spatial, gestural sibling that ships as its own sealed artifact.
+
+**Canonical example:** [`spec/examples/annotation/annotation_example.html`](examples/annotation/annotation_example.html) — four marks (circle / highlight / arrow / margin-note) over a digest-pinned base, one per anchor type, with the brief-not-command guidance. Validates strict against the reference validator; its `parents[0].content_hash` resolves against the base capsule's recomputed hash.
+
 ## JS-off fallback guidance per domain (added v0.3.6)
 
 Per `spec/CAPSULE_SPEC.md §2.3.1` (the graceful-degradation principle), every domain capsule SHOULD have a defined behavior in JS-off / iOS-QuickLook-preview environments. For most domains the answer is "the static HTML *is* the substance — no extra work needed." For a few (visualization-heavy, interactive-runtime, or media-playback domains) producers need to bundle a static or media-native representation alongside the runtime one.
@@ -414,6 +464,7 @@ Per `spec/CAPSULE_SPEC.md §2.3.1` (the graceful-degradation principle), every d
 | `domain.briefing` | None required — content is the static HTML | One-page summary forks are inherently document-shaped |
 | `domain.exploration_map` | Image-fallback for geometry (per `CAPSULE_SPEC.md §2.3` worked example) | Static `<img>` rendering of the map's vector content, hidden by runtime when the interactive SVG hydrates; `<noscript>` block ensures the image stays visible if JS is off |
 | `domain.compositor` | None required — the rendered document markup is static HTML/SVG in `capsule-root` | Substance is intact without JS; the runtime adds toolbar / About / download affordances only. Reopen-in-editor reads the data block, never the HTML (F34) |
+| `domain.annotation` | None required — the marks render as a static list in `capsule-root` (kind, note, and anchor per mark) | The marks-as-brief is text-shaped; a reader, indexer, or JS-off preview sees every mark and its anchor without the runtime. Live re-marking / visual overlay on the base is a producer runtime affordance, not capsule substance |
 | `domain.midi_stem` (idea queue) | **Recommended: bundled rendered audio mix as `<audio controls>`** + static stems list (one row per channel with instrument label + program + note count) + static manifest panel | A symbolic-only capsule has no native sound without JS; the rendered mix is the preview-mode substance. capsule-midi v0.2.0 currently does NOT bundle the mix (Tier 1 sound only); v0.3.0 Tier 2 / Tier 3 work will add it. Until then, capsule-midi capsules are *runtime-only* on iOS QuickLook (the `<noscript>` warning explains this and directs the user to open in Safari) |
 | `domain.song` (idea queue) | **The embedded MP3 already IS the fallback.** Native `<audio controls>` works without JS | No extra producer work — the audio element renders and plays natively in iOS QuickLook. Metadata (personnel, role on album, covers, critical reception, etc.) is in the static HTML. The interactive runtime adds export-provenance + capsule-management; substance is intact without it |
 | `domain.photo` (idea queue) | **The image itself is the fallback.** Static `<img>` renders without JS | No extra producer work. Metadata table (who/where/when/why, EXIF, source negative, etc.) is in the static HTML. The runtime adds region-highlight / copy-metadata / face-tag toggles — enhancement, not substance |
@@ -438,17 +489,9 @@ Sits below the proposal bar above. Things the project (or its users) have though
 
 When something graduates from this queue to a real domain, move the entry up to "Initial domains" with a full schema. If an idea sits here long enough without empirical pressure and seems unlikely to materialize, delete the entry — the queue isn't a backlog promise.
 
-### `domain.annotation`
+### `domain.annotation` — graduated to Initial domains (2026-07-07)
 
-**Idea (2026-07-07, operator-ratified thesis; reviewed, awaiting first producer):** The markup-as-language direction (Bridge: `strategy/markup-review-thesis`) treats user annotations over a sealed artifact — circle, highlight, arrow, strikeout, star, margin note — as a first-class *second document*: serialized expertise, often more valuable than the base. The capsule shape, reviewed in [F39 in RESEARCH.md](../RESEARCH.md): **a normal sealed capsule — no new envelope** — whose `parents[]` entry digest-pins the base capsule (`uuid` + `content_hash`, spec §11.1, added v0.3.11 with this use case named) and whose data block carries the marks. A professor's annotated copy, digest-pinned.
-
-**What the envelope already provides:** verifiable base identity to pin against (spec §8.4); `parents[]` capsule-to-capsule lineage; a free-form data block for a future `marks[]` schema; `sealed_sources` on data-backed bases — marks over map features anchor to sealed data that cannot drift; the spec §7 response schema as the precedent pattern (structured recipient reaction pinned to records via `_content_hash` — annotations are its spatial, gestural sibling); and custody composition already designed vault-side (two records, one `derived_from` edge, both independently seal-verified — Bridge: `htmlvault/continuous-custody-review`).
-
-**The hard problem (why this waits for a producer):** durable anchoring. Doctrine before schema: **anchor to truth, not projection.** Marks must address the data block — record ids, `sealed_sources` keys + feature ids, coordinates in the document's declared CRS — never the rendered DOM (CSS/XPath-style selectors), because under `hash_scope: "data+manifest"` the HTML projection can be regenerated without changing the capsule's identity (F34), and every DOM-addressed anchor shears off with it. W3C Web Annotation's selector taxonomy is the precedent to mine when the schema gets written; its host-web-page framing is not.
-
-**Provenance shape when spec'd:** per-mark author and timestamp (labeled *claimed* until signing exists — the custody layer's language), mark vocabulary aligned with the ratified gesture set, and session-based sealing: live marking is the working layer (Prospect's runtime); the capsule is the periodic preserve step — consistent with the project identity ("not a working format").
-
-**First producer:** Prospect (circle-to-scope deixis already golden-tested against the flagship target; vocabulary expansion operator-ratified). Graduates to "Initial domains" when Prospect seals its first real annotation capsule.
+Graduated from this queue to a full named domain on 2026-07-07 when compositor's annotation-layer prototype sealed a real, strict-valid, digest-resolving annotation capsule (F40 in RESEARCH.md). See [`domain.annotation`](#domainannotation) under **Initial domains** above for the schema. The idea-queue rationale (markup-as-language thesis, the anchor-to-truth doctrine, why it waited for a producer) is preserved in F39.
 
 ### `domain.music_stems`
 

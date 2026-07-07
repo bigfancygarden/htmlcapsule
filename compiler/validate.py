@@ -36,7 +36,7 @@ HASH_PLACEHOLDER = "sha256:pending"
 # first external consumer: compositor's "non-negotiable #2" workflow), so
 # conformance claims need to be legible: every report prints this version,
 # and `--version` exists for CI to record or assert. See F35 in RESEARCH.md.
-VALIDATOR_VERSION = "0.3.11"
+VALIDATOR_VERSION = "0.3.12"
 
 REQUIRED_SECTIONS = {
     "capsule-manifest": "script",
@@ -522,6 +522,81 @@ def check_domain_guidance(manifest, data, result: ValidationResult):
                    f"{capsule_type} is a Domain Capsule but the data block has no ai_usage_guidance "
                    f"object — DOMAIN_CAPSULES.md requires allowed_tasks / restricted_tasks / "
                    f"preferred_language for every domain.<name> capsule")
+
+
+ANNOTATION_ANCHOR_FIELDS = {
+    "record": ("sourceKey", "featureIndex"),
+    "layer": ("layerId",),
+    "coordinate": ("crs", "points"),
+}
+
+
+def check_annotation_shape(manifest, data, result: ValidationResult):
+    """DOMAIN_CAPSULES.md `domain.annotation`: a sealed layer of marks over a
+    digest-pinned base. Checked only for type == 'domain.annotation'.
+
+    Warn-level (like the other domain-convention checks): the base validator
+    owns the envelope; this enforces the domain's load-bearing shape — the
+    digest pin (without which an annotation can be silently re-targeted) and
+    anchor-to-truth (marks addressing the data block, not the regenerable DOM).
+    """
+    if not isinstance(manifest, dict) or manifest.get("type") != "domain.annotation":
+        return
+    problems = []
+
+    # (1) Base must be digest-pinned in parents[].
+    parents = manifest.get("parents") or []
+    pinned = [p for p in parents if isinstance(p, dict) and isinstance(p.get("content_hash"), str)]
+    if not parents:
+        problems.append("no parents[] — a domain.annotation MUST digest-pin its base capsule (§11.1)")
+    elif not pinned:
+        problems.append("parents[] present but none carry content_hash — the base pin is what makes "
+                        "the annotation resolvable/verifiable; an unpinned base can be silently re-targeted")
+
+    # (2) Data block shape: base + marks.
+    if not isinstance(data, dict):
+        problems.append("data block is not an object; expected base + marks[]")
+    else:
+        base = data.get("base")
+        if not isinstance(base, dict) or "content_hash" not in base:
+            problems.append("data.base missing or lacks content_hash (should mirror parents[0], "
+                            "inside the hashed data block)")
+        elif pinned and base.get("content_hash") != pinned[0].get("content_hash"):
+            problems.append("data.base.content_hash does not match parents[0].content_hash")
+
+        marks = data.get("marks")
+        if not isinstance(marks, list) or not marks:
+            problems.append("data.marks missing or empty; a domain.annotation carries at least one mark")
+        else:
+            for i, mark in enumerate(marks):
+                if not isinstance(mark, dict):
+                    problems.append(f"marks[{i}] is not an object")
+                    continue
+                if not mark.get("id"):
+                    problems.append(f"marks[{i}] missing id")
+                if not mark.get("kind"):
+                    problems.append(f"marks[{i}] missing kind")
+                anchor = mark.get("anchor")
+                if not isinstance(anchor, dict):
+                    problems.append(f"marks[{i}] missing anchor (must address the base's data block, not the DOM)")
+                    continue
+                atype = anchor.get("type")
+                if atype not in ANNOTATION_ANCHOR_FIELDS:
+                    problems.append(f"marks[{i}].anchor.type {atype!r} unknown; "
+                                    f"expected one of {sorted(ANNOTATION_ANCHOR_FIELDS)} (anchor to truth, not projection)")
+                else:
+                    missing = [f for f in ANNOTATION_ANCHOR_FIELDS[atype] if f not in anchor]
+                    if missing:
+                        problems.append(f"marks[{i}].anchor ({atype}) missing {', '.join(missing)}")
+
+    if problems:
+        # Cap the detail so a broken batch doesn't flood the report.
+        shown = problems[:6]
+        more = f" (+{len(problems) - 6} more)" if len(problems) > 6 else ""
+        result.add("Annotation layer shape", "warn", "; ".join(shown) + more)
+    else:
+        result.add("Annotation layer shape", "pass",
+                   f"{len(data['marks'])} mark(s) over a digest-pinned base; anchors address sealed truth")
 
 
 def check_profile_overlay(manifest: dict, result: ValidationResult):
@@ -1272,6 +1347,7 @@ def validate(path: Path, strict: bool = False) -> ValidationResult:
     data = check_data(html, result)
     check_sealed_sources(data, result)
     check_domain_guidance(manifest, data, result)
+    check_annotation_shape(manifest, data, result)
     check_profile_overlay(manifest, result)
     check_integrity_hash(manifest, data, html, result, html_source_path=str(path))
     check_field_formats(manifest, result)
