@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.10 (Core currently v0.3.0)
+# Capsule Spec v0.3.11 (Core currently v0.3.0)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -15,6 +15,8 @@
 > **v0.3.9 changes (2026-06-01).** Added optional `presentations[]` manifest declarations for capsule-owned views (`reader`, `mobile`, `print-letter`, `slides`, `reel`, `interactive`). Presentation declarations are separate from Capsule `profile` overlays and from app-owned custody views such as Safe Preview or Source. The validator checks declaration shape and fragment-entry resolution. Rule 12 is restated here as the normative guardrail: runtime code may enhance, filter, search, transform, export, or visualize, but must not be the only path by which a reader can understand the capsule's primary meaning.
 
 > **v0.3.10 changes (2026-07-06).** Added `sealed_sources` as the third recommended data-block convention (§4.1.2): data-backed capsules whose content model references external data by key seal the resolved payloads beside the content, so a capsule doesn't just *render* offline — it *re-resolves* offline, with no ambient fixtures ("the output is also the source" made literal; §12 restates this as the resolution guarantee). Emerged from the first external deterministic compiler producer (compositor, `domain.compositor` — now registered in DOMAIN_CAPSULES.md); named a Core-promotion candidate for v0.4 pending a second independent producer. §8.4 adds display guidance: any surface showing `content_hash` SHOULD show `hash_scope` beside it — a hash without its scope is ambiguous. §14 gives the reference validator a version identity (`VALIDATOR_VERSION`, `--version`) with pinning guidance for producer CI that consumes it cross-repo. Findings F33–F35 in RESEARCH.md.
+
+> **v0.3.11 changes (2026-07-07).** Custody- and producer-driven revision. §8.1 names the **two-track version story**: `spec_version` declares the normative line (Core, `0.3.0`) and MUST NOT carry full-spec document revisions; a conformance statement is the pair — declared line + verifying validator version — and custody records SHOULD store the triple (declared, verified-by, when). §9.1.1 gains **Test Vector B** (float-bearing): implementations MUST use correctly-rounded float parsing and MUST reproduce the reference number formatting — a Rust verifier's 1-ULP parse of a Web-Mercator ordinate filed a false "tampered" against a conformant capsule (F37). §11.1 adds **digest pinning for `parents[]`** (optional `content_hash` per entry, SHOULD for new capsules): claimed-vs-verifiable applied to provenance edges, and the prerequisite for layered artifacts such as annotation capsules (F39; `domain.annotation` reviewed and queued in DOMAIN_CAPSULES.md — a normal sealed capsule over a digest-pinned base, anchored to truth, not projection). Validator: warns when a `domain.*` capsule omits the registry-required `ai_usage_guidance` block (a production compiler shipped without it — F38). Findings F36–F39 in RESEARCH.md.
 
 ## 1. Overview
 
@@ -1360,18 +1362,25 @@ The import workflow must validate:
 
 ## 8. Versioning
 
-### 8.1 Two Version Fields
+### 8.1 Two Version Fields (and the two-track version story)
 
-| Field              | Tracks                                       | When It Bumps                                     |
-|--------------------|----------------------------------------------|---------------------------------------------------|
-| `spec_version`     | The capsule format (this document)            | When required sections, fields, or behavior change |
-| `capsule_version`  | The individual capsule instance               | When data, UI, or capabilities change              |
+| Field              | Tracks                                                                  | When It Bumps                                     |
+|--------------------|-------------------------------------------------------------------------|---------------------------------------------------|
+| `spec_version`     | The **normative format line** the capsule conforms to — the Core version (currently `0.3.0`) | When the rules a capsule must satisfy change (a Core bump) |
+| `capsule_version`  | The individual capsule instance                                          | When data, UI, or capabilities change              |
 
 Both use [Semantic Versioning](https://semver.org/):
 
 - **Major**: breaking changes (new required fields, removed sections)
 - **Minor**: backwards-compatible additions (new optional fields, new capabilities)
 - **Patch**: fixes (typos in data, styling corrections, bug fixes in runtime)
+
+**The two-track version story (added v0.3.11).** The project carries two version streams that mean different things, and conflating them produces records that look contradictory while being correct:
+
+- **The normative line** — the Core version (`0.3.0`). This is what `spec_version` declares and what the validator's known-version set accepts. It bumps only when the rules a capsule must satisfy change. A capsule declaring `0.3.0` claims exactly: "I satisfy the 0.3 rules."
+- **The full-spec document revision** — this document's own version (`v0.3.11`). A patch stream of documentation, recommended conventions, worked examples, test vectors, and validator behavior *within* the declared line. Producers MUST NOT put document revisions in `spec_version`, and validators MUST reject them as unknown. This is by design, not an oversight: the manifest speaks the rules it satisfies, not the edition of the book they were printed in.
+
+A conformance statement is therefore a **pair**: what the capsule declares (the line) and what verified it (the validator's doc revision). The reference validator states both in every report. Verification, custody, and provenance records SHOULD store the triple — declared `spec_version`, verifying validator version, verification time — and surfaces that display conformance SHOULD render the pair (e.g. `spec 0.3.0 · validated 0.3.11`), for the same reason §8.4 requires `hash_scope` beside `content_hash`: a claim shown without its verification context reads as more than it is. (Empirical origin: the first production custody run recorded the flagship capsule's declared `spec_version 0.3.0` beside its gate result "strict-valid, validator 0.3.10" and flagged the pairing as incoherent. It was correct and unexplained; this section is the explanation. F36 in RESEARCH.md.)
 
 ### 8.2 Regeneration Rules
 
@@ -1530,6 +1539,33 @@ If your implementation produces this value bit-identical, your canonicalization,
 
 The canonical serialization rules are deliberately strict so that a Python compiler and a Node.js validator produce identical hashes.
 
+#### Test Vector B — floating-point numbers (added v0.3.11)
+
+Test Vector A's data block contains no floating-point numbers, so it cannot catch the divergence class most likely to bite data-backed capsules: float parsing and float serialization. The empirical case that forced this vector (F37 in RESEARCH.md): a Rust custody verifier using serde_json's default `f64` fast-path parsed the Web-Mercator ordinate `7842318.5018136855` one ULP away from the correctly-rounded value, which changed its canonical serialization and filed a false "tampered" verdict against a capsule the reference validator passes 31/31.
+
+Two normative requirements, both made testable by this vector:
+
+1. **Correctly-rounded parsing.** Implementations MUST parse JSON numbers to the nearest IEEE 754 double (correctly rounded). (serde_json: enable the `float_roundtrip` feature. Most mainstream JSON parsers are already correctly rounded; verify, don't assume.)
+2. **Reference number formatting.** Canonical serialization MUST format numbers exactly as the reference implementation does — Python 3 `repr` semantics: shortest round-trip decimal form, Python's exponent style (`1e+22`, `1.5e-05` — sign always present, two-digit zero-padded exponent), and integer-valued floats keeping their fractional marker (`55.0` stays `55.0`, never `55`). Implementations following ECMAScript / RFC 8785 (JCS) number formatting will diverge on exactly these cases — **JCS is not the canonical form of this spec.**
+
+*Manifest:* identical to Test Vector A, byte for byte (the canonical placeholder-form manifest line above).
+
+*Canonical data (parse these bytes, canonicalize, and the output must reproduce them bit-identically):*
+```
+{"coord_lat":57.08614,"coord_lon":-108.92228,"count":3,"int_valued":55.0,"large_exp":1e+22,"long_literal":0.30000000000000004,"small":1.5e-05,"web_mercator_y":7842318.5018136855}
+```
+
+Each field traps a specific divergence: `web_mercator_y` — correctly-rounded parsing of a 17-significant-digit ordinate (the empirical serde_json case); `long_literal` — the classic `0.1 + 0.2` shortest-repr shibboleth; `large_exp` and `small` — exponent formatting style (`1e+22` not `1e22`, `1.5e-05` not `1.5e-5`); `int_valued` — float identity preservation (`55.0` not `55`); `count` — integers stay integers; `coord_lat` / `coord_lon` — ordinary GeoJSON-grade coordinates that must survive untouched.
+
+*Payload:* the canonical Test Vector A manifest bytes, then a single `\n` (LF, 0x0A), then the canonical data bytes above — UTF-8 throughout.
+
+*Expected hash:*
+```
+sha256:47c0aaf09948f5f010252cb3258b2b42c9790bcbb6aa69e6086af5e76ce2bf9b
+```
+
+If Test Vector A passes and Test Vector B diverges, the failure is in number handling: check correctly-rounded parsing first, then exponent formatting, then integer-valued float preservation. Verifiers in languages other than Python SHOULD pin this vector in a regression test — the false-tamper failure mode is silent until it hits a real artifact.
+
 ### 9.2 Runtime Security
 
 The capsule runtime must:
@@ -1652,6 +1688,8 @@ When a capsule is forked from one or more earlier capsules — the user pasted a
 
 Multiple parents are meaningful and supported: a capsule that compares two earlier capsules, or that merged a second capsule into the conversation partway through, records all of them. Order is *introduction order* — the parent that seeded the conversation comes first. The `uuid` is required and must be a valid v4 UUID; the `title` is required as a human-readability hint. Producers must not invent parent references — `parents` is hard provenance, not "thematically related work."
 
+**Digest pinning (added v0.3.11).** Each entry MAY — and for new capsules SHOULD — also carry `content_hash`: the parent's `integrity.content_hash` as known at fork time (e.g. `"content_hash": "sha256:76e0d1c0…"`). The `uuid` is claimed identity; the digest is verifiable identity (§8.4) — a digest-pinned parent claim cannot be silently re-targeted at a different artifact reusing the same UUID. Registries and custody systems index by content hash (§8.4, §11.6), so a pinned entry lets them resolve and verify the *exact* parent rather than trusting the claim. Note the pin is the parent's **manifest `content_hash`** (the format's own verifiable identity, scope-aware per §8.4), not a whole-file digest — vaults may track file digests separately as custody metadata (§11.4), but the manifest speaks the format's identity. Digest pinning becomes load-bearing for **layered artifacts** — e.g. an annotation capsule whose marks are only meaningful over the exact base they were made on (F39 in RESEARCH.md; `domain.annotation` in the DOMAIN_CAPSULES.md idea queue) — where the pin is expected to be required once that domain is specified.
+
 If the conversation didn't start from a capsule, omit `parents` entirely (don't include an empty array — absent and empty are equivalent, and absent is cleaner).
 
 ### 11.2 Non-Capsule provenance (`derived_from`)
@@ -1694,7 +1732,7 @@ When a capsule is built from sources that are **not themselves Capsules** — co
 - `role` (string) — short phrase describing how this source relates to the capsule. Examples: `"source composition"`, `"primary data"`, `"synthesis input"`, `"reference image"`, `"transcribed interview"`.
 
 **Optional per entry:**
-- `hash` (string) — `sha256:<hex>` of the source content if hashable. Pairs with `reference` for stronger lineage when both are present.
+- `hash` (string) — `sha256:<hex>` of the source content if hashable. Pairs with `reference` for stronger lineage when both are present. SHOULD be provided whenever the source has a stable digest (strengthened v0.3.11): references drift — URLs rot, datasets get republished — while digests keep the lineage verifiable (§8.4's claimed-vs-verifiable line, applied to provenance).
 - `date` (string) — ISO 8601 date or datetime of the source.
 - Additional domain-specific fields are permitted; consumers should ignore fields they don't recognize.
 
@@ -1808,7 +1846,7 @@ A capsule is **valid** if:
 
 A validator tool should produce a report listing pass/fail for each check.
 
-**Validator identity and pinning (added v0.3.10).** The reference validator (`compiler/validate.py`) carries its own version identity: `VALIDATOR_VERSION` tracks the full-spec version it enforces, `--version` prints it, and every report states it. This exists because the validator is consumed cross-repo: producer CI pipelines check out this repository and run the validator against their sealed output as a merge gate (the first external consumer is the compositor compiler; F35 in RESEARCH.md). Producers consuming the validator this way SHOULD either (a) pin a specific ref of this repository and record the validator version their gate enforced, or (b) deliberately float on `main` to track the spec head — a valid posture, but it means a spec tightening can fail producer CI without a producer-side change, so the failing report's stated validator version is what makes the breakage diagnosable rather than mysterious. A conformance claim ("passes the strict validator") is only meaningful with the validator version attached.
+**Validator identity and pinning (added v0.3.10).** The reference validator (`compiler/validate.py`) carries its own version identity: `VALIDATOR_VERSION` tracks the full-spec version it enforces, `--version` prints it, and every report states it. This exists because the validator is consumed cross-repo: producer CI pipelines check out this repository and run the validator against their sealed output as a merge gate (the first external consumer is the compositor compiler; F35 in RESEARCH.md). Producers consuming the validator this way SHOULD either (a) pin a specific ref of this repository and record the validator version their gate enforced, or (b) deliberately float on `main` to track the spec head — a valid posture, but it means a spec tightening can fail producer CI without a producer-side change, so the failing report's stated validator version is what makes the breakage diagnosable rather than mysterious. A conformance claim ("passes the strict validator") is only meaningful with the validator version attached. The report also pairs the capsule's declared `spec_version` with the enforced doc revision — a conformance statement is the pair (§8.1): *declares 0.3.0 · validated at 0.3.11*.
 
 | Property       | Value                         |
 |----------------|-------------------------------|

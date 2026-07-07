@@ -438,6 +438,18 @@ Sits below the proposal bar above. Things the project (or its users) have though
 
 When something graduates from this queue to a real domain, move the entry up to "Initial domains" with a full schema. If an idea sits here long enough without empirical pressure and seems unlikely to materialize, delete the entry — the queue isn't a backlog promise.
 
+### `domain.annotation`
+
+**Idea (2026-07-07, operator-ratified thesis; reviewed, awaiting first producer):** The markup-as-language direction (Bridge: `strategy/markup-review-thesis`) treats user annotations over a sealed artifact — circle, highlight, arrow, strikeout, star, margin note — as a first-class *second document*: serialized expertise, often more valuable than the base. The capsule shape, reviewed in [F39 in RESEARCH.md](../RESEARCH.md): **a normal sealed capsule — no new envelope** — whose `parents[]` entry digest-pins the base capsule (`uuid` + `content_hash`, spec §11.1, added v0.3.11 with this use case named) and whose data block carries the marks. A professor's annotated copy, digest-pinned.
+
+**What the envelope already provides:** verifiable base identity to pin against (spec §8.4); `parents[]` capsule-to-capsule lineage; a free-form data block for a future `marks[]` schema; `sealed_sources` on data-backed bases — marks over map features anchor to sealed data that cannot drift; the spec §7 response schema as the precedent pattern (structured recipient reaction pinned to records via `_content_hash` — annotations are its spatial, gestural sibling); and custody composition already designed vault-side (two records, one `derived_from` edge, both independently seal-verified — Bridge: `htmlvault/continuous-custody-review`).
+
+**The hard problem (why this waits for a producer):** durable anchoring. Doctrine before schema: **anchor to truth, not projection.** Marks must address the data block — record ids, `sealed_sources` keys + feature ids, coordinates in the document's declared CRS — never the rendered DOM (CSS/XPath-style selectors), because under `hash_scope: "data+manifest"` the HTML projection can be regenerated without changing the capsule's identity (F34), and every DOM-addressed anchor shears off with it. W3C Web Annotation's selector taxonomy is the precedent to mine when the schema gets written; its host-web-page framing is not.
+
+**Provenance shape when spec'd:** per-mark author and timestamp (labeled *claimed* until signing exists — the custody layer's language), mark vocabulary aligned with the ratified gesture set, and session-based sealing: live marking is the working layer (Prospect's runtime); the capsule is the periodic preserve step — consistent with the project identity ("not a working format").
+
+**First producer:** Prospect (circle-to-scope deixis already golden-tested against the flagship target; vocabulary expansion operator-ratified). Graduates to "Initial domains" when Prospect seals its first real annotation capsule.
+
 ### `domain.music_stems`
 
 **Idea (2026-05-21):** Hold the stems of a song / loop / sketch in a single capsule, with mute/solo per stem, optional Web Audio API effects (gain, EQ, reverb, filter), MIDI tracks alongside audio, and the friend-rework workflow as the load-bearing use case.

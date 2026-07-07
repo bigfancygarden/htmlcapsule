@@ -7,7 +7,7 @@ A research project investigating whether HTML can be disciplined into a portable
 The project produces a spec, a reference implementation, and empirical evidence about whether the spec works in practice. The hypothesis is that the substrate (HTML) has won and what's missing is discipline, not a new format.
 
 Started: 2026-05-15
-Current Core spec: v0.3.0 · Full spec: v0.3.10
+Current Core spec: v0.3.0 · Full spec: v0.3.11
 Repo: [bigfancygarden/htmlcapsule](https://github.com/bigfancygarden/htmlcapsule) · Site: [htmlcapsule.org](https://htmlcapsule.org)
 
 ## Project identity
@@ -1280,6 +1280,79 @@ Two design decisions in the producer's fix are worth recording as format doctrin
 - [F31](#f31-bundle-emerges-as-sibling-format--empirical-pressure-from-a-heavy-data-investigation-produces-the-projects-first-sibling-spec-producer--format--host-pattern-named-explicitly) — producer / format / host; the format-as-contract now has mechanical teeth
 - [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — the producer whose CI created the pinning question
 - [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — discoverable onboarding; a versioned, CI-consumable validator is onboarding for *compilers* the way CAPSULE_CORE.md is onboarding for LLMs
+
+### F36: Custody makes version incoherence visible — spec_version declares the normative line, the validator verifies at a doc revision, and the record needs both
+
+**Date:** 2026-07-07
+
+**Source.** The first production custody run (htmlvault, TOM-04 flagship capsule). The custody record faithfully stored what the producer declared — `spec_version: "0.3.0"` — directly beside the gate result "strict-valid, validator 0.3.10," and the custody session flagged the pairing as incoherent: "until the spec's version story is coherent, provenance chains will carry misleading version claims."
+
+**Finding — the wire was right and the vocabulary was missing.** Nothing in the flagged record was wrong: manifests declare `0.3.0` because that is the Core (normative) version, the validator's known-version set caps at `0.3.0` *by design*, and the full-spec document's `v0.3.x` patch stream (now v0.3.11) versions documentation, conventions, test vectors, and validator behavior *within* that normative line. But no document said so. The two version streams — the rule line a capsule declares and the doc revision a validator enforces — had been operating correctly and namelessly since v0.3.1, and the first outside consumer to store both side by side reasonably read them as a contradiction. A correct system that looks incoherent to its first serious consumer has a documentation bug with the trust impact of a real one: custody chains are exactly where ambiguity compounds.
+
+**Implication for the spec.** §8.1 now names the two-track version story: `spec_version` declares the normative line (Core); producers MUST NOT declare full-spec doc revisions and validators MUST reject them as unknown; a conformance statement is the **pair** (declared line + verifying validator version); custody and provenance records SHOULD store the **triple** (declared, verified-by, when); display surfaces SHOULD render `spec 0.3.0 · validated 0.3.11` — the same legibility rule §8.4 applies to hashes (F34), applied to versions. The validator now states the pair in every report's `spec_version` check. The general pattern, now observed twice in one week: **claims without their verification context read as more than they are** — hash without scope (F34), version without validator (F36). Custody surfaces both because custody is where claims get stored next to their verification.
+
+**Related findings:**
+- [F34](#f34-hash_scope-datamanifest-becomes-a-production-default--the-integrity-hash-covers-truth-not-projection-and-must-say-so) — the same legibility failure class, for hashes; §8.4 and §8.1 are now the two instances of one rule
+- [F35](#f35-the-reference-validator-becomes-load-bearing-cross-repo-infrastructure--producer-ci-needs-a-version-identity-to-pin-against) — the validator version identity that makes the pair statable at all
+
+### F37: A one-ULP float parse files a false tampered verdict — cross-language canonicalization needs a float-bearing test vector and correctly-rounded parsing
+
+**Date:** 2026-07-07
+
+**Source.** htmlvault's Rust custody verifier, during flagship pre-flight. serde_json's default `f64` fast-path parsed the Web-Mercator ordinate `7842318.5018136855` one ULP away from the correctly-rounded double. The canonical re-serialization therefore differed from the reference implementation's by one digit, the recomputed hash diverged, and the vault filed a false "tampered" (INT001 High) against a capsule the reference validator passes 31/31. Fixed on their side with serde_json's `float_roundtrip` feature; their Swift verifier was checked and already correctly rounded.
+
+**Finding — the §9.1.1 canonical form was underspecified in exactly one dimension: numbers.** The hash recipe re-serializes parsed JSON, so canonical bytes depend on the implementation's number formatting and parsing. Test Vector A (v0.3.1) contains no floats, so a verifier could pass it while mis-parsing every float in a real geospatial capsule — the class of capsule the format's heaviest producers emit. Three sub-hazards, all real: correctly-rounded parsing (the empirical serde_json case); exponent formatting style (Python emits `1e+22` and `1.5e-05`; Ryu-style writers emit `1e22` and `1.5e-5`); and integer-valued float preservation (Python keeps `55.0`; ECMAScript/RFC 8785 JCS prints `55`). That last one matters doctrinally: **JCS is not this spec's canonical form**, and pretending otherwise would silently invalidate every existing hash.
+
+**A second lesson from the same event, about test vectors themselves.** The custody session proposed a vector with an expected hash computed against "a minimal manifest" — unspecified which. Reproducing it against Test Vector A's manifest gives a *different* hash. An under-specified test vector is worse than none: it manufactures false failures in every implementation that guesses the missing part differently. Normative vectors must be self-contained — every input byte printed — and independently re-derived by the reference implementation before publication. (Both spec vectors were re-derived from the reference implementation before this revision shipped; Vector A reproduces bit-identically.)
+
+**Implication for the spec.** §9.1.1 gains Test Vector B: Test Vector A's manifest verbatim plus a float-battery data block — the actual biting ordinate, the `0.30000000000000004` shortest-repr shibboleth, both exponent forms, an integer-valued float, a plain integer, and ordinary coordinates — with the reference-derived hash `sha256:47c0aaf0…`. Two new normative requirements: implementations MUST parse numbers correctly rounded, and MUST reproduce the reference (Python 3 `repr`) number formatting. Non-Python verifiers SHOULD pin the vector in a regression test, because this failure mode is silent until it defames a real artifact.
+
+**Related findings:**
+- [F35](#f35-the-reference-validator-becomes-load-bearing-cross-repo-infrastructure--producer-ci-needs-a-version-identity-to-pin-against) — second consequence of independent reimplementations of the format's mechanics; the validator got a version, the hash recipe now gets a conformance instrument
+- [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — sealed_sources put bulk float data under the hash, which is what raised the stakes on float canonicalization
+
+### F38: Mintel's capsule push flow goes live — the original production compiler re-reviewed against the modern spec: extension namespace in production, and the first unenforced registry MUST
+
+**Date:** 2026-07-07
+
+**Source.** Mintel's claim-group capsule push flow went live (mintel #117, Saskatchewan jurisdiction support): `build_claim_group_capsule.py` / `build_exploration_map_capsule.py` compile PostGIS claim snapshots into `domain.exploration_map` capsules and push them to mindev. Mintel is the format's *original* production compiler ([F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) documented its first publicly-fetchable capsule); what's new is the continuous push path and the jurisdiction expansion — and this is the first full code-level review of its builders against the modern spec (v0.3.11 era, post-sealed_sources, post-hash_scope-doctrine). No emitted artifact was present locally to validate; the builders' manifest, hash, and data assembly were reviewed in full.
+
+**Finding — strong convergence, one shape difference, one real gap, and a milestone for the extension mechanism.**
+
+- **Convergence.** Manifest declares the normative line correctly (`spec_version: "0.3.0"`); `generator.kind: "compiler"`; `hash_scope: "data+manifest"` (the third producer to default to it — F34's posture is now unanimous across the compiler corpus); the §9.1.1 hash recipe is independently reimplemented in Python (placeholder protocol, canonical form) and matches the reference by construction.
+- **Shape.** Mintel is an **inline producer**: claims GeoJSON is pre-projected to UTM and embedded directly in the data block as the content itself. `sealed_sources` therefore correctly does not apply — the convention is for content models that *reference* sources by key, and mintel's content *is* the data. Consequence for the Core-promotion bar set in F33: **still unmet.** The newest production flow didn't need the convention, which is itself evidence about the convention's scope: it belongs to reference-shaped content models (editors, composers), not snapshot exporters.
+- **Extension milestone.** Mintel moved vendor lineage into a manifest-level `x-mintel` block (project/version ids) after discovering `source` has `additionalProperties: false` — the first observed production use of the `^x-` extension namespace, used exactly as designed: vendor context that travels without polluting the envelope.
+- **The gap.** Mintel's capsules declare `domain.exploration_map` but the builders emit **no `ai_usage_guidance` block** — a MUST in DOMAIN_CAPSULES.md, written specifically for this domain's risk surface ("summarize the map, but do not estimate resources or imply economic viability"). The reference validator never checked it, so mintel passes strict while violating the registry requirement. An unenforced MUST consumed by real producers is a spec bug wearing a producer-bug costume.
+- **A third consumption path for the validator.** Mintel's docs instruct running the validator from a `/tmp/capsule` checkout — even less pinned than compositor's floating-`main` CI. F35's pinning guidance applies; feedback filed.
+- **Display gap, same as F34's.** The capsule footer renders `spec v0.3.0 · … · hash sha256:…` — hash without scope, and (until §8.1) version without validator. Both display rules now exist to point at.
+
+**Implication for the spec and validator.** The validator now warns when a `domain.*` capsule's data block lacks `ai_usage_guidance` (or lacks any of its three required keys). Warn-level is deliberate: the base validator checks the envelope, and domain-registry conformance sits a layer above — but under `--strict` (every producer gate observed so far) a warning fails, which is the enforcement the registry MUST always implied. Blast radius checked before shipping: every other local domain capsule (compositor's seven, the spec's own two worked examples, htmlvault's demo) already carries the block; mintel is the one real gap, and the exact block to add is in the Bridge feedback.
+
+**Related findings:**
+- [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — the Core-promotion bar sealed_sources still hasn't met, now with sharper scope (reference-shaped content models only)
+- [F35](#f35-the-reference-validator-becomes-load-bearing-cross-repo-infrastructure--producer-ci-needs-a-version-identity-to-pin-against) — third unpinned consumption path
+- [F20](#f20-first-publicly-fetchable-mintel-production-capsule-validates-spec-at-scale) — mintel's original production capsule, including the 13.7 MB size datum; exploration_map remains the format's heaviest production domain
+
+### F39: The annotation layer is already a capsule — markup-as-language needs digest-pinned parents and anchor-to-truth, not a new envelope
+
+**Date:** 2026-07-07
+
+**Source.** The fleet's operator-ratified markup-as-language thesis (Bridge: `strategy/markup-review-thesis`): user annotations over documents and maps — circle, highlight, arrow, strikeout, star, margin note — are a first-class *second document*, serialized expertise often more valuable than the base ("a professor's annotated copy; a geologist's field map"). Prospect is the designated first producer, and the foundation is already empirically proven there (circle-to-scope deixis passed its golden test against the flagship target). The dispatched question for this project: should Capsules anticipate an annotation layer — marks with provenance, separable from the base, survivable through seal? The custody layer independently reviewed its side (Bridge: `htmlvault/continuous-custody-review`) and made two asks of the spec: digest-pin the base reference, and keep the annotation layer a normal sealed capsule.
+
+**Finding — reviewed against the envelope, the annotation layer needs almost nothing new, and the two things it does need were worth adding for their own sake.**
+
+What the envelope already provides: a sealed base with a verifiable identity to pin against (`content_hash`, §8.4); `parents[]` for capsule-to-capsule lineage whose vocabulary already reads "forked from, *continued from, compared with*" — layered-over fits the family; free-form domain data blocks for a `marks[]` schema; `sealed_sources` on data-backed bases, which quietly solves annotation's hardest dependency — marks over map features can address sealed data that can never drift; and the §7 response schema as precedent (structured recipient reaction pinned to records via `_content_hash` — annotations are the spatial, gestural sibling of that pattern). Custody-side composition is already designed: two records, one edge, both independently seal-verified.
+
+What was genuinely missing, now added in v0.3.11 because it strengthens *all* provenance, not just annotation's: **digest pinning on `parents[]`** (`content_hash` per entry — a UUID-only parent claim can be silently re-targeted; a digest-pinned one cannot). Pinned as the parent's manifest `content_hash`, not a whole-file digest: the format speaks its own identity, and under `data+manifest` the pin survives projection regeneration.
+
+What must NOT be done yet: the domain schema. The hard problem is **durable anchoring**, and it has a doctrine before it has a schema: **anchor to truth, not projection.** Marks must address the data block — record ids, `sealed_sources` keys + feature ids, coordinates in the document's declared CRS — never the rendered DOM, because under `hash_scope: "data+manifest"` the HTML projection can be regenerated without changing identity (F34), and every CSS/XPath-style anchor shears off with it. (W3C Web Annotation's selector taxonomy is the precedent to mine when the time comes; its web-page-oriented framing is not.) Anchor vocabulary decisions of that kind get made against a producer's real marks or they get made wrong — Prospect's first sealed annotation capsule is the graduation trigger. `domain.annotation` is queued in DOMAIN_CAPSULES.md with the reviewed shape: a normal sealed capsule, `parents[]` digest-pinned to the base, per-mark author/timestamp (labeled claimed until signing exists), sessions sealing periodically — live marking is the working layer; the capsule is the preserve step, consistent with the project's "not a working format" identity.
+
+**Implication for the project's thesis.** Markup-as-language extends the format's core claim one layer up. The base capsule preserves the work; the annotation capsule preserves *the thinking about the work* — what was circled, questioned, crossed out, connected. If the corpus develops as the thesis predicts, the annotated-copy pattern (base digest ← annotation digest ← annotator) becomes the format's clearest demonstration that provenance is the product, not metadata.
+
+**Related findings:**
+- [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — sealed data is what makes geometric anchors permanent; seal the data → pin the digest → anchor the marks
+- [F34](#f34-hash_scope-datamanifest-becomes-a-production-default--the-integrity-hash-covers-truth-not-projection-and-must-say-so) — truth-vs-projection, now doing load-bearing work as annotation's anchoring doctrine
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — "resolve base by digest" is precisely a registry commitment; layered artifacts make the commitment layer's job concrete
 
 ## Open questions
 

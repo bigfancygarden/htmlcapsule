@@ -36,7 +36,7 @@ HASH_PLACEHOLDER = "sha256:pending"
 # first external consumer: compositor's "non-negotiable #2" workflow), so
 # conformance claims need to be legible: every report prints this version,
 # and `--version` exists for CI to record or assert. See F35 in RESEARCH.md.
-VALIDATOR_VERSION = "0.3.10"
+VALIDATOR_VERSION = "0.3.11"
 
 REQUIRED_SECTIONS = {
     "capsule-manifest": "script",
@@ -382,8 +382,14 @@ def check_manifest(html: str, result: ValidationResult):
     # spec_version known
     spec_version = manifest.get("spec_version")
     spec_ok = spec_version in SPEC_VERSION_KNOWN
+    # §8.1 two-track version story: the manifest declares the normative line;
+    # this validator enforces a doc revision of it. State the pair so custody
+    # records can store the triple (declared, verified-by, when) — see F36.
     result.add("spec_version is recognized", spec_ok,
-               "" if spec_ok else f"Unknown spec_version: {spec_version!r}. Known: {sorted(SPEC_VERSION_KNOWN)}")
+               f"declares normative line {spec_version!r}; enforced at doc revision {VALIDATOR_VERSION}"
+               if spec_ok else
+               f"Unknown spec_version: {spec_version!r}. Known: {sorted(SPEC_VERSION_KNOWN)} "
+               f"(declare the normative line, not a full-spec doc revision — see spec §8.1)")
 
     # spec_version and source.spec_received should agree (when both present).
     # Observed authoring slip: LLM correctly records spec_received from the Core
@@ -483,6 +489,39 @@ def check_sealed_sources(data, result: ValidationResult):
             f"{len(sealed)} resolved source payload(s) sealed in the data block "
             f"(covered by content_hash)",
         )
+
+
+def check_domain_guidance(manifest, data, result: ValidationResult):
+    """DOMAIN_CAPSULES.md registry requirement: every Domain Capsule
+    (manifest.type of the form `domain.<name>`) MUST include an
+    `ai_usage_guidance` block in the data block with `allowed_tasks`,
+    `restricted_tasks`, and `preferred_language`.
+
+    Warn-level: the base validator checks the envelope; domain-registry
+    conformance is a layer above it, but the MUST exists precisely for
+    high-stakes domains (geospatial, mining, legal), so silence would be
+    complicity in the drift it was written to prevent — see F38.
+    """
+    if not isinstance(manifest, dict) or not isinstance(data, dict):
+        return
+    capsule_type = manifest.get("type")
+    if not isinstance(capsule_type, str) or not capsule_type.startswith("domain."):
+        return
+    required_keys = ("allowed_tasks", "restricted_tasks", "preferred_language")
+    guidance = data.get("ai_usage_guidance")
+    if isinstance(guidance, dict):
+        missing = [k for k in required_keys if k not in guidance]
+        if missing:
+            result.add("Domain capsule declares ai_usage_guidance", "warn",
+                       f"present but missing: {', '.join(missing)} (DOMAIN_CAPSULES.md requires all three)")
+        else:
+            result.add("Domain capsule declares ai_usage_guidance", "pass",
+                       "allowed_tasks / restricted_tasks / preferred_language present")
+    else:
+        result.add("Domain capsule declares ai_usage_guidance", "warn",
+                   f"{capsule_type} is a Domain Capsule but the data block has no ai_usage_guidance "
+                   f"object — DOMAIN_CAPSULES.md requires allowed_tasks / restricted_tasks / "
+                   f"preferred_language for every domain.<name> capsule")
 
 
 def check_profile_overlay(manifest: dict, result: ValidationResult):
@@ -821,6 +860,10 @@ def check_field_formats(manifest: dict, result: ValidationResult):
         title = parent.get("title")
         if not isinstance(title, str) or not title.strip():
             issues.append(f"parents[{i}].title is required and must be a non-empty string")
+        # v0.3.11 digest pinning: optional, but when present it must look like
+        # a real content hash (claimed-vs-verifiable — spec §11.1).
+        if "content_hash" in parent:
+            check_pattern(parent["content_hash"], HASH_FORMAT, f"parents[{i}].content_hash")
 
     # Check derived_from[] entries (v0.3.6+): each must have a type and a title.
     # derived_from[] holds non-Capsule provenance (compositions, datasets, chats,
@@ -1228,6 +1271,7 @@ def validate(path: Path, strict: bool = False) -> ValidationResult:
     manifest = check_manifest(html, result)
     data = check_data(html, result)
     check_sealed_sources(data, result)
+    check_domain_guidance(manifest, data, result)
     check_profile_overlay(manifest, result)
     check_integrity_hash(manifest, data, html, result, html_source_path=str(path))
     check_field_formats(manifest, result)

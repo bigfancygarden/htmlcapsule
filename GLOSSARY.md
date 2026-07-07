@@ -219,6 +219,10 @@ The acceptable-use clause aimed at the next model, not the next human. First pro
 
 The `sealed_sources` data-block convention (spec §4.1.2, added v0.3.10): an object mapping the content model's source keys to the resolved data payloads captured at seal time, so a data-backed capsule doesn't just render offline — it *re-resolves* offline, with no fetches and no producer-side fixtures. The content model keeps its references unrewritten ("the document stays a clean recipe; the capsule stays the complete meal") and the sealed payloads sit inside the hashed data block, so the offline-resolution claim is verifiable, not decorative. First producer: the compositor compiler (`domain.compositor`; [F33 in RESEARCH.md](RESEARCH.md)). Core-promotion candidate at v0.4 pending a second independent producer.
 
+### Spec line vs. doc revision
+
+The two-track version story (spec §8.1, named in v0.3.11). `spec_version` in a manifest declares the **normative line** — the Core version (`0.3.0`): "I satisfy the 0.3 rules." The full spec document carries its own **doc revision** (e.g. `v0.3.11`) — a patch stream of documentation, conventions, test vectors, and validator behavior within that line; producers never declare it, and the validator rejects it as unknown by design. A conformance statement is the **pair** (declared line + verifying validator version, e.g. `spec 0.3.0 · validated 0.3.11`); custody records store the **triple** (declared, verified-by, when). Named after the first production custody run stored `spec_version 0.3.0` beside "strict-valid, validator 0.3.10" and correctly flagged that nothing explained the pairing ([F36 in RESEARCH.md](RESEARCH.md)).
+
 ---
 
 ## Project phases
