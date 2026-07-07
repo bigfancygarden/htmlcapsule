@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-Capsule Validator v0.1.0
+Capsule reference validator — VALIDATOR_VERSION below tracks the full-spec
+version this file enforces.
 
 Validates a compiled capsule against the spec's checks (Section 14) plus
 capability truthfulness.
 
 Usage:
   validate.py <capsule.html> [--strict]
+  validate.py --version
 
 Exit codes:
   0  All checks passed
@@ -28,6 +30,13 @@ SPEC_VERSION_KNOWN = {"0.1.0", "0.1.1", "0.1.2", "0.1.3", "0.1.4", "0.1.5", "0.1
 MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB hard cap (raised from 15 MB in spec v0.3.3)
 SOFT_WARN_SIZE = 15 * 1024 * 1024  # 15 MB — soft warning for email-attachment compatibility
 HASH_PLACEHOLDER = "sha256:pending"
+
+# The validator's own version identity — tracks the full-spec version it
+# enforces (spec §14). This file is consumed cross-repo by producer CI (the
+# first external consumer: compositor's "non-negotiable #2" workflow), so
+# conformance claims need to be legible: every report prints this version,
+# and `--version` exists for CI to record or assert. See F35 in RESEARCH.md.
+VALIDATOR_VERSION = "0.3.10"
 
 REQUIRED_SECTIONS = {
     "capsule-manifest": "script",
@@ -429,6 +438,51 @@ def check_data(html: str, result: ValidationResult):
         return None
     result.add("Data section parseable", True)
     return data
+
+
+def check_sealed_sources(data, result: ValidationResult):
+    """§4.1.2 `sealed_sources` convention (recommended, not required).
+
+    Checked only when present: an object mapping the content model's source
+    keys to the resolved payloads captured at seal time. Shape problems are
+    warnings, not failures — the convention is optional, so a malformed block
+    degrades the offline-resolution claim without invalidating the capsule.
+    """
+    if not isinstance(data, dict) or "sealed_sources" not in data:
+        return
+    sealed = data["sealed_sources"]
+    if not isinstance(sealed, dict):
+        result.add(
+            "Sealed sources convention",
+            "warn",
+            f"sealed_sources should be an object mapping source keys to resolved "
+            f"payloads (§4.1.2), got {type(sealed).__name__}",
+        )
+        return
+    problems = []
+    empty_keys = sum(1 for k in sealed if not k.strip())
+    if empty_keys:
+        problems.append(f"{empty_keys} empty source key(s)")
+    null_keys = sorted(k for k, v in sealed.items() if v is None)
+    if null_keys:
+        # A null payload means resolution failed at seal time — the capsule
+        # sealed a failure, not a source.
+        problems.append(f"null payload for: {', '.join(null_keys[:5])}")
+    if problems:
+        result.add("Sealed sources convention", "warn", "; ".join(problems))
+    elif not sealed:
+        result.add(
+            "Sealed sources convention",
+            "pass",
+            "declared but empty — no source payloads sealed",
+        )
+    else:
+        result.add(
+            "Sealed sources convention",
+            "pass",
+            f"{len(sealed)} resolved source payload(s) sealed in the data block "
+            f"(covered by content_hash)",
+        )
 
 
 def check_profile_overlay(manifest: dict, result: ValidationResult):
@@ -1173,6 +1227,7 @@ def validate(path: Path, strict: bool = False) -> ValidationResult:
     check_no_external_references(html, result)
     manifest = check_manifest(html, result)
     data = check_data(html, result)
+    check_sealed_sources(data, result)
     check_profile_overlay(manifest, result)
     check_integrity_hash(manifest, data, html, result, html_source_path=str(path))
     check_field_formats(manifest, result)
@@ -1290,6 +1345,11 @@ def main():
         type=str,
         help="Path to a local capsule HTML file, OR an http(s):// URL (typically a host's /raw endpoint)",
     )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"htmlcapsule reference validator {VALIDATOR_VERSION} (enforces full spec v{VALIDATOR_VERSION})",
+    )
     parser.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
     parser.add_argument("--quiet", action="store_true", help="Only print summary line and failures")
     parser.add_argument(
@@ -1338,6 +1398,7 @@ def main():
         print(f"Validating fetched body: {local_path}")
     else:
         print(f"Validating: {args.capsule}")
+    print(f"  Validator version: {VALIDATOR_VERSION} (enforces full spec v{VALIDATOR_VERSION})")
     print(f"  Spec version recognized: {sorted(SPEC_VERSION_KNOWN)}")
     print()
     markers = {"pass": "✓", "warn": "⚠", "fail": "✗"}

@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.9 (Core currently v0.3.0)
+# Capsule Spec v0.3.10 (Core currently v0.3.0)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -13,6 +13,8 @@
 > **v0.3.2 changes (2026-05-19).** Added the `download_capsule` standard capability — an in-capsule button that DOM-serializes the document and triggers a `.html` download, giving recipients a clean export path that doesn't rely on Chrome's broken Save Page As flow. New §5.2.1 spells out the implementation pattern (no network, rule-2 clean) and the one subtle caveat: browsers normalize HTML during DOM serialization, so capsules declaring `download_capsule` SHOULD pair it with `hash_scope: "data+manifest"` or `"data_only"` rather than `"full_document"`. Validator capability marker updated.
 
 > **v0.3.9 changes (2026-06-01).** Added optional `presentations[]` manifest declarations for capsule-owned views (`reader`, `mobile`, `print-letter`, `slides`, `reel`, `interactive`). Presentation declarations are separate from Capsule `profile` overlays and from app-owned custody views such as Safe Preview or Source. The validator checks declaration shape and fragment-entry resolution. Rule 12 is restated here as the normative guardrail: runtime code may enhance, filter, search, transform, export, or visualize, but must not be the only path by which a reader can understand the capsule's primary meaning.
+
+> **v0.3.10 changes (2026-07-06).** Added `sealed_sources` as the third recommended data-block convention (§4.1.2): data-backed capsules whose content model references external data by key seal the resolved payloads beside the content, so a capsule doesn't just *render* offline — it *re-resolves* offline, with no ambient fixtures ("the output is also the source" made literal; §12 restates this as the resolution guarantee). Emerged from the first external deterministic compiler producer (compositor, `domain.compositor` — now registered in DOMAIN_CAPSULES.md); named a Core-promotion candidate for v0.4 pending a second independent producer. §8.4 adds display guidance: any surface showing `content_hash` SHOULD show `hash_scope` beside it — a hash without its scope is ambiguous. §14 gives the reference validator a version identity (`VALIDATOR_VERSION`, `--version`) with pinning guidance for producer CI that consumes it cross-repo. Findings F33–F35 in RESEARCH.md.
 
 ## 1. Overview
 
@@ -987,7 +989,7 @@ The data block is fundamentally free-form JSON; these two shapes are recognized 
 
 ### 4.1.2 Recommended data-block conventions (not required)
 
-Two top-level data fields have emerged from practice across the LLM-produced corpus and are recommended where they fit. Neither is required by validation; both are recognized conventions that producers should reach for when applicable.
+Three top-level data fields have emerged from practice across the producer corpus and are recommended where they fit. None is required by validation; all are recognized conventions that producers should reach for when applicable.
 
 **`sources`** — an array of external references the capsule's content draws on. Recommended when the conversation or synthesis cites URLs, papers, official documents, datasets, regulatory filings, or other external materials.
 
@@ -1021,6 +1023,25 @@ Why structured rather than inline prose: makes sources queryable across capsules
 ```
 
 For multiple embedded media items, `embedded_media` may be an array of objects with the same shape. Capsules that embed audio (as the photo capsule does) typically describe it under `audio` rather than `embedded_media`; both shapes are acceptable.
+
+**`sealed_sources`** *(added v0.3.10)* — an object mapping the content model's **source keys** to the **resolved data payloads** they stood for at seal time. Recommended for data-backed capsules whose content model references external data by key (dataset URIs, workspace endpoints, upload/fixture names) rather than inlining it.
+
+```json
+"sealed_sources": {
+  "mintel:claims:2f6c9a41-…": { "type": "FeatureCollection", "features": [ … ] },
+  "upload:target-outline.geojson": { "type": "FeatureCollection", "features": [ … ] }
+}
+```
+
+Semantics:
+
+- **Offline re-resolution.** A consumer or re-opening editor resolves every source reference from `sealed_sources` alone — no fetches, no bundled fixtures. This extends the §12 offline guarantee from *rendering* to *resolution*: the capsule doesn't just display offline, it re-opens as a complete working object. "The output is also the source."
+- **Keys are the content model's own reference keys, unrewritten.** Seal resolved data *beside* the content rather than rewriting references *into* it — the content model stays a clean recipe; the capsule is the complete meal. Rewriting references into inline payloads at seal time destroys the provenance of where each dataset came from.
+- **No duplication.** Data the content model already carries inline is excluded.
+- **Always under the hash.** `sealed_sources` lives in the data block, so it is covered by `integrity.content_hash` under every `hash_scope`. Stripping or altering sealed payloads breaks verification — the block is load-bearing, not decorative.
+- **Composes with `sources[]`.** `sources[]` is citation metadata (what / where / why); `sealed_sources` is the resolution payload (the bytes). A data-backed capsule may carry both: `sources[]` for humans and cross-capsule queries, `sealed_sources` for offline re-resolution.
+
+First producer: the compositor compiler (`domain.compositor` — resolved GeoJSON FeatureCollections keyed by sourceKey, 2026-07-06; F33 in RESEARCH.md), whose reopen path proves the block is load-bearing: an empty fixture map re-resolves with zero warnings, and stripping the block degrades to warnings. The validator checks shape when the field is present (object; non-empty keys; non-null payloads) at warn level. **Core-promotion candidate:** if a second independent data-backed producer converges on this shape, `sealed_sources` is the leading candidate for a Core rule at v0.4 ("a data-backed capsule seals what it resolved").
 
 These conventions can evolve. New patterns that emerge consistently across batches will be documented here in future spec revisions.
 
@@ -1413,6 +1434,8 @@ LLM-produced capsules may have missing or incorrect content hashes. When importi
 3. Use the computed hash as the canonical identity in the registry
 4. Preserve the declared UUID for human reference
 
+**Displaying the hash (added v0.3.10).** A `content_hash` is only meaningful together with its `hash_scope`. Any surface that displays the hash — in-capsule About panels, hosts, registries, custody tools — SHOULD display the scope beside it (e.g. `sha256:… · data+manifest`). The empirical failure mode (observed in the first compiler producer's About panel; F34 in RESEARCH.md): a bare "Integrity: sha256:…" line reads as covering the whole file, while `data+manifest` deliberately excludes the HTML surface. That exclusion is a *feature* — the rendered projection can be regenerated without breaking verification, and browser DOM-normalization on re-save doesn't invalidate the artifact (§5.2.1) — but only if recipients are told the hash covers truth (manifest + data), not projection (HTML).
+
 ---
 
 ## 9. Security
@@ -1739,6 +1762,8 @@ A valid capsule must:
 5. Not use ES module `import` statements (which require a server context)
 6. Rely exclusively on in-memory state for all user interactions — no persistent client-side storage is required for the capsule to function
 
+Rendering offline is the floor. Data-backed capsules SHOULD also **resolve** offline: if the content model references external sources by key, the resolved payloads belong in the data block under `sealed_sources` (§4.1.2), so re-opening the capsule as a working object needs no ambient fixtures and no network. A capsule that renders offline but silently depends on its producer's bundled fixtures to re-open carries a hidden dependency the file does not express (added v0.3.10; F33 in RESEARCH.md).
+
 ---
 
 ## 13. Compiler Output Metadata
@@ -1783,9 +1808,7 @@ A capsule is **valid** if:
 
 A validator tool should produce a report listing pass/fail for each check.
 
----
-
-## 15. MIME Type and File Extension
+**Validator identity and pinning (added v0.3.10).** The reference validator (`compiler/validate.py`) carries its own version identity: `VALIDATOR_VERSION` tracks the full-spec version it enforces, `--version` prints it, and every report states it. This exists because the validator is consumed cross-repo: producer CI pipelines check out this repository and run the validator against their sealed output as a merge gate (the first external consumer is the compositor compiler; F35 in RESEARCH.md). Producers consuming the validator this way SHOULD either (a) pin a specific ref of this repository and record the validator version their gate enforced, or (b) deliberately float on `main` to track the spec head — a valid posture, but it means a spec tightening can fail producer CI without a producer-side change, so the failing report's stated validator version is what makes the breakage diagnosable rather than mysterious. A conformance claim ("passes the strict validator") is only meaningful with the validator version attached.
 
 | Property       | Value                         |
 |----------------|-------------------------------|

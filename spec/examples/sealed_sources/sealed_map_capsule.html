@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sealed Sources Fixture</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.3.0",
+  "capsule_version": "1.0.0",
+  "uuid": "33333333-3333-4333-8333-333333333333",
+  "title": "Sealed Sources Fixture",
+  "description": "Valid fixture for the sealed_sources data-block convention (spec 4.1.2, added v0.3.10): a data-backed capsule whose content model references two keyed sources and seals both resolved payloads beside it, covered by the integrity hash.",
+  "type": "reference",
+  "profile": "static",
+  "created_at": "2026-07-06T00:00:00Z",
+  "generator": {
+    "name": "sealed-sources-fixture",
+    "version": "1.0.0",
+    "kind": "compiler"
+  },
+  "source": {
+    "origin": "spec_example",
+    "snapshot_type": "fixture",
+    "snapshot_id": "snapshot:sealed_sources_valid",
+    "included_records": 2,
+    "spec_received": "v0.3.0 - 2026-07-06"
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json"
+  ],
+  "integrity": {
+    "content_hash": "sha256:4379e60da5e4a4e163214634f1475d4040c7269b819191b5b433e66a56354b65",
+    "hash_scope": "data+manifest"
+  }
+}</script>
+<script id="capsule-data" type="application/json">{
+  "fixture": "sealed_sources_valid",
+  "document": {
+    "title": "Two-source demo map",
+    "layers": [
+      {"id": "claims", "source": "mintel:claims:demo"},
+      {"id": "outline", "source": "upload:outline.geojson"}
+    ]
+  },
+  "sealed_sources": {
+    "mintel:claims:demo": {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [-120.1, 55.2]}, "properties": {"claim": "DEMO-001"}}]},
+    "upload:outline.geojson": {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[-120.2, 55.1], [-120.0, 55.1], [-120.0, 55.3], [-120.2, 55.3], [-120.2, 55.1]]]}, "properties": {"name": "target outline"}}]}
+  }
+}</script>
+<style id="capsule-style">body{font-family:system-ui,sans-serif;margin:2rem;line-height:1.5}main{max-width:48rem}table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:.3rem .6rem;text-align:left}button{padding:.4rem .6rem}</style>
+</head>
+<body>
+<main id="capsule-root">
+  <h1>Sealed Sources Fixture</h1>
+  <section>
+    <h2>What this demonstrates</h2>
+    <p>The content model in this capsule's data block references two external sources by key. Both resolved payloads are sealed under <code>sealed_sources</code> beside the document — keys unrewritten, payloads inside the hashed data block — so the capsule re-resolves offline with no fetches and no producer-side fixtures. The document stays a clean recipe; the capsule stays the complete meal.</p>
+    <table>
+      <thead><tr><th>Layer</th><th>Source key</th><th>Sealed payload</th></tr></thead>
+      <tbody>
+        <tr><td>claims</td><td><code>mintel:claims:demo</code></td><td>FeatureCollection, 1 point feature</td></tr>
+        <tr><td>outline</td><td><code>upload:outline.geojson</code></td><td>FeatureCollection, 1 polygon feature</td></tr>
+      </tbody>
+    </table>
+    <p>Because <code>hash_scope</code> is <code>data+manifest</code>, stripping or altering either sealed payload breaks <code>integrity.content_hash</code> verification — the block is load-bearing, not decorative.</p>
+  </section>
+  <details id="about"><summary>About</summary><pre id="manifest-view"></pre></details>
+  <button data-capsule-action="copy_as_json">Copy JSON</button>
+</main>
+<script id="capsule-runtime">const manifest = JSON.parse(document.getElementById("capsule-manifest").textContent); const out = document.getElementById("manifest-view"); if (out) out.textContent = JSON.stringify(manifest, null, 2);</script>
+</body>
+</html>

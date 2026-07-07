@@ -383,6 +383,26 @@ The compiler should generate the PNG at the same projection and bounding box as 
 
 **Canonical example:** *In progress — first working example targeting a mintel project with `map_type: project_location`.*
 
+### `domain.compositor`
+
+**Purpose:** Preserve a composed document artifact — a Compositor document (authored layers, pages, templates, design tokens, keyed data layers) rendered to a print / slide / reader target — as a sealed capsule that re-opens in the producing editor as a complete working object.
+
+**Producer and schema ownership:** the compositor compiler (external producer; registered 2026-07-06, F33 in RESEARCH.md). The authoritative data-block schema lives in the producer repo (`compositor/packages/capsule/src/seal.ts` — the `CompositorCapsuleData` type); this entry records the shape and the boundary, not a frozen copy. This is the registry's first externally-owned compiler domain whose producer CI validates every sealed example against the reference validator as a merge gate (F35).
+
+**Data block (summary):**
+
+| Field | Type | Notes |
+|---|---|---|
+| `compositor_document` | object | The canonical content model — "a clean recipe": authored layers, pages, templates, tokens, and *keyed data-source references, unrewritten* |
+| `sealed_sources` | object | The §4.1.2 convention's reference instance: resolved GeoJSON FeatureCollections per sourceKey, inline-sourced layers excluded; reopen resolves from this block alone with an empty fixture map |
+| `render_snapshot` | object | Output-target snapshot: frame, canvas/asset dimensions, DPI, per-source resolution statuses |
+| `context_packet` | object | Bounded consumer/LLM handoff summary (layer stack, feature counts, per-source attribute digests, bounds) — summary-first so an agent can inspect the capsule without enumerating raw GeoJSON |
+| `ai_usage_guidance` | object | Required per this document. The geospatial/mining guardrail applies: "summarize the map, but do not infer mineral value or economic viability from map geometry" |
+
+**Manifest notes:** `type: "domain.compositor"`, `generator.kind: "compiler"`, `hash_scope: "data+manifest"` as a deliberate architecture (JSON is truth, HTML is projection — the reopen path never reads the HTML surface; F34), `presentations[]` declared per output target (reader always; slides / print / letter when composed for them).
+
+**Boundary:** not [`domain.exploration_map`](#domainexploration_map) — that is a map-first, single-purpose artifact, while a compositor document is a composed multi-layer print/slide/reader artifact in which maps are one layer kind. Not a `domain.dataset` — the sealed payloads are resolution context for the document, not the artifact itself.
+
 ## JS-off fallback guidance per domain (added v0.3.6)
 
 Per `spec/CAPSULE_SPEC.md §2.3.1` (the graceful-degradation principle), every domain capsule SHOULD have a defined behavior in JS-off / iOS-QuickLook-preview environments. For most domains the answer is "the static HTML *is* the substance — no extra work needed." For a few (visualization-heavy, interactive-runtime, or media-playback domains) producers need to bundle a static or media-native representation alongside the runtime one.
@@ -393,6 +413,7 @@ Per `spec/CAPSULE_SPEC.md §2.3.1` (the graceful-degradation principle), every d
 | `domain.design_system` | None required — content is the static HTML | Tokens, components, patterns, AI usage constraints all render statically; live component preview rendering is enhancement, not substance |
 | `domain.briefing` | None required — content is the static HTML | One-page summary forks are inherently document-shaped |
 | `domain.exploration_map` | Image-fallback for geometry (per `CAPSULE_SPEC.md §2.3` worked example) | Static `<img>` rendering of the map's vector content, hidden by runtime when the interactive SVG hydrates; `<noscript>` block ensures the image stays visible if JS is off |
+| `domain.compositor` | None required — the rendered document markup is static HTML/SVG in `capsule-root` | Substance is intact without JS; the runtime adds toolbar / About / download affordances only. Reopen-in-editor reads the data block, never the HTML (F34) |
 | `domain.midi_stem` (idea queue) | **Recommended: bundled rendered audio mix as `<audio controls>`** + static stems list (one row per channel with instrument label + program + note count) + static manifest panel | A symbolic-only capsule has no native sound without JS; the rendered mix is the preview-mode substance. capsule-midi v0.2.0 currently does NOT bundle the mix (Tier 1 sound only); v0.3.0 Tier 2 / Tier 3 work will add it. Until then, capsule-midi capsules are *runtime-only* on iOS QuickLook (the `<noscript>` warning explains this and directs the user to open in Safari) |
 | `domain.song` (idea queue) | **The embedded MP3 already IS the fallback.** Native `<audio controls>` works without JS | No extra producer work — the audio element renders and plays natively in iOS QuickLook. Metadata (personnel, role on album, covers, critical reception, etc.) is in the static HTML. The interactive runtime adds export-provenance + capsule-management; substance is intact without it |
 | `domain.photo` (idea queue) | **The image itself is the fallback.** Static `<img>` renders without JS | No extra producer work. Metadata table (who/where/when/why, EXIF, source negative, etc.) is in the static HTML. The runtime adds region-highlight / copy-metadata / face-tag toggles — enhancement, not substance |

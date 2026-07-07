@@ -8,6 +8,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
+### Added — Sealed sources convention + validator identity (spec v0.3.10, 2026-07-06)
+
+- **`sealed_sources` (§4.1.2)** — third recommended data-block convention: a data-backed capsule seals the resolved payloads for every keyed source reference *beside* the content model (keys unrewritten, payloads under the integrity hash), so the capsule re-resolves offline with no ambient fixtures — "the output is also the source" made literal. Emerged from the compositor producer's P1 fix after its deep review caught data layers sealing references instead of data; named the Core-promotion candidate for v0.4 pending a second independent producer. §12 restates this as the resolution guarantee: rendering offline is the floor, data-backed capsules SHOULD also resolve offline.
+- **Hash display guidance (§8.4)** — any surface displaying `content_hash` SHOULD display `hash_scope` beside it. A scoped hash shown bare reads as whole-file integrity; `data+manifest` deliberately excludes the HTML surface (truth vs projection), which is a feature only when recipients are told.
+- **Validator identity (§14, `compiler/validate.py`)** — `VALIDATOR_VERSION` (tracks the full-spec version enforced, starting `0.3.10`), a `--version` flag, and the version stated in every report header, with §14 pinning guidance for producer CI consuming the validator cross-repo (first external consumer: compositor's strict merge gate). New warn-level shape check for `sealed_sources` when present (object; non-empty keys; non-null payloads).
+- **`domain.compositor` in DOMAIN_CAPSULES.md** — first externally-owned compiler domain registered: composed document artifacts with `compositor_document` + `sealed_sources` + `render_snapshot` + `context_packet` + `ai_usage_guidance`; schema owned by the producer repo; JS-off table row added (static rendered markup is the substance).
+- **Fixtures** — `spec/examples/sealed_sources/`: a valid data-backed capsule sealing two source payloads, and a warn-shape fixture (`sealed_sources` as an array) exercising the convention check.
+- **F33–F35 in RESEARCH.md** — reference-vs-data sealing as a failure class and the seal-beside-don't-rewrite doctrine (F33); `hash_scope: "data+manifest"` as a deliberate production default and the scope-legibility rule (F34); the reference validator's crossing from reference implementation to consumed cross-repo infrastructure and the version-identity response (F35).
+
 ### Added — Capsule presentation declarations
 
 - **`presentations[]`** — Capsule spec v0.3.9 now documents optional manifest declarations for capsule-owned views. Core profiles are `reader`, `mobile`, `print-letter`, `slides`, `reel`, and `interactive`; extension profiles must be namespaced (`x-*` or reverse-DNS/dotted).

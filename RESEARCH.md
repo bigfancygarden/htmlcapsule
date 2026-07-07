@@ -7,7 +7,7 @@ A research project investigating whether HTML can be disciplined into a portable
 The project produces a spec, a reference implementation, and empirical evidence about whether the spec works in practice. The hypothesis is that the substrate (HTML) has won and what's missing is discipline, not a new format.
 
 Started: 2026-05-15
-Current Core spec: v0.3.0 · Full spec: v0.3.2
+Current Core spec: v0.3.0 · Full spec: v0.3.10
 Repo: [bigfancygarden/htmlcapsule](https://github.com/bigfancygarden/htmlcapsule) · Site: [htmlcapsule.org](https://htmlcapsule.org)
 
 ## Project identity
@@ -1229,6 +1229,58 @@ That shape is Bundle territory. The same rule from F31 holds: don't stretch Caps
 - [F24](#f24-host-vs-registry--the-missing-commitment-layer) — host vs registry distinction; Sites is host/runtime, not registry/commitment layer
 - [F31](#f31-bundle-emerges-as-sibling-format--empirical-pressure-from-a-heavy-data-investigation-produces-the-projects-first-sibling-spec-producer--format--host-pattern-named-explicitly) — producer / format / host pattern; Sites adds another hosted target while preserving the same producer/format/host separation
 
+### F33: First data-backed compiler producer seals resolved data — sealed_sources makes the output-is-also-the-source claim literal
+
+**Date:** 2026-07-06
+
+**Source.** The compositor project (sibling repo; a deterministic compiler producing `domain.compositor` capsules from a document-composition editor — the first external compiler producer whose CI validates every sealed example against this project's strict reference validator). An agent-run deep review of compositor (Bridge: `reviews/compositor-deep-review-2026-07`) caught its marketing claim "the output is also the source" being **false for data layers**: capsules sealed dataset *references* (`source.dataset` keys), and reopening only worked because the producing Studio happened to bundle the same fixtures the references pointed at. Uploaded GeoJSON lived in session state and silently died with it. The producer's P1 response shipped the same day this finding was logged: a `sealed_sources` block in the capsule data block — resolved GeoJSON per sourceKey, inline-sourced layers excluded, covered by the integrity hash. The acceptance chain was proven against production: document referencing a live workspace → resolved over the network at authoring time → sealed → reopened offline with an **empty fixture map**, zero warnings, zero network. Their unit tests prove the block is load-bearing in both directions: empty-fixture reopen is clean *and* stripping the block degrades to warnings.
+
+**Finding — reference-vs-data sealing is a distinct failure class for data-backed capsules, invisible to the rendering-level offline guarantee.** Spec §12 has always guaranteed offline *rendering*, and compositor's capsules passed it throughout — the rendered HTML displayed fine with no network. What the guarantee didn't cover: a capsule whose content model references keyed external sources can render offline while silently depending on ambient producer-side fixtures for *re-resolution* — reopening the capsule as a working object. The dependency is real but the file doesn't express it, which is exactly the kind of hidden coupling the format exists to eliminate.
+
+Two design decisions in the producer's fix are worth recording as format doctrine, not just implementation detail:
+
+1. **Seal beside, don't rewrite.** The obvious fix — rewriting each `source.dataset` reference into an inline payload at seal time — was explicitly rejected because it would have rewritten sourceKeys and destroyed the provenance of where each dataset came from. Instead the resolved payloads sit *beside* the document under the document's own reference keys. The producer's phrasing is the cleanest articulation of the principle this project has seen: *"the document stays a clean recipe; the capsule stays the complete meal."*
+2. **Sealed data belongs under the hash.** `sealed_sources` lives in the data block, so `content_hash` covers it under every `hash_scope` — stripping or substituting sealed payloads breaks verification. Sealing data outside the hash boundary would have made the offline-resolution claim unverifiable.
+
+**Implication for the spec.** Spec v0.3.10 adds `sealed_sources` as the third recommended data-block convention in §4.1.2 (after `sources[]` and `embedded_media`), composing with `sources[]`: citation metadata describes *what and where*, sealed sources carry *the bytes*. §12 now states the resolution guarantee explicitly: rendering offline is the floor; data-backed capsules SHOULD re-resolve offline. The validator checks shape when the field is present (object, non-empty keys, non-null payloads) at warn level. **Not Core, yet:** this is single-producer evidence, and Core's twelve rules stay minimal. But it is the named Core-promotion candidate for v0.4 — if a second independent data-backed producer converges on the shape, "a data-backed capsule seals what it resolved" graduates to a rule. `domain.compositor` is now registered in DOMAIN_CAPSULES.md with the producer's schema pointer.
+
+**Methodological note.** This is the fastest review-to-spec loop the project has run: an external producer review (logged to shared memory) surfaced a format-level gap, the producer shipped the fix, and the spec absorbed the pattern — all within one week, coordinated across sessions through the shared memory layer rather than through the maintainer's attention. The empirical-pressure discipline (F28, F31) now operates across a fleet of producer projects, with the spec deliberately downstream of the corpus.
+
+**Related findings:**
+- [F31](#f31-bundle-emerges-as-sibling-format--empirical-pressure-from-a-heavy-data-investigation-produces-the-projects-first-sibling-spec-producer--format--host-pattern-named-explicitly) — producer / format / host pattern; compositor is the pattern's first *data-backed compiler* instantiation, and the first whose CI mechanically enforces the format contract (see F35)
+- [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — upstream feedback discipline; F33 extends it to producer-review-driven spec evolution
+- [F34](#f34-hash_scope-datamanifest-becomes-a-production-default--the-integrity-hash-covers-truth-not-projection-and-must-say-so) — the same producer's integrity posture; sealed_sources only works as a trust claim because the sealed payloads sit under the hash
+
+### F34: hash_scope data+manifest becomes a production default — the integrity hash covers truth, not projection, and must say so
+
+**Date:** 2026-07-06
+
+**Source.** The same producer (compositor). Spec v0.3.2 (§5.2.1) introduced `hash_scope: "data+manifest"` with a narrow, defensive rationale: browsers normalize HTML during DOM serialization, so capsules declaring `download_capsule` should hash only the JSON blocks or the downloaded copy won't verify. Compositor adopted `data+manifest` not as a workaround but as its **only mode and a deliberate architecture**: its invariant is "JSON is truth, HTML is projection" — the reopen path never reads the HTML surface, which is regenerable from the data block by construction. Tamper and hostile-JSON tests exercise the posture. This is the first producer to treat HTML-surface-excluded-from-integrity as a design commitment rather than a compatibility concession.
+
+**Finding — the scope choice is sound, but a scoped hash displayed without its scope is a trust-communication failure.** The producer's own deep review caught it: the capsule's About panel displayed "Integrity: sha256:…" in a way that implied the hash covered everything, while `data+manifest` deliberately excludes the HTML surface. Two capsules with identical data blocks and different rendered HTML verify identically under that scope. That property is a *feature* — re-rendering a projection doesn't break custody, browser re-saves don't invalidate the artifact — but only when every party knows what the hash covers. A recipient who reads a bare hash as whole-file integrity has been misinformed by omission, and the misinformation compounds downstream: custody systems (htmlvault) attest over `content_hash`, and registries index by it (§8.4 makes it the verifiable identity). An attestation over a `data+manifest` hash certifies truth, not surface — the custody chain needs to say so.
+
+**Implication for the spec.** §8.4 now carries display guidance: any surface showing `content_hash` — in-capsule About panels, hosts, registries, custody tools — SHOULD show `hash_scope` beside it (`sha256:… · data+manifest`). No validator check; this is display-layer guidance the machine can't reliably verify inside arbitrary chrome. No change to the scope vocabulary — the empirical lesson is that v0.3.2's scope design was *more* right than its own rationale claimed (it enables the one-renderer / regenerable-projection architecture), and the missing piece was legibility, not mechanism.
+
+**Related findings:**
+- [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — same producer; sealed_sources is only a trust claim because it sits inside the hashed data block
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — the commitment layer indexes by content hash; scope legibility is what makes those commitments mean what recipients think they mean
+- [F32](#f32-codex-sites-validates-the-hosted-runtime-layer-while-strengthening-the-case-for-portable-custody) — custody layer positioning; "verify independently" requires knowing what the verification covers
+
+### F35: The reference validator becomes load-bearing cross-repo infrastructure — producer CI needs a version identity to pin against
+
+**Date:** 2026-07-06
+
+**Source.** Compositor's CI ("non-negotiable #2" in its workflow) checks out `bigfancygarden/htmlcapsule` and runs `compiler/validate.py --strict` over every sealed example as a merge gate, resolving the validator via an `HTMLCAPSULE_VALIDATOR` env var with sibling-checkout and dev-machine fallbacks. The checkout floats on `main` — no ref pin, no version assertion.
+
+**Finding — the validator crossed from reference implementation to consumed infrastructure, and nothing marked the crossing.** Until now the validator's only consumers were this repo's own examples and generated site pages; version identity was irrelevant because validator and spec moved in the same commit. A cross-repo CI consumer changes that. Two silent-drift failure modes appear, one per direction: (a) the spec tightens → producer CI breaks with no producer-side change — *acceptable and intended* (that's what a reference gate is for), but only diagnosable if the failing report says which validator version enforced what; (b) the producer pins an old ref → CI passes forever against a stale spec while the producer claims current conformance — a conformance claim with no version attached is unfalsifiable. Both modes were live risks the day compositor's CI landed: the validator had no version constant, no `--version` flag, and reports didn't state what they enforced. Its docstring still said "v0.1.0" from the project's first week.
+
+**Implication for the reference implementation.** `VALIDATOR_VERSION` now exists and tracks the full-spec version the file enforces (starting at `0.3.10`), `--version` prints it, and every report header states it. §14 documents the consumption contract: pin a ref and record the version, or float on `main` deliberately and read the version off the failing report when the spec moves. Publishing the validator as an installable package (PyPI or similar) is deferred until a second CI consumer materializes — same single-producer discipline as F33's Core-promotion bar. The deeper pattern worth naming: in the producer / format / host split (F31), the format was always described as "the contract that binds them" — this is the first time the contract is *mechanically enforced* on the producer side rather than socially observed, which is exactly the graduation the project hoped the reference validator would earn.
+
+**Related findings:**
+- [F31](#f31-bundle-emerges-as-sibling-format--empirical-pressure-from-a-heavy-data-investigation-produces-the-projects-first-sibling-spec-producer--format--host-pattern-named-explicitly) — producer / format / host; the format-as-contract now has mechanical teeth
+- [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — the producer whose CI created the pinning question
+- [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — discoverable onboarding; a versioned, CI-consumable validator is onboarding for *compilers* the way CAPSULE_CORE.md is onboarding for LLMs
+
 ## Open questions
 
 In rough priority:
@@ -1247,8 +1299,9 @@ The format has working artifacts in at least five domains:
 | Implementation notes | single-document | LLM or hybrid | documented in DOMAIN_CAPSULES.md (Thariq-pattern) |
 | Design system | single-document | LLM or hybrid | documented in DOMAIN_CAPSULES.md (Thariq-pattern) |
 | Exploration map | feature collection w/ raster option | Compiler | documented in DOMAIN_CAPSULES.md (third-party producer) |
+| Composed map/print artifact | document + sealed source map | Compiler (external: compositor) | working (production; producer CI validates against the reference validator — F33) |
 
-Eight documented domains, three production paths, three data shapes, all sharing the same five-block envelope. The framing holds. Remaining open question is whether more exotic domains strain the format (journal entries, recipes, scanned letters, voice-only notes, video clips, log files).
+Nine documented domains, three production paths, four data shapes, all sharing the same five-block envelope. The framing holds. Remaining open question is whether more exotic domains strain the format (journal entries, recipes, scanned letters, voice-only notes, video clips, log files).
 
 ### Q2: Can the author-side archive be light and still useful?
 

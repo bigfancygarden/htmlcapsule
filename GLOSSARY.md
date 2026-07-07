@@ -215,6 +215,10 @@ An optional Domain Capsule field declaring:
 
 The acceptable-use clause aimed at the next model, not the next human. First proposed in capsule #46 in the context of Map Capsules ("summarize the map but do not estimate resources or imply economic viability").
 
+### Sealed sources (emerging convention)
+
+The `sealed_sources` data-block convention (spec §4.1.2, added v0.3.10): an object mapping the content model's source keys to the resolved data payloads captured at seal time, so a data-backed capsule doesn't just render offline — it *re-resolves* offline, with no fetches and no producer-side fixtures. The content model keeps its references unrewritten ("the document stays a clean recipe; the capsule stays the complete meal") and the sealed payloads sit inside the hashed data block, so the offline-resolution claim is verifiable, not decorative. First producer: the compositor compiler (`domain.compositor`; [F33 in RESEARCH.md](RESEARCH.md)). Core-promotion candidate at v0.4 pending a second independent producer.
+
 ---
 
 ## Project phases
