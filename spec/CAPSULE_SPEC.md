@@ -1,4 +1,4 @@
-# Capsule Spec v0.3.13 (Core currently v0.3.0)
+# Capsule Spec v0.4.0-draft (Core currently v0.3.0; the 0.4 line is pre-release)
 
 > **Looking for the short version?** [`CAPSULE_CORE.md`](../CAPSULE_CORE.md) is one page, twelve rules, designed to be pasted into an LLM prompt. This document is the full specification for implementers — format definition, validation rules, security model, response protocol, registration workflow. If you're just trying to produce a capsule, the Core is enough.
 
@@ -15,6 +15,10 @@
 > **v0.3.9 changes (2026-06-01).** Added optional `presentations[]` manifest declarations for capsule-owned views (`reader`, `mobile`, `print-letter`, `slides`, `reel`, `interactive`). Presentation declarations are separate from Capsule `profile` overlays and from app-owned custody views such as Safe Preview or Source. The validator checks declaration shape and fragment-entry resolution. Rule 12 is restated here as the normative guardrail: runtime code may enhance, filter, search, transform, export, or visualize, but must not be the only path by which a reader can understand the capsule's primary meaning.
 
 > **v0.3.10 changes (2026-07-06).** Added `sealed_sources` as the third recommended data-block convention (§4.1.2): data-backed capsules whose content model references external data by key seal the resolved payloads beside the content, so a capsule doesn't just *render* offline — it *re-resolves* offline, with no ambient fixtures ("the output is also the source" made literal; §12 restates this as the resolution guarantee). Emerged from the first external deterministic compiler producer (compositor, `domain.compositor` — now registered in DOMAIN_CAPSULES.md); named a Core-promotion candidate for v0.4 pending a second independent producer. §8.4 adds display guidance: any surface showing `content_hash` SHOULD show `hash_scope` beside it — a hash without its scope is ambiguous. §14 gives the reference validator a version identity (`VALIDATOR_VERSION`, `--version`) with pinning guidance for producer CI that consumes it cross-repo. Findings F33–F35 in RESEARCH.md.
+
+> **v0.4.0-draft changes (2026-07-27).** **Opens the 0.4 normative line.** This document now describes two lines at once, and which one a capsule is on is decided solely by its declared `spec_version`. (1) **Integrity recipe v2** — §9.1.1 splits into *recipe v1* (the legacy Python-`repr` canonical JSON, now **frozen**, retained permanently so every capsule already sealed keeps verifying) and *recipe v2*, [RFC 8785 (JCS)](https://www.rfc-editor.org/rfc/rfc8785.html), which applies to `0.4.x`. The recipe is a pure function of the declared line — there is no manifest field naming it, because a second declaration could contradict the first. A pre-0.4 validator meeting a 0.4 capsule reports *"unknown spec_version"*, never a false tamper. New Test Vectors A2/B2, dual-derived. New project constraint on the 0.4 line: integers MUST be IEEE-double-safe (`|n| ≤ 2^53`). (2) **The promised removals land**: `capsule_id`, `artifact_id`, `artifact_version`, and `related` are removed on `0.4.x` (still accepted on `0.3.x` forever). (3) A **language-neutral conformance suite** ships at [`spec/conformance/hash_vectors.json`](conformance/hash_vectors.json) — all four vectors plus isolated number/string/key-order/must-error batteries; implementations MUST pass it to claim conformance. (4) Recipe v1's number rules are now stated **operationally** (thresholds, exponent style, the `.0` rule) instead of by reference to a Python interpreter, and F37's `float_roundtrip` remediation is corrected: it fixes parsing only, and the conformance criterion is passing the vectors. Findings F37/F44 drove this; the plan and its verification are in [`design/JCS_MIGRATION_PLAN.md`](../design/JCS_MIGRATION_PLAN.md).
+>
+> **Status of the 0.4 line: pre-release.** `CAPSULE_CORE.md` deliberately stays at v0.3.0 and LLM producers should keep emitting `spec_version: "0.3.0"` — a producer opts into 0.4 knowingly, after its verifier passes the conformance suite. The line finalizes when the first producer ships a 0.4 capsule end-to-end. Nothing on the 0.3 line changes, now or later.
 
 > **v0.3.13 changes (2026-07-26).** One clarification with a large consequence, measured empirically (F46 in RESEARCH.md): the five required sections are **located by id, not by position** — the head/body split shown in §2 is the reference layout, not a requirement, and a capsule whose five blocks all live in `<body>` is fully valid. This is what makes **channel tunneling** possible: a capsule published through a hosting channel that owns the document head (observed: Claude's artifact channel, which injects a non-portable frame-runtime wrapper but preserves author content byte-true in the body) fails validation *as served* — correctly, the wrapper breaks Rule 2 — while the capsule inside survives with its `data+manifest` integrity verifiable, and a five-block extract-by-id recovery yields a strict-valid capsule with the original hash intact. Recovery MUST NOT mutate the blocks; recovery provenance belongs in custody records, not in the artifact. See `design/ARTIFACT_CHANNEL_STUDY.md`.
 
@@ -564,8 +568,8 @@ The manifest is the machine-readable contract. It answers: what is this, who is 
 |--------------------|----------|----------|--------------------------------------------------------------------|
 | `spec_version`     | string   | yes      | Capsule spec version (this document). Semver.                       |
 | `capsule_version`  | string   | yes      | Instance version. Semver. Bumps when data or UI changes. Canonical name as of v0.2.0. Either `capsule_version` or the legacy `artifact_version` must be present. |
-| `capsule_id`       | string   | no       | **DEPRECATED in v0.3.** Human-readable slug, format `capsule:{short_id}`. Redundant with `title` (derive `slugify(title)` at display time if you need a slug) and not unique enough to serve as a reference. Still accepted in v0.3 for backward compatibility; planned for removal in v0.4. New capsules should rely on `uuid` + `title`. |
-| `artifact_id`      | string   | no       | **DEPRECATED.** v0.1 legacy alias for `capsule_id`. Format: `artifact:{short_id}`. Still accepted under v0.2/v0.3 compatibility. |
+| `capsule_id`       | string   | no       | **DEPRECATED in v0.3; REMOVED on the 0.4 line.** Human-readable slug, format `capsule:{short_id}`. Redundant with `title` (derive `slugify(title)` at display time if you need a slug) and not unique enough to serve as a reference. Accepted on `0.3.x` and earlier permanently; a capsule declaring `0.4.x` MUST NOT include it. Rely on `uuid` + `title`. |
+| `artifact_id`      | string   | no       | **DEPRECATED; REMOVED on the 0.4 line.** v0.1 legacy alias for `capsule_id`. Format: `artifact:{short_id}`. Accepted under v0.2/v0.3 compatibility only. |
 | `artifact_version` | string   | no       | **DEPRECATED.** v0.1 legacy alias for `capsule_version`. Still accepted under v0.2/v0.3 compatibility. New capsules should use `capsule_version`. |
 | `uuid`             | string   | yes      | UUIDv4. *Claimed* identity — useful for human reference and linking. The *verifiable* identity is `integrity.content_hash` (see Section 8.4). |
 | `title`            | string   | yes      | Human-readable title.                                               |
@@ -1386,6 +1390,8 @@ Both use [Semantic Versioning](https://semver.org/):
 - **The normative line** — the Core version (`0.3.0`). This is what `spec_version` declares and what the validator's known-version set accepts. It bumps only when the rules a capsule must satisfy change. A capsule declaring `0.3.0` claims exactly: "I satisfy the 0.3 rules."
 - **The full-spec document revision** — this document's own version (`v0.3.11`). A patch stream of documentation, recommended conventions, worked examples, test vectors, and validator behavior *within* the declared line. Producers MUST NOT put document revisions in `spec_version`, and validators MUST reject them as unknown. This is by design, not an oversight: the manifest speaks the rules it satisfies, not the edition of the book they were printed in.
 
+**The line also selects the integrity recipe (added v0.4.0).** Because the canonicalization used to compute `integrity.content_hash` changed between the 0.3 and 0.4 lines, the declared `spec_version` is not merely descriptive — it is the input that tells a verifier *how to verify*. See §9.1.1. This is why the two-track discipline matters operationally rather than editorially: a producer that declared a doc revision instead of a line would leave verifiers with no way to select a recipe.
+
 A conformance statement is therefore a **pair**: what the capsule declares (the line) and what verified it (the validator's doc revision). The reference validator states both in every report. Verification, custody, and provenance records SHOULD store the triple — declared `spec_version`, verifying validator version, verification time — and surfaces that display conformance SHOULD render the pair (e.g. `spec 0.3.0 · validated 0.3.11`), for the same reason §8.4 requires `hash_scope` beside `content_hash`: a claim shown without its verification context reads as more than it is. (Empirical origin: the first production custody run recorded the flagship capsule's declared `spec_version 0.3.0` beside its gate result "strict-valid, validator 0.3.10" and flagged the pairing as incoherent. It was correct and unexplained; this section is the explanation. F36 in RESEARCH.md.)
 
 ### 8.2 Regeneration Rules
@@ -1471,7 +1477,35 @@ The integrity hash is self-referential — it lives inside the manifest it hashe
 
 **Supported algorithms.** As of v0.3, `sha256` is the only supported algorithm. The schema pattern reserves `sha384` and `sha512` for future use; producers MUST emit `sha256`. The output format is `sha256:<hex_digest>` where the hex digest is **lowercase** and 64 characters long.
 
-**Canonical JSON form.** "Canonical JSON" in this spec means:
+**Recipe selection (added v0.4.0).** Two canonicalization recipes exist. Which one applies is a **pure function of the capsule's declared `spec_version`** — there is no manifest field naming the recipe, deliberately, because a second declaration could contradict the first:
+
+| Declared `spec_version` | Recipe | Canonical form |
+|---|---|---|
+| `0.1.x`, `0.2.x`, `0.3.x` | **v1 — legacy** (frozen) | Sorted keys, no whitespace, numbers as Python 3 `repr` |
+| `0.4.x` | **v2 — JCS** | [RFC 8785](https://www.rfc-editor.org/rfc/rfc8785.html) |
+
+Recipe v1 is **frozen, not deprecated**: every capsule already sealed on the 0.3 line and earlier verifies under it permanently, so conforming verifiers MUST retain it. Recipe v2 exists because v1's number formatting was an accident of the reference implementation's language rather than a design choice, and imitating it correctly proved to be a recurring source of cross-language failure — including a false "tampered" verdict filed against a valid production capsule (F44 in RESEARCH.md). Everything else about the protocol is identical between the two.
+
+A verifier that encounters a `spec_version` it does not know MUST report an unrecognized version rather than guess a recipe. This is why the migration is safe: a pre-0.4 validator meeting a 0.4 capsule says *"unknown spec_version"* — a legible statement about versions — and never reports a false integrity failure.
+
+**Protocol.** The five-step recipe, identical for both recipes:
+
+1. **Set the placeholder.** Make a working copy of the manifest. If the working copy has no `integrity` object, create one. Set `integrity.content_hash` to the literal string `sha256:pending` (lowercase ASCII). Set `integrity.hash_scope` to the real scope value.
+2. **Canonicalize the inputs.** Apply the canonical JSON rules of the **selected recipe** (below) to the working-copy manifest and, separately, to the data block.
+3. **Assemble the hash payload** based on `hash_scope`:
+   - `"data+manifest"` (most common): the UTF-8 bytes of `canonical(manifest)`, followed by a single LF byte (`\n`, 0x0A), followed by the UTF-8 bytes of `canonical(data)`.
+   - `"data_only"`: the UTF-8 bytes of `canonical(data)`.
+   - `"full_document"`: the raw bytes of the complete output HTML file, with the declared `content_hash` string byte-replaced by `sha256:pending` immediately before hashing. Producers and validators MUST read the file in binary mode and perform byte-level find/replace (the hash and placeholder strings are pure ASCII, so byte- and string-level replacement coincide for well-formed UTF-8 files).
+4. **Hash with SHA-256.** Compute `sha256` of the payload bytes. Format as `sha256:` + lowercase hex digest.
+5. **Emit the real hash.** Set `integrity.content_hash` on the real manifest to the computed value and embed it in the capsule HTML.
+
+Validators reproduce steps 1–4 against the manifest and data extracted from the capsule and compare against the `content_hash` they read. A match means the manifest and data were not tampered with. A mismatch means tampering, a compiler bug, or a canonicalization disagreement.
+
+**Conformance suite.** [`spec/conformance/hash_vectors.json`](conformance/hash_vectors.json) carries every vector below in a language-neutral form — manifest and data as raw JSON text, the expected canonical forms, the assembled payload, and the expected hash — plus isolated batteries for number formatting (as IEEE 754 bit patterns), string escaping, key ordering, and inputs that MUST error. **Implementations MUST pass the suite before claiming conformance, and SHOULD pin it in a regression test.** The suite exists because publishing a vector in prose was demonstrably not enough: a consuming implementation shipped without pinning Test Vector B and filed a false "tampered" verdict against a valid capsule (F44). Reference runners: [`compiler/check_conformance.py`](../compiler/check_conformance.py) and [`tools/check-conformance.mjs`](../tools/check-conformance.mjs).
+
+##### Recipe v1 — legacy canonical JSON (spec lines `0.1.x`–`0.3.x`; frozen)
+
+"Canonical JSON" under recipe v1 means:
 - Keys at every level are sorted lexicographically by Unicode code point (UTF-16 code-unit order is equivalent for the BMP).
 - No whitespace anywhere — items are separated by `,` and key/value pairs by `:`, with no spaces.
 - Non-ASCII characters are emitted as their UTF-8 bytes — they are NOT escaped to `\uXXXX` form. (Python's `json.dumps(..., ensure_ascii=False)`.)
@@ -1484,20 +1518,15 @@ def canonical_json(obj: object) -> str:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 ```
 
-**Protocol.** The five-step recipe:
+**Number formatting, stated operationally (added v0.3.13).** The rule was previously given as "whatever Python 3 `repr` produces," which is unusable by an implementer without a Python interpreter to consult. The observable rules are:
 
-1. **Set the placeholder.** Make a working copy of the manifest. If the working copy has no `integrity` object, create one. Set `integrity.content_hash` to the literal string `sha256:pending` (lowercase ASCII). Set `integrity.hash_scope` to the real scope value.
-2. **Canonicalize the inputs.** Apply the canonical JSON rules above to the working-copy manifest and (separately) to the data block.
-3. **Assemble the hash payload** based on `hash_scope`:
-   - `"data+manifest"` (most common): the UTF-8 bytes of `canonical(manifest)`, followed by a single LF byte (`\n`, 0x0A), followed by the UTF-8 bytes of `canonical(data)`.
-   - `"data_only"`: the UTF-8 bytes of `canonical(data)`.
-   - `"full_document"`: the raw bytes of the complete output HTML file, with the declared `content_hash` string byte-replaced by `sha256:pending` immediately before hashing. Producers and validators MUST read the file in binary mode and perform byte-level find/replace (the hash and placeholder strings are pure ASCII, so byte- and string-level replacement coincide for well-formed UTF-8 files).
-4. **Hash with SHA-256.** Compute `sha256` of the payload bytes. Format as `sha256:` + lowercase hex digest.
-5. **Emit the real hash.** Set `integrity.content_hash` on the real manifest to the computed value and embed it in the capsule HTML.
+- **Shortest round-trip.** Emit the fewest decimal digits that parse back to the identical double.
+- **Exponent thresholds.** Use exponent notation when the decimal exponent is below `-4` or at/above `16`; otherwise use positional notation. (So `0.0001` is positional, `1e-05` is exponential; `1e15` is positional — `1000000000000000.0` — and `1e16` is exponential.)
+- **Exponent style.** `e`, then a mandatory sign, then **at least two digits, zero-padded**: `1e+22`, `1.5e-05`, `1e+308`.
+- **Integer-valued floats keep their marker.** A float whose value is integral is written with a trailing `.0` (`55.0`, never `55`); an integer is written without one (`3`). The distinction between the two JSON tokens is therefore load-bearing under recipe v1 — a parser that collapses `55.0` into an integer cannot produce a correct hash.
+- **Integers** are emitted verbatim at arbitrary precision (no IEEE range limit under recipe v1).
 
-Validators reproduce steps 1–4 against the manifest and data extracted from the capsule and compare against the `content_hash` they read. A match means the manifest and data were not tampered with. A mismatch means tampering, a compiler bug, or a canonicalization disagreement.
-
-##### Test vector A: `data+manifest`
+##### Recipe v1 — Test vector A: `data+manifest`
 
 A new compiler can verify its implementation by reproducing this hash from the prose above alone (no peeking at validator source).
 
@@ -1545,14 +1574,16 @@ If your implementation produces this value bit-identical, your canonicalization,
 
 The canonical serialization rules are deliberately strict so that a Python compiler and a Node.js validator produce identical hashes.
 
-#### Test Vector B — floating-point numbers (added v0.3.11)
+##### Recipe v1 — Test vector B: floating-point numbers (added v0.3.11)
 
 Test Vector A's data block contains no floating-point numbers, so it cannot catch the divergence class most likely to bite data-backed capsules: float parsing and float serialization. The empirical case that forced this vector (F37 in RESEARCH.md): a Rust custody verifier using serde_json's default `f64` fast-path parsed the Web-Mercator ordinate `7842318.5018136855` one ULP away from the correctly-rounded value, which changed its canonical serialization and filed a false "tampered" verdict against a capsule the reference validator passes 31/31.
 
 Two normative requirements, both made testable by this vector:
 
-1. **Correctly-rounded parsing.** Implementations MUST parse JSON numbers to the nearest IEEE 754 double (correctly rounded). (serde_json: enable the `float_roundtrip` feature. Most mainstream JSON parsers are already correctly rounded; verify, don't assume.)
-2. **Reference number formatting.** Canonical serialization MUST format numbers exactly as the reference implementation does — Python 3 `repr` semantics: shortest round-trip decimal form, Python's exponent style (`1e+22`, `1.5e-05` — sign always present, two-digit zero-padded exponent), and integer-valued floats keeping their fractional marker (`55.0` stays `55.0`, never `55`). Implementations following ECMAScript / RFC 8785 (JCS) number formatting will diverge on exactly these cases — **JCS is not the canonical form of this spec.**
+1. **Correctly-rounded parsing.** Implementations MUST parse JSON numbers to the nearest IEEE 754 double (correctly rounded).
+2. **Reference number formatting.** Canonical serialization MUST follow the operational rules stated above under recipe v1 — shortest round-trip, the `-4`/`16` exponent thresholds, signed two-digit exponents, and integer-valued floats keeping `.0`.
+
+> **Corrected v0.3.13.** This vector previously named enabling serde_json's `float_roundtrip` feature as *the* remediation. That was under-specified and consequential: `float_roundtrip` fixes only requirement 1, and an implementation that enabled it still diverged on requirement 2 at the exponent threshold, so the false-tamper failure mode survived the stated fix (F44). **The conformance criterion is passing this vector and the suite** — any library advice is downstream of that and may be incomplete. Note also that ECMAScript / RFC 8785 number formatting diverges from recipe v1 on exactly these cases: JCS is *not* recipe v1's canonical form (it is recipe v2's — see below), so a JCS library MUST NOT be used to verify a capsule on the 0.3 line or earlier.
 
 *Manifest:* identical to Test Vector A, byte for byte (the canonical placeholder-form manifest line above).
 
@@ -1571,6 +1602,49 @@ sha256:47c0aaf09948f5f010252cb3258b2b42c9790bcbb6aa69e6086af5e76ce2bf9b
 ```
 
 If Test Vector A passes and Test Vector B diverges, the failure is in number handling: check correctly-rounded parsing first, then exponent formatting, then integer-valued float preservation. Verifiers in languages other than Python SHOULD pin this vector in a regression test — the false-tamper failure mode is silent until it hits a real artifact.
+
+##### Recipe v2 — RFC 8785 / JCS (spec line `0.4.x`)
+
+Canonicalization under recipe v2 is **[RFC 8785, the JSON Canonicalization Scheme](https://www.rfc-editor.org/rfc/rfc8785.html)**, adopted verbatim. The RFC is normative; this section states only what it means for capsules and the one constraint the project adds on top.
+
+Why a published standard replaces the house form: recipe v1's number rules were never designed — they are CPython's `repr` habits, promoted to a wire format by the reference implementation's choice of language. Every other implementation therefore has to *imitate a language it isn't written in*, and F44 measured the cost when that imitation is imperfect. JCS is the standard written for exactly this problem, its number format **is** ECMAScript's (so browsers and JavaScript reach it natively), and maintained libraries exist across languages. The project already prefers standards where they exist — ISO 8601 for dates, UUID v4 for identity, SemVer for versions.
+
+What recipe v2 requires:
+
+- **Numbers** serialize per ECMAScript `Number::toString` (RFC 8785 §3.2.2.3). Notably: `55.0` and `55` both serialize as `55`; the exponent thresholds are ES's (`1e21` and `1e-7`), not Python's; exponents carry no zero-padding (`1e+21`, `1e-7`).
+- **Object keys** sort by their **UTF-16 code units** as unsigned integers, **not** by Unicode code point. The two orders differ above the BMP: `"😀"` (U+1F600) sorts *before* `"￿"` (U+FFFF) under UTF-16. Recipe v1's rule was code-point order, so a capsule with supplementary-plane keys canonicalizes differently under the two recipes.
+- **Strings** escape only what JSON requires: `"` and `\`, the five shorthand controls (`\b \t \n \f \r`), and remaining C0 controls as lowercase `\uhhhh`. **U+2028 and U+2029 are NOT escaped** (some JavaScript serializers escape them for script-embedding safety; JCS does not, and doing so would change the hash). Non-ASCII is emitted raw as UTF-8.
+- **NaN and Infinity** MUST cause an error. They are not valid JSON, and the RFC requires implementations to terminate rather than invent a serialization.
+
+**Added constraint — interoperable integers (project rule, not RFC).** On the 0.4 line, integers MUST satisfy `|n| ≤ 2^53`, the exactly-representable range for IEEE 754 doubles. Implementations MUST raise an error rather than emit a rounded value. Rationale: languages with arbitrary-precision integers (Python, Ruby) can hold `9007199254740993`, while every implementation that parses JSON numbers into doubles silently rounds it — a producer and a verifier would then disagree about the bytes without either detecting a fault. Floats are exempt from the range check: a float already *is* a double, so every implementation observes the same value regardless of magnitude. Recipe v1 imposed no such limit, which is one of the reasons the constraint arrives with a new line rather than as a patch.
+
+Reference implementation: [`compiler/jcs.py`](../compiler/jcs.py) (stdlib only). In JavaScript, a recursive key sort by code unit followed by native `JSON.stringify` is conformant, because ES's own number and string serialization is what the RFC specifies; [`tools/capsule-hash.mjs`](../tools/capsule-hash.mjs) does exactly that.
+
+##### Recipe v2 — Test vectors A2 and B2
+
+A2 and B2 use the **same data blocks** as A and B, and a manifest identical to Test Vector A's except `spec_version` is `"0.4.0"` — which is what selects the recipe. The pairing is deliberate: A2 and B2 differ from A and B *only* by canonicalization, so a divergence isolates the recipe rather than the fixture.
+
+*Canonical manifest (A2 and B2):*
+```
+{"capabilities":["about","copy_as_json"],"capsule_version":"1.0.0","created_at":"2026-01-01T00:00:00Z","description":"Minimal capsule for hash recipe verification.","generator":{"kind":"compiler","name":"test","version":"1.0.0"},"integrity":{"content_hash":"sha256:pending","hash_scope":"data+manifest"},"privacy":{"contains_private_data":false,"external_dependencies":false,"redaction_applied":false,"visibility":"private"},"source":{"included_records":0,"origin":"test","snapshot_id":"snapshot:hash_test_a","snapshot_type":"portable_excerpt"},"spec_version":"0.4.0","title":"Hash Test Vector A","type":"reference","uuid":"00000000-0000-4000-8000-000000000000"}
+```
+
+*A2 — data `{"records": []}`, canonical data `{"records":[]}`:*
+```
+sha256:0b9e8f372fea068ba6326fd9b13df29d3e3fb9953131bd77a2bccf4cc65dd5d4
+```
+
+*B2 — the same float battery as Test Vector B. Canonical data:*
+```
+{"coord_lat":57.08614,"coord_lon":-108.92228,"count":3,"int_valued":55,"large_exp":1e+22,"long_literal":0.30000000000000004,"small":0.000015,"web_mercator_y":7842318.5018136855}
+```
+```
+sha256:24ea65104301cd83eb484e0cf3fc1af5a772900d21d0f512e8cd75a821286471
+```
+
+Compare B2's canonical data against Test Vector B's: `int_valued` is `55` rather than `55.0`, and `small` is `0.000015` rather than `1.5e-05`. Identical input bytes, two legitimate canonical forms, two different hashes — which is precisely why the recipe is pinned to the declared line and never inferred.
+
+Both vectors were derived independently by two implementations (the Python reference and a JavaScript oracle) before publication and must agree. That derivation standard is itself a lesson from F44: a vector proposed from a single unspecified implementation did not reproduce, and an under-specified vector manufactures false failures in every implementation that guesses the missing part differently.
 
 ### 9.2 Runtime Security
 
@@ -1750,7 +1824,7 @@ When a capsule is built from sources that are **not themselves Capsules** — co
 
 ### 11.3 The deprecated `related` field
 
-Prior to v0.3 the schema reserved a `related` array for soft associations between capsules (`parent`, `sibling`, `supersedes`, `related`). It was unused in practice and is **deprecated in v0.3**, planned for removal in v0.4. Hard provenance now lives in `parents` (above). Soft associations — "this capsule is thematically similar to that one" — belong in the capsule's prose, not in structured metadata, because schema fields invite producers to fabricate edges that aren't load-bearing. The validator emits an informational note when it encounters a `related` array on a v0.3 capsule; the field still passes validation for v0.2 backward compatibility.
+Prior to v0.3 the schema reserved a `related` array for soft associations between capsules (`parent`, `sibling`, `supersedes`, `related`). It was unused in practice, was **deprecated in v0.3**, and is **removed on the 0.4 line** — a capsule declaring `0.4.x` MUST NOT include it; capsules on `0.3.x` and earlier keep passing with it forever. Hard provenance now lives in `parents` (above). Soft associations — "this capsule is thematically similar to that one" — belong in the capsule's prose, not in structured metadata, because schema fields invite producers to fabricate edges that aren't load-bearing. The validator emits an informational note when it encounters a `related` array on a v0.3 capsule; the field still passes validation for v0.2 backward compatibility.
 
 ### 11.4 Relationship vocabulary and ownership
 
@@ -1841,7 +1915,7 @@ A capsule is **valid** if:
 5. `spec_version` matches a known spec version
 6. `profile`, when present, is a known validation overlay (`static`, `interactive`, or `data`)
 7. `privacy.external_dependencies` is `false`
-8. `integrity.content_hash` matches the computed hash of the specified scope (per the protocol in Section 9.1.1)
+8. `integrity.content_hash` matches the computed hash of the specified scope, using **the canonicalization recipe selected by the declared `spec_version`** (per the protocol in Section 9.1.1: recipe v1 for `0.1.x`–`0.3.x`, recipe v2 / RFC 8785 for `0.4.x`)
 9. Every declared capability is a known core capability, a known restricted declaration, or a syntactically valid namespaced extension; prohibited capabilities fail
 10. Every declared capability has a corresponding implementation in the runtime or rendered HTML where the core validator can check it
 11. Declared `presentations[]`, when present, use known core profiles or namespaced extension profiles, and their Capsule entries resolve to element ids; broken required presentations fail, while broken optional presentations are clearly reported
@@ -1849,6 +1923,7 @@ A capsule is **valid** if:
 13. The data section parses as valid JSON
 14. `capsule-root` exposes the capsule's primary meaning without JavaScript (heuristic: visible text, headings, sections, media/table/list/fallback presence)
 15. The file size is under 20 MB (with a soft warning between 15 MB and 20 MB for email-attachment compatibility — see §6.3)
+16. On the `0.4.x` line only: the removed fields `capsule_id`, `artifact_id`, `artifact_version`, and `related` are absent, and every number is IEEE-double-safe (§9.1.1 recipe v2)
 
 A validator tool should produce a report listing pass/fail for each check.
 
@@ -2141,9 +2216,11 @@ The Capsule format sits at an intersection of existing traditions. None of these
 
 Items queued for the next minor revision. None are committed; each is listed with the question it answers and the lean position from current discussion. Schema and validator changes do not happen here — Appendix E is the parking lot for design decisions that need to be made before they ship.
 
-### E.1 Remove deprecated `capsule_id` slug and `related[]`
+### E.1 Remove deprecated `capsule_id` slug and `related[]` — **LANDED in v0.4.0-draft**
 
-Both fields were deprecated in v0.3 with an informational validator note. v0.4 should remove them from the schema entirely. The accept-but-warn period gives existing capsules a migration window; v0.4 closes it. Action: drop the fields from `spec/manifest.schema.json`, remove the deprecation paths from `compiler/validate.py`, and update the spec field tables.
+Both fields were deprecated in v0.3 with an informational validator note; the 0.4 line removes them (§3.2, §11.3, §14 rule 16).
+
+One refinement the original plan got wrong, worth recording because it generalizes to every future removal: this candidate said to "drop the fields from `spec/manifest.schema.json`, remove the deprecation paths from `compiler/validate.py`." **The deprecation paths cannot be removed.** Capsules sealed on the 0.3 line are immutable and must keep validating forever, so the validator retains every legacy path and gates the removal on the declared line instead. "Removed in v0.4" means *rejected on the 0.4 line*, never *deleted from the implementation*. A conforming validator's code only ever grows; what changes is which line each rule applies to.
 
 ### E.2 Compiler-kind UUIDv5 carve-out
 

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://capsule.spec/manifest/v0.3.0",
-  "title": "Capsule Manifest v0.3.0",
-  "description": "Schema for the capsule-manifest section of a Capsule.",
+  "$id": "https://capsule.spec/manifest/v0.4.0-draft",
+  "title": "Capsule Manifest (spec lines 0.1.x-0.4.x)",
+  "description": "Schema for the capsule-manifest section of a Capsule. Covers every spec line: fields removed on the 0.4 line are still permitted when spec_version declares 0.3.x or earlier, because sealed capsules are immutable and must keep validating. See the conditional block below.",
   "type": "object",
   "required": [
     "spec_version",
@@ -19,6 +19,24 @@
   "anyOf": [
     {"required": ["capsule_version"]},
     {"required": ["artifact_version"]}
+  ],
+  "allOf": [
+    {
+      "$comment": "Spec line 0.4.x removes the deprecated identity aliases and the unused soft-association array (spec CAPSULE_SPEC.md 3.2, 11.3, 14 rule 16). Capsules declaring 0.3.x or earlier keep them permanently.",
+      "if": {
+        "required": ["spec_version"],
+        "properties": {"spec_version": {"pattern": "^0\\.4\\."}}
+      },
+      "then": {
+        "required": ["capsule_version"],
+        "properties": {
+          "capsule_id": false,
+          "artifact_id": false,
+          "artifact_version": false,
+          "related": false
+        }
+      }
+    }
   ],
   "properties": {
     "spec_version": {

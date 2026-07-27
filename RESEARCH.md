@@ -7,7 +7,7 @@ A research project investigating whether HTML can be disciplined into a portable
 The project produces a spec, a reference implementation, and empirical evidence about whether the spec works in practice. The hypothesis is that the substrate (HTML) has won and what's missing is discipline, not a new format.
 
 Started: 2026-05-15
-Current Core spec: v0.3.0 · Full spec: v0.3.13
+Current Core spec: v0.3.0 · Full spec: v0.4.0-draft
 Repo: [bigfancygarden/htmlcapsule](https://github.com/bigfancygarden/htmlcapsule) · Site: [htmlcapsule.org](https://htmlcapsule.org)
 
 ## Project identity
