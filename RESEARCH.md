@@ -1381,6 +1381,133 @@ One honest detail worth recording: the producer used `type: "x-compositor.annota
 - [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec--empirical-pressure-for-discoverable-onboarding) — producer reached the shape via the `x-` namespace before the spec named it; graduation is the naming
 - [F33](#f33-first-data-backed-compiler-producer-seals-resolved-data--sealed_sources-makes-the-output-is-also-the-source-claim-literal) — sealed_sources is what makes `record` anchors permanent; annotation is downstream of sealed data
 
+### F41: The dominant AI-artifact producer ships the substrate without the commitment layer — Claude artifacts are envelope-compatible and provenance-free
+
+**Date:** 2026-07-26
+
+**Source.** Direct review of Anthropic's published artifact documentation (`code.claude.com/docs/en/artifacts`, fetched 2026-07-26) plus a targeted search for a format specification, conducted from inside a Claude Code session that was itself publishing artifacts. Claude Code artifacts became generally available across Pro/Max/Team/Enterprise during 2026; they are, by volume, almost certainly the largest population of self-contained AI-generated HTML documents in existence.
+
+**Finding — the physical envelope converged independently; the trust layer did not ship.** The documented constraints are a near-exact match for Capsule's Rule 1 and Rule 2 surface, arrived at from a different direction (sandbox security, not preservation):
+
+| Constraint | Claude artifact | Capsule |
+|---|---|---|
+| Single self-contained HTML page | required | Rule 1 |
+| External requests | CSP-blocked (scripts, styles, fonts, images, `fetch`/XHR/WebSocket) | Rule 2, zero network |
+| CSS/JS | inlined | required inline blocks |
+| Images | embedded as data URIs | same practice |
+| Size ceiling | 16 MiB rendered | 20 MB hard cap (F20) |
+| Multi-page | not supported; in-page anchors | single-document model |
+
+What is absent is the entire commitment layer: **no manifest, no `generator` identity, no `source`/provenance block, no integrity hash, no capability declaration inside the file, and no published format specification of any kind.** Anthropic publishes operational documentation — how to create, share, administer, and retain artifacts — but no document defining the artifact *as a file*. Versioning exists, but as host-side database state (each publish becomes a version selectable in the Share control), not as anything the document carries. The one deliberate CSP exception is MCP connector calls, brokered by the host using *the viewer's* account — a live-data affordance that, by construction, makes the page non-portable.
+
+The programmatic retrieval path that does exist is org-admin scoped: a Compliance API with `GET /v1/compliance/code/artifacts/{id}/versions/{id}`. That is a compliance instrument, not a custody instrument — it presumes the organization, not the author, is the party with a retention interest.
+
+**Why this is the strongest available evidence for F24's thesis.** F24 argued that a *host* serves bytes while a *registry* publishes commitments, and that the failure mode is not "wrong identifier" but "no commitment to keep the bytes reachable." That argument was made against a sample of two small hosts (F21) and refined by conversation rather than new evidence. It now has a population-scale instance: the largest artifact host on the planet serves durable-looking URLs with **retention policies configurable by an organization owner**, public sharing that an admin can revoke globally without touching any artifact, and no in-document identity that survives the host. Every property F24 named as a registry commitment is, here, an administrative setting. This is not a criticism of the design — an artifact is documented explicitly as *"a capture of work, not an application"*, and Anthropic makes no preservation claim. It is precisely the point: **the substrate has won exactly as the project's founding hypothesis predicted, and the commitment layer remains unclaimed.**
+
+**Implication for the spec.** No normative change. Two documentation consequences: (a) `spec/HOSTING.md` should record Claude artifacts as the third observed host pattern and the first at population scale, with the honest note that it is a *host* in F24's sense, not a registry, and that its retention and sharing controls are administrative rather than documentary; (b) the project's positioning material should stop describing the ecosystem as moving *toward* the problem Capsule names (the F32 framing) and start describing it as having *arrived at the substrate and stopped* — a materially stronger and more falsifiable claim.
+
+**Related findings:**
+- [F24](#f24-host-vs-registry---the-missing-commitment-layer) — host vs. registry; this is that distinction observed at population scale, with every commitment realized as an admin toggle
+- [F32](#f32-codex-sites-validates-the-hosted-runtime-layer-while-strengthening-the-case-for-portable-custody) — Codex Sites as hosted-runtime layer; artifacts are the same layer from the other major lab, and the five-layer map holds
+- [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev-htmlbin) — the two-host convergence this extends from n=2 to n=3-with-scale
+
+### F42: Users are writing scrapers to recover their own documents — the export gap is empirically demanded, not hypothesized
+
+**Date:** 2026-07-26
+
+**Source.** Survey of the third-party tooling ecosystem that has formed around artifact export (searched 2026-07-26). Observed instances include `ashwanthkumar/claude-artifacts-downloader` (Chrome extension: extracts the conversation UUID from the URL, reads chat data from browser local storage, emits a ZIP), `elgertam/claude-artifact-downloader`, `Llaves/ClaudeExport` (conversation → HTML), and at least two commercial or freemium offerings. Multiple independent how-to guides exist; the most commonly recommended procedure is manual: *ask the model to print the full HTML in a code block, select all, copy, paste into a text editor, save as `.html`*.
+
+**Finding — the on-ramp gap this project has been reasoning about abstractly has a visible market.** Three things are notable and none of them were predicted by the project's own analysis:
+
+1. **The demand is for byte-level recovery, not for a nicer viewer.** Every tool in the population does the same thing: get the document out, intact, onto local disk. This is the "portable custody" use case stated in the project's own thesis, arrived at by users who have never heard of it.
+2. **The implementations are scrapers, and they are fragile by construction.** Reading the host's local storage and parsing conversation JSON means each tool breaks whenever the host changes an internal shape. A population of brittle third-party scrapers is what an ecosystem produces *in the absence of* a format with an export contract — which is precisely the condition Capsule's `download_capsule` capability (§ capabilities, `download_capsule`) exists to remove.
+3. **The recommended fallback is copy-paste.** When the most-cited method for preserving a document is "select all, paste into a text editor," the preservation story of the medium has not been written yet.
+
+Read against F25: that finding established that a producer population reliably follows *recipes* when they are written as recipes. This finding establishes the complementary fact on the consumer side — a consumer population reliably *builds its own tooling* when no recipe exists. Both are arguments that the missing artifact is an on-ramp, not a rule.
+
+**Implication for the spec.** None normative — but this is the clearest empirical pressure yet on the acknowledged "biggest unbuilt piece: author-side import tooling" (Status). It also sharpens what that tooling must be: not an importer for capsules (a capsule already carries its own export), but a **converter for the population that exists** — see F43.
+
+**Related findings:**
+- [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates) — producers follow recipes; this is consumers building tools in the absence of one
+- [F23](#f23-urn-not-url-qr-encoding---empirical-validation-of-a-deliberate-spec-choice) — the printed-QR 403 incident; same class of problem (the artifact outlived its access path) from the opposite direction
+
+### F43: A spec-literate agent published five non-capsules and one valid capsule in the same session — the conversion cost is convention, not capability
+
+**Date:** 2026-07-26
+
+**Source.** Direct self-observation during a working session (mineral-exploration domain, unrelated to this project). The agent — with the full spec available in its working tree — published **five artifacts** through the host's native artifact tool and, later in the same session, **hand-built one Capsule** for the same body of data. The capsule was validated against an *independent third-party implementation* of the format: mindev's TypeScript validator (`keystone/src/capsule-validator.ts`), which enforces the five required blocks, the manifest field set, `generator.kind` membership, the required `source`/`privacy` sub-fields, no-external-references, and the full §9.1.1 placeholder-protocol hash. Result: **VALID**, 148 records, 285 KB, `hash_scope: data+manifest`, content hash verified.
+
+**Finding — the delta between the dominant producer population and conformance is a template.** The five artifacts were structurally ordinary: self-contained, inlined, no external references, several with embedded raster data URIs — Rule 1 and Rule 2 satisfied incidentally, because the host's CSP enforces them. What every one of them lacked was the same five things: the manifest block, the data block, the three required `id` attributes, the declared-capability wiring, and the hash. Adding those took a single working pass, and two of the three validator rejections encountered were *trivial and mechanical* (`<style>` missing `id="capsule-style"`; no `<script id="capsule-runtime">`). Neither was a modelling problem; both were "you forgot the id."
+
+Three observations worth recording:
+
+- **The runtime block forced honesty in the right direction.** Being required to ship a `capsule-runtime` prompted actually implementing the three declared capabilities (`about`, `download_json`, `download_capsule`) rather than declaring them aspirationally — an unplanned confirmation of Rule 7's design intent ([F4](#f4-capability-honesty-is-enforceable): zero over-declaration observed in the corpus).
+- **The data block did real work.** Freezing 148 records as `capsule-data` converted a picture-of-data into queryable data — the difference between a screenshot and an artifact — and cost nothing beyond serializing what the session already held.
+- **The agent did not do this by default, and would not have.** The host's artifact tool takes an HTML file and publishes it; nothing in that path asks for provenance, and nothing rejects its absence. A producer that *knows the format* still emits non-capsules when the publishing tool doesn't ask. This is the producer-side mirror of F25's validator-heuristic problem: a convention that lives only in a validator does not propagate to producers who are not validated by that tool.
+
+**Implication for the spec.** No rule change. This is direct evidence for a specific piece of tooling: an **artifact→capsule adapter** that takes conformant-substrate HTML (which the population already produces by the million) and adds only the missing envelope — manifest with sane defaults, data block if the producer can supply one, the three ids, a runtime implementing whatever export capabilities are declared, and the hash. The measured gap is small enough that this is a template plus a hash function, and the honest framing for the project is that **the format's adoption problem is now downstream of a single missing utility, not of the rules.**
+
+**Related findings:**
+- [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates) — validator-only conventions don't reach unvalidated producers; observed here from the producer side
+- [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec---empirical-pressure-for-discoverable-onboarding) — producers reach for Capsule-shape when given the idiom; this is the case where the idiom was present and the *publishing path* still didn't ask
+- [F30](#f30-microsoft-copilot-as-the-fourth-observed-llm-producer-family---convergent-envelope-shape-predictable-five-item-gap-profile-real-world-lateral-portability-handoff) — the predictable five-item gap profile; the gap observed here is the same shape, from a fifth producer path
+
+### F44: `float_roundtrip` is necessary but not sufficient — F37's remediation was scoped to parsing and the formatting half is still open
+
+**Date:** 2026-07-26
+
+**Source.** Independent re-derivation of §9.1.1 Test Vector B against htmlvault's Rust verifier during a code-level review of the custody layer (2026-07-26). serde_json 1.0.145 was built with the `float_roundtrip` feature — the exact remediation recorded in F37 — and the spec's canonical data block was round-tripped through it.
+
+**Finding — the fix addressed the parse hazard and left the format hazard live.** §9.1.1 as revised in v0.3.11 states two distinct MUSTs: implementations MUST parse numbers correctly rounded, **and** MUST reproduce the reference (Python 3 `repr`) number formatting. `float_roundtrip` satisfies only the first. Empirically:
+
+```
+python / spec      {…,"small":1.5e-05,…}   → sha256:47c0aaf09948f5f0…   ✅ matches Test Vector B
+rust / serde_json  {…,"small":0.000015,…}  → sha256:e44a975765e5ff16…   ❌ diverges
+```
+
+The divergence is the exponent-threshold rule, one of the three sub-hazards F37 itself enumerated: Python switches to exponential notation at `1e-05`; serde_json's writer emits positional decimal there. **Any capsule whose data block carries a float below roughly 1e-4 will produce a hash mismatch and, in htmlvault's case, a false `INT001` High "tampered" verdict against a valid artifact.** That is the same defamation failure mode F37 was written to prevent, surviving F37's fix.
+
+Two structural facts make this more than a single-implementation bug:
+
+- **Test Vector B's expected hash appears nowhere in the consuming implementation.** F37 closed with the recommendation that non-Python verifiers SHOULD pin the vector in a regression test. It was not pinned; only the narrower one-ULP ordinate case was. The vector existed and the consumer did not adopt it — which is a distribution failure, not an authoring one.
+- **The recipe is now implemented at least four times in three languages** (Python reference, Python producer path, Rust, Swift) plus a partial TypeScript re-implementation, **with no shared conformance harness.** Three different JSON serializers are assumed to agree byte-for-byte on numeric output. Two have now been shown not to. The Swift implementation is untested.
+
+**Implication for the spec.** (a) §9.1.1 should state the number-formatting rule *operationally* rather than by reference to Python's `repr` — the exponent-threshold boundaries (`1e16` upper, `1e-4` lower), the integer-valued-float rule (`55.0` not `55`), and the shortest-round-trip requirement — so an implementer without a Python interpreter can satisfy it from the text alone. (b) The remediation guidance in F37 should be corrected: naming a specific library feature as "the fix" under-specified the problem; the fix is *passing Test Vector B*, and any library advice is downstream of that. (c) The strongest available instrument is a **published conformance suite** — the two vectors plus a float battery, in a language-neutral fixture format, that any implementation can run. This is the same artifact proposed in F45, seen from the integrity side; it is the missing enforcement for a MUST that already exists.
+
+**Related findings:**
+- [F37](#f37-a-one-ulp-float-parse-files-a-false-tampered-verdict---cross-language-canonicalization-needs-a-float-bearing-test-vector-and-correctly-rounded-parsing) — the original one-ULP incident and Test Vector B; this finding corrects its remediation record
+- [F35](#f35-the-reference-validator-becomes-load-bearing-cross-repo-infrastructure---producer-ci-needs-a-version-identity-to-pin-against) — validator identity for pinning; the same pinning discipline was needed here and wasn't applied
+
+### F45: Every path to a verified capsule routes through Python — the on-ramp terminates at the hash, and one artifact unblocks it
+
+**Date:** 2026-07-26
+
+**Source.** Structured accessibility review of the reference implementation and its documented producer paths (2026-07-26), asking a single question: *can a person who does not use a terminal get from "I have something worth keeping" to "here is a verified capsule"?*
+
+**Finding — the answer is no, and the blocker is a single function.** Three independent paths were traced and all three terminate in the same place:
+
+1. **The LLM path** — the format's genuine achievement ([F1](#f1-the-core-spec-works-as-an-llm-prompt), F19, F25, F30: four model families reach conformance from Core alone) — cannot compute the hash. The project's own prompt pack instructs producers to emit an **all-zero sentinel** by design, and the reference answer is to run `repair_integrity.py`. The path therefore ends at a knowingly-invalid artifact unless a terminal is opened. Open Questions Q4 states this plainly: *"the canonical-JSON content hash is unreproducible by LLMs."*
+2. **The verification path** — `python3 compiler/validate.py file.html`. A hosted drag-and-drop validator is sanctioned in the spec and has never been built. Inspection of every generated page on the project site confirms it: the script blocks contain the capsule envelope and small export helpers, and nothing else. **The site is generated capsules describing the tooling; it does not contain the tooling.**
+3. **The compiler path** — hand-authoring a JSON source file with `uuid`, `snapshot_id`, ISO-8601 timestamps and template-matched records, then running two or three Python commands. A developer path by construction.
+
+The common blocker is that **§9.1.1 exists only in Python.** That single fact explains the sentinel hash, the absence of any browser tool, the terminal dependency in every documented workflow, and — via F44 — the two non-Python implementations that compute it wrongly.
+
+**The proposal, stated as the smallest sufficient artifact.** A JavaScript/WASM implementation of §9.1.1, written deliberately against Test Vectors A and B rather than assembled from `JSON.stringify` (which cannot satisfy the spec: JCS is explicitly *not* this format's canonical form, and ECMAScript's number formatting differs from the reference at both the integer-valued-float and exponent-threshold boundaries). It is on the order of 150 lines. It unblocks, in dependency order:
+
+- **In-browser hashing**, which converts the LLM path from "ends at a sentinel" to "ends at a verified file."
+- **A drop-a-file validator page** — the highest-leverage missing artifact by the project's own reckoning, already sanctioned in §14, and simultaneously the regression harness this repository lacks (there are currently zero tests and no CI, in a repository whose validator is a *merge gate for other repositories' CI*).
+- **The conformance suite of F44**, which is the same code with the vectors attached.
+- **The artifact→capsule adapter of F43**, which needs exactly one thing beyond a template: a hash it can compute where the author is standing.
+
+**Implication for the spec.** None normative; this is a tooling finding. But it identifies the project's binding constraint precisely, and the constraint is smaller than the surrounding discussion has assumed. The honest summary for the Status section: **the spec is more mature than the tooling, and the tooling is more mature than the on-ramp — and the on-ramp is blocked on one function that exists in one language.**
+
+**Related findings:**
+- [F44](#f44-float_roundtrip-is-necessary-but-not-sufficient---f37s-remediation-was-scoped-to-parsing-and-the-formatting-half-is-still-open) — the same missing artifact seen from the cross-implementation integrity side
+- [F43](#f43-a-spec-literate-agent-published-five-non-capsules-and-one-valid-capsule-in-the-same-session---the-conversion-cost-is-convention-not-capability) — the adapter this unblocks
+- [F42](#f42-users-are-writing-scrapers-to-recover-their-own-documents---the-export-gap-is-empirically-demanded-not-hypothesized) — the population that would use it
+- [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec---empirical-pressure-for-discoverable-onboarding) — discoverable onboarding; the `/llms.txt` Core-inlining recommendation remains the cheapest complementary fix
+
+
 ## Open questions
 
 In rough priority:
@@ -1584,7 +1711,7 @@ If your implementation produces the expected hash bit-identical, the spec is doi
 
 ## Status
 
-As of v0.3.2 (2026-05-20):
+As of v0.3.12 (findings current to 2026-07-26):
 
 - **Core spec v0.3.0** — twelve rules. Five rounds of loosening / additions based on empirical findings:
   - v0.1.1: rule 11 first draft (string-literal mitigation in prompt fragment)
