@@ -119,6 +119,23 @@ This compliance contract is **sketched, not yet adopted by any host as of 2026-0
 
 Until at least one host signs on, the contract is *descriptive of a possible future*, not a current standard. See [F24 in RESEARCH.md](../RESEARCH.md) for the broader synthesis of why the host-vs-registry distinction matters.
 
+## Required: disable CDN HTML post-processing (added 2026-07-27)
+
+A host serving capsules **MUST** disable content-delivery features that rewrite HTML in transit, and **SHOULD** set `Cache-Control: … no-transform` on artifact responses.
+
+This is not hypothetical. Deploying a capsule registry behind a mainstream CDN with default settings produced exactly this failure ([F50](../RESEARCH.md)): the CDN's analytics feature appended a `<script src="https://…/beacon.min.js">` to every `text/html` artifact response — but **only for browser-like requests**. A plain `curl` returned bytes matching the digest; a browser returned 359 extra bytes, and the reference validator failed the served document on Rule 2 (no external references). The host had converted a conformant capsule into a non-conformant one in transit, without altering a single stored byte, and every scripted check kept passing.
+
+Features known to do this, all commonly on by default: analytics/RUM beacon injection, script optimizers and deferred-loading rewriters, email-address obfuscation, image lazy-loading rewriters, and HTML minifiers.
+
+**The host self-check.** Fetch your own artifact **with a browser User-Agent** and confirm the bytes still hash to the digest you served them from:
+
+```bash
+curl -s -A "Mozilla/5.0 … Chrome/120" -H "Accept: text/html" \
+  https://your-host.example/raw/<digest> | shasum -a 256
+```
+
+A host that only ever tests `/raw` with `curl` has tested nothing about what its readers receive. And note the structural point: **a host cannot detect its own mutation unless it independently knows what the artifact should be.** Content-addressed retrieval makes this checkable in one command; slug-addressed retrieval makes it invisible.
+
 ## Anti-patterns — what hosts of capsules should not do
 
 | Anti-pattern | Why it breaks the pattern |

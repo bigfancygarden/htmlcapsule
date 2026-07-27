@@ -1602,6 +1602,69 @@ Each catches precisely what the other deliberately ignores. A client that only r
 - [F24](#f24-host-vs-registry--the-missing-commitment-layer) — the commitment layer, now given a checkable form: when the registry is a verifiable structure, most commitments become checks and only availability remains a promise
 - [F48](#f48-export-is-not-portability--the-official-archives-already-exist-and-nobody-can-use-them) — the registry-as-format answer to the host-level diagnosis
 
+### F50: The CDN rewrote the capsule — a host mutated served artifacts by default, and only content addressing noticed
+
+**Date:** 2026-07-27
+
+**Source.** Deploying a capsule registry to Cloudflare Pages (htmlvault.app) and serving artifacts from R2, then verifying the live URL with this repo's reference validator in URL mode.
+
+**Finding — the host silently modified the artifact, and only for browsers.** A plain `curl` of a public capsule returned 4,585 bytes whose SHA-256 matched the digest in its own URL. The *same URL* fetched with a browser User-Agent and `Accept: text/html` returned **4,944 bytes** — 359 bytes heavier — and the validator failed it:
+
+```
+[FAIL] ✗ No external resource references
+       External <script src> reference (capsule JS must be inlined)
+```
+
+The injected bytes were Cloudflare Web Analytics: `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/…" data-cf-beacon='{…}'>` appended before `</body>`. Three consequences, each worse than the last:
+
+1. **Byte-identical delivery was broken** — the served bytes no longer matched the address they were served from.
+2. **The artifact stopped being a valid capsule.** Rule 2 (no external references) is a defining property of the format. The host turned a conformant capsule into a non-conformant one in transit, without touching stored bytes.
+3. **It was invisible to every non-browser check.** CI, `curl`, and scripted verification all saw clean bytes. Only real readers got the mutated document — the population that matters most.
+
+This is precisely the anti-pattern [`spec/HOSTING.md`](spec/HOSTING.md) already names ("the registry serves the bytes it received. No mutation, no silent re-rendering, no injection") — met in the wild, **enabled by default**, on a mainstream CDN, by a feature no one thinks of as content modification. The fix is one response header: `Cache-Control: … no-transform`, which the CDN honours.
+
+**The finding that generalizes beyond one vendor.** A host cannot detect its own mutation unless it independently knows what the artifact *should* be. htmlbin.dev serves `/p/:slug/raw` and documents no checksums; htmlvault.com serves expiring links and scans content for PII but not for integrity ([F51](#f51-three-host-categories-none-of-which-verify--the-landscape-around-the-commitment-layer)). Neither could have discovered this about their own infrastructure, because neither computes an expected digest. **Content addressing is what made a silent, browser-only, default-on host mutation visible within minutes** — the address *is* the tripwire. That elevates content addressing from a storage convenience to an operational requirement for anyone serving capsules.
+
+**Implication for the spec.** `spec/HOSTING.md` should add two items. To the host contract: a host serving capsules **MUST** disable CDN HTML post-processing (analytics beacons, script optimizers, email obfuscation, lazy-loading rewriters) and **SHOULD** set `no-transform` on artifact responses. And a host self-check worth stating plainly, because it takes one command and catches a whole class of failure: *fetch your own artifact with a browser User-Agent and confirm the bytes still hash to the address you served them from.* A host that passes its own `/raw` test with `curl` has tested nothing about what its readers receive.
+
+**Related findings:**
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — the commitment layer; "immutability" is worthless as a promise if the delivery path rewrites the bytes underneath it
+- [F49](#f49-one-flipped-byte-two-correct-verdicts--registry-content-addressing-and-the-capsule-seal-are-orthogonal-integrity-layers) — the two orthogonal integrity layers; here the *address* caught what the seal deliberately cannot, since the injection landed in the projection
+- [F46](#f46-a-valid-capsule-tunnels-through-the-claude-artifact-channel--published-wrapped-recovered-verified-datamanifest-is-a-channel-survival-property) — a channel that wraps but preserves; this is a channel that *rewrites*, and the difference is exactly what the digest measures
+- [F41](#f41-the-dominant-ai-artifact-producer-ships-the-substrate-without-the-commitment-layer--claude-artifacts-are-envelope-compatible-and-provenance-free) — host behaviours as defaults rather than commitments; a default-on injector is that pattern applied to bytes
+
+### F51: Three host categories, none of which verify — the landscape around the commitment layer
+
+**Date:** 2026-07-27
+
+**Source.** Direct review of the two live services nearest this project's problem space: `htmlbin.dev` (public docs and `llms.txt` API summary) and `htmlvault.com` (product and pricing pages), compared against the registry built at `htmlvault.app`.
+
+**Finding — the space has resolved into three distinct categories, and integrity is absent from all of them.**
+
+| | **htmlbin.dev** | **htmlvault.com** | **htmlvault.app** |
+|---|---|---|---|
+| Job | agent publishing | tracked business distribution | durable custody + registry |
+| Identity | GitHub device-code (~30s) | SSO/SAML, enterprise roles | account, per-artifact visibility |
+| Default posture | **public** | private, expiring | private |
+| Retrieval | `/p/:slug/raw`, edge-cached | viewer with analytics | `/raw/:digest` + attestation headers |
+| Verification | none documented | PII scan (content, not integrity) | seal verified on upload, recipe-dispatched |
+| Content addressing | no | no | yes |
+| Mirrorable | no | no | published registry index |
+| Limits | 2 MB, 500 drops/account | 50 links/mo free → $999/mo enterprise | — |
+
+- **htmlbin is the agent-publishing category**, and its onboarding is genuinely better than anything this project has built: installable skills for four agent families, `npx` CLI, "first publish needs one human click; after that, the agent owns it," automatic versioning behind a stable slug. Its API is clean and documents **no checksums or integrity verification**.
+- **htmlvault.com is a category this project had not identified: ephemeral, instrumented distribution.** A commercial product (Free → $999/mo) selling secure HTML sharing to sales and marketing teams — PII detection, password + expiry, per-visit engagement analytics, SSO. It is not a preservation tool at all; its value proposition is that links *stop working* and that viewers are *measured*. That is the exact inverse of custody, and it usefully sharpens the layer map: alongside live canvas / portable artifact / custody / hosted runtime / discovery, there is a **controlled-distribution** layer whose product is expiry and telemetry.
+- **Nobody verifies anything.** Across both services there is no content hash, no checksum, no independent recomputation. The consequence is concrete and was demonstrated the same day: neither could detect their own CDN silently rewriting served artifacts ([F50](#f50-the-cdn-rewrote-the-capsule--a-host-mutated-served-artifacts-by-default-and-only-content-addressing-noticed)), because detecting that requires knowing what the artifact should be.
+
+**A non-technical finding worth recording because it affects the project.** `htmlvault.com` is a live commercial product using effectively the same name as this fleet's custody app at `htmlvault.app`. No ™/® appears on their pricing page, so likely no registered mark, but the collision is real, in-market, and on the nearest possible domain. It is recorded here as an operational fact for the project's naming decision, not as a spec matter.
+
+**Implication for the spec and the project.** No normative change; this is landscape. Two consequences. First, [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin)'s convergence thesis holds and extends: three independent hosts converged on slug/digest URLs, a raw endpoint, and minimal host chrome — **and diverged on nothing except whether the artifact can be verified**, which is exactly the gap [F24](#f24-host-vs-registry--the-missing-commitment-layer) named as the commitment layer. Second, the competitive lesson runs the other way for tooling: htmlbin's device-code + `npx` + agent-skills onboarding is the pattern worth adopting, since the format's producer story is strong and its *publish* story is the weakest link.
+
+**Related findings:**
+- [F21](#f21-independent-convergence-on-the-host-contract-pattern-mindev--htmlbin) — the original two-host convergence; this extends it to three and identifies what they all lack
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — host vs registry; the landscape is now entirely hosts, with the registry slot still unoccupied by anyone else
+- [F50](#f50-the-cdn-rewrote-the-capsule--a-host-mutated-served-artifacts-by-default-and-only-content-addressing-noticed) — the cost of not verifying, demonstrated on our own infrastructure
+
 
 ## Open questions
 
