@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capsule integrity checker</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --ink: #16181d;
+  --ink-soft: #4a4f5a;
+  --ink-faint: #767c88;
+  --paper: #fbfbfa;
+  --card: #ffffff;
+  --line: #dfe0dd;
+  --line-hair: #ecedea;
+  --accent: #2f4858;
+  --ok: #1d6f42;
+  --ok-bg: #e8f3ec;
+  --bad: #97231f;
+  --bad-bg: #fbeceb;
+  --warn: #7a5a12;
+  --warn-bg: #f8f0dc;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8e9e6; --ink-soft: #b3b7bd; --ink-faint: #868b93;
+    --paper: #131519; --card: #1a1d22; --line: #2c3037; --line-hair: #23272d;
+    --accent: #9db8c9; --ok: #6fc48f; --ok-bg: #16281d; --bad: #e8908b;
+    --bad-bg: #2a1817; --warn: #d9b871; --warn-bg: #2a2312;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #e8e9e6; --ink-soft: #b3b7bd; --ink-faint: #868b93;
+  --paper: #131519; --card: #1a1d22; --line: #2c3037; --line-hair: #23272d;
+  --accent: #9db8c9; --ok: #6fc48f; --ok-bg: #16281d; --bad: #e8908b;
+  --bad-bg: #2a1817; --warn: #d9b871; --warn-bg: #2a2312;
+}
+:root[data-theme="light"] {
+  --ink: #16181d; --ink-soft: #4a4f5a; --ink-faint: #767c88;
+  --paper: #fbfbfa; --card: #ffffff; --line: #dfe0dd; --line-hair: #ecedea;
+  --accent: #2f4858; --ok: #1d6f42; --ok-bg: #e8f3ec; --bad: #97231f;
+  --bad-bg: #fbeceb; --warn: #7a5a12; --warn-bg: #f8f0dc;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 2.5rem 1.25rem 4rem;
+  background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 15px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 46rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.75rem; }
+header { display: flex; flex-direction: column; gap: .5rem; }
+h1 { margin: 0; font-size: 1.6rem; letter-spacing: -.01em; text-wrap: balance; font-weight: 620; }
+.lede { margin: 0; color: var(--ink-soft); max-width: 38rem; }
+.eyebrow {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--ink-faint); font-weight: 600;
+}
+.selftest {
+  display: inline-flex; align-items: center; gap: .5rem; align-self: flex-start;
+  padding: .3rem .6rem; border-radius: 999px; font-size: .78rem;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink-soft);
+}
+.dot { width: .5rem; height: .5rem; border-radius: 50%; background: var(--ink-faint); flex: none; }
+.selftest.ok .dot { background: var(--ok); }
+.selftest.bad { border-color: var(--bad); color: var(--bad); }
+.selftest.bad .dot { background: var(--bad); }
+#drop {
+  border: 1.5px dashed var(--line); border-radius: 10px; background: var(--card);
+  padding: 2.25rem 1.5rem; text-align: center; cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+  display: flex; flex-direction: column; gap: .55rem; align-items: center;
+}
+#drop:hover, #drop.over { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, var(--card)); }
+#drop:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+#drop strong { font-weight: 600; }
+#drop span { color: var(--ink-faint); font-size: .85rem; }
+input[type=file] { display: none; }
+.verdict {
+  border-radius: 10px; padding: 1.1rem 1.25rem; border: 1px solid var(--line);
+  background: var(--card); display: flex; flex-direction: column; gap: .35rem;
+}
+.verdict.pass { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); background: var(--ok-bg); }
+.verdict.fail { border-color: color-mix(in srgb, var(--bad) 45%, var(--line)); background: var(--bad-bg); }
+.verdict h2 { margin: 0; font-size: 1.05rem; font-weight: 640; }
+.verdict.pass h2 { color: var(--ok); }
+.verdict.fail h2 { color: var(--bad); }
+.verdict p { margin: 0; color: var(--ink-soft); font-size: .9rem; }
+dl.facts { display: grid; grid-template-columns: max-content 1fr; gap: .4rem 1rem; margin: .6rem 0 0; font-size: .84rem; }
+dl.facts dt { color: var(--ink-faint); }
+dl.facts dd { margin: 0; font-family: var(--mono); overflow-wrap: anywhere; }
+ul.checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
+ul.checks li {
+  display: grid; grid-template-columns: 1.2rem 1fr; gap: .55rem; align-items: start;
+  padding: .5rem .7rem; border: 1px solid var(--line-hair); border-radius: 7px; background: var(--card);
+}
+ul.checks .mark { font-family: var(--mono); font-weight: 700; line-height: 1.4; }
+li.pass .mark { color: var(--ok); }
+li.fail .mark { color: var(--bad); }
+li.warn .mark { color: var(--warn); }
+li.fail { border-color: color-mix(in srgb, var(--bad) 35%, var(--line-hair)); }
+li.warn { border-color: color-mix(in srgb, var(--warn) 35%, var(--line-hair)); }
+.name { font-weight: 550; }
+.detail { color: var(--ink-soft); font-size: .84rem; display: block; margin-top: .1rem; overflow-wrap: anywhere; }
+footer { border-top: 1px solid var(--line-hair); padding-top: 1rem; color: var(--ink-faint); font-size: .82rem; }
+footer p { margin: 0 0 .5rem; }
+code { font-family: var(--mono); font-size: .88em; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">HTML Capsule</p>
+    <h1>Capsule integrity checker</h1>
+    <p class="lede">Drop a sealed <code>.html</code> capsule to verify its content hash and structure. Everything runs inside this page — the file is never uploaded, and the page works offline.</p>
+    <div class="selftest" id="selftest"><span class="dot"></span><span id="selftest-text">running self-test…</span></div>
+  </header>
+
+  <div id="drop" tabindex="0" role="button" aria-label="Choose or drop a capsule file">
+    <strong>Drop a capsule here</strong>
+    <span>or click to choose a file</span>
+    <input type="file" id="file" accept=".html,text/html">
+  </div>
+
+  <section id="results" hidden aria-live="polite"></section>
+
+  <footer>
+    <p>Verifies the five required blocks, the manifest, the absence of external references, and <code>integrity.content_hash</code> — recomputed with the canonicalization recipe that the capsule's declared <code>spec_version</code> selects (recipe v1 for 0.1–0.3, RFC 8785 for 0.4).</p>
+    <p>This is a focused integrity checker, not the full reference validator: <code>compiler/validate.py</code> runs the complete conformance suite including capability truthfulness, presentations, and progressive enhancement.</p>
+  </footer>
+</main>
+
+<script type="module">
+/* __CAPSULE_HASH_MJS__ */
+
+/* ---------- self-test: prove this page's own hasher before trusting it ---------- */
+const SELF_TEST = __SELF_TEST_VECTORS__;
+
+async function runSelfTest() {
+  const el = document.getElementById("selftest");
+  const text = document.getElementById("selftest-text");
+  try {
+    for (const v of SELF_TEST) {
+      const payload = canonicalizeText(v.manifest_json, v.recipe) + "\n" + canonicalizeText(v.data_json, v.recipe);
+      const got = "sha256:" + await sha256Hex(payload);
+      if (got !== v.expected_hash) throw new Error(`vector ${v.id}`);
+    }
+    el.classList.add("ok");
+    text.textContent = `self-test passed — ${SELF_TEST.length} reference vectors, both recipes`;
+  } catch (err) {
+    el.classList.add("bad");
+    text.textContent = `self-test FAILED (${err.message}) — do not trust results from this page`;
+  }
+}
+
+/* ---------- extracting the five blocks ---------- */
+const BLOCKS = [
+  ["capsule-manifest", "script"],
+  ["capsule-data", "script"],
+  ["capsule-style", "style"],
+  ["capsule-root", "tag"],
+  ["capsule-runtime", "script"],
+];
+
+function extractBlock(html, id, kind) {
+  if (kind === "tag") {
+    const re = new RegExp(`<([a-zA-Z][\\w-]*)\\b[^>]*\\bid\\s*=\\s*["']${id}["'][^>]*>`, "i");
+    return re.test(html) ? "" : null;
+  }
+  const re = new RegExp(`<${kind}\\b[^>]*\\bid\\s*=\\s*["']${id}["'][^>]*>([\\s\\S]*?)</${kind}>`, "i");
+  const m = re.exec(html);
+  return m ? m[1] : null;
+}
+
+function stripDataBlocks(html) {
+  return html.replace(
+    /<script\b[^>]*\bid\s*=\s*["'](?:capsule-manifest|capsule-data)["'][^>]*>[\s\S]*?<\/script>/gi, "");
+}
+
+const EXTERNAL_PATTERNS = [
+  [/<link\b[^>]*\bhref\s*=\s*["']https?:/i, "<link> to an external URL"],
+  [/<script\b[^>]*\bsrc\s*=/i, "<script src>"],
+  [/<img\b[^>]*\bsrc\s*=\s*["']https?:/i, "<img> with an external src"],
+  [/@import\s+url\(\s*["']?https?:/i, "@import of an external stylesheet"],
+];
+
+/* ---------- the checks ---------- */
+function render(checks, verdict) {
+  const section = document.getElementById("results");
+  section.hidden = false;
+  const failed = checks.filter(c => c.level === "fail").length;
+  const warned = checks.filter(c => c.level === "warn").length;
+  const marks = { pass: "✓", fail: "✗", warn: "!" };
+  section.innerHTML = `
+    <div class="verdict ${failed ? "fail" : "pass"}">
+      <h2>${failed ? "Not verified" : "Verified"}</h2>
+      <p>${verdict}</p>
+      ${Object.keys(verdict.facts || {}).length ? "" : ""}
+    </div>
+    <ul class="checks">
+      ${checks.map(c => `<li class="${c.level}"><span class="mark">${marks[c.level]}</span><span>
+        <span class="name">${c.name}</span>
+        ${c.detail ? `<span class="detail">${c.detail}</span>` : ""}
+      </span></li>`).join("")}
+    </ul>`;
+  section.querySelector(".verdict p").textContent =
+    `${checks.length - failed - warned} passed, ${warned} warning${warned === 1 ? "" : "s"}, ${failed} failed.`;
+}
+
+const esc = s => String(s).replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]));
+
+async function validate(html, filename) {
+  const checks = [];
+  const add = (name, level, detail = "") => checks.push({ name, level, detail });
+
+  // 1. the five required blocks
+  const found = {};
+  let missing = [];
+  for (const [id, kind] of BLOCKS) {
+    const content = extractBlock(html, id, kind);
+    if (content === null) missing.push(id); else found[id] = content;
+  }
+  add("Five required blocks present", missing.length ? "fail" : "pass",
+      missing.length ? `missing: ${missing.join(", ")}` : "manifest, data, style, root, runtime");
+
+  // 2. manifest + data parse
+  let manifest = null, manifestText = found["capsule-manifest"], dataText = found["capsule-data"];
+  if (manifestText != null) {
+    try { manifest = JSON.parse(manifestText); add("Manifest parses as JSON", "pass"); }
+    catch (e) { add("Manifest parses as JSON", "fail", esc(e.message)); }
+  }
+  if (dataText != null) {
+    try { JSON.parse(dataText); add("Data block parses as JSON", "pass"); }
+    catch (e) { add("Data block parses as JSON", "fail", esc(e.message)); }
+  }
+
+  // 3. no external references (outside the JSON blocks, which are data)
+  if (manifest) {
+    const body = stripDataBlocks(html);
+    const hits = EXTERNAL_PATTERNS.filter(([re]) => re.test(body)).map(([, label]) => label);
+    add("No external resource references", hits.length ? "fail" : "pass",
+        hits.length ? `found ${hits.join("; ")}` : "self-contained");
+    const ext = manifest.privacy && manifest.privacy.external_dependencies;
+    add("privacy.external_dependencies is false", ext === false ? "pass" : "fail",
+        ext === false ? "" : `declared ${JSON.stringify(ext)}`);
+  }
+
+  // 4. integrity — the reason this page exists
+  if (manifest && manifestText != null && dataText != null) {
+    const declared = manifest.integrity && manifest.integrity.content_hash;
+    const scope = (manifest.integrity && manifest.integrity.hash_scope) || "data+manifest";
+    const recipe = recipeForLine(manifest.spec_version);
+    if (!recipe) {
+      add("Content hash verifies", "fail",
+          `cannot select a canonicalization recipe: unrecognized spec_version ${esc(JSON.stringify(manifest.spec_version))}`);
+    } else if (!declared) {
+      add("Content hash verifies", "warn", "no integrity.content_hash declared (optional for non-compiler producers)");
+    } else if (scope === "full_document") {
+      add("Content hash verifies", "warn",
+          "hash_scope is full_document — hashes raw file bytes; use the reference validator for that scope");
+    } else {
+      try {
+        const result = await contentHash(manifestText, dataText);
+        add("Content hash verifies", result.matches ? "pass" : "fail",
+            result.matches
+              ? `recipe ${result.recipe} (selected by spec_version ${esc(manifest.spec_version)}), scope ${esc(result.scope)}`
+              : `declared ${esc(result.declared)}<br>computed ${esc(result.hash)} using recipe ${result.recipe}`);
+      } catch (e) {
+        add("Content hash verifies", "fail", esc(e.message));
+      }
+    }
+  }
+
+  render(checks, filename);
+}
+
+/* ---------- wiring ---------- */
+const drop = document.getElementById("drop");
+const fileInput = document.getElementById("file");
+
+const readFile = (file) => {
+  const reader = new FileReader();
+  reader.onload = () => validate(String(reader.result), file.name);
+  reader.readAsText(file);
+};
+
+drop.addEventListener("click", () => fileInput.click());
+drop.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); } });
+fileInput.addEventListener("change", () => { if (fileInput.files[0]) readFile(fileInput.files[0]); });
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (e) => { const f = e.dataTransfer.files[0]; if (f) readFile(f); });
+
+runSelfTest();
+</script>
+</body>
+</html>

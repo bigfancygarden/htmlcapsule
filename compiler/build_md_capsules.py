@@ -52,7 +52,7 @@ FILES = [
     ("spec/DOMAIN_CAPSULES.md",    "domains.html",    "Domain capsule schemas",                                          "spec",         "indigo", "Spec / Domains"),
     ("spec/HOSTING.md",            "hosting.html",    "Hosting pattern — format/host split",                              "spec",         "indigo", "Spec / Hosting"),
     ("spec/BUNDLE_SPEC.md",        "bundle-spec.html","Bundle spec — sibling format for heavy artifacts",                  "spec",         "indigo", "Spec / Bundle"),
-    ("RESEARCH.md",                "research.html",   "Research log — F1 through F46",                                    "research_log", "violet", "Read / Research"),
+    ("RESEARCH.md",                "research.html",   "Research log — F1 through F47",                                    "research_log", "violet", "Read / Research"),
     ("GLOSSARY.md",                "glossary.html",   "Glossary — named concepts in this project",                       "reference",    "teal",   "Read / Glossary"),
     ("PRECEDENTS.md",              "precedents.html", "Precedents — adjacent voices, prior art, ecosystem",              "reference",    "teal",   "Read / Precedents"),
     ("CHANGELOG.md",               "changelog.html",  "Changelog — project trajectory",                                  "changelog",    "amber",  "Code / Changelog"),
