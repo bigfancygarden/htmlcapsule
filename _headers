@@ -1,0 +1,15 @@
+# htmlcapsule.org — Cloudflare Pages headers.
+#
+# `no-transform` is load-bearing, not decoration. Without it the CDN injects its
+# analytics beacon into text/html responses for browser-like requests, which
+# (a) breaks byte-identical delivery and (b) makes every served capsule violate
+# the format's own no-external-references rule. Verified empirically: a plain
+# fetch of /core matched the file on disk while a browser-UA fetch came back 359
+# bytes heavier with a <script src="…cloudflareinsights…"> appended, and the
+# reference validator failed it. See RESEARCH.md F50 and spec/HOSTING.md.
+#
+# The spec's own site must not violate the spec.
+/*
+  Cache-Control: public, max-age=300, no-transform
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
