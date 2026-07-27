@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Removed Fields Fixture (0.4 line)</title>
+<script id="capsule-manifest" type="application/json">{
+  "spec_version": "0.4.0",
+  "capsule_version": "1.0.0",
+  "capsule_id": "capsule:jcs-fixture",
+  "related": [
+    {
+      "capsule_id": "capsule:other",
+      "title": "Another",
+      "relationship": "sibling"
+    }
+  ],
+  "uuid": "44444444-4444-4444-8444-4444444444e2",
+  "title": "Removed Fields Fixture",
+  "description": "Valid capsule on the 0.4 line: integrity.content_hash is computed with recipe v2 (RFC 8785 / JCS). The data block deliberately carries numbers whose canonical form differs between the two recipes, so this fixture only verifies when the validator dispatches on the declared spec_version.",
+  "type": "reference",
+  "profile": "static",
+  "created_at": "2026-07-27T00:00:00Z",
+  "generator": {
+    "name": "jcs-fixture",
+    "version": "1.0.0",
+    "kind": "compiler"
+  },
+  "source": {
+    "origin": "spec_example",
+    "snapshot_type": "fixture",
+    "snapshot_id": "snapshot:jcs_v04_removed_fields",
+    "included_records": 3,
+    "spec_received": "v0.4.0 - 2026-07-27"
+  },
+  "privacy": {
+    "visibility": "public",
+    "contains_private_data": false,
+    "redaction_applied": false,
+    "external_dependencies": false
+  },
+  "capabilities": [
+    "about",
+    "copy_as_json"
+  ],
+  "integrity": {
+    "content_hash": "sha256:175d0e72b73f1e9b41944bff770f2ef6463405c8cacd10e81a6417bc1d6406f0",
+    "hash_scope": "data+manifest"
+  }
+}</script>
+<script id="capsule-data" type="application/json">{
+  "fixture": "jcs_v04_valid",
+  "discriminators": {
+    "int_valued": 55.0,
+    "small": 1.5e-05,
+    "large_exp": 1e+22,
+    "long_literal": 0.30000000000000004,
+    "web_mercator_y": 7842318.5018136855,
+    "safe_int_boundary": 9007199254740992
+  },
+  "records": [
+    {"_record_id": "r1", "label": "integer-valued float", "recipe_v1": "55.0", "recipe_v2": "55"},
+    {"_record_id": "r2", "label": "small magnitude", "recipe_v1": "1.5e-05", "recipe_v2": "0.000015"},
+    {"_record_id": "r3", "label": "unchanged by either recipe", "recipe_v1": "0.30000000000000004", "recipe_v2": "0.30000000000000004"}
+  ]
+}</script>
+<style id="capsule-style">body{font-family:system-ui,sans-serif;margin:2rem;line-height:1.5}main{max-width:48rem}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:.35rem .6rem;text-align:left;font-variant-numeric:tabular-nums}code{font-family:ui-monospace,monospace}button{padding:.4rem .6rem}</style>
+</head>
+<body>
+<main id="capsule-root">
+  <h1>Removed Fields Fixture (0.4 line)</h1>
+  <section>
+    <h2>What this fixture proves</h2>
+    <p>This capsule declares <code>spec_version: "0.4.0"</code>, so its integrity hash is computed with <strong>recipe v2</strong> — RFC 8785, the JSON Canonicalization Scheme. Its data block carries numbers that canonicalize <em>differently</em> under the two recipes, which means the declared hash verifies only if the validator selects the recipe from the declared line. A validator that applied the legacy recipe here would compute a different digest and report a mismatch.</p>
+    <table>
+      <caption>Numbers whose canonical form depends on the recipe</caption>
+      <thead><tr><th>Value in the data block</th><th>Recipe v1 (legacy)</th><th>Recipe v2 (JCS)</th></tr></thead>
+      <tbody>
+        <tr><td>integer-valued float</td><td><code>55.0</code></td><td><code>55</code></td></tr>
+        <tr><td>small magnitude</td><td><code>1.5e-05</code></td><td><code>0.000015</code></td></tr>
+        <tr><td>shortest-repr shibboleth</td><td><code>0.30000000000000004</code></td><td><code>0.30000000000000004</code></td></tr>
+      </tbody>
+    </table>
+    <p>The largest safe integer, <code>9007199254740992</code> (2<sup>53</sup>), is included because it is exactly representable and therefore legal on the 0.4 line; one greater is not, and is exercised by the companion fixture <code>invalid_unsafe_integer.html</code>.</p>
+  </section>
+  <details id="about"><summary>About</summary><pre id="manifest-view"></pre></details>
+  <button data-capsule-action="copy_as_json">Copy JSON</button>
+</main>
+<script id="capsule-runtime">const manifest = JSON.parse(document.getElementById("capsule-manifest").textContent); const out = document.getElementById("manifest-view"); if (out) out.textContent = JSON.stringify(manifest, null, 2); const btn = document.querySelector('[data-capsule-action="copy_as_json"]'); if (btn) btn.addEventListener("click", () => { const payload = document.getElementById("capsule-data").textContent; navigator.clipboard && navigator.clipboard.writeText(payload); });</script>
+</body>
+</html>

@@ -17,6 +17,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import jcs  # integrity recipe v2 (RFC 8785), for capsules on the 0.4 line
+
 HASH_PLACEHOLDER = "sha256:pending"
 
 
@@ -28,7 +31,26 @@ SCRIPT_PATTERN_TEMPLATE = (
 
 
 def canonical_json(obj) -> str:
+    """Integrity recipe v1 — legacy canonical form (spec lines <= 0.3.x)."""
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def canonical_for_manifest(obj, manifest: dict) -> str:
+    """Canonicalize with the recipe the manifest's declared line selects.
+
+    Spec §9.1.1: 0.4.x uses RFC 8785 (JCS); earlier lines use recipe v1.
+    Repairing under the wrong recipe would write a hash that no conforming
+    verifier accepts, so the dispatch lives here too, not just in the validator.
+    """
+    version = manifest.get("spec_version")
+    parts = str(version).split(".") if isinstance(version, str) else []
+    try:
+        line = (int(parts[0]), int(parts[1]))
+    except (ValueError, IndexError):
+        raise ValueError(f"cannot select a canonicalization recipe: unparseable spec_version {version!r}")
+    if line >= (0, 4):
+        return jcs.canonicalize(obj)
+    return canonical_json(obj)
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -66,10 +88,11 @@ def compute_content_hash(manifest: dict, data: dict, html_with_placeholder: str 
     manifest_for_hash["integrity"]["content_hash"] = HASH_PLACEHOLDER
 
     if scope == "data+manifest":
-        payload = canonical_json(manifest_for_hash) + "\n" + canonical_json(data)
+        payload = (canonical_for_manifest(manifest_for_hash, manifest) + "\n"
+                   + canonical_for_manifest(data, manifest))
         return f"sha256:{sha256_text(payload)}"
     if scope == "data_only":
-        return f"sha256:{sha256_text(canonical_json(data))}"
+        return f"sha256:{sha256_text(canonical_for_manifest(data, manifest))}"
     if scope == "full_document":
         if html_with_placeholder is None:
             raise ValueError("full_document repair requires placeholder HTML")

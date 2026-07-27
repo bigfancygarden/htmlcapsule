@@ -26,7 +26,15 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
-SPEC_VERSION_KNOWN = {"0.1.0", "0.1.1", "0.1.2", "0.1.3", "0.1.4", "0.1.5", "0.1.6", "0.1.7", "0.1.8", "0.2.0", "0.3.0"}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import jcs  # integrity recipe v2 (RFC 8785), used for capsules on the 0.4 line
+
+SPEC_VERSION_KNOWN = {"0.1.0", "0.1.1", "0.1.2", "0.1.3", "0.1.4", "0.1.5", "0.1.6", "0.1.7", "0.1.8", "0.2.0", "0.3.0", "0.4.0"}
+
+# Fields removed on the 0.4 line (spec §3.2, §11.3, §14 rule 16). They remain
+# valid forever on 0.3.x and earlier — sealed capsules are immutable, so the
+# legacy paths below are never deleted, only gated by the declared line.
+REMOVED_IN_04 = ("capsule_id", "artifact_id", "artifact_version", "related")
 MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB hard cap (raised from 15 MB in spec v0.3.3)
 SOFT_WARN_SIZE = 15 * 1024 * 1024  # 15 MB — soft warning for email-attachment compatibility
 HASH_PLACEHOLDER = "sha256:pending"
@@ -36,7 +44,7 @@ HASH_PLACEHOLDER = "sha256:pending"
 # first external consumer: compositor's "non-negotiable #2" workflow), so
 # conformance claims need to be legible: every report prints this version,
 # and `--version` exists for CI to record or assert. See F35 in RESEARCH.md.
-VALIDATOR_VERSION = "0.3.13"
+VALIDATOR_VERSION = "0.4.0"
 
 REQUIRED_SECTIONS = {
     "capsule-manifest": "script",
@@ -237,7 +245,31 @@ class ValidationResult:
 
 
 def canonical_json(obj) -> str:
+    """Integrity recipe v1 — the legacy canonical form (spec lines <= 0.3.x).
+
+    Frozen. Every capsule sealed on the 0.3 line and earlier verifies under
+    this and must continue to, so it is never removed or "improved".
+    """
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def recipe_for_line(spec_version):
+    """Which canonicalization recipe verifies a capsule declaring this line.
+
+    Spec §9.1.1: the recipe is a pure function of the declared spec_version —
+    there is no manifest field naming it. Returns None for an unparseable
+    version, which callers report as an unknown version rather than guessing.
+    """
+    parsed = _spec_version_tuple(spec_version)
+    if parsed is None:
+        return None
+    return "v2-jcs" if parsed[:2] >= (0, 4) else "v1-legacy"
+
+
+def canonical_for_recipe(obj, recipe: str) -> str:
+    if recipe == "v2-jcs":
+        return jcs.canonicalize(obj)
+    return canonical_json(obj)
 
 
 def sha256_hex(text: str) -> str:
@@ -323,10 +355,24 @@ def check_manifest(html: str, result: ValidationResult):
     else:
         result.add("Manifest carries a version field", True)
 
+    # Fields removed on the 0.4 line. The legacy paths below are NOT deleted —
+    # capsules sealed on 0.3.x are immutable and must keep validating — so the
+    # removal is expressed as a line gate (spec §14 rule 16, appendix E.1).
+    on_04_line = (_spec_version_tuple(manifest.get("spec_version")) or (0, 0, 0))[:2] >= (0, 4)
+    if on_04_line:
+        present = [f for f in REMOVED_IN_04 if f in manifest]
+        result.add("Removed fields absent (0.4 line)", not present,
+                   "" if not present else
+                   f"{', '.join(present)} removed on the 0.4 line; deprecated since v0.3 "
+                   f"(rely on uuid + title; provenance lives in parents[] / derived_from[]). "
+                   f"These remain valid on 0.3.x and earlier.")
+
     # Identity slug: optional. As of v0.3, capsule_id (and artifact_id) are
     # deprecated — the UUID is the canonical identifier; slugs are redundant
     # with title and not guaranteed unique. Still accepted with an info note.
-    if "artifact_id" in manifest and "capsule_id" not in manifest:
+    if on_04_line:
+        pass  # reported by the removed-fields check above; no legacy note
+    elif "artifact_id" in manifest and "capsule_id" not in manifest:
         result.add("Identity slug usage", "pass",
                    "Uses legacy artifact_id — deprecated in v0.2 and remains "
                    "deprecated in v0.3. Planned for removal in v0.4; rely on "
@@ -337,8 +383,9 @@ def check_manifest(html: str, result: ValidationResult):
                    "reference; derivable from title). Still accepted; "
                    "planned for removal in v0.4. Rely on uuid + title.")
 
-    # Deprecated related[] field: emit info note if present.
-    if "related" in manifest:
+    # Deprecated related[] field: emit info note if present (0.3 and earlier;
+    # on the 0.4 line its presence is already a failure above).
+    if "related" in manifest and not on_04_line:
         n = len(manifest["related"]) if isinstance(manifest["related"], list) else 0
         result.add("Legacy related[] field", "pass",
                    f"`related` (with {n} entr{'y' if n == 1 else 'ies'}) is "
@@ -385,8 +432,10 @@ def check_manifest(html: str, result: ValidationResult):
     # §8.1 two-track version story: the manifest declares the normative line;
     # this validator enforces a doc revision of it. State the pair so custody
     # records can store the triple (declared, verified-by, when) — see F36.
+    _recipe = recipe_for_line(spec_version)
     result.add("spec_version is recognized", spec_ok,
-               f"declares normative line {spec_version!r}; enforced at doc revision {VALIDATOR_VERSION}"
+               f"declares normative line {spec_version!r}; enforced at doc revision {VALIDATOR_VERSION}; "
+               f"integrity recipe {_recipe}"
                if spec_ok else
                f"Unknown spec_version: {spec_version!r}. Known: {sorted(SPEC_VERSION_KNOWN)} "
                f"(declare the normative line, not a full-spec doc revision — see spec §8.1)")
@@ -721,14 +770,19 @@ def check_integrity_hash(manifest: dict, data: dict, html: str, result: Validati
                    f"Missing or malformed content_hash: {declared_hash!r} (generator.kind={generator_kind})")
         return
 
-    manifest_for_hash = json.loads(json.dumps(manifest))
-    manifest_for_hash["integrity"]["content_hash"] = HASH_PLACEHOLDER
+    # §9.1.1: the declared line selects the canonicalization recipe. An
+    # unparseable version is reported as such — never verified under a guess.
+    recipe = recipe_for_line(manifest.get("spec_version"))
+    if recipe is None:
+        result.add("Content hash verifies", "fail",
+                   f"Cannot select a canonicalization recipe: unparseable spec_version "
+                   f"{manifest.get('spec_version')!r} (see §9.1.1).")
+        return
+    recipe_label = "RFC 8785 / JCS" if recipe == "v2-jcs" else "legacy canonical JSON"
 
-    if scope == "data+manifest":
-        payload = canonical_json(manifest_for_hash) + "\n" + canonical_json(data)
-    elif scope == "data_only":
-        payload = canonical_json(data)
-    elif scope == "full_document":
+    # full_document hashes raw bytes and so is recipe-independent; handle it
+    # (and unknown scopes) before any canonicalization is attempted.
+    if scope == "full_document":
         # Read the raw UTF-8 bytes (not decoded text), replace the literal
         # content_hash value with the placeholder, and hash the resulting bytes.
         # Hash strings are ASCII so byte-level find/replace matches text-level.
@@ -750,16 +804,38 @@ def check_integrity_hash(manifest: dict, data: dict, html: str, result: Validati
         result.add("Content hash verifies", "pass" if matches else "fail",
                    "" if matches else f"Declared={declared_hash[:20]}... computed={computed[:20]}... (scope=full_document)")
         return
-    else:
+    if scope not in ("data+manifest", "data_only"):
         result.add("Content hash verifies", "fail", f"Unknown hash_scope: {scope}")
+        return
+
+    manifest_for_hash = json.loads(json.dumps(manifest))
+    manifest_for_hash["integrity"]["content_hash"] = HASH_PLACEHOLDER
+
+    try:
+        if scope == "data+manifest":
+            payload = (canonical_for_recipe(manifest_for_hash, recipe) + "\n"
+                       + canonical_for_recipe(data, recipe))
+        else:  # data_only
+            payload = canonical_for_recipe(data, recipe)
+    except jcs.JcsError as exc:
+        # Recipe v2 rejects input that cannot canonicalize interoperably
+        # (unsafe integers, NaN/Infinity, lone surrogates). That is a producer
+        # conformance failure, not a tamper signal — the report says which.
+        result.add("Content hash verifies", "fail",
+                   f"Data cannot be canonicalized under recipe v2 ({recipe_label}): {exc}. "
+                   f"The capsule is not conformant on the 0.4 line; this is a producer bug, "
+                   f"not evidence of tampering.")
         return
 
     computed = f"sha256:{sha256_hex(payload)}"
     matches = computed == declared_hash
     # Wrong hash is always a fail — it indicates tampering or a generator bug
     result.add("Content hash verifies", "pass" if matches else "fail",
-               "" if matches else f"Declared={declared_hash[:16]}... computed={computed[:16]}... (scope={scope}). "
-                                  "Either the capsule was tampered with, or the producer computed the hash incorrectly.")
+               f"scope={scope}, recipe={recipe} ({recipe_label})" if matches else
+               f"Declared={declared_hash[:16]}... computed={computed[:16]}... "
+               f"(scope={scope}, recipe={recipe} — selected by spec_version "
+               f"{manifest.get('spec_version')!r}). Either the capsule was tampered with, or the "
+               f"producer computed the hash incorrectly.")
 
 
 def check_capability_truthfulness(manifest: dict, html: str, result: ValidationResult):
@@ -1518,7 +1594,8 @@ def main():
         print(f"Validating fetched body: {local_path}")
     else:
         print(f"Validating: {args.capsule}")
-    print(f"  Validator version: {VALIDATOR_VERSION} (enforces full spec v{VALIDATOR_VERSION})")
+    print(f"  Validator version: {VALIDATOR_VERSION} (enforces full spec v{VALIDATOR_VERSION}; "
+          f"the 0.4 line is pre-release — see spec §9.1.1)")
     print(f"  Spec version recognized: {sorted(SPEC_VERSION_KNOWN)}")
     print()
     markers = {"pass": "✓", "warn": "⚠", "fail": "✗"}
