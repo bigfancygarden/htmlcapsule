@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
+### Planned — Integrity recipe v2: RFC 8785 (JCS) canonicalization on the v0.4 line
+
+- **`design/JCS_MIGRATION_PLAN.md` (NEW)** — operator-ratified 2026-07-27: the v0.4 normative line adopts RFC 8785 as the canonical JSON form for the §9.1.1 hash, ending the imitate-Python tax F44 measured (the recipe stays bound to the line: ≤0.3 capsules verify under the frozen legacy recipe forever; pre-0.4 validators reject 0.4 capsules legibly as "unknown spec_version", never as false tampering). Feasibility proven in-plan: a stdlib-Python JCS serializer passes the RFC's bit-pattern rows and matches an independent Node oracle byte-for-byte; provisional Vectors A2/B2 dual-derived. Phases: reference `jcs.py` + language-neutral conformance file → spec v0.4.0-draft (recipe v2 + the promised `capsule_id`/`related` removals) → dual-mode validator/repair → JS dual-mode hasher + drop-a-file validator page → per-producer fleet migration.
+
 ### Added — Channel tunneling: id-addressed placement + the artifact channel study (spec v0.3.13, 2026-07-26)
 
 - **§2.1 placement clarification** — the five required sections are located by `id`, not position; a body-only capsule is fully valid. Latent in the validator since v0.1, now normative text — and the enabling fact for **channel tunneling**.
