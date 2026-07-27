@@ -106,3 +106,18 @@ Result 5 is the study's sharpest lesson (recorded as F49). The flipped byte land
 2. **`htmlvault publish`** — vault → tree sync + index + signature (Rust, in the vault repo; the sync scaffolding is already costed in the custody review).
 3. **Deploy** — the tree under the existing `htmlvault-app` Pages project; Astro shell around it later, per the 1730 conventions (QA gate: the registry runs the conformance suite over its own contents at publish time).
 4. **Then** the inbox Function, if receive-links earn their keep.
+
+## 9. Addendum (2026-07-27, operator direction): the account layer is in scope — build it on the format
+
+After this study, the operator stated the full product goal for htmlvault.app: push/upload **capsules and bundles**; keep them **private in an account**; **publish publicly**; **share by link or direct to another account**. That puts the service half — identity and access — explicitly in scope, which §7 had deferred.
+
+This does not reverse the study; it completes it. The resolution is layering:
+
+- **Storage core = this layout.** Content-addressed objects + records with both digests and the verified pair. Desktop vault → web is a *sync*, not an upload format.
+- **The app = gates in front of the core.** Accounts, visibility tiers, share tokens, and share-to-account are access control over the registry layout — never a different storage design.
+- **The public tier remains the static tree** — the ungated slice of the same layout, mirrorable and verifiable exactly as prototyped above. The host-independence demo survives account-gating because it only ever applied to what is public.
+- **Share-to-account = the vault's receive model, server-side:** a share drops a reference into the recipient's quarantine; they promote into their own library. Custody semantics as sharing semantics.
+
+**Approach:** preferred — a separate htmlvault.app instance of the **mindev engine** (proven: validation on upload, visibility tiers, per-recipient share tokens with default expiry, `/raw`, attestation headers, logged delivery; positioning already producer-agnostic), plus Bundle serving per **stratabot's** patterns, with the public tier published as this layout. A separate instance keeps mining-client data and the public audience apart. Cloudflare-native (1730 pattern + Firebase/Clerk) remains the fallback if serverless economics outweigh speed-to-feature. **Open verification (mindev session):** that the engine deploys cleanly as a second branded instance — config/tenancy assumptions, anything hardcoded to mindev.ca.
+
+The dependency direction stands: the format first, the app on top. Every guarantee in §5 is preserved for public artifacts; private artifacts get the same integrity properties behind auth.
