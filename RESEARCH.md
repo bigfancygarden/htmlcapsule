@@ -1581,6 +1581,27 @@ The distinction worth naming, because it is the project's clearest statement of 
 - [F24](#f24-host-vs-registry--the-missing-commitment-layer) — host vs. registry; an unusable export is what a host offers in place of a registry's commitment
 - [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates) — producers follow recipes; consumers build tooling when none exists, even when an official path nominally does
 
+### F49: One flipped byte, two correct verdicts — registry content addressing and the capsule seal are orthogonal integrity layers
+
+**Date:** 2026-07-27
+
+**Source.** The registry deep dive (`design/REGISTRY_STUDY.md`): a working prototype of the proposed static registry layout — five real capsules across three spec lines, content-addressed objects, a signed index — served over plain HTTP, cloned to a second "host" with `cp -r`, then deliberately tampered: one byte flipped in a stored object.
+
+**Finding — the tamper was caught by the address and correctly ignored by the seal, and both verdicts were right.** The flipped byte landed in the capsule's HTML `<title>` — the *projection*. The capsule validator, fetching the tampered object over HTTP, passed it 30/30: under `hash_scope: "data+manifest"` the projection is deliberately outside the seal (F34 — projections are regenerable). The registry's content-address check failed it instantly: the fetched bytes no longer matched the digest in the URL. Two integrity layers, orthogonal by construction:
+
+- **The seal protects what the capsule means** — manifest and data, the truth layer. It survives re-serialization, re-wrapping (F46), and projection regeneration, which is exactly why it cannot see projection tampering.
+- **The address protects what the registry serves** — the exact published bytes, projection included. It catches any mutation at all, which is exactly why it cannot distinguish meaningful tampering from a harmless re-render.
+
+Each catches precisely what the other deliberately ignores. A client that only runs the validator has a hole the shape of the projection; a registry that only publishes seals has the same hole; a client that only checks digests would accept a re-sealed forgery with a fresh address. The verification procedure needs both checks, in either order, every time.
+
+**Implication for the spec.** Registry records must carry `object_digest` (whole-file address) and the capsule's `content_hash` (seal) as **separate, never-conflated fields** — the same claimed-vs-verifiable discipline §11.1 applied to `parents[]` pinning, now applied to the registry's own catalogue. The draft layout in the study does this; `spec/REGISTRY.md` should make it normative, and the client verification procedure (signed index → digest check → seal check) should be stated as a MUST-do-all-three sequence. The prototype also validated the rest of the study's claims empirically: fetch-by-digest plus full validation over a zero-logic static server, catalogue authenticity via a signed index (`ssh-keygen -Y`, the custody review's key story), and host migration as a copy command.
+
+**Related findings:**
+- [F34](#f34-hash_scope-datamanifest-becomes-a-production-default--the-integrity-hash-covers-truth-not-projection-and-must-say-so) — truth-vs-projection, now doing its fourth job: the reason the seal must not catch projection tampering
+- [F46](#f46-a-valid-capsule-tunnels-through-the-claude-artifact-channel--published-wrapped-recovered-verified-datamanifest-is-a-channel-survival-property) — the same orthogonality seen from the channel side: the wrapper changed, the seal held
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — the commitment layer, now given a checkable form: when the registry is a verifiable structure, most commitments become checks and only availability remains a promise
+- [F48](#f48-export-is-not-portability--the-official-archives-already-exist-and-nobody-can-use-them) — the registry-as-format answer to the host-level diagnosis
+
 
 ## Open questions
 
