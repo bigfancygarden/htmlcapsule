@@ -4,6 +4,32 @@
 
 The question this study answers: **how do we get work that lives in a proprietary artifact host — today, concretely, Claude's artifact channel — into an offline format that is open, complete, and verifiable?** And its inversion, which turns out to be the stronger move: **how do we publish through such channels without ever surrendering the trust layer in the first place?**
 
+## 0. The point, tightened
+
+**What we want:** an open-source alternative to Claude's artifact hosting — because we don't trust it to stick around, and, more to the point, **we cannot tell whether it will.**
+
+The second clause is the real problem, and it is worth separating from the first. "It might disappear" is a complaint about a vendor. "I cannot determine whether it will" is a complaint about a *structure*, and it is the one that holds.
+
+Claude Artifacts is a **host, not a registry** — F24's distinction, observed at population scale in F41. It stores your work, versions it, renders it, and serves it at a durable-looking URL. But every one of those turns out to be an administrative setting rather than a commitment: retention is configurable by an organization owner; public sharing can be revoked globally without touching any artifact; versioning is host database state that the document itself does not carry; and on team plans even *export* is a permission somebody else holds (F48). Meanwhile the artifact carries no identity, no provenance, and no integrity, and there is **no published format specification of any kind** — so there is nothing to hold anyone to, and nothing in the file that would survive the host.
+
+So the honest statement of the risk is not "this might go away." It is: **there is no commitment to reason about — only settings you do not control.** That is not untrustworthiness; it is *illegibility*. You cannot form a justified belief about the durability of your own work in either direction. Note that this survives even the friendliest possible reading of the vendor's intentions, which is exactly why it is worth building against: no one has to behave badly for you to lose.
+
+**The alternative is not a better host.** A more trustworthy place to put artifacts just relocates the same question. The alternative is to make the artifact **not need one**: identity it carries itself (UUID plus a content hash anyone can recompute), provenance it carries itself (generator, source, `parents[]`, `derived_from[]`), integrity verifiable offline by a stranger with no dependency on us, and rendering that requires nothing but a browser because the file *is* the viewer. Then durability stops being a property of someone's policy and becomes **a property of the bytes**, and a host demotes from load-bearing infrastructure to a convenience you can walk away from.
+
+**And the alternative already exists — it has just never been assembled under one name.** Every column below is built and in production use across the fleet:
+
+| Capability | How the artifact host provides it | Open equivalent, already built |
+|---|---|---|
+| Creation | the model emits HTML into the product | any LLM given `CAPSULE_CORE.md` — four model families verified (F1, F19, F25, F30) |
+| Storage | host database | htmlvault: content-addressed, on your own disk |
+| Versioning | a database row the file knows nothing about | `capsule_version` + the `parents[]` chain, inside the file |
+| Sharing | a link revocable by global toggle | mindev share tokens with logged delivery — or just sending the file |
+| Rendering | host-injected frame runtime | the capsule renders itself, offline, indefinitely |
+| Integrity | none | content hash, recomputable in any browser (`tools/validator.html`) |
+| Provenance | none | the manifest: generator, source, parents, derived_from |
+
+One sentence, for the launch: **Claude Artifacts, except the artifact is yours** — it carries its own identity, provenance, and integrity, renders anywhere with no runtime, and outlives any host, including ours.
+
 ## 1. Where the two projects stand
 
 **htmlcapsule (the format)** is at full-spec v0.3.13, Core v0.3.0. The envelope is production-proven across nine named domains and three producer kinds; the newest additions are exactly the machinery this study needs: `sealed_sources` (v0.3.10 — the capsule carries its resolved data), the two-track version story and float-hardened hash recipe (v0.3.11), the annotation layer over digest-pinned bases (v0.3.12), and id-addressed block placement (v0.3.13, from this study's probe). The reference validator runs 30–32 checks, is version-identified, and gates three consuming repos' CI. Known weak points, per F44/F45: the §9.1.1 hash exists only in Python, there is no conformance suite non-Python implementations actually run, and the repo itself has no tests or CI.

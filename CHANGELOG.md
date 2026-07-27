@@ -8,6 +8,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) loosely. Commit I
 
 ## [Unreleased]
 
+### Changed — Positioning sharpened; F48 corrects F42 (2026-07-27)
+
+- **F48 in RESEARCH.md** — *Export is not portability.* Official account-level exports exist on both dominant platforms and always did (ZIP of JSON, emailed, 24-hour expiry; on Claude Team/Enterprise only the workspace owner can export at all). The scraper population was built anyway, because the export is all-or-nothing, asynchronous, and opaque. The sharpened claim: **an export is a transfer of bytes; portability is a transfer of meaning, and a format is what converts one into the other.** Consequences: back-catalog recovery is a *converter*, not a scraper; the export restriction on team plans is a second instance of F41's commitments-as-administrative-settings pattern.
+- **F42 amended in place** with a pointer to F48 — its premise ("in the absence of a format with an export contract") overstated the case; the measured demand stands, the reasoning is corrected.
+- **`design/ARTIFACT_CHANNEL_STUDY.md` §0 (NEW)** — the project's purpose stated at host level rather than format level: the problem with a proprietary artifact host is not that it might disappear but that **there is no commitment to reason about, only settings you don't control** — illegibility, not untrustworthiness. The answer is not a better host but an artifact that doesn't need one, and a table showing every capability of the host already has a built open equivalent across the fleet.
+
 ### Added — Integrity recipe v2 (RFC 8785) and the browser toolchain (spec v0.4.0-draft, 2026-07-27)
 
 - **Spec v0.4.0-draft opens the 0.4 line.** §9.1.1 now defines two recipes: **v1** (legacy Python-`repr` canonical JSON) is **frozen** and retained permanently so every capsule already sealed keeps verifying, and **v2** is [RFC 8785 (JCS)](https://www.rfc-editor.org/rfc/rfc8785.html) for `0.4.x`. The recipe is a pure function of the declared `spec_version` — no manifest field names it, deliberately. A pre-0.4 validator meeting a 0.4 capsule reports "unknown spec_version", never a false tamper. New Test Vectors A2/B2, dual-derived. New constraint on the 0.4 line: integers must be IEEE-double-safe (`|n| ≤ 2^53`).

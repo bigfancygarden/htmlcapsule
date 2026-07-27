@@ -1421,6 +1421,8 @@ The programmatic retrieval path that does exist is org-admin scoped: a Complianc
 
 1. **The demand is for byte-level recovery, not for a nicer viewer.** Every tool in the population does the same thing: get the document out, intact, onto local disk. This is the "portable custody" use case stated in the project's own thesis, arrived at by users who have never heard of it.
 2. **The implementations are scrapers, and they are fragile by construction.** Reading the host's local storage and parsing conversation JSON means each tool breaks whenever the host changes an internal shape. A population of brittle third-party scrapers is what an ecosystem produces *in the absence of* a format with an export contract — which is precisely the condition Capsule's `download_capsule` capability (§ capabilities, `download_capsule`) exists to remove.
+
+> **Amended by [F48](#f48-export-is-not-portability--the-official-archives-already-exist-and-nobody-can-use-them) (2026-07-27).** Point 2 above overstates the premise: an official account-level export *does* exist on both dominant platforms and always did. The scrapers were built anyway. The corrected reading is not "no export contract exists" but "the export contract transfers bytes without transferring meaning" — which is a sharper and more falsifiable claim. Everything else in this finding stands.
 3. **The recommended fallback is copy-paste.** When the most-cited method for preserving a document is "select all, paste into a text editor," the preservation story of the medium has not been written yet.
 
 Read against F25: that finding established that a producer population reliably follows *recipes* when they are written as recipes. This finding establishes the complementary fact on the consumer side — a consumer population reliably *builds its own tooling* when no recipe exists. Both are arguments that the missing artifact is an on-ramp, not a rule.
@@ -1551,6 +1553,33 @@ The generalizable finding: **a verification tool fails silently in the one way t
 - [F45](#f45-every-path-to-a-verified-capsule-routes-through-python--the-on-ramp-terminates-at-the-hash-and-one-artifact-unblocks-it) — "every path routes through Python"; the JS hasher and the drop-a-file page are the artifact it named, now built
 - [F37](#f37-a-one-ulp-float-parse-files-a-false-tampered-verdict--cross-language-canonicalization-needs-a-float-bearing-test-vector-and-correctly-rounded-parsing) — the original false-tamper incident that started the arc
 - [F46](#f46-a-valid-capsule-tunnels-through-the-claude-artifact-channel--published-wrapped-recovered-verified-datamanifest-is-a-channel-survival-property) — verification belongs where the data lives; the browser page is that argument's tooling
+
+### F48: Export is not portability — the official archives already exist, and nobody can use them
+
+**Date:** 2026-07-27
+
+**Source.** Review of the official account-level data export on both dominant platforms, prompted by a scoping question about whether back-catalog recovery belonged in the near-term plan. Claude: Settings → Privacy → Export data, delivered as a ZIP of JSON by emailed link. ChatGPT: Settings → Data controls → Export data, delivered as a ZIP containing `conversations.json` (full history with messages, timestamps, per-turn model, metadata; commonly 10–50 MB) plus `chat.html`, a plain viewer. Both links expire 24 hours after delivery. On Claude Team and Enterprise plans, individual users cannot self-export at all — only the workspace Primary Owner can trigger an organization-wide export. (Sources are third-party guides consistent across many independent authors; the vendors' own help pages were not directly reachable, so the internal JSON shape remains unverified against a real archive.)
+
+**Finding — the scraper population exists *despite* an export, not because of its absence.** This corrects [F42](#f42-users-are-writing-scrapers-to-recover-their-own-documents--the-export-gap-is-empirically-demanded-not-hypothesized), which reasoned from the assumption that no export contract existed. One did, the whole time, on both platforms. People built browser extensions anyway, and the reasons are the finding:
+
+- The export is **all-or-nothing** — you cannot ask for one artifact.
+- It is **asynchronous and email-gated**, then **expires in 24 hours**. Retrieval is an appointment, not an operation.
+- What arrives is a **large opaque JSON blob** whose structure only its producer documents, if anyone. One widely-circulated write-up of the Claude flow is titled, precisely, *"Claude lets you export your data but won't let you use it."*
+- Meanwhile the actual demand, visible in every scraper's feature set, is *this one document, now, in something I can open.*
+
+The distinction worth naming, because it is the project's clearest statement of its own purpose: **an export is a transfer of bytes; portability is a transfer of meaning.** A compliance export satisfies the letter of data portability — you may have your data — while leaving its purpose untouched, because bytes only their originator can interpret are not portable in any sense a person would recognize. **A format is precisely what converts the first into the second.** That is the gap Capsule fills, stated without reference to anyone's bad behaviour: the platforms are not withholding the data, they are shipping it in a form that cannot travel.
+
+**Second instance of the F41 pattern.** [F41](#f41-the-dominant-ai-artifact-producer-ships-the-substrate-without-the-commitment-layer--claude-artifacts-are-envelope-compatible-and-provenance-free) found that every property F24 named as a registry commitment is, on the dominant artifact host, an administrative setting. The Team/Enterprise export restriction is the same pattern applied to the escape hatch itself: on a team plan, your ability to obtain your own data is a setting held by someone else. A host that can be configured to withhold portability was never offering portability; it was offering a default.
+
+**Implication for the spec.** None normative. Two consequences for tooling and positioning. **(1)** Back-catalog recovery is a **converter, not a scraper**: the official archive is a complete, documented-by-obligation input that no vendor UI change can invalidate, and reading it is defensible in a way that reverse-engineering `localStorage` is not. The extension shape proposed in the F42 arc is probably unnecessary. **(2)** The recovery-provenance profile already queued as S3 in `design/ARTIFACT_CHANNEL_STUDY.md` now has a concrete shape: `derived_from[]` entries recording the archive identity, the conversation UUID, the export date, and the platform.
+
+**Open empirical question, deliberately not speculated on.** Whether artifact *bodies* ride along inside the conversation export, or whether artifacts are separate versioned objects reachable only through the compliance endpoint F41 documented. If they travel with the conversations, official export plus converter replaces the extension outright. If they do not, artifacts stay with the tunneling result in [F46](#f46-a-valid-capsule-tunnels-through-the-claude-artifact-channel--published-wrapped-recovered-verified-datamanifest-is-a-channel-survival-property). This is answerable in minutes against a real archive and is worth nothing until someone looks.
+
+**Related findings:**
+- [F42](#f42-users-are-writing-scrapers-to-recover-their-own-documents--the-export-gap-is-empirically-demanded-not-hypothesized) — the finding this corrects and sharpens; the demand it measured is real, the premise was wrong
+- [F41](#f41-the-dominant-ai-artifact-producer-ships-the-substrate-without-the-commitment-layer--claude-artifacts-are-envelope-compatible-and-provenance-free) — commitments realized as administrative settings; export is now the second instance
+- [F24](#f24-host-vs-registry--the-missing-commitment-layer) — host vs. registry; an unusable export is what a host offers in place of a registry's commitment
+- [F25](#f25-chatgpt-producer-population-reads-core-supplementary-guidance-reliably-aesthetic-adapts-to-content-domain-legacy-artifact-capsule-wording-persists-in-user-side-prompt-templates) — producers follow recipes; consumers build tooling when none exists, even when an official path nominally does
 
 
 ## Open questions
