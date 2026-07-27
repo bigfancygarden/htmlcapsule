@@ -1,0 +1,275 @@
+{
+  "schema": "htmlcapsule/conformance/hash-vectors@1",
+  "description": "Language-neutral conformance suite for the Capsule integrity hash (spec 9.1.1). Every implementation in every language MUST pass every vector before claiming conformance. This file exists because publishing a test vector inside prose was not enough: a consuming implementation shipped without pinning it and filed a false 'tampered' verdict (F44).",
+  "spec_reference": "spec/CAPSULE_SPEC.md 9.1.1",
+  "how_to_use": [
+    "Parse manifest_json and data_json with YOUR parser - the point is to exercise your parser, not this file's convenience.",
+    "Canonicalize each with the recipe named in the vector; compare against canonical_manifest / canonical_data. This checkpoint isolates canonicalization from hashing.",
+    "Join with a single LF (0x0A) to form canonical_payload, encode UTF-8, SHA-256, prefix 'sha256:'; compare against expected_hash.",
+    "Run the unit_tests batteries too - they isolate number, string, and key-order behaviour so a failure points at its cause."
+  ],
+  "recipes": {
+    "v1-legacy": {
+      "status": "frozen - verification only",
+      "applies_to_spec_lines": [
+        "0.1.x",
+        "0.2.x",
+        "0.3.x"
+      ],
+      "canonical_form": "Sorted keys, no whitespace, non-ASCII unescaped, numbers formatted as Python 3 repr() (integer-valued floats keep '.0'; exponent notation below 1e-4 and at/above 1e16; two-digit zero-padded exponents).",
+      "note": "Never applied to a capsule declaring spec_version 0.4.0 or later."
+    },
+    "v2-jcs": {
+      "status": "current",
+      "applies_to_spec_lines": [
+        "0.4.x"
+      ],
+      "canonical_form": "RFC 8785 (JSON Canonicalization Scheme).",
+      "constraints": [
+        "Numbers serialize per ECMAScript Number::toString.",
+        "Object keys sort by UTF-16 code units as unsigned integers (NOT code point order - supplementary-plane characters sort before U+FFFF).",
+        "Strings escape only the five JSON shorthands, remaining C0 controls as lowercase backslash-uhhhh, quote and backslash. U+2028/U+2029 are NOT escaped.",
+        "Integers MUST satisfy |n| <= 2**53 (exactly representable as IEEE 754 doubles); implementations MUST error rather than round.",
+        "NaN and Infinity MUST error.",
+        "The int/float distinction is erased by design: 55.0 and 55 canonicalize identically."
+      ]
+    }
+  },
+  "payload_assembly": {
+    "scope": "data+manifest",
+    "steps": [
+      "Copy the manifest; set integrity.content_hash to the literal 'sha256:pending'; keep the real hash_scope.",
+      "canonical(manifest) + LF + canonical(data), UTF-8.",
+      "SHA-256, lowercase hex, prefixed 'sha256:'."
+    ],
+    "note": "hash_scope 'data_only' hashes canonical(data) alone; 'full_document' is byte-based and unaffected by either recipe."
+  },
+  "vectors": [
+    {
+      "id": "A",
+      "recipe": "v1-legacy",
+      "note": "Original v0.3.1 vector. No floats - cannot catch number-format divergence, which is why B exists.",
+      "manifest_json": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.3.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}",
+      "data_json": "{\"records\": []}",
+      "canonical_manifest": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.3.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}",
+      "canonical_data": "{\"records\":[]}",
+      "canonical_payload": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.3.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}\n{\"records\":[]}",
+      "expected_hash": "sha256:3dcff3f89736e2554b3f077dbff063f5400c682d470ffa5125fa4bdd3c652ef8"
+    },
+    {
+      "id": "B",
+      "recipe": "v1-legacy",
+      "note": "Float battery (added v0.3.11 after a 1-ULP parse filed a false tampered verdict; F37/F44). Legacy form keeps 55.0 and writes 1.5e-05.",
+      "manifest_json": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.3.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}",
+      "data_json": "{\"coord_lat\":57.08614,\"coord_lon\":-108.92228,\"count\":3,\"int_valued\":55.0,\"large_exp\":1e+22,\"long_literal\":0.30000000000000004,\"small\":1.5e-05,\"web_mercator_y\":7842318.5018136855}",
+      "canonical_manifest": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.3.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}",
+      "canonical_data": "{\"coord_lat\":57.08614,\"coord_lon\":-108.92228,\"count\":3,\"int_valued\":55.0,\"large_exp\":1e+22,\"long_literal\":0.30000000000000004,\"small\":1.5e-05,\"web_mercator_y\":7842318.5018136855}",
+      "canonical_payload": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.3.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}\n{\"coord_lat\":57.08614,\"coord_lon\":-108.92228,\"count\":3,\"int_valued\":55.0,\"large_exp\":1e+22,\"long_literal\":0.30000000000000004,\"small\":1.5e-05,\"web_mercator_y\":7842318.5018136855}",
+      "expected_hash": "sha256:47c0aaf09948f5f010252cb3258b2b42c9790bcbb6aa69e6086af5e76ce2bf9b"
+    },
+    {
+      "id": "A2",
+      "recipe": "v2-jcs",
+      "note": "Recipe v2 counterpart of A. Same data; the manifest differs only in spec_version, which is what selects the recipe.",
+      "manifest_json": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.4.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}",
+      "data_json": "{\"records\": []}",
+      "canonical_manifest": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.4.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}",
+      "canonical_data": "{\"records\":[]}",
+      "canonical_payload": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.4.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}\n{\"records\":[]}",
+      "expected_hash": "sha256:0b9e8f372fea068ba6326fd9b13df29d3e3fb9953131bd77a2bccf4cc65dd5d4"
+    },
+    {
+      "id": "B2",
+      "recipe": "v2-jcs",
+      "note": "Recipe v2 counterpart of B. Under RFC 8785 the same data canonicalizes differently: 55.0 -> 55, 1.5e-05 -> 0.000015. Different hash, identical bytes in - the recipes are genuinely distinct.",
+      "manifest_json": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.4.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}",
+      "data_json": "{\"coord_lat\":57.08614,\"coord_lon\":-108.92228,\"count\":3,\"int_valued\":55.0,\"large_exp\":1e+22,\"long_literal\":0.30000000000000004,\"small\":1.5e-05,\"web_mercator_y\":7842318.5018136855}",
+      "canonical_manifest": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.4.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}",
+      "canonical_data": "{\"coord_lat\":57.08614,\"coord_lon\":-108.92228,\"count\":3,\"int_valued\":55,\"large_exp\":1e+22,\"long_literal\":0.30000000000000004,\"small\":0.000015,\"web_mercator_y\":7842318.5018136855}",
+      "canonical_payload": "{\"capabilities\":[\"about\",\"copy_as_json\"],\"capsule_version\":\"1.0.0\",\"created_at\":\"2026-01-01T00:00:00Z\",\"description\":\"Minimal capsule for hash recipe verification.\",\"generator\":{\"kind\":\"compiler\",\"name\":\"test\",\"version\":\"1.0.0\"},\"integrity\":{\"content_hash\":\"sha256:pending\",\"hash_scope\":\"data+manifest\"},\"privacy\":{\"contains_private_data\":false,\"external_dependencies\":false,\"redaction_applied\":false,\"visibility\":\"private\"},\"source\":{\"included_records\":0,\"origin\":\"test\",\"snapshot_id\":\"snapshot:hash_test_a\",\"snapshot_type\":\"portable_excerpt\"},\"spec_version\":\"0.4.0\",\"title\":\"Hash Test Vector A\",\"type\":\"reference\",\"uuid\":\"00000000-0000-4000-8000-000000000000\"}\n{\"coord_lat\":57.08614,\"coord_lon\":-108.92228,\"count\":3,\"int_valued\":55,\"large_exp\":1e+22,\"long_literal\":0.30000000000000004,\"small\":0.000015,\"web_mercator_y\":7842318.5018136855}",
+      "expected_hash": "sha256:24ea65104301cd83eb484e0cf3fc1af5a772900d21d0f512e8cd75a821286471"
+    }
+  ],
+  "unit_tests": {
+    "jcs_numbers": [
+      {
+        "ieee754_hex": "0000000000000000",
+        "expected": "0"
+      },
+      {
+        "ieee754_hex": "8000000000000000",
+        "expected": "0"
+      },
+      {
+        "ieee754_hex": "3ff0000000000000",
+        "expected": "1"
+      },
+      {
+        "ieee754_hex": "bff0000000000000",
+        "expected": "-1"
+      },
+      {
+        "ieee754_hex": "3fe0000000000000",
+        "expected": "0.5"
+      },
+      {
+        "ieee754_hex": "3eb0c6f7a0b5ed8d",
+        "expected": "0.000001"
+      },
+      {
+        "ieee754_hex": "3e7ad7f29abcaf48",
+        "expected": "1e-7"
+      },
+      {
+        "ieee754_hex": "4415af1d78b58c40",
+        "expected": "100000000000000000000"
+      },
+      {
+        "ieee754_hex": "444b1ae4d6e2ef50",
+        "expected": "1e+21"
+      },
+      {
+        "ieee754_hex": "4480f0cf064dd592",
+        "expected": "1e+22"
+      },
+      {
+        "ieee754_hex": "0000000000000001",
+        "expected": "5e-324"
+      },
+      {
+        "ieee754_hex": "7fefffffffffffff",
+        "expected": "1.7976931348623157e+308"
+      },
+      {
+        "ieee754_hex": "ffefffffffffffff",
+        "expected": "-1.7976931348623157e+308"
+      },
+      {
+        "ieee754_hex": "4340000000000000",
+        "expected": "9007199254740992"
+      },
+      {
+        "ieee754_hex": "3fb999999999999a",
+        "expected": "0.1"
+      },
+      {
+        "ieee754_hex": "3fd3333333333334",
+        "expected": "0.30000000000000004"
+      },
+      {
+        "ieee754_hex": "3eef75104d551d69",
+        "expected": "0.000015"
+      },
+      {
+        "ieee754_hex": "415dea83a01db726",
+        "expected": "7842318.5018136855"
+      },
+      {
+        "ieee754_hex": "c05b3b06a2b17050",
+        "expected": "-108.92228"
+      },
+      {
+        "ieee754_hex": "404b800000000000",
+        "expected": "55"
+      },
+      {
+        "ieee754_hex": "4059000000000000",
+        "expected": "100"
+      },
+      {
+        "ieee754_hex": "3f50624dd2f1a9fc",
+        "expected": "0.001"
+      },
+      {
+        "ieee754_hex": "4004000000000000",
+        "expected": "2.5"
+      },
+      {
+        "ieee754_hex": "7e41eb2d66005835",
+        "expected": "1.5e+300"
+      },
+      {
+        "ieee754_hex": "441ac53a7e04bcda",
+        "expected": "123456789012345680000"
+      },
+      {
+        "ieee754_hex": "4341c37937e08000",
+        "expected": "10000000000000000"
+      },
+      {
+        "ieee754_hex": "430c6bf526340000",
+        "expected": "1000000000000000"
+      },
+      {
+        "ieee754_hex": "3fd5555555555555",
+        "expected": "0.3333333333333333"
+      }
+    ],
+    "jcs_strings": [
+      {
+        "input_json": "\"\\u0000\\u0001\\b\\t\\n\\u000b\\f\\r\\u001f\"",
+        "expected": "\"\\u0000\\u0001\\b\\t\\n\\u000b\\f\\r\\u001f\"",
+        "note": "five shorthands stay shorthand; other C0 controls become lowercase backslash-uhhhh"
+      },
+      {
+        "input_json": "\"a\\\"b\\\\c\"",
+        "expected": "\"a\\\"b\\\\c\"",
+        "note": "quote and backslash"
+      },
+      {
+        "input_json": "\"\\u2028\\u2029\"",
+        "expected": "\"  \"",
+        "note": "line/paragraph separators are NOT escaped (some JS serializers escape them; RFC 8785 does not)"
+      },
+      {
+        "input_json": "\"\\ud83d\\ude00\"",
+        "expected": "\"😀\"",
+        "note": "astral characters pass through raw"
+      },
+      {
+        "input_json": "\"\\u007f\"",
+        "expected": "\"\"",
+        "note": "DEL is not a C0 control; not escaped"
+      }
+    ],
+    "jcs_key_order": [
+      {
+        "input_json": "{\"\\ud83d\\ude00\":1,\"\\uffff\":2,\"a\":3}",
+        "expected": "{\"a\":3,\"😀\":1,\"￿\":2}",
+        "note": "THE discriminating case: UTF-16 order puts the emoji before U+FFFF; code-point order would not."
+      },
+      {
+        "input_json": "{\"b\":1,\"\":2,\"A\":3}",
+        "expected": "{\"\":2,\"A\":3,\"b\":1}"
+      },
+      {
+        "input_json": "{\"z\":[1,{\"b\":2,\"a\":1}],\"a\":null}",
+        "expected": "{\"a\":null,\"z\":[1,{\"a\":1,\"b\":2}]}",
+        "note": "sorting is recursive; array order is preserved"
+      }
+    ],
+    "jcs_must_error": [
+      {
+        "case": "NaN",
+        "ieee754_hex": "7fffffffffffffff"
+      },
+      {
+        "case": "Infinity",
+        "ieee754_hex": "7ff0000000000000"
+      },
+      {
+        "case": "negative Infinity",
+        "ieee754_hex": "fff0000000000000"
+      },
+      {
+        "case": "integer beyond 2**53",
+        "input_json": "{\"n\":9007199254740993}",
+        "note": "A parser that silently rounds to a double will not see this; implementations SHOULD inspect the source token."
+      },
+      {
+        "case": "lone surrogate in a string",
+        "note": "Input must be valid Unicode; a lone surrogate cannot be encoded as UTF-8."
+      }
+    ]
+  }
+}
