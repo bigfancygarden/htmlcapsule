@@ -7,7 +7,7 @@ A research project investigating whether HTML can be disciplined into a portable
 The project produces a spec, a reference implementation, and empirical evidence about whether the spec works in practice. The hypothesis is that the substrate (HTML) has won and what's missing is discipline, not a new format.
 
 Started: 2026-05-15
-Current Core spec: v0.3.0 · Full spec: v0.3.12
+Current Core spec: v0.3.0 · Full spec: v0.3.13
 Repo: [bigfancygarden/htmlcapsule](https://github.com/bigfancygarden/htmlcapsule) · Site: [htmlcapsule.org](https://htmlcapsule.org)
 
 ## Project identity
@@ -1506,6 +1506,29 @@ The common blocker is that **§9.1.1 exists only in Python.** That single fact e
 - [F43](#f43-a-spec-literate-agent-published-five-non-capsules-and-one-valid-capsule-in-the-same-session---the-conversion-cost-is-convention-not-capability) — the adapter this unblocks
 - [F42](#f42-users-are-writing-scrapers-to-recover-their-own-documents---the-export-gap-is-empirically-demanded-not-hypothesized) — the population that would use it
 - [F28](#f28-producers-reach-for-capsule-shape-independently-when-given-the-idiom-but-not-the-spec---empirical-pressure-for-discoverable-onboarding) — discoverable onboarding; the `/llms.txt` Core-inlining recommendation remains the cheapest complementary fix
+
+### F46: A valid capsule tunnels through the Claude artifact channel — published, wrapped, recovered, verified; data+manifest is a channel-survival property
+
+**Date:** 2026-07-26
+
+**Source.** Direct experiment from inside a Claude Code session (the full protocol and served-document anatomy are in `design/ARTIFACT_CHANNEL_STUDY.md`). A valid capsule — the sealed_sources fixture, restructured with all five blocks in `<body>` — was published through the host's native artifact tool, and the served document was fetched back through an owner-authenticated raw fetch.
+
+**Finding — the trust layer tunnels through the host that lacks one.** Four measured results:
+
+1. **Block placement is id-addressed, not positional.** A capsule with all five blocks in the body validates 30/30 strict before any publishing was involved. This was latent in the validator since v0.1 and never stated; §2.1 now states it (v0.3.13).
+2. **The channel preserves author bytes and owns everything else.** The served document wraps the content in a non-portable frame-runtime — a `window.claude` capability proxy, dynamic `import("/_runtime/…")` loads, WebRTC lockdown, postMessage theme/scroll/telemetry plumbing — plus injected metas and a reset stylesheet. Inside that wrapper, the five authored blocks came back **byte-true**, trailing comment included. Title, versions, sharing, and retention remain host database state, exactly as F41 documented.
+3. **The declared `data+manifest` hash recomputes bit-identically from the recovered blocks.** The scope chosen in v0.3.2 for browser re-save, and hardened in F34 as truth-vs-projection, is empirically a **channel-survival property**: the host only touches projection, so verifiable identity rides through.
+4. **The validator draws the boundary correctly at both ends.** The served document *as a whole* fails validation — the wrapper's dynamic `import()` breaks Rule 2, as it should: the frame really is non-portable. A five-block extract-by-id plus minimal rewrap yields a 30/30 strict capsule with the original hash verifying. Recovery is ~50 lines and MUST NOT mutate the blocks; provenance of the recovery event belongs in custody records (the vault's side), never in the artifact — the recovered capsule *is* the original, same UUID, same hash.
+
+Read against the extractor ecosystem (F42, source-verified the same day: conversation-UUID from the URL → localStorage chat data → regex over message content → ZIP), this splits recovery into two surfaces with a shared endpoint: extractors read the *conversation stream* (authored bytes, pre-wrapper); a fetcher reads the *served artifact* (wrapped bytes). Both converge after block extraction because integrity is canonical, not positional.
+
+**Implication for the spec and the project.** Spec: the v0.3.13 clarification (§2.1 placement; tunneling and the no-mutation recovery contract in the change note) — deliberately small, because the finding's force is strategic. The F41–F45 arc diagnosed the dominant artifact channel as substrate-without-commitment-layer; F46 shows the commitment layer does not need the host's cooperation: **publish capsules through the channel and the trust surface survives it.** The build order that follows (study §6): the JS §9.1.1 port (F45) → the two-mode recovery adapter (tunneled extract + F43's bare-artifact wrap) → the provenance-preserving extractor feeding htmlvault's inbox. The scraper population proved the demand; this finding proves the contract that replaces the scraping.
+
+**Related findings:**
+- [F41](#f41-the-dominant-ai-artifact-producer-ships-the-substrate-without-the-commitment-layer--claude-artifacts-are-envelope-compatible-and-provenance-free) — the channel this probes; envelope-compatible turned out to mean *capsule-transparent*
+- [F42](#f42-users-are-writing-scrapers-to-recover-their-own-documents--the-export-gap-is-empirically-demanded-not-hypothesized) — the recovery demand; this is the recovery contract
+- [F43](#f43-a-spec-literate-agent-published-five-non-capsules-and-one-valid-capsule-in-the-same-session--the-conversion-cost-is-convention-not-capability) — the adapter's wrap mode; F46 adds the tunneled mode
+- [F34](#f34-hash_scope-datamanifest-becomes-a-production-default--the-integrity-hash-covers-truth-not-projection-and-must-say-so) — truth-vs-projection, now doing its third job: custody posture, annotation anchoring, channel survival
 
 
 ## Open questions

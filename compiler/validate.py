@@ -36,7 +36,7 @@ HASH_PLACEHOLDER = "sha256:pending"
 # first external consumer: compositor's "non-negotiable #2" workflow), so
 # conformance claims need to be legible: every report prints this version,
 # and `--version` exists for CI to record or assert. See F35 in RESEARCH.md.
-VALIDATOR_VERSION = "0.3.12"
+VALIDATOR_VERSION = "0.3.13"
 
 REQUIRED_SECTIONS = {
     "capsule-manifest": "script",
